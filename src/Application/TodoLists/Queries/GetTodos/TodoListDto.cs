@@ -17,7 +17,7 @@ public class TodoListDto
 
     public IReadOnlyCollection<TodoItemDto> Items { get; init; }
 
-    private class Mapping : Profile
+    private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {

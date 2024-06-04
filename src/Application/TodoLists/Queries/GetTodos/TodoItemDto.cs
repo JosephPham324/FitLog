@@ -16,7 +16,7 @@ public class TodoItemDto
 
     public string? Note { get; init; }
 
-    private class Mapping : Profile
+    private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {

@@ -12,7 +12,7 @@ public class TodoItemBriefDto
 
     public bool Done { get; init; }
 
-    private class Mapping : Profile
+    private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
