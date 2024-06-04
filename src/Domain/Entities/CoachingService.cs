@@ -7,7 +7,7 @@ public partial class CoachingService
 {
     public int CoachingServiceId { get; set; }
 
-    public int? CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     public string ServiceName { get; set; } = null!;
 
@@ -23,5 +23,5 @@ public partial class CoachingService
 
     public virtual ICollection<CoachingBooking> CoachingBookings { get; set; } = new List<CoachingBooking>();
 
-    public virtual User? CreatedByNavigation { get; set; }
+    public virtual AspNetUser? CreatedByNavigation { get; set; }
 }

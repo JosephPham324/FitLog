@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace FitLog.Domain.Entities;
 
-public partial class AspNetRole
+public partial class AspNetRole : IdentityRole<string>
 {
-    public string Id { get; set; } = null!;
-
-    public string? Name { get; set; }
-
-    public string? NormalizedName { get; set; }
-
-    public string? ConcurrencyStamp { get; set; }
+    public AspNetRole(string Name) { this.Name = Name;  }
+    public string? RoleDesc { get; set; }
 
     public virtual ICollection<AspNetRoleClaim> AspNetRoleClaims { get; set; } = new List<AspNetRoleClaim>();
 

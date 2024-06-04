@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FitLog.Domain.Entities;
 
-public partial class User : AspNetUser
+public partial class User 
 {
     public int UserId { get; set; }
 

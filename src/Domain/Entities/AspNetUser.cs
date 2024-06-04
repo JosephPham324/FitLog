@@ -1,39 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace FitLog.Domain.Entities;
 
-public partial class AspNetUser
+public partial class AspNetUser : IdentityUser<string>
 {
-    public string Id { get; set; } = null!;
-
-    public string? UserName { get; set; }
-
-    public string? NormalizedUserName { get; set; }
-
-    public string? Email { get; set; }
-
-    public string? NormalizedEmail { get; set; }
-
-    public bool EmailConfirmed { get; set; }
-
-    public string? PasswordHash { get; set; }
-
-    public string? SecurityStamp { get; set; }
-
-    public string? ConcurrencyStamp { get; set; }
-
-    public string? PhoneNumber { get; set; }
-
-    public bool PhoneNumberConfirmed { get; set; }
-
-    public bool TwoFactorEnabled { get; set; }
-
-    public DateTimeOffset? LockoutEnd { get; set; }
-
-    public bool LockoutEnabled { get; set; }
-
-    public int AccessFailedCount { get; set; }
 
     public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; } = new List<AspNetUserClaim>();
 
@@ -42,4 +15,26 @@ public partial class AspNetUser
     public virtual ICollection<AspNetUserToken> AspNetUserTokens { get; set; } = new List<AspNetUserToken>();
 
     public virtual ICollection<AspNetRole> Roles { get; set; } = new List<AspNetRole>();
+
+    public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
+
+    public virtual ICollection<CoachingBooking> CoachingBookings { get; set; } = new List<CoachingBooking>();
+
+    public virtual ICollection<CoachingService> CoachingServices { get; set; } = new List<CoachingService>();
+
+    public virtual ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
+
+    public virtual ICollection<Profile> Profiles { get; set; } = new List<Profile>();
+
+    public virtual ICollection<ProgramEnrollment> ProgramEnrollments { get; set; } = new List<ProgramEnrollment>();
+
+    public virtual ICollection<Program> Programs { get; set; } = new List<Program>();
+
+    public virtual ICollection<SurveyAnswer> SurveyAnswers { get; set; } = new List<SurveyAnswer>();
+
+    public virtual ICollection<WorkoutLog> WorkoutLogs { get; set; } = new List<WorkoutLog>();
+
+    public virtual ICollection<WorkoutTemplate> WorkoutTemplateCreatedByNavigations { get; set; } = new List<WorkoutTemplate>();
+
+    public virtual ICollection<WorkoutTemplate> WorkoutTemplateLastModifiedByNavigations { get; set; } = new List<WorkoutTemplate>();
 }

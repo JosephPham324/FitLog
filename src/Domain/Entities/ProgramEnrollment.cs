@@ -7,7 +7,7 @@ public partial class ProgramEnrollment
 {
     public int EnrollmentId { get; set; }
 
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     public int? ProgramId { get; set; }
 
@@ -23,5 +23,5 @@ public partial class ProgramEnrollment
 
     public virtual Program? Program { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual AspNetUser? User { get; set; }
 }

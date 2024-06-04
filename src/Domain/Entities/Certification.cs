@@ -7,7 +7,7 @@ public partial class Certification
 {
     public int CertificationId { get; set; }
 
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     public string? CertificationName { get; set; }
 
@@ -15,5 +15,5 @@ public partial class Certification
 
     public DateOnly? CertificationExpirationData { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual AspNetUser? User { get; set; }
 }

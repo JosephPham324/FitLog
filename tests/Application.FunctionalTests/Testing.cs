@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using FitLog.Domain.Entities;
 
 namespace FitLog.Application.FunctionalTests;
 
@@ -63,9 +64,9 @@ public partial class Testing
     {
         using var scope = _scopeFactory.CreateScope();
 
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AspNetUser>>();
 
-        var user = new ApplicationUser { UserName = userName, Email = userName };
+        var user = new AspNetUser { UserName = userName, Email = userName };
 
         var result = await userManager.CreateAsync(user, password);
 

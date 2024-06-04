@@ -7,7 +7,7 @@ public partial class Program
 {
     public int ProgramId { get; set; }
 
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     public string ProgramName { get; set; } = null!;
 
@@ -35,5 +35,5 @@ public partial class Program
 
     public virtual ICollection<ProgramWorkout> ProgramWorkouts { get; set; } = new List<ProgramWorkout>();
 
-    public virtual User? User { get; set; }
+    public virtual AspNetUser? User { get; set; }
 }

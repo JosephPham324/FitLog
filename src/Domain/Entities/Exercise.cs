@@ -7,7 +7,7 @@ public partial class Exercise
 {
     public int ExerciseId { get; set; }
 
-    public int CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     public int? MuscleGroupId { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Exercise
 
     public bool? PublicVisibility { get; set; }
 
-    public virtual User CreatedByNavigation { get; set; } = null!;
+    public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
 
     public virtual Equipment? Equipment { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Constants;
+using FitLog.Domain.Entities;
 using FitLog.Infrastructure.Data;
 using FitLog.Infrastructure.Data.Interceptors;
 using FitLog.Infrastructure.Identity;
@@ -33,8 +34,7 @@ public static class DependencyInjection
         services.AddScoped<ApplicationDbContextInitialiser>();
 
         services
-            .AddDefaultIdentity<ApplicationUser>()
-            .AddRoles<IdentityRole>()
+            .AddIdentity<AspNetUser,AspNetRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
         services.AddSingleton(TimeProvider.System);

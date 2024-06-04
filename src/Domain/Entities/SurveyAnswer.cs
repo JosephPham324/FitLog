@@ -7,7 +7,7 @@ public partial class SurveyAnswer
 {
     public int SurveyAnswerId { get; set; }
 
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     public string? Goal { get; set; }
 
@@ -23,5 +23,5 @@ public partial class SurveyAnswer
 
     public DateTime LastModified { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual AspNetUser? User { get; set; }
 }

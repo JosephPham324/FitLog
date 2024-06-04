@@ -7,19 +7,19 @@ public partial class WorkoutTemplate
 {
     public int WorkoutTemplateId { get; set; }
 
-    public int CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     public string? TemplateName { get; set; }
 
     public string? Duration { get; set; }
 
-    public int LastModifiedBy { get; set; }
+    public string? LastModifiedBy { get; set; }
 
     public DateTime? LastModified { get; set; }
 
-    public virtual User CreatedByNavigation { get; set; } = null!;
+    public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
 
-    public virtual User LastModifiedByNavigation { get; set; } = null!;
+    public virtual AspNetUser LastModifiedByNavigation { get; set; } = null!;
 
     public virtual ICollection<ProgramWorkout> ProgramWorkouts { get; set; } = new List<ProgramWorkout>();
 

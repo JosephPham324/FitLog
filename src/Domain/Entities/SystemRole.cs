@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace FitLog.Domain.Entities;
 
-public partial class SystemRole : AspNetRole
+public partial class SystemRole
 {
-    public int RoleId { get; set; }
+    //public int RoleId { get; set; }
 
-    public string? RoleName { get; set; }
+    //public string? RoleName { get; set; }
 
-    public string? RoleDesc { get; set; }
-    public override ICollection<AspNetUser> Users { get; set; } = new List<AspNetUser>();
+    //public string? RoleDesc { get; set; }
+    //public override ICollection<AspNetUser> Users { get; set; } = new List<AspNetUser>();
 }

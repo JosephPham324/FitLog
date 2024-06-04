@@ -7,7 +7,7 @@ public partial class CoachingBooking
 {
     public int BookingId { get; set; }
 
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     public int? CoachingServiceId { get; set; }
 
@@ -19,5 +19,5 @@ public partial class CoachingBooking
 
     public virtual CoachingService? CoachingService { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual AspNetUser? User { get; set; }
 }
