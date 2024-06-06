@@ -17,4 +17,9 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Users\EventHandlers\" />
+    <Folder Include="Users\Queries_\Register\" />
+  </ItemGroup>
+
 </Project>
