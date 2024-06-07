@@ -5,6 +5,7 @@ namespace FitLog.Domain.Entities;
 
 public partial class SurveyAnswer
 {
+
     public int SurveyAnswerId { get; set; }
 
     public string? UserId { get; set; }

@@ -27,6 +27,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
     {
         var user = new AspNetUser
         {
+            Id  = Guid.NewGuid().ToString(),
             UserName = request.UserName,
             Email = request.Email,
         };

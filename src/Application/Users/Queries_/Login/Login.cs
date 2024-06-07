@@ -48,7 +48,7 @@ public class LoginHandler : IRequestHandler<LoginQuery, LoginResultDTO>
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName??""),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? ""),
                 new Claim(JwtRegisteredClaimNames.Email, user.UserName??""),
                 new Claim(JwtRegisteredClaimNames.Jti,
                 Guid.NewGuid().ToString())
