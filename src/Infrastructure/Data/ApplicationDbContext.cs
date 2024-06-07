@@ -10,6 +10,7 @@ namespace FitLog.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,string>, IApplicationDbContext
 {
+    public ApplicationDbContext() { }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<TodoList> TodoLists => Set<TodoList>();
@@ -66,6 +67,10 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
     public virtual DbSet<WorkoutTemplate> WorkoutTemplates { get; set; }
 
     public virtual DbSet<WorkoutTemplateExercise> WorkoutTemplateExercises { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-49L2TDH\\MAY1;Initial Catalog=FitLogDatabase1;User ID=sa;Password=123456;Trust Server Certificate=True");
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -73,6 +78,11 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
         modelBuilder.Entity<AspNetRole>(entity =>
         {
             entity.Property(e => e.Name).HasMaxLength(256);
+
+            // Add the RoleDesc and UserType columns
+            entity.Property(e => e.RoleDesc)
+                  .HasMaxLength(256) // Set an appropriate max length
+                  .IsRequired(false); // Set to true if the column should be mandatory
         });
 
         modelBuilder.Entity<AspNetRoleClaim>(entity =>
@@ -109,8 +119,8 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
             //        });
         });
 
-        modelBuilder.Entity<AspNetRole>()
-        .HasDiscriminator<string>("UserType");
+        //modelBuilder.Entity<AspNetRole>()
+        //.HasDiscriminator<string>("UserType");
         
         modelBuilder.Entity<AspNetRole>()
         .HasKey(p => p.Id);

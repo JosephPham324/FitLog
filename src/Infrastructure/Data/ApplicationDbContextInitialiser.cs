@@ -69,6 +69,7 @@ public class ApplicationDbContextInitialiser
     {
         // Default roles
         var administratorRole = new AspNetRole(Roles.Administrator);
+        administratorRole.Id = Guid.NewGuid().ToString();
 
         if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
         {
@@ -76,7 +77,7 @@ public class ApplicationDbContextInitialiser
         }
 
         // Default users
-        var administrator = new AspNetUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
+        var administrator = new AspNetUser { Id = Guid.NewGuid().ToString(),   UserName = "administrator@localhost", Email = "administrator@localhost" };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
