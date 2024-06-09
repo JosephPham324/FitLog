@@ -18,8 +18,31 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Folder Include="CoachingService\" />
+    <Folder Include="Equipments\Commands\" />
+    <Folder Include="Equipments\EventHandlers\" />
+    <Folder Include="Equipments\Queries\" />
+    <Folder Include="Exercises\Commands\" />
+    <Folder Include="Exercises\EventHandlers\" />
+    <Folder Include="Exercises\Queries\" />
+    <Folder Include="MuscleGroups\Commands\" />
+    <Folder Include="MuscleGroups\EventHandlers\" />
+    <Folder Include="MuscleGroups\Queries\" />
+    <Folder Include="Roles\Commands\" />
+    <Folder Include="Roles\EventHandlers\" />
+    <Folder Include="Roles\Queries\" />
+    <Folder Include="WorkoutLogs\Commands\" />
+    <Folder Include="WorkoutLogs\EventHandlers\" />
+    <Folder Include="WorkoutLogs\Queries\" />
+    <Folder Include="WorkoutPrograms\Commands\" />
+    <Folder Include="WorkoutPrograms\EventHandlers\" />
+    <Folder Include="WorkoutPrograms\Queries\" />
+    <Folder Include="TrainingSurveys\Queries\" />
     <Folder Include="Users\EventHandlers\" />
     <Folder Include="TrainingSurveys\Commands\" />
+    <Folder Include="WorkoutTemplates\Commands\" />
+    <Folder Include="WorkoutTemplates\EventHandlers\" />
+    <Folder Include="WorkoutTemplates\Queries\" />
   </ItemGroup>
 
 </Project>

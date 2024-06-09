@@ -541,7 +541,7 @@ export class UsersClient {
     }
 
     getUserList(pageNumber: number, pageSize: number): Promise<PaginatedListOfAspNetUserListDTO> {
-        let url_ = this.baseUrl + "/api/Users/get-all?";
+        let url_ = this.baseUrl + "/api/Users/all?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
         else
@@ -581,6 +581,45 @@ export class UsersClient {
             });
         }
         return Promise.resolve<PaginatedListOfAspNetUserListDTO>(null as any);
+    }
+
+    getUserProfile(userId: string | null): Promise<UserProfileDTO> {
+        let url_ = this.baseUrl + "/api/Users/profile?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserProfile(_response);
+        });
+    }
+
+    protected processGetUserProfile(response: Response): Promise<UserProfileDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserProfileDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserProfileDTO>(null as any);
     }
 }
 
@@ -1456,6 +1495,294 @@ export interface IAspNetUserListDTO {
     accessFailedCount?: number;
 }
 
+export class UserProfileDTO implements IUserProfileDTO {
+    userId?: string | undefined;
+    userName?: string | undefined;
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    dateOfBirth?: Date;
+    gender?: string | undefined;
+    programs?: ProgramDTO[];
+    certifications?: CertificationDTO[];
+    coachingServices?: CoachingServiceDTO[];
+
+    constructor(data?: IUserProfileDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
+            this.email = _data["email"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : <any>undefined;
+            this.gender = _data["gender"];
+            if (Array.isArray(_data["programs"])) {
+                this.programs = [] as any;
+                for (let item of _data["programs"])
+                    this.programs!.push(ProgramDTO.fromJS(item));
+            }
+            if (Array.isArray(_data["certifications"])) {
+                this.certifications = [] as any;
+                for (let item of _data["certifications"])
+                    this.certifications!.push(CertificationDTO.fromJS(item));
+            }
+            if (Array.isArray(_data["coachingServices"])) {
+                this.coachingServices = [] as any;
+                for (let item of _data["coachingServices"])
+                    this.coachingServices!.push(CoachingServiceDTO.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UserProfileDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserProfileDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
+        data["email"] = this.email;
+        data["phoneNumber"] = this.phoneNumber;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
+        data["gender"] = this.gender;
+        if (Array.isArray(this.programs)) {
+            data["programs"] = [];
+            for (let item of this.programs)
+                data["programs"].push(item.toJSON());
+        }
+        if (Array.isArray(this.certifications)) {
+            data["certifications"] = [];
+            for (let item of this.certifications)
+                data["certifications"].push(item.toJSON());
+        }
+        if (Array.isArray(this.coachingServices)) {
+            data["coachingServices"] = [];
+            for (let item of this.coachingServices)
+                data["coachingServices"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IUserProfileDTO {
+    userId?: string | undefined;
+    userName?: string | undefined;
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    dateOfBirth?: Date;
+    gender?: string | undefined;
+    programs?: ProgramDTO[];
+    certifications?: CertificationDTO[];
+    coachingServices?: CoachingServiceDTO[];
+}
+
+export class ProgramDTO implements IProgramDTO {
+    programId?: number;
+    programName?: string | undefined;
+    numberOfWeeks?: number | undefined;
+    daysPerWeek?: number | undefined;
+    dateCreated?: Date;
+    lastModified?: Date;
+    goal?: string | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    ageGroup?: string | undefined;
+    publicProgram?: boolean | undefined;
+
+    constructor(data?: IProgramDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.programId = _data["programId"];
+            this.programName = _data["programName"];
+            this.numberOfWeeks = _data["numberOfWeeks"];
+            this.daysPerWeek = _data["daysPerWeek"];
+            this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.goal = _data["goal"];
+            this.experienceLevel = _data["experienceLevel"];
+            this.gymType = _data["gymType"];
+            this.musclesPriority = _data["musclesPriority"];
+            this.ageGroup = _data["ageGroup"];
+            this.publicProgram = _data["publicProgram"];
+        }
+    }
+
+    static fromJS(data: any): ProgramDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProgramDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["programId"] = this.programId;
+        data["programName"] = this.programName;
+        data["numberOfWeeks"] = this.numberOfWeeks;
+        data["daysPerWeek"] = this.daysPerWeek;
+        data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["goal"] = this.goal;
+        data["experienceLevel"] = this.experienceLevel;
+        data["gymType"] = this.gymType;
+        data["musclesPriority"] = this.musclesPriority;
+        data["ageGroup"] = this.ageGroup;
+        data["publicProgram"] = this.publicProgram;
+        return data;
+    }
+}
+
+export interface IProgramDTO {
+    programId?: number;
+    programName?: string | undefined;
+    numberOfWeeks?: number | undefined;
+    daysPerWeek?: number | undefined;
+    dateCreated?: Date;
+    lastModified?: Date;
+    goal?: string | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    ageGroup?: string | undefined;
+    publicProgram?: boolean | undefined;
+}
+
+export class CertificationDTO implements ICertificationDTO {
+    certificationId?: number;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+
+    constructor(data?: ICertificationDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.certificationId = _data["certificationId"];
+            this.certificationName = _data["certificationName"];
+            this.certificationDateIssued = _data["certificationDateIssued"] ? new Date(_data["certificationDateIssued"].toString()) : <any>undefined;
+            this.certificationExpirationData = _data["certificationExpirationData"] ? new Date(_data["certificationExpirationData"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CertificationDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new CertificationDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["certificationId"] = this.certificationId;
+        data["certificationName"] = this.certificationName;
+        data["certificationDateIssued"] = this.certificationDateIssued ? formatDate(this.certificationDateIssued) : <any>undefined;
+        data["certificationExpirationData"] = this.certificationExpirationData ? formatDate(this.certificationExpirationData) : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICertificationDTO {
+    certificationId?: number;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+}
+
+export class CoachingServiceDTO implements ICoachingServiceDTO {
+    coachingServiceId?: number;
+    serviceName?: string | undefined;
+    description?: string | undefined;
+    duration?: number | undefined;
+    price?: number | undefined;
+    serviceAvailability?: boolean | undefined;
+    availabilityAnnouncement?: string | undefined;
+
+    constructor(data?: ICoachingServiceDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.coachingServiceId = _data["coachingServiceId"];
+            this.serviceName = _data["serviceName"];
+            this.description = _data["description"];
+            this.duration = _data["duration"];
+            this.price = _data["price"];
+            this.serviceAvailability = _data["serviceAvailability"];
+            this.availabilityAnnouncement = _data["availabilityAnnouncement"];
+        }
+    }
+
+    static fromJS(data: any): CoachingServiceDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new CoachingServiceDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["coachingServiceId"] = this.coachingServiceId;
+        data["serviceName"] = this.serviceName;
+        data["description"] = this.description;
+        data["duration"] = this.duration;
+        data["price"] = this.price;
+        data["serviceAvailability"] = this.serviceAvailability;
+        data["availabilityAnnouncement"] = this.availabilityAnnouncement;
+        return data;
+    }
+}
+
+export interface ICoachingServiceDTO {
+    coachingServiceId?: number;
+    serviceName?: string | undefined;
+    description?: string | undefined;
+    duration?: number | undefined;
+    price?: number | undefined;
+    serviceAvailability?: boolean | undefined;
+    availabilityAnnouncement?: string | undefined;
+}
+
 export class WeatherForecast implements IWeatherForecast {
     date?: Date;
     temperatureC?: number;
@@ -1502,6 +1829,12 @@ export interface IWeatherForecast {
     temperatureC?: number;
     temperatureF?: number;
     summary?: string | undefined;
+}
+
+function formatDate(d: Date) {
+    return d.getFullYear() + '-' + 
+        (d.getMonth() < 9 ? ('0' + (d.getMonth()+1)) : (d.getMonth()+1)) + '-' +
+        (d.getDate() < 10 ? ('0' + d.getDate()) : d.getDate());
 }
 
 export class SwaggerException extends Error {

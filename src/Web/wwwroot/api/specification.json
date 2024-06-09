@@ -488,7 +488,7 @@
         }
       }
     },
-    "/api/Users/get-all": {
+    "/api/Users/all": {
       "get": {
         "tags": [
           "Users"
@@ -523,6 +523,38 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedListOfAspNetUserListDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/profile": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetUserProfile",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDTO"
                 }
               }
             }
@@ -924,6 +956,178 @@
           "accessFailedCount": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "UserProfileDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "programs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgramDTO"
+            }
+          },
+          "certifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CertificationDTO"
+            }
+          },
+          "coachingServices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoachingServiceDTO"
+            }
+          }
+        }
+      },
+      "ProgramDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "programId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "programName": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfWeeks": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "ageGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicProgram": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "CertificationDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "certificationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "certificationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationDateIssued": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "certificationExpirationData": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        }
+      },
+      "CoachingServiceDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "coachingServiceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serviceName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "serviceAvailability": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "availabilityAnnouncement": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
