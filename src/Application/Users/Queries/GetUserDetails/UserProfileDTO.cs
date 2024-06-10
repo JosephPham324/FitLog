@@ -1,7 +1,7 @@
 ﻿using FitLog.Application.Users.Queries_.GetUsers;
 using FitLog.Domain.Entities;
 
-namespace FitLog.Application.Users.Queries_.GetUserDetails;
+namespace FitLog.Application.Users.Queries.GetUserDetails;
 
 public class UserProfileDTO
 {

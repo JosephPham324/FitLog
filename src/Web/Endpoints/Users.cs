@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using FitLog.Application.Common.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using FitLog.Application.Users.Queries_.Login;
 using FitLog.Application.Users.Commands.Regiser;
 using FitLog.Application.Users.Commands.Register;
-using FitLog.Application.Users.Queries_.GetUsers;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using FitLog.Application.Common.Security;
-using FitLog.Application.Users.Queries_.GetUserDetails;
+using FitLog.Application.Users.Queries.GetUserDetails;
+using FitLog.Application.Users.Queries.Login;
+using FitLog.Application.Users.Queries.GetUsers;
 
 namespace FitLog.Web.Endpoints;
 

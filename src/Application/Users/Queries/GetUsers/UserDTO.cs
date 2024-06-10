@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using FitLog.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using FitLog.Domain.Entities;
 
-namespace FitLog.Application.Users.Queries_.GetUsers;
+namespace FitLog.Application.Users.Queries.GetUsers;
 public class AspNetUserListDTO
 {
     [Required]
