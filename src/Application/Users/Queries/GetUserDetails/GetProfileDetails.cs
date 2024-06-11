@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
-using FitLog.Application.Users.Queries_.GetUsers;
+using FitLog.Application.Users.Queries.GetUsers;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Users.Queries.GetUserDetails;

@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
-using FitLog.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
+//using FitLog.Infrastructure.Identity;
+//using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

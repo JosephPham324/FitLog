@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Mappings;
 using FitLog.Application.Common.Models;
-using FitLog.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
 namespace FitLog.Application.Users.Queries.GetUsers;
 

@@ -22,7 +22,9 @@ public class GetExercisesQueryHandler : IRequestHandler<GetExercisesQuery, Exerc
         _context = context;
     }
 
-    public async Task<ExercisesDTO> Handle(GetExercisesQuery request, CancellationToken cancellationToken)
+    public 
+        //async 
+        Task<ExercisesDTO> Handle(GetExercisesQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

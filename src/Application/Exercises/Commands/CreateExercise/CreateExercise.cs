@@ -22,7 +22,9 @@ public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseComman
         _context = context;
     }
 
-    public async Task<int> Handle(CreateExerciseCommand request, CancellationToken cancellationToken)
+    public 
+        //async 
+        Task<int> Handle(CreateExerciseCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

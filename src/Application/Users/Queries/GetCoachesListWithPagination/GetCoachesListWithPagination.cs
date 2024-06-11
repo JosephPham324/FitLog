@@ -1,4 +1,5 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.MuscleGroups.Queries.GetMuscleGroupsListWithPagination;
 
 namespace FitLog.Application.Users.Queries.GetCoachesListWithPagination;
 
@@ -22,7 +23,9 @@ public class GetCoachesListWithPaginationQueryHandler : IRequestHandler<GetCoach
         _context = context;
     }
 
-    public async Task<CoachSummaryDTO> Handle(GetCoachesListWithPaginationQuery request, CancellationToken cancellationToken)
+    public 
+        //async 
+        Task<CoachSummaryDTO> Handle(GetCoachesListWithPaginationQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

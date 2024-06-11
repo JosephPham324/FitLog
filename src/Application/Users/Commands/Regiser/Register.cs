@@ -13,6 +13,7 @@ public record RegisterCommand : IRequest<RegisterResultDTO>
     public string Email { get; init; } = string.Empty;
     public string Password { get; init; } = string.Empty;
     public string UserName { get; init; } = string.Empty; // Optional, use if different from email
+    
 }
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResultDTO>
 {

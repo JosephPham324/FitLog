@@ -22,7 +22,9 @@ public class GetCoachProfileDetailsQueryHandler : IRequestHandler<GetCoachProfil
         _context = context;
     }
 
-    public async Task<CoachProfileDTO> Handle(GetCoachProfileDetailsQuery request, CancellationToken cancellationToken)
+    public 
+        //async 
+        Task<CoachProfileDTO> Handle(GetCoachProfileDetailsQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

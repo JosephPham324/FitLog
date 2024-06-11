@@ -1,6 +1,6 @@
 ﻿
 using FitLog.Application.TrainingSurveys.Commands;
-using FitLog.Application.Users.Queries_.GetUsers;
+using FitLog.Application.Users.Queries.GetUsers;
 using Microsoft.Win32;
 
 namespace FitLog.Web.Endpoints;
