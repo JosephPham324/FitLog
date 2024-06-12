@@ -18,7 +18,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = "Data Source=DESKTOP-49L2TDH\\MAY1;Initial Catalog=FitLogDatabase1;User ID=sa;Password=123456;Trust Server Certificate=True";
 
         Guard.Against.Null(connectionString, message: "Connection string 'DefaultConnection' not found.");
 
