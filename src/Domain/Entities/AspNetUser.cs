@@ -7,7 +7,6 @@ namespace FitLog.Domain.Entities;
 
 public partial class AspNetUser : IdentityUser<string>
 {
-
     public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; } = new List<AspNetUserClaim>();
 
     public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; } = new List<AspNetUserLogin>();

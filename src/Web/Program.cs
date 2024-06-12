@@ -42,6 +42,8 @@ app.MapFallbackToFile("index.html");
 
 app.UseExceptionHandler(options => { });
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapEndpoints();
 
