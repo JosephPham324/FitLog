@@ -1,5 +1,6 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
+using FitLog.Application.Common.ValidationRules;
 
 namespace FitLog.Application.MuscleGroups.Commands.CreateMuscleGroup;
 
@@ -25,13 +26,8 @@ public class CreateMuscleGroupCommandValidator : AbstractValidator<CreateMuscleG
 
         RuleFor(mg => mg.ImageUrl)
             .NotEmpty()
-            .Must(BeAValidUrl)
+            .Must(ValidationRules.BeAValidUrl)
                 .WithMessage("Invalid URL format.");
-    }
-
-    private bool BeAValidUrl(string? imageUrl)
-    {
-        return Uri.TryCreate(imageUrl, UriKind.Absolute, out _);
     }
 
     private async Task<bool> BeUniqueName(string muscleGroupName, CancellationToken cancellationToken)

@@ -23,7 +23,6 @@
     <Folder Include="Equipments\Queries\" />
     <Folder Include="Exercises\Commands\" />
     <Folder Include="Exercises\EventHandlers\" />
-    <Folder Include="MuscleGroups\Commands\" />
     <Folder Include="MuscleGroups\EventHandlers\" />
     <Folder Include="Roles\Commands\" />
     <Folder Include="Roles\EventHandlers\" />

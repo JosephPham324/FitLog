@@ -1,31 +1,44 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Exercises.Queries.GetExerciseDetails;
 
-public record GetExerciseDetailsQuery : IRequest<ExerciseDetailsDTO>
+public record GetExerciseByIdQuery : IRequest<ExerciseDetailsDTO>
 {
+    public int Id { get; init; }
 }
-
-public class GetExerciseDetailsQueryValidator : AbstractValidator<GetExerciseDetailsQuery>
+public class GetExerciseByIdQueryValidator : AbstractValidator<GetExerciseByIdQuery>
 {
-    public GetExerciseDetailsQueryValidator()
+    public GetExerciseByIdQueryValidator()
     {
+        RuleFor(x => x.Id)
+            .GreaterThan(0)
+            .WithMessage("ID must be greater than 0.");
     }
 }
 
-public class GetExerciseDetailsQueryHandler : IRequestHandler<GetExerciseDetailsQuery, ExerciseDetailsDTO>
+public class GetExerciseByIdQueryHandler : IRequestHandler<GetExerciseByIdQuery, ExerciseDetailsDTO>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetExerciseDetailsQueryHandler(IApplicationDbContext context)
+    public GetExerciseByIdQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public 
-        //async 
-        Task<ExerciseDetailsDTO> Handle(GetExerciseDetailsQuery request, CancellationToken cancellationToken)
+    public async Task<ExerciseDetailsDTO> Handle(GetExerciseByIdQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Exercises
+            .ProjectTo<ExerciseDetailsDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(e => e.ExerciseId == request.Id, cancellationToken);
+
+        if (entity == null)
+        {
+            throw new NotFoundException(nameof(Exercise), request.Id + "");
+        }
+
+        return entity;
     }
 }
