@@ -13,6 +13,9 @@ public record CreateEquipmentCommand : IRequest<int>
 
     public string? ImageUrl { get; set; }
 }
+
+
+
 public class CreateEquipmentCommandHandler : IRequestHandler<CreateEquipmentCommand, int>
 {
     private readonly IApplicationDbContext _context;

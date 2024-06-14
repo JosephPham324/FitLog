@@ -6,7 +6,7 @@ using FitLog.Application.Exercises.Queries.GetExerciseDetails;
 using FitLog.Application.Exercises.Queries.GetExercises;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FitLog.Web.Endpoints;
+namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
 
 public class Exercises : EndpointGroupBase
@@ -32,17 +32,17 @@ public class Exercises : EndpointGroupBase
         return result is not null ? Results.Ok(result) : Results.NotFound();
     }
 
-    public Task<int> CreateExercise(ISender sender, CreateExerciseCommand command)
+    public Task<int> CreateExercise(ISender sender, [AsParameters]CreateExerciseCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> UpdateExercise(ISender sender, [AsParameters]UpdateExerciseCommand command)
+    public Task<bool> UpdateExercise(ISender sender, [AsParameters] UpdateExerciseCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> DeleteExercise(ISender sender, [AsParameters]DeleteExerciseCommand command)
+    public Task<bool> DeleteExercise(ISender sender, [AsParameters] DeleteExerciseCommand command)
     {
         return sender.Send(command);
     }

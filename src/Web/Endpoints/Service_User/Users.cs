@@ -12,17 +12,17 @@ using FitLog.Application.Users.Queries.GetUserDetails;
 using FitLog.Application.Users.Queries.Login;
 using FitLog.Application.Users.Queries.GetUsers;
 
-namespace FitLog.Web.Endpoints;
+namespace FitLog.Web.Endpoints.Service_User;
 
-public class Users: EndpointGroupBase
+public class Users : EndpointGroupBase
 {
 
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
             .MapPost(Login, "login")
-            .MapPost(Register,"register")
-            .MapGet(GetUserList,"all")
+            .MapPost(Register, "register")
+            .MapGet(GetUserList, "all")
             .MapGet(GetUserProfile, "profile");
     }
 

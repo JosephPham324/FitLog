@@ -20,7 +20,6 @@
   <ItemGroup>
     <Folder Include="CoachingService\" />
     <Folder Include="Equipments\EventHandlers\" />
-    <Folder Include="Equipments\Queries\" />
     <Folder Include="Exercises\Commands\" />
     <Folder Include="Exercises\EventHandlers\" />
     <Folder Include="MuscleGroups\EventHandlers\" />
