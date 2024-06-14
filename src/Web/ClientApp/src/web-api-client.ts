@@ -1161,6 +1161,106 @@ export class TrainingSurveyClient {
     }
 }
 
+export class WorkoutLogClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getWorkoutLogsWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfWorkoutLogDTO> {
+        let url_ = this.baseUrl + "/api/WorkoutLog/get-all?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetWorkoutLogsWithPagination(_response);
+        });
+    }
+
+    protected processGetWorkoutLogsWithPagination(response: Response): Promise<PaginatedListOfWorkoutLogDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfWorkoutLogDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfWorkoutLogDTO>(null as any);
+    }
+
+    createExerciseLog(createdBy: string | null | undefined, note: string | null | undefined, duration: string | null | undefined, exerciseLogs: CreateExerciseLogCommand[] | undefined): Promise<number> {
+        let url_ = this.baseUrl + "/api/WorkoutLog?";
+        if (createdBy !== undefined && createdBy !== null)
+            url_ += "CreatedBy=" + encodeURIComponent("" + createdBy) + "&";
+        if (note !== undefined && note !== null)
+            url_ += "Note=" + encodeURIComponent("" + note) + "&";
+        if (duration !== undefined && duration !== null)
+            url_ += "Duration=" + encodeURIComponent("" + duration) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(exerciseLogs);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateExerciseLog(_response);
+        });
+    }
+
+    protected processCreateExerciseLog(response: Response): Promise<number> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+}
+
 export class UsersClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -2401,6 +2501,278 @@ export interface ITrainingSurveyDTO {
     musclesPriority?: string | undefined;
     age?: number | undefined;
     lastModified?: Date;
+}
+
+export class PaginatedListOfWorkoutLogDTO implements IPaginatedListOfWorkoutLogDTO {
+    items?: WorkoutLogDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfWorkoutLogDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(WorkoutLogDTO.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfWorkoutLogDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfWorkoutLogDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfWorkoutLogDTO {
+    items?: WorkoutLogDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class WorkoutLogDTO implements IWorkoutLogDTO {
+    workoutLogId?: number;
+    createdBy?: string | undefined;
+    note?: string | undefined;
+    duration?: string | undefined;
+    lastModified?: Date | undefined;
+    exerciseLogs?: ExerciseLogDTO[];
+
+    constructor(data?: IWorkoutLogDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.workoutLogId = _data["workoutLogId"];
+            this.createdBy = _data["createdBy"];
+            this.note = _data["note"];
+            this.duration = _data["duration"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            if (Array.isArray(_data["exerciseLogs"])) {
+                this.exerciseLogs = [] as any;
+                for (let item of _data["exerciseLogs"])
+                    this.exerciseLogs!.push(ExerciseLogDTO.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): WorkoutLogDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkoutLogDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["workoutLogId"] = this.workoutLogId;
+        data["createdBy"] = this.createdBy;
+        data["note"] = this.note;
+        data["duration"] = this.duration;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        if (Array.isArray(this.exerciseLogs)) {
+            data["exerciseLogs"] = [];
+            for (let item of this.exerciseLogs)
+                data["exerciseLogs"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IWorkoutLogDTO {
+    workoutLogId?: number;
+    createdBy?: string | undefined;
+    note?: string | undefined;
+    duration?: string | undefined;
+    lastModified?: Date | undefined;
+    exerciseLogs?: ExerciseLogDTO[];
+}
+
+export class ExerciseLogDTO implements IExerciseLogDTO {
+    exerciseLogId?: number;
+    workoutLogId?: number | undefined;
+    exerciseId?: number | undefined;
+    dateCreated?: Date;
+    lastModified?: Date;
+    orderInSession?: number | undefined;
+    orderInSuperset?: number | undefined;
+    note?: string | undefined;
+    numberOfSets?: number | undefined;
+    weightsUsed?: string | undefined;
+    numberOfReps?: string | undefined;
+    footageUrls?: string | undefined;
+
+    constructor(data?: IExerciseLogDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseLogId = _data["exerciseLogId"];
+            this.workoutLogId = _data["workoutLogId"];
+            this.exerciseId = _data["exerciseId"];
+            this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.orderInSession = _data["orderInSession"];
+            this.orderInSuperset = _data["orderInSuperset"];
+            this.note = _data["note"];
+            this.numberOfSets = _data["numberOfSets"];
+            this.weightsUsed = _data["weightsUsed"];
+            this.numberOfReps = _data["numberOfReps"];
+            this.footageUrls = _data["footageUrls"];
+        }
+    }
+
+    static fromJS(data: any): ExerciseLogDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExerciseLogDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseLogId"] = this.exerciseLogId;
+        data["workoutLogId"] = this.workoutLogId;
+        data["exerciseId"] = this.exerciseId;
+        data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["orderInSession"] = this.orderInSession;
+        data["orderInSuperset"] = this.orderInSuperset;
+        data["note"] = this.note;
+        data["numberOfSets"] = this.numberOfSets;
+        data["weightsUsed"] = this.weightsUsed;
+        data["numberOfReps"] = this.numberOfReps;
+        data["footageUrls"] = this.footageUrls;
+        return data;
+    }
+}
+
+export interface IExerciseLogDTO {
+    exerciseLogId?: number;
+    workoutLogId?: number | undefined;
+    exerciseId?: number | undefined;
+    dateCreated?: Date;
+    lastModified?: Date;
+    orderInSession?: number | undefined;
+    orderInSuperset?: number | undefined;
+    note?: string | undefined;
+    numberOfSets?: number | undefined;
+    weightsUsed?: string | undefined;
+    numberOfReps?: string | undefined;
+    footageUrls?: string | undefined;
+}
+
+export class CreateExerciseLogCommand implements ICreateExerciseLogCommand {
+    exerciseId?: number | undefined;
+    orderInSession?: number | undefined;
+    orderInSuperset?: number | undefined;
+    note?: string | undefined;
+    numberOfSets?: number | undefined;
+    weightsUsed?: string | undefined;
+    numberOfReps?: string | undefined;
+    footageUrls?: string | undefined;
+
+    constructor(data?: ICreateExerciseLogCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseId = _data["exerciseId"];
+            this.orderInSession = _data["orderInSession"];
+            this.orderInSuperset = _data["orderInSuperset"];
+            this.note = _data["note"];
+            this.numberOfSets = _data["numberOfSets"];
+            this.weightsUsed = _data["weightsUsed"];
+            this.numberOfReps = _data["numberOfReps"];
+            this.footageUrls = _data["footageUrls"];
+        }
+    }
+
+    static fromJS(data: any): CreateExerciseLogCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateExerciseLogCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseId"] = this.exerciseId;
+        data["orderInSession"] = this.orderInSession;
+        data["orderInSuperset"] = this.orderInSuperset;
+        data["note"] = this.note;
+        data["numberOfSets"] = this.numberOfSets;
+        data["weightsUsed"] = this.weightsUsed;
+        data["numberOfReps"] = this.numberOfReps;
+        data["footageUrls"] = this.footageUrls;
+        return data;
+    }
+}
+
+export interface ICreateExerciseLogCommand {
+    exerciseId?: number | undefined;
+    orderInSession?: number | undefined;
+    orderInSuperset?: number | undefined;
+    note?: string | undefined;
+    numberOfSets?: number | undefined;
+    weightsUsed?: string | undefined;
+    numberOfReps?: string | undefined;
+    footageUrls?: string | undefined;
 }
 
 export class LoginResultDTO implements ILoginResultDTO {

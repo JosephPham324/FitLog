@@ -29,7 +29,6 @@
     <Folder Include="Users\Commands\UpdateProfile\" />
     <Folder Include="WorkoutLogs\Commands\" />
     <Folder Include="WorkoutLogs\EventHandlers\" />
-    <Folder Include="WorkoutLogs\Queries\" />
     <Folder Include="WorkoutPrograms\Commands\" />
     <Folder Include="WorkoutPrograms\EventHandlers\" />
     <Folder Include="WorkoutPrograms\Queries\" />

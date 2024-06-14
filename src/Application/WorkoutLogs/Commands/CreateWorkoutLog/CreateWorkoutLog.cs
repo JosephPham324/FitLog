@@ -1,10 +1,30 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.ExerciseLogs.Commands.CreateExerciseLogs;
+using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
 
-public record CreateWorkoutLogCommand : IRequest<object>
+public record CreateWorkoutLogCommand : IRequest<int>
 {
+    public string? CreatedBy { get; init; }
+    public string? Note { get; init; }
+    public TimeOnly? Duration { get; init; }
+    public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
 }
+
+public record CreateExerciseLogCommand : IRequest<int>
+{
+    public int? ExerciseId { get; init; }
+    public int? OrderInSession { get; init; }
+    public int? OrderInSuperset { get; init; }
+    public string? Note { get; init; }
+    public int? NumberOfSets { get; init; }
+    public string? WeightsUsed { get; init; }
+    public string? NumberOfReps { get; init; }
+    public string? FootageUrls { get; init; }
+}
+
+
 
 public class CreateWorkoutLogCommandValidator : AbstractValidator<CreateWorkoutLogCommand>
 {
@@ -13,7 +33,7 @@ public class CreateWorkoutLogCommandValidator : AbstractValidator<CreateWorkoutL
     }
 }
 
-public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCommand, object>
+public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCommand, int>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,8 +42,45 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
         _context = context;
     }
 
-    public Task<object> Handle(CreateWorkoutLogCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateWorkoutLogCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var workoutLog = new WorkoutLog
+        {
+            CreatedBy = request.CreatedBy,
+            Note = request.Note,
+            Duration = request.Duration,
+            LastModified = DateTime.UtcNow // Set to current date and time
+        };
+
+        _context.WorkoutLogs.Add(workoutLog);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        if (request.ExerciseLogs != null)
+        {
+            foreach (var exerciseLog in request.ExerciseLogs)
+            {
+                var exerciseLogEntity = new ExerciseLog
+                {
+                    WorkoutLogId = workoutLog.WorkoutLogId,
+                    ExerciseId = exerciseLog.ExerciseId,
+                    DateCreated = DateTime.UtcNow, // Set to current date and time
+                    LastModified = DateTime.UtcNow, // Set to current date and time
+                    OrderInSession = exerciseLog.OrderInSession,
+                    OrderInSuperset = exerciseLog.OrderInSuperset,
+                    Note = exerciseLog.Note,
+                    NumberOfSets = exerciseLog.NumberOfSets,
+                    WeightsUsed = exerciseLog.WeightsUsed,
+                    NumberOfReps = exerciseLog.NumberOfReps,
+                    FootageUrls = exerciseLog.FootageUrls
+                };
+
+                _context.ExerciseLogs.Add(exerciseLogEntity);
+            }
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return workoutLog.WorkoutLogId;
     }
 }
+
