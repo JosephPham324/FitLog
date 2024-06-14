@@ -547,6 +547,9 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("ProgramThumbnail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool?>("PublicProgram")
                         .HasColumnType("bit");
 

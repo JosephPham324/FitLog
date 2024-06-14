@@ -16,6 +16,7 @@ public record CreateSurveyAnswerCommand : IRequest<TrainingSurveyDTO>
     public string? GymType { get; set; }
     public string? MusclesPriority { get; set; }
     public int? Age { get; set; }
+
     public DateTime LastModified { get; set; } = DateTime.UtcNow;
 }
     public class CreateSurveyAnswerCommandHandler :  IRequestHandler<CreateSurveyAnswerCommand, TrainingSurveyDTO>

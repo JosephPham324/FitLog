@@ -24,6 +24,7 @@ public static class DependencyInjection
 
         services.AddRazorPages();
 
+
         // Customise default API behaviour
         services.Configure<ApiBehaviorOptions>(options =>
             options.SuppressModelStateInvalidFilter = true);

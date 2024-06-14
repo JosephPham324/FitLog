@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FitLog.Application.Users.Queries_.Login;
+namespace FitLog.Application.Users.Queries.Login;
 public record LoginQuery : IRequest<LoginResultDTO>
 {
     public string Username { get; init; } = "";
@@ -81,9 +81,9 @@ public class LoginHandler : IRequestHandler<LoginQuery, LoginResultDTO>
         if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
         {
             var token = GenerateJwtToken(request.Username, user ?? new AspNetUser(), _configuration);
-            return new LoginResultDTO { Success = true, Token = token};
+            return new LoginResultDTO { Success = true, Token = token };
         }
 
-        return new LoginResultDTO { Success = false};
+        return new LoginResultDTO { Success = false };
     }
 }

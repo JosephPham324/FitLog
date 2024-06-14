@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using FitLog.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using FitLog.Domain.Entities;
 
-namespace FitLog.Application.Users.Queries_.Login;
+namespace FitLog.Application.Users.Queries.Login;
 public class LoginResultDTO
 {
-    public bool Success { get; set; } 
+    public bool Success { get; set; }
     public string Token { get; set; } = string.Empty;
 }

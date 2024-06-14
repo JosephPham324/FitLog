@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
-using FitLog.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
+//using FitLog.Infrastructure.Identity;
+//using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -67,9 +67,9 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
     public virtual DbSet<WorkoutTemplate> WorkoutTemplates { get; set; }
 
     public virtual DbSet<WorkoutTemplateExercise> WorkoutTemplateExercises { get; set; }
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //    => optionsBuilder.UseSqlServer("Data Source=DESKTOP-49L2TDH\\MAY1;Initial Catalog=FitLogDatabase1;User ID=sa;Password=123456;Trust Server Certificate=True");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=JOSEPHPHAM;Initial Catalog=FitLogDatabase;User ID=sa;Password=123456;Encrypt=True;Trust Server Certificate=True");
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -118,9 +118,6 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
             //            j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
             //        });
         });
-
-        //modelBuilder.Entity<AspNetRole>()
-        //.HasDiscriminator<string>("UserType");
         
         modelBuilder.Entity<AspNetRole>()
         .HasKey(p => p.Id);
@@ -135,7 +132,6 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
         modelBuilder.Entity<AspNetUserLogin>(entity =>
         {
-            //entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
 
             entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
 
