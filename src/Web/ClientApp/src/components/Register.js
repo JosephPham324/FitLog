@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Grid, InputAdornment, FormControlLabel, Checkbox } from '@material-ui/core';
-import { Email, Lock, Phone, AccountCircle } from '@material-ui/icons';
+import { Container, TextField, Button, Typography, Grid, InputAdornment, FormControlLabel, Checkbox } from '@mui/material';
+import { Email, Lock, Phone, AccountCircle } from '@mui/icons-material';
 import { FcGoogle } from 'react-icons/fc';
 import './register.css';
 import logo from '../assets/Logo.png';
