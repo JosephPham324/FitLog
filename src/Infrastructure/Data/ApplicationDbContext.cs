@@ -57,11 +57,6 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
     public virtual DbSet<SurveyAnswer> SurveyAnswers { get; set; }
 
-    //public virtual DbSet<SystemRole> SystemRoles { get; set; }
-
-
-    //public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<WorkoutLog> WorkoutLogs { get; set; }
 
     public virtual DbSet<WorkoutTemplate> WorkoutTemplates { get; set; }
@@ -241,7 +236,7 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
             entity.Property(e => e.EquipmentId).HasColumnName("EquipmentID");
             entity.Property(e => e.EquipmentName).HasMaxLength(50);
             entity.Property(e => e.ImageUrl)
-                .HasMaxLength(256)
+                .HasMaxLength(4096) // Increase size for Base64 strings
                 .HasColumnName("ImageURL");
         });
 
@@ -255,7 +250,7 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
             entity.Property(e => e.ExerciseId).HasColumnName("ExerciseID");
             entity.Property(e => e.DemoUrl)
-                .HasMaxLength(256)
+                .HasMaxLength(4096) // Increase size for Base64 strings
                 .HasColumnName("DemoURL");
             entity.Property(e => e.EquipmentId).HasColumnName("EquipmentID");
             entity.Property(e => e.ExerciseName).HasMaxLength(100);
@@ -287,12 +282,18 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.ExerciseId).HasColumnName("ExerciseID");
-            entity.Property(e => e.FootageUrls).HasColumnName("FootageURLs");
+            entity.Property(e => e.FootageUrls)
+                .HasColumnType("nvarchar(max)") // Increase size for Base64 strings
+                .HasColumnName("FootageURLs");
             entity.Property(e => e.LastModified)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.NumberOfReps).HasMaxLength(50);
-            entity.Property(e => e.WeightsUsed).HasMaxLength(50);
+            entity.Property(e => e.NumberOfReps)
+                .HasColumnType("nvarchar(max)") // Increase size for JSON string
+                .HasColumnName("NumberOfReps");
+            entity.Property(e => e.WeightsUsed)
+                .HasColumnType("nvarchar(max)") // Increase size for JSON string
+                .HasColumnName("WeightsUsed");
             entity.Property(e => e.WorkoutLogId).HasColumnName("WorkoutLogID");
 
             entity.HasOne(d => d.Exercise).WithMany(p => p.ExerciseLogs)
@@ -312,10 +313,12 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
             entity.Property(e => e.MuscleGroupId).HasColumnName("MuscleGroupID");
             entity.Property(e => e.ImageUrl)
-                .HasMaxLength(256)
+                .HasMaxLength(4096) // Increase size for Base64 strings
                 .HasColumnName("ImageURL");
             entity.Property(e => e.MuscleGroupName).HasMaxLength(50);
         });
+
+
 
         modelBuilder.Entity<Profile>(entity =>
         {
@@ -324,8 +327,13 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
             entity.ToTable("Profile");
 
             entity.Property(e => e.ProfileId).HasColumnName("ProfileID");
-            entity.Property(e => e.ProfilePicture).HasMaxLength(256);
+            entity.Property(e => e.ProfilePicture)
+                .HasColumnType("nvarchar(max)") // Increase size for Base64 strings
+                .HasColumnName("ProfilePicture");
             entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.GalleryImageLinksJson)
+                .HasColumnType("nvarchar(max)") // Increase size for JSON string
+                .HasColumnName("GalleryImageLinks");
 
             entity.HasOne(d => d.User).WithMany(p => p.Profiles)
                 .HasForeignKey(d => d.UserId)
