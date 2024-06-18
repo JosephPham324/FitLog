@@ -67,6 +67,8 @@ public static class DependencyInjection
                 ValidateIssuerSigningKey = true
             };
         });
+;
+
 
         services.AddSingleton(TimeProvider.System);
         services.AddTransient<IIdentityService, IdentityService>();

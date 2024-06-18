@@ -482,12 +482,11 @@ export class EquipmentsClient {
         return Promise.resolve<PaginatedListOfEquipmentDTO>(null as any);
     }
 
-    getEquipmentById(equipmentId: number): Promise<any> {
-        let url_ = this.baseUrl + "/api/Equipments?";
-        if (equipmentId === undefined || equipmentId === null)
-            throw new Error("The parameter 'equipmentId' must be defined and cannot be null.");
-        else
-            url_ += "EquipmentId=" + encodeURIComponent("" + equipmentId) + "&";
+    getEquipmentById(id: number): Promise<any> {
+        let url_ = this.baseUrl + "/api/Equipments/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -520,6 +519,82 @@ export class EquipmentsClient {
             });
         }
         return Promise.resolve<any>(null as any);
+    }
+
+    updateEquipment(id: number, command: UpdateEquipmentCommand): Promise<void> {
+        let url_ = this.baseUrl + "/api/Equipments/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateEquipment(_response);
+        });
+    }
+
+    protected processUpdateEquipment(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    deleteEquipment(id: number, command: DeleteEquipmentCommand): Promise<void> {
+        let url_ = this.baseUrl + "/api/Equipments/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteEquipment(_response);
+        });
+    }
+
+    protected processDeleteEquipment(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     createEquipment(equipmentName: string | null | undefined, imageUrl: string | null | undefined): Promise<number> {
@@ -561,90 +636,6 @@ export class EquipmentsClient {
         }
         return Promise.resolve<number>(null as any);
     }
-
-    deleteEquipment(equipmentId: number): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Equipments?";
-        if (equipmentId === undefined || equipmentId === null)
-            throw new Error("The parameter 'equipmentId' must be defined and cannot be null.");
-        else
-            url_ += "EquipmentId=" + encodeURIComponent("" + equipmentId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteEquipment(_response);
-        });
-    }
-
-    protected processDeleteEquipment(response: Response): Promise<boolean> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<boolean>(null as any);
-    }
-
-    updateEquipment(equipmentId: number, equipmentName: string | null | undefined, imageUrl: string | null | undefined): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Equipments?";
-        if (equipmentId === undefined || equipmentId === null)
-            throw new Error("The parameter 'equipmentId' must be defined and cannot be null.");
-        else
-            url_ += "EquipmentId=" + encodeURIComponent("" + equipmentId) + "&";
-        if (equipmentName !== undefined && equipmentName !== null)
-            url_ += "EquipmentName=" + encodeURIComponent("" + equipmentName) + "&";
-        if (imageUrl !== undefined && imageUrl !== null)
-            url_ += "ImageUrl=" + encodeURIComponent("" + imageUrl) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateEquipment(_response);
-        });
-    }
-
-    protected processUpdateEquipment(response: Response): Promise<boolean> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<boolean>(null as any);
-    }
 }
 
 export class ExercisesClient {
@@ -658,7 +649,7 @@ export class ExercisesClient {
     }
 
     getExercisesWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfExerciseDTO> {
-        let url_ = this.baseUrl + "/api/Exercises/get-all?";
+        let url_ = this.baseUrl + "/api/Exercises/paginated-all?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
         else
@@ -698,6 +689,48 @@ export class ExercisesClient {
             });
         }
         return Promise.resolve<PaginatedListOfExerciseDTO>(null as any);
+    }
+
+    getExerciseTypes(): Promise<string[]> {
+        let url_ = this.baseUrl + "/api/Exercises/exercise-types";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExerciseTypes(_response);
+        });
+    }
+
+    protected processGetExerciseTypes(response: Response): Promise<string[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string[]>(null as any);
     }
 
     getExerciseById(id: number): Promise<void> {
@@ -2129,6 +2162,86 @@ export class EquipmentDTO implements IEquipmentDTO {
 export interface IEquipmentDTO {
     equipmentId?: number;
     equipmentName?: string | undefined;
+}
+
+export class UpdateEquipmentCommand implements IUpdateEquipmentCommand {
+    equipmentId?: number;
+    equipmentName?: string | undefined;
+    imageUrl?: string | undefined;
+
+    constructor(data?: IUpdateEquipmentCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.equipmentId = _data["equipmentId"];
+            this.equipmentName = _data["equipmentName"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): UpdateEquipmentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateEquipmentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["equipmentId"] = this.equipmentId;
+        data["equipmentName"] = this.equipmentName;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface IUpdateEquipmentCommand {
+    equipmentId?: number;
+    equipmentName?: string | undefined;
+    imageUrl?: string | undefined;
+}
+
+export class DeleteEquipmentCommand implements IDeleteEquipmentCommand {
+    equipmentId?: number;
+
+    constructor(data?: IDeleteEquipmentCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.equipmentId = _data["equipmentId"];
+        }
+    }
+
+    static fromJS(data: any): DeleteEquipmentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteEquipmentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["equipmentId"] = this.equipmentId;
+        return data;
+    }
+}
+
+export interface IDeleteEquipmentCommand {
+    equipmentId?: number;
 }
 
 export class PaginatedListOfExerciseDTO implements IPaginatedListOfExerciseDTO {

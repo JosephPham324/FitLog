@@ -4,6 +4,7 @@ using FitLog.Application.Exercises.Commands.DeleteExercise;
 using FitLog.Application.Exercises.Commands.UpdateExercise;
 using FitLog.Application.Exercises.Queries.GetExerciseDetails;
 using FitLog.Application.Exercises.Queries.GetExercises;
+using FitLog.Application.Exercises.Queries.GetExercsieTypes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
@@ -14,7 +15,8 @@ public class Exercises : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapGet(GetExercisesWithPagination, "get-all")
+            .MapGet(GetExercisesWithPagination, "paginated-all")
+            .MapGet(GetExerciseTypes, "exercise-types")
             .MapGet(GetExerciseById, "{id}")
             .MapPost(CreateExercise)
             .MapPut(UpdateExercise, "{id}")
@@ -45,6 +47,11 @@ public class Exercises : EndpointGroupBase
     public Task<bool> DeleteExercise(ISender sender, [AsParameters] DeleteExerciseCommand command)
     {
         return sender.Send(command);
+    }
+
+    public Task<IEnumerable<string?>> GetExerciseTypes(ISender sender, [AsParameters] GetExercsieTypesQuery query)
+    {
+        return sender.Send(query);
     }
 }
 

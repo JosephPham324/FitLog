@@ -362,7 +362,7 @@
         }
       }
     },
-    "/api/Equipments": {
+    "/api/Equipments/{id}": {
       "get": {
         "tags": [
           "Equipments"
@@ -370,8 +370,8 @@
         "operationId": "GetEquipmentById",
         "parameters": [
           {
-            "name": "EquipmentId",
-            "in": "query",
+            "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
@@ -391,6 +391,78 @@
           }
         }
       },
+      "put": {
+        "tags": [
+          "Equipments"
+        ],
+        "operationId": "UpdateEquipment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEquipmentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Equipments"
+        ],
+        "operationId": "DeleteEquipment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteEquipmentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Equipments": {
       "post": {
         "tags": [
           "Equipments"
@@ -429,87 +501,9 @@
             }
           }
         }
-      },
-      "put": {
-        "tags": [
-          "Equipments"
-        ],
-        "operationId": "DeleteEquipment",
-        "parameters": [
-          {
-            "name": "EquipmentId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Equipments"
-        ],
-        "operationId": "UpdateEquipment",
-        "parameters": [
-          {
-            "name": "EquipmentId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "EquipmentName",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          },
-          {
-            "name": "ImageUrl",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 3
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Exercises/get-all": {
+    "/api/Exercises/paginated-all": {
       "get": {
         "tags": [
           "Exercises"
@@ -544,6 +538,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedListOfExerciseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Exercises/exercise-types": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "GetExerciseTypes",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -1659,6 +1676,34 @@
           "equipmentName": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "UpdateEquipmentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "equipmentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DeleteEquipmentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
