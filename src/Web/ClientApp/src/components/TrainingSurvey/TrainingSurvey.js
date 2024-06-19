@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
   smallText: {
     fontSize: '0.875rem',
+    color: 'red', // Thêm dòng này
   },
   checkboxGroup: {
     display: 'flex',
@@ -104,7 +105,7 @@ const TrainingSurvey = () => {
       <Grid container alignItems="left" justify="space-between">
         <Typography variant="h4" className="Training Survey">
           <span className="gradient-text">Training Survey</span>{' '}
-          <span className={classes.smallText} color="red">
+          <span className={classes.smallText}>
             (You are required to fill out all of the questions).
           </span>
         </Typography>
@@ -265,49 +266,50 @@ const TrainingSurvey = () => {
         </FormControl>
 
         <FormControl component="fieldset" fullWidth className={classes.selectControl}>
-        <FormLabel component="legend" className={classes.boldText}>
-          5. How many days per week do you train? <span className={classes.redAsterisk}>(*)</span>
-        </FormLabel>
-        <Select
-          value={daysPerWeek}
-          onChange={(e) => setDaysPerWeek(e.target.value)}
-          error={errors.daysPerWeek}
-        >
-          {[...Array(7)].map((_, i) => (
-            <MenuItem key={i + 1} value={i + 1}>
-              {i + 1}
-            </MenuItem>
-          ))}
-        </Select>
-        {errors.daysPerWeek && <Typography color="error">This is a mandatory question.</Typography>}
-      </FormControl>
+          <FormLabel component="legend" className={classes.boldText}>
+            5. How many days per week do you train? <span className={classes.redAsterisk}>(*)</span>
+          </FormLabel>
+          <Select
+            value={daysPerWeek}
+            onChange={(e) => setDaysPerWeek(e.target.value)}
+            error={errors.daysPerWeek}
+          >
+            {[...Array(7)].map((_, i) => (
+              <MenuItem key={i + 1} value={i + 1}>
+                {i + 1}
+              </MenuItem>
+            ))}
+          </Select>
+          {errors.daysPerWeek && <Typography color="error">This is a mandatory question.</Typography>}
+        </FormControl>
 
-      <FormControl component="fieldset" fullWidth className={classes.textFieldControl}>
-        <FormLabel component="legend" className={classes.boldText}>
-          6. What is your birthdate? <span className={classes.redAsterisk}>(*)</span>
-        </FormLabel>
-        <TextField
-          type="date"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
-          error={errors.age}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        {errors.age && (
-          <Typography color="error">
-            Please enter a valid date.
-          </Typography>
-        )}
-      </FormControl>
+        <FormControl component="fieldset" fullWidth className={classes.textFieldControl}>
+          <FormLabel component="legend" className={classes.boldText}>
+            6. What is your birthdate? <span className={classes.redAsterisk}>(*)</span>
+          </FormLabel>
+          <TextField
+            type="date"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            error={errors.age}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          {errors.age && (
+            <Typography color="error">
+              Please enter a valid date.
+            </Typography>
+          )}
+        </FormControl>
 
-      <Button type="submit" variant="contained" color="primary" fullWidth className={classes.submitButton}>
-        Submit
-      </Button>
-    </form>
+        <Button type="submit" variant="contained" color="primary" fullWidth className={classes.submitButton}>
+          Submit
+        </Button>
+      </form>
     </Container >
   );
 };
 
 export default TrainingSurvey;
+
