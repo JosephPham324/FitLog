@@ -60,13 +60,19 @@ public static class DependencyInjection
                 ValidIssuer = configuration["Jwt:Issuer"],
                 ValidAudience = configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey
-                (Encoding.UTF8.GetBytes("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")),
+                (Encoding.UTF8.GetBytes(configuration["Jwt:Audience"]??"")),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = false,
                 ValidateIssuerSigningKey = true
             };
-        });
+        })
+        .AddGoogle(options =>
+          {
+              options.ClientId = configuration["Authentication:Google:ClientId"] ?? "";
+              options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? "";
+              options.SignInScheme = JwtBearerDefaults.AuthenticationScheme;
+          });
 ;
 
 

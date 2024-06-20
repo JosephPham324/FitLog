@@ -38,36 +38,42 @@ public class LoginHandler : IRequestHandler<LoginQuery, LoginResultDTO>
     /// <param name="user">The user object for whom the token is being generated.</param>
     /// <param name="configuration">Configuration instance to access JWT settings.</param>
     /// <returns>A JWT string token.</returns>
-    private string GenerateJwtToken(string email, AspNetUser user, IConfiguration configuration)
+    private async Task<string> GenerateJwtToken(string email, AspNetUser user, IConfiguration configuration)
     {
         var issuer = configuration["Jwt:Issuer"];
         var audience = configuration["Jwt:Audience"];
         var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? "");
+
+        var claims = new List<Claim>
+    {
+        new Claim("Id", Guid.NewGuid().ToString()),
+        new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? ""),
+        new Claim(JwtRegisteredClaimNames.Email, user.UserName ?? ""),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
+
+        // Fetch roles and add them to claims
+        var roles = await _userManager.GetRolesAsync(user);
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? ""),
-                new Claim(JwtRegisteredClaimNames.Email, user.UserName??""),
-                new Claim(JwtRegisteredClaimNames.Jti,
-                Guid.NewGuid().ToString())
-            }),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(5),
             Issuer = issuer,
             Audience = audience,
-            SigningCredentials = new SigningCredentials
-            (new SymmetricSecurityKey(key),
-            SecurityAlgorithms.HmacSha512Signature)
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
         };
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
-        //var stringToken = tokenHandler.WriteToken(token);
 
         return jwtToken;
     }
-
 
     /// <summary>
     /// Handles the login request command by validating user credentials and generating a JWT token.
@@ -80,7 +86,7 @@ public class LoginHandler : IRequestHandler<LoginQuery, LoginResultDTO>
         var user = await _userManager.FindByNameAsync(request.Username);
         if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            var token = GenerateJwtToken(request.Username, user ?? new AspNetUser(), _configuration);
+            var token = await GenerateJwtToken(request.Username, user, _configuration);
             return new LoginResultDTO { Success = true, Token = token };
         }
 

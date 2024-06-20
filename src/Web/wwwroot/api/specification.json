@@ -1214,6 +1214,80 @@
         }
       }
     },
+    "/api/Authentication/password-login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "PasswordLogin",
+        "parameters": [
+          {
+            "name": "Username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "Password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResultDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Authentication/google-login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "SignInWithGoogle",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Users/login": {
       "post": {
         "tags": [
@@ -2050,6 +2124,15 @@
           "success": {
             "type": "boolean"
           },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "GoogleLoginRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
           "token": {
             "type": "string"
           }

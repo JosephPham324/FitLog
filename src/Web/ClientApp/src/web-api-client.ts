@@ -1294,6 +1294,100 @@ export class WorkoutLogClient {
     }
 }
 
+export class AuthenticationClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    passwordLogin(username: string | null, password: string | null): Promise<LoginResultDTO> {
+        let url_ = this.baseUrl + "/api/Authentication/password-login?";
+        if (username === undefined)
+            throw new Error("The parameter 'username' must be defined.");
+        else if(username !== null)
+            url_ += "Username=" + encodeURIComponent("" + username) + "&";
+        if (password === undefined)
+            throw new Error("The parameter 'password' must be defined.");
+        else if(password !== null)
+            url_ += "Password=" + encodeURIComponent("" + password) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPasswordLogin(_response);
+        });
+    }
+
+    protected processPasswordLogin(response: Response): Promise<LoginResultDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoginResultDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoginResultDTO>(null as any);
+    }
+
+    signInWithGoogle(request: GoogleLoginRequest): Promise<string> {
+        let url_ = this.baseUrl + "/api/Authentication/google-login";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSignInWithGoogle(_response);
+        });
+    }
+
+    protected processSignInWithGoogle(response: Response): Promise<string> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+}
+
 export class UsersClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -2925,6 +3019,42 @@ export class LoginResultDTO implements ILoginResultDTO {
 
 export interface ILoginResultDTO {
     success?: boolean;
+    token?: string;
+}
+
+export class GoogleLoginRequest implements IGoogleLoginRequest {
+    token?: string;
+
+    constructor(data?: IGoogleLoginRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.token = _data["token"];
+        }
+    }
+
+    static fromJS(data: any): GoogleLoginRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GoogleLoginRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["token"] = this.token;
+        return data;
+    }
+}
+
+export interface IGoogleLoginRequest {
     token?: string;
 }
 
