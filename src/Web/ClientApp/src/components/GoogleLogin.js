@@ -1,12 +1,14 @@
 ﻿import React from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './login.css';
-import axios from 'axios';  // Add this import statement
+import axios from 'axios';
 import { FaUser, FaLock } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebookF } from 'react-icons/fa';
 import logo from '../assets/Logo.png';
 import image7 from '../assets/image7.png';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+
 const Login = () => {
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     console.log('Google login successful:', credentialResponse);
@@ -20,7 +22,6 @@ const Login = () => {
       });
       console.log(response);
 
-
       const jwtToken = response.data; // Directly use response.data
       // Save the JWT token to local storage or a state management library
       localStorage.setItem('jwtToken', jwtToken);
@@ -32,7 +33,26 @@ const Login = () => {
 
   const handleGoogleLoginFailure = (error) => {
     console.log('Google login failed:', error);
-    // Handle login failure here
+  };
+
+  const handleFacebookLoginSuccess = async (response) => {
+    console.log('Facebook login successful:', response);
+    const { accessToken } = response;
+
+    try {
+      const result = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/Authentication/facebook-login`, {
+        token: accessToken,
+      });
+      const jwtToken = result.data;
+      localStorage.setItem('jwtToken', jwtToken);
+      console.log('JWT Token:', jwtToken);
+    } catch (error) {
+      console.error('Error sending token to backend:', error);
+    }
+  };
+
+  const handleFacebookLoginFailure = (error) => {
+    console.log('Facebook login failed:', error);
   };
 
   return (
@@ -85,12 +105,25 @@ const Login = () => {
                   )}
                 />
 
-                <button type="button" className="btn facebook">
-                  <FaFacebookF className="icon" /> Facebook
-                </button>
+                <FacebookLogin
+                  appId={process.env.REACT_APP_FACEBOOK_APP_ID}
+                  autoLoad={false}
+                  fields="name,email,picture"
+                  callback={handleFacebookLoginSuccess}
+                  onFailure={handleFacebookLoginFailure}
+                  render={(renderProps) => (
+                    <button
+                      type="button"
+                      className="btn facebook"
+                      onClick={renderProps.onClick}
+                    >
+                      <FaFacebookF className="icon" /> Facebook
+                    </button>
+                  )}
+                />
               </div>
 
-              <a href="#" className="signup-link">Sign Up</a>
+              <a href="/register" className="signup-link">Sign Up</a>
             </form>
 
           </div>

@@ -72,7 +72,13 @@ public static class DependencyInjection
               options.ClientId = configuration["Authentication:Google:ClientId"] ?? "";
               options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? "";
               options.SignInScheme = JwtBearerDefaults.AuthenticationScheme;
-          });
+          })
+         .AddCookie()
+         .AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = configuration["Authentication:Facebook:AppId"] ??"";
+                facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"] ??"";
+            }); ;
 ;
 
 
