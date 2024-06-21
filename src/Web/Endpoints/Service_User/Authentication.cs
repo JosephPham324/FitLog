@@ -16,7 +16,9 @@ public class Authentication : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapPost(PasswordLogin, "password-login")
-            .MapPost(SignInWithGoogle, "google-login");
+            .MapPost(SignInWithGoogle, "google-login")
+            .MapPost(SignInWithFacebook, "facebook-login");
+            
     }
 
     public Task<LoginResultDTO> PasswordLogin(ISender sender, [AsParameters] LoginQuery query)
@@ -34,16 +36,16 @@ public class Authentication : EndpointGroupBase
 
     public async Task<string> SignInWithGoogle(ISender sender, [FromBody] GoogleLoginRequest request)
     {
-        var command = new ExternalLoginQuery { Provider = "Google", ReturnUrl = "/", Token = request.Token };
+        var extRequest = new ExternalLoginQuery { Provider = "Google", ReturnUrl = "/", GoogleLoginRequest = request};
         
-        var jwtToken = await sender.Send(command);
+        var jwtToken = await sender.Send(extRequest);
         return jwtToken;
     }
 
-    //[HttpGet("signin-facebook")]
-    //public IActionResult SignInWithFacebook(string returnUrl = "/")
-    //{
-    //    var properties = new AuthenticationProperties { RedirectUri = returnUrl };
-    //    return Challenge(properties, FacebookDefaults.AuthenticationScheme);
-    //}
+    public async Task<string> SignInWithFacebook(ISender sender, [FromBody] FacebookLoginRequest request)
+    {
+        var command = new ExternalLoginQuery { Provider = "Facebook", ReturnUrl = "/", FacebookLoginRequest = request };
+        var jwtToken = await sender.Send(command);
+        return jwtToken;
+    }
 }

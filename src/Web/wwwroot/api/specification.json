@@ -1288,6 +1288,38 @@
         }
       }
     },
+    "/api/Authentication/facebook-login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "SignInWithFacebook",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FacebookLoginRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Users/login": {
       "post": {
         "tags": [
@@ -2134,6 +2166,21 @@
         "additionalProperties": false,
         "properties": {
           "token": {
+            "type": "string"
+          }
+        }
+      },
+      "FacebookLoginRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
             "type": "string"
           }
         }

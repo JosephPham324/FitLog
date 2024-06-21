@@ -37,11 +37,13 @@ const Login = () => {
 
   const handleFacebookLoginSuccess = async (response) => {
     console.log('Facebook login successful:', response);
-    const { accessToken } = response;
+    const { name, email, id } = response;
 
     try {
       const result = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/Authentication/facebook-login`, {
-        token: accessToken,
+        name: name,
+        email: email,
+        UserId : id
       });
       const jwtToken = result.data;
       localStorage.setItem('jwtToken', jwtToken);
@@ -108,7 +110,7 @@ const Login = () => {
                 <FacebookLogin
                   appId={process.env.REACT_APP_FACEBOOK_APP_ID}
                   autoLoad={false}
-                  fields="name,email,picture"
+                  fields="name,email"
                   callback={handleFacebookLoginSuccess}
                   onFailure={handleFacebookLoginFailure}
                   render={(renderProps) => (

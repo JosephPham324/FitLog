@@ -7,6 +7,8 @@ namespace FitLog.Domain.Entities;
 
 public partial class AspNetUser : IdentityUser<string>
 {
+    public string? GoogleID { get; set; }
+    public string? FacebookID { get; set; }
     public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; } = new List<AspNetUserClaim>();
 
     public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; } = new List<AspNetUserLogin>();

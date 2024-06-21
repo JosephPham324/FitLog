@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Google.Apis.Auth;
 using FitLog.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using System.Net.Http.Json;
 
 namespace FitLog.Application.Users.Queries.ExternalLogin;
 
@@ -18,12 +19,21 @@ public record ExternalLoginQuery : IRequest<string>
     public string Provider { get; set; } = "";
     public string ReturnUrl { get; set; } = "";
     public string Token { get; set; } = "";
+    public GoogleLoginRequest? GoogleLoginRequest { get; set; }
+    public FacebookLoginRequest? FacebookLoginRequest { get; set; }
 }
 
 // GoogleLoginRequest.cs
 public record GoogleLoginRequest
 {
     public string Token { get; set; } = "";
+}
+
+public class FacebookLoginRequest
+{
+    public string UserId { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Email { get; set; } = "";
 }
 
 public class ExternalLoginQueryValidator : AbstractValidator<ExternalLoginQuery>
@@ -35,14 +45,13 @@ public class ExternalLoginQueryValidator : AbstractValidator<ExternalLoginQuery>
 
 public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, string>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;
     private readonly UserManager<AspNetUser> _userManager;
 
-
-    public ExternalLoginQueryHandler(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, UserManager<AspNetUser> userManager)
+    public ExternalLoginQueryHandler(
+        IConfiguration configuration,
+        UserManager<AspNetUser> userManager)
     {
-        _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
         _userManager = userManager;
     }
@@ -53,51 +62,73 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
         {
             case "Google":
                 {
-                    var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token, new GoogleJsonWebSignature.ValidationSettings
+                    var token = request.GoogleLoginRequest != null? request.GoogleLoginRequest.Token : "";
+                    var payload = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings
                     {
-                        // Get from appsettings
                         Audience = new[] { _configuration["Authentication:Google:ClientId"] }
                     });
 
-                    // Retrieve the user from the database
-                    var user = await _userManager.FindByEmailAsync(payload.Email);
-                    if (user == null)
-                    {
-                        // Handle user not found, create a new user
-                        user = new AspNetUser
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            UserName = payload.Email,
-                            Email = payload.Email
-                        };
-
-                        var result = await _userManager.CreateAsync(user);
-                        if (!result.Succeeded)
-                        {
-                            // Handle user creation failure (e.g., return an error message)
-                            return "";
-                        }
-
-                        // Optionally, assign a default role to the new user
-                        await _userManager.AddToRoleAsync(user, "Member");
-                    }
-
-                    // Generate your own JWT token
-                    var jwtToken = await GenerateJwtToken(user, payload);
-                    return jwtToken;
+                    return await HandleUserLoginAsync(payload.Subject, payload.Email, "Google");
                 }
-        };
+            case "Facebook":
+                {
+                    var facebookInfo = request.FacebookLoginRequest ?? new FacebookLoginRequest();
+
+                    return await HandleUserLoginAsync(facebookInfo.UserId, facebookInfo.Email, "Facebook");
+                }
+        }
 
         // If the provider is not supported, return an empty string or handle accordingly
         return "";
     }
 
-    private async Task<string> GenerateJwtToken(AspNetUser user, GoogleJsonWebSignature.Payload payload)
+    private async Task<string> HandleUserLoginAsync(string userId, string userEmail, string provider)
+    {
+        // Retrieve the user from the database
+        var user = await _userManager.FindByEmailAsync(userEmail);
+        if (user == null)
+        {
+            // Handle user not found, create a new user
+            user = new AspNetUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserName = userEmail,
+                Email = userEmail
+            };
+
+
+            if (provider == "Google")
+            {
+                user.GoogleID = userId;
+            }
+            else if (provider == "Facebook")
+            {
+                user.FacebookID = userId;
+            }
+
+
+            var result = await _userManager.CreateAsync(user);
+            if (!result.Succeeded)
+            {
+                // Handle user creation failure (e.g., return an error message)
+                return "";
+            }
+
+            // Optionally, assign a default role to the new user
+            await _userManager.AddToRoleAsync(user, "Member");
+        }
+
+        // Generate your own JWT token
+        var jwtToken = await GenerateJwtToken(user, userId);
+        return jwtToken;
+    }
+
+    private async Task<string> GenerateJwtToken(AspNetUser user, string subject)
     {
         var claims = new List<Claim>
         {
-            new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, payload.Subject),
-            new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Email, payload.Email),
+            new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, subject),
+            new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Email, user.Email??""),
             new Claim("Id", user.Id),
             // Add other claims as needed
         };
