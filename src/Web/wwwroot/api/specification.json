@@ -1148,6 +1148,46 @@
         }
       }
     },
+    "/api/WorkoutLog/history": {
+      "get": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "GetWorkoutHistory",
+        "parameters": [
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/WorkoutLog": {
       "post": {
         "tags": [

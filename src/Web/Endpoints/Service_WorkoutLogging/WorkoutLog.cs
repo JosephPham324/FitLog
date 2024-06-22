@@ -6,6 +6,7 @@ using FitLog.Application.Equipments.Queries.GetEquipmentsList;
 using FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
 using FitLog.Application.WorkoutLogs.Commands.DeleteWorkoutLog;
 using FitLog.Application.WorkoutLogs.Commands.UpdateWorkoutLog;
+using FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ public class WorkoutLog : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapGet(GetWorkoutLogsWithPagination, "get-all")
+            .MapGet(GetWorkoutHistory, "history")
             .MapPost(CreateExerciseLog)
             .MapPut(UpdateWorkoutLog,"{id}")
             .MapDelete(DeleteWorkoutLog,"{id}");
@@ -45,5 +47,9 @@ public class WorkoutLog : EndpointGroupBase
     public Task<bool> UpdateWorkoutLog(ISender sender, int id, [FromBody] UpdateWorkoutLogCommand command)
     {
         return sender.Send(command);
+    }
+    public Task<object> GetWorkoutHistory(ISender sender, [AsParameters] GetWorkoutHistoryQuery query)
+    {
+        return sender.Send(query);
     }
 }

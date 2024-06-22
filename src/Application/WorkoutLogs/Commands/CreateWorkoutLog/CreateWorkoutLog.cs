@@ -63,6 +63,7 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
             CreatedBy = request.CreatedBy,
             Note = request.Note,
             Duration = request.Duration,
+            DateCreated = DateTime.UtcNow,
             LastModified = DateTime.UtcNow // Set to current date and time
         };
 
