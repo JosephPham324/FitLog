@@ -46,9 +46,9 @@ public class LoginHandler : IRequestHandler<LoginQuery, LoginResultDTO>
 
         var claims = new List<Claim>
     {
-        new Claim("Id", Guid.NewGuid().ToString()),
+        new Claim("Id", user.Id),
         new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? ""),
-        new Claim(JwtRegisteredClaimNames.Email, user.UserName ?? ""),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
 

@@ -23,7 +23,6 @@ public class Authentication : EndpointGroupBase
 
     public Task<LoginResultDTO> PasswordLogin(ISender sender, [AsParameters] LoginQuery query)
     {
-        
         return sender.Send(query);
     }
 

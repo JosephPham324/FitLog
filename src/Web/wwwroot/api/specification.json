@@ -1214,6 +1214,92 @@
         }
       }
     },
+    "/api/WorkoutLog/{id}": {
+      "put": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "UpdateWorkoutLog",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWorkoutLogCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "DeleteWorkoutLog",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteWorkoutLogCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Authentication/password-login": {
       "post": {
         "tags": [
@@ -1481,6 +1567,38 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserProfileDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachProfile/apply-coach": {
+      "post": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "CreateCoachApplication",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCoachApplicationQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
                 }
               }
             }
@@ -2135,6 +2253,22 @@
             "format": "int32",
             "nullable": true
           },
+          "weightsUsedValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "numberOfRepsValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
           "weightsUsed": {
             "type": "string",
             "nullable": true
@@ -2146,6 +2280,104 @@
           "footageUrls": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "UpdateWorkoutLogCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "exerciseLogs": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UpdateExerciseLogCommand"
+            }
+          }
+        }
+      },
+      "UpdateExerciseLogCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfSets": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsedValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "numberOfRepsValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "footageUrls": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DeleteWorkoutLogCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -2440,6 +2672,16 @@
             "nullable": true
           },
           "availabilityAnnouncement": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateCoachApplicationQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
             "type": "string",
             "nullable": true
           }

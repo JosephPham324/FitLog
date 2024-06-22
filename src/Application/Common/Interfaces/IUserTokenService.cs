@@ -8,4 +8,5 @@ namespace FitLog.Application.Common.Interfaces;
 public interface IUserTokenService
 {
     string? GetUserIdFromToken();
+    string? GetUserIdFromGivenToken(string token);
 }

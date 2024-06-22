@@ -3,7 +3,7 @@ using FitLog.Domain.Entities;
 
 namespace FitLog.Application.CoachProfiles.Queries.CreateCoachApplication;
 
-public record CreateCoachApplicationQuery : IRequest<object>
+public record CreateCoachApplicationQuery : IRequest<bool>
 {
     public string? Token { get; init; }
 }
@@ -15,7 +15,7 @@ public class CreateCoachApplicationQueryValidator : AbstractValidator<CreateCoac
     }
 }
 
-public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApplicationQuery, object>
+public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApplicationQuery, bool>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUserTokenService _tokenService;
@@ -26,9 +26,10 @@ public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApp
         _tokenService = tokenService;
     }
 
-    public async Task<object> Handle(CreateCoachApplicationQuery request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(CreateCoachApplicationQuery request, CancellationToken cancellationToken)
     {
-        var userId = _tokenService.GetUserIdFromToken();
+        var userId = _tokenService.GetUserIdFromGivenToken(request.Token??"");
+
 
         if (userId == null)
         {
@@ -46,6 +47,6 @@ public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApp
         _context.CoachApplications.Add(coachApplication);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new { Id = coachApplication.Id };
+        return true;
     }
 }

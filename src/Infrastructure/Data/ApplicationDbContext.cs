@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
+    #region User Service
     public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 
     public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
@@ -29,16 +30,22 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
     public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
 
-    public virtual DbSet<Certification> Certifications { get; set; }
+    #endregion
 
+    #region Coaching Service
+    public virtual DbSet<Certification> Certifications { get; set; }
+    public virtual DbSet<CoachingBooking> CoachingBookings { get; set; }
+    public virtual DbSet<CoachingService> CoachingServices { get; set; }
+    public DbSet<CoachApplication> CoachApplications { get; set; }
+    #endregion
+
+    #region Chat Service
     public virtual DbSet<Chat> Chats { get; set; }
 
     public virtual DbSet<ChatLine> ChatLines { get; set; }
+    #endregion
 
-    public virtual DbSet<CoachingBooking> CoachingBookings { get; set; }
-
-    public virtual DbSet<CoachingService> CoachingServices { get; set; }
-
+    #region Workout Logging service
     public virtual DbSet<Equipment> Equipment { get; set; }
 
     public virtual DbSet<Exercise> Exercises { get; set; }
@@ -60,6 +67,9 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
     public virtual DbSet<WorkoutLog> WorkoutLogs { get; set; }
 
     public virtual DbSet<WorkoutTemplate> WorkoutTemplates { get; set; }
+    #endregion
+
+
 
     public virtual DbSet<WorkoutTemplateExercise> WorkoutTemplateExercises { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -544,6 +554,21 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
             entity.HasOne(d => d.WorkoutTemplate).WithMany(p => p.WorkoutTemplateExercises)
                 .HasForeignKey(d => d.WorkoutTemplateId)
                 .HasConstraintName("FK__WorkoutTe__Worko__3F466844");
+        });
+
+        modelBuilder.Entity<CoachApplication>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasOne(e => e.Applicant)
+                .WithMany(u => u.CoachApplications)
+                .HasForeignKey(e => e.ApplicantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.StatusUpdatedBy)
+                .WithMany(u => u.CoachApplicationsUpdated)
+                .HasForeignKey(e => e.StatusUpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
         });
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }

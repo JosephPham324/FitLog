@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.ExerciseLogs.Commands.CreateExerciseLogs;
 using FitLog.Domain.Entities;
 
@@ -19,8 +20,21 @@ public record CreateExerciseLogCommand : IRequest<int>
     public int? OrderInSuperset { get; init; }
     public string? Note { get; init; }
     public int? NumberOfSets { get; init; }
-    public string? WeightsUsed { get; init; }
-    public string? NumberOfReps { get; init; }
+    public List<int>? WeightsUsedValue { get; set; }
+    public List<int>? NumberOfRepsValue { get; set; }
+
+    public string? WeightsUsed
+    {
+        get => JsonSerializer.Serialize(WeightsUsedValue);
+        set => WeightsUsedValue = string.IsNullOrEmpty(value) ? new List<int>() : JsonSerializer.Deserialize<List<int>>(value);
+    }
+
+    public string? NumberOfReps
+    {
+        get => JsonSerializer.Serialize(NumberOfRepsValue);
+        set => NumberOfRepsValue = string.IsNullOrEmpty(value) ? new List<int>() : JsonSerializer.Deserialize<List<int>>(value);
+    }
+
     public string? FootageUrls { get; init; }
 }
 

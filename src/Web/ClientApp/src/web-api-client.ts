@@ -1292,6 +1292,92 @@ export class WorkoutLogClient {
         }
         return Promise.resolve<number>(null as any);
     }
+
+    updateWorkoutLog(id: number, command: UpdateWorkoutLogCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/WorkoutLog/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateWorkoutLog(_response);
+        });
+    }
+
+    protected processUpdateWorkoutLog(response: Response): Promise<boolean> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    deleteWorkoutLog(id: number, command: DeleteWorkoutLogCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/WorkoutLog/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteWorkoutLog(_response);
+        });
+    }
+
+    protected processDeleteWorkoutLog(response: Response): Promise<boolean> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
 }
 
 export class AuthenticationClient {
@@ -1608,6 +1694,57 @@ export class UsersClient {
             });
         }
         return Promise.resolve<UserProfileDTO>(null as any);
+    }
+}
+
+export class CoachProfileClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    createCoachApplication(request: CreateCoachApplicationQuery): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/CoachProfile/apply-coach";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateCoachApplication(_response);
+        });
+    }
+
+    protected processCreateCoachApplication(response: Response): Promise<boolean> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
     }
 }
 
@@ -2964,6 +3101,8 @@ export class CreateExerciseLogCommand implements ICreateExerciseLogCommand {
     orderInSuperset?: number | undefined;
     note?: string | undefined;
     numberOfSets?: number | undefined;
+    weightsUsedValue?: number[] | undefined;
+    numberOfRepsValue?: number[] | undefined;
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
@@ -2984,6 +3123,16 @@ export class CreateExerciseLogCommand implements ICreateExerciseLogCommand {
             this.orderInSuperset = _data["orderInSuperset"];
             this.note = _data["note"];
             this.numberOfSets = _data["numberOfSets"];
+            if (Array.isArray(_data["weightsUsedValue"])) {
+                this.weightsUsedValue = [] as any;
+                for (let item of _data["weightsUsedValue"])
+                    this.weightsUsedValue!.push(item);
+            }
+            if (Array.isArray(_data["numberOfRepsValue"])) {
+                this.numberOfRepsValue = [] as any;
+                for (let item of _data["numberOfRepsValue"])
+                    this.numberOfRepsValue!.push(item);
+            }
             this.weightsUsed = _data["weightsUsed"];
             this.numberOfReps = _data["numberOfReps"];
             this.footageUrls = _data["footageUrls"];
@@ -3004,6 +3153,16 @@ export class CreateExerciseLogCommand implements ICreateExerciseLogCommand {
         data["orderInSuperset"] = this.orderInSuperset;
         data["note"] = this.note;
         data["numberOfSets"] = this.numberOfSets;
+        if (Array.isArray(this.weightsUsedValue)) {
+            data["weightsUsedValue"] = [];
+            for (let item of this.weightsUsedValue)
+                data["weightsUsedValue"].push(item);
+        }
+        if (Array.isArray(this.numberOfRepsValue)) {
+            data["numberOfRepsValue"] = [];
+            for (let item of this.numberOfRepsValue)
+                data["numberOfRepsValue"].push(item);
+        }
         data["weightsUsed"] = this.weightsUsed;
         data["numberOfReps"] = this.numberOfReps;
         data["footageUrls"] = this.footageUrls;
@@ -3017,9 +3176,195 @@ export interface ICreateExerciseLogCommand {
     orderInSuperset?: number | undefined;
     note?: string | undefined;
     numberOfSets?: number | undefined;
+    weightsUsedValue?: number[] | undefined;
+    numberOfRepsValue?: number[] | undefined;
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
+}
+
+export class UpdateWorkoutLogCommand implements IUpdateWorkoutLogCommand {
+    workoutLogId?: number;
+    note?: string | undefined;
+    duration?: string | undefined;
+    exerciseLogs?: UpdateExerciseLogCommand[] | undefined;
+
+    constructor(data?: IUpdateWorkoutLogCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.workoutLogId = _data["workoutLogId"];
+            this.note = _data["note"];
+            this.duration = _data["duration"];
+            if (Array.isArray(_data["exerciseLogs"])) {
+                this.exerciseLogs = [] as any;
+                for (let item of _data["exerciseLogs"])
+                    this.exerciseLogs!.push(UpdateExerciseLogCommand.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateWorkoutLogCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateWorkoutLogCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["workoutLogId"] = this.workoutLogId;
+        data["note"] = this.note;
+        data["duration"] = this.duration;
+        if (Array.isArray(this.exerciseLogs)) {
+            data["exerciseLogs"] = [];
+            for (let item of this.exerciseLogs)
+                data["exerciseLogs"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IUpdateWorkoutLogCommand {
+    workoutLogId?: number;
+    note?: string | undefined;
+    duration?: string | undefined;
+    exerciseLogs?: UpdateExerciseLogCommand[] | undefined;
+}
+
+export class UpdateExerciseLogCommand implements IUpdateExerciseLogCommand {
+    exerciseLogId?: number;
+    exerciseId?: number | undefined;
+    orderInSession?: number | undefined;
+    orderInSuperset?: number | undefined;
+    note?: string | undefined;
+    numberOfSets?: number | undefined;
+    weightsUsedValue?: number[] | undefined;
+    numberOfRepsValue?: number[] | undefined;
+    weightsUsed?: string | undefined;
+    numberOfReps?: string | undefined;
+    footageUrls?: string | undefined;
+
+    constructor(data?: IUpdateExerciseLogCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseLogId = _data["exerciseLogId"];
+            this.exerciseId = _data["exerciseId"];
+            this.orderInSession = _data["orderInSession"];
+            this.orderInSuperset = _data["orderInSuperset"];
+            this.note = _data["note"];
+            this.numberOfSets = _data["numberOfSets"];
+            if (Array.isArray(_data["weightsUsedValue"])) {
+                this.weightsUsedValue = [] as any;
+                for (let item of _data["weightsUsedValue"])
+                    this.weightsUsedValue!.push(item);
+            }
+            if (Array.isArray(_data["numberOfRepsValue"])) {
+                this.numberOfRepsValue = [] as any;
+                for (let item of _data["numberOfRepsValue"])
+                    this.numberOfRepsValue!.push(item);
+            }
+            this.weightsUsed = _data["weightsUsed"];
+            this.numberOfReps = _data["numberOfReps"];
+            this.footageUrls = _data["footageUrls"];
+        }
+    }
+
+    static fromJS(data: any): UpdateExerciseLogCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateExerciseLogCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseLogId"] = this.exerciseLogId;
+        data["exerciseId"] = this.exerciseId;
+        data["orderInSession"] = this.orderInSession;
+        data["orderInSuperset"] = this.orderInSuperset;
+        data["note"] = this.note;
+        data["numberOfSets"] = this.numberOfSets;
+        if (Array.isArray(this.weightsUsedValue)) {
+            data["weightsUsedValue"] = [];
+            for (let item of this.weightsUsedValue)
+                data["weightsUsedValue"].push(item);
+        }
+        if (Array.isArray(this.numberOfRepsValue)) {
+            data["numberOfRepsValue"] = [];
+            for (let item of this.numberOfRepsValue)
+                data["numberOfRepsValue"].push(item);
+        }
+        data["weightsUsed"] = this.weightsUsed;
+        data["numberOfReps"] = this.numberOfReps;
+        data["footageUrls"] = this.footageUrls;
+        return data;
+    }
+}
+
+export interface IUpdateExerciseLogCommand {
+    exerciseLogId?: number;
+    exerciseId?: number | undefined;
+    orderInSession?: number | undefined;
+    orderInSuperset?: number | undefined;
+    note?: string | undefined;
+    numberOfSets?: number | undefined;
+    weightsUsedValue?: number[] | undefined;
+    numberOfRepsValue?: number[] | undefined;
+    weightsUsed?: string | undefined;
+    numberOfReps?: string | undefined;
+    footageUrls?: string | undefined;
+}
+
+export class DeleteWorkoutLogCommand implements IDeleteWorkoutLogCommand {
+    workoutLogId?: number;
+
+    constructor(data?: IDeleteWorkoutLogCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.workoutLogId = _data["workoutLogId"];
+        }
+    }
+
+    static fromJS(data: any): DeleteWorkoutLogCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteWorkoutLogCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["workoutLogId"] = this.workoutLogId;
+        return data;
+    }
+}
+
+export interface IDeleteWorkoutLogCommand {
+    workoutLogId?: number;
 }
 
 export class LoginResultDTO implements ILoginResultDTO {
@@ -3608,6 +3953,42 @@ export interface ICoachingServiceDTO {
     price?: number | undefined;
     serviceAvailability?: boolean | undefined;
     availabilityAnnouncement?: string | undefined;
+}
+
+export class CreateCoachApplicationQuery implements ICreateCoachApplicationQuery {
+    token?: string | undefined;
+
+    constructor(data?: ICreateCoachApplicationQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.token = _data["token"];
+        }
+    }
+
+    static fromJS(data: any): CreateCoachApplicationQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCoachApplicationQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["token"] = this.token;
+        return data;
+    }
+}
+
+export interface ICreateCoachApplicationQuery {
+    token?: string | undefined;
 }
 
 function formatDate(d: Date) {
