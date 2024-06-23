@@ -1614,6 +1614,74 @@
         }
       }
     },
+    "/api/CoachProfile/{id}": {
+      "get": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "GetCoachProfileDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "UpdateCoachProfileDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCoachProfileCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CoachProfile/apply-coach": {
       "post": {
         "tags": [
@@ -2714,6 +2782,37 @@
           "availabilityAnnouncement": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "UpdateCoachProfileCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicture": {
+            "type": "string",
+            "nullable": true
+          },
+          "majorAchievements": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "galleryImageLinks": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

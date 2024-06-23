@@ -1,5 +1,7 @@
 ﻿
+using FitLog.Application.CoachProfiles.Commands.UpdateCoachProfile;
 using FitLog.Application.CoachProfiles.Queries.CreateCoachApplication;
+using FitLog.Application.CoachProfiles.Queries.GetCoachProfileDetails;
 using FitLog.Application.Users.Queries.ExternalLogin;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +12,20 @@ public class CoachProfile : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-                   .MapPost(CreateCoachApplication, "apply-coach");
+           .MapGet(GetCoachProfileDetails, "{id}")
+           .MapPost(UpdateCoachProfileDetails, "{id}")
+           .MapPost(CreateCoachApplication, "apply-coach");
     }
     public async Task<bool> CreateCoachApplication(ISender sender, [FromBody] CreateCoachApplicationQuery request)
+    {
+        return await sender.Send(request);
+    }
+    public async Task<object> GetCoachProfileDetails(ISender sender,string id)
+    {
+        var request = new GetCoachProfileDetailsQuery(id);
+        return await sender.Send(request);
+    }
+    public async Task<object> UpdateCoachProfileDetails(ISender sender,string id, [FromBody] UpdateCoachProfileCommand request)
     {
         return await sender.Send(request);
     }

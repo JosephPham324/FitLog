@@ -1747,6 +1747,88 @@ export class CoachProfileClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
+    getCoachProfileDetails(id: string): Promise<any> {
+        let url_ = this.baseUrl + "/api/CoachProfile/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCoachProfileDetails(_response);
+        });
+    }
+
+    protected processGetCoachProfileDetails(response: Response): Promise<any> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<any>(null as any);
+    }
+
+    updateCoachProfileDetails(id: string, request: UpdateCoachProfileCommand): Promise<any> {
+        let url_ = this.baseUrl + "/api/CoachProfile/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateCoachProfileDetails(_response);
+        });
+    }
+
+    protected processUpdateCoachProfileDetails(response: Response): Promise<any> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<any>(null as any);
+    }
+
     createCoachApplication(request: CreateCoachApplicationQuery): Promise<boolean> {
         let url_ = this.baseUrl + "/api/CoachProfile/apply-coach";
         url_ = url_.replace(/[?&]$/, "");
@@ -3993,6 +4075,74 @@ export interface ICoachingServiceDTO {
     price?: number | undefined;
     serviceAvailability?: boolean | undefined;
     availabilityAnnouncement?: string | undefined;
+}
+
+export class UpdateCoachProfileCommand implements IUpdateCoachProfileCommand {
+    userId?: string;
+    bio?: string | undefined;
+    profilePicture?: string | undefined;
+    majorAchievements?: string[] | undefined;
+    galleryImageLinks?: string[] | undefined;
+
+    constructor(data?: IUpdateCoachProfileCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.bio = _data["bio"];
+            this.profilePicture = _data["profilePicture"];
+            if (Array.isArray(_data["majorAchievements"])) {
+                this.majorAchievements = [] as any;
+                for (let item of _data["majorAchievements"])
+                    this.majorAchievements!.push(item);
+            }
+            if (Array.isArray(_data["galleryImageLinks"])) {
+                this.galleryImageLinks = [] as any;
+                for (let item of _data["galleryImageLinks"])
+                    this.galleryImageLinks!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateCoachProfileCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateCoachProfileCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["bio"] = this.bio;
+        data["profilePicture"] = this.profilePicture;
+        if (Array.isArray(this.majorAchievements)) {
+            data["majorAchievements"] = [];
+            for (let item of this.majorAchievements)
+                data["majorAchievements"].push(item);
+        }
+        if (Array.isArray(this.galleryImageLinks)) {
+            data["galleryImageLinks"] = [];
+            for (let item of this.galleryImageLinks)
+                data["galleryImageLinks"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IUpdateCoachProfileCommand {
+    userId?: string;
+    bio?: string | undefined;
+    profilePicture?: string | undefined;
+    majorAchievements?: string[] | undefined;
+    galleryImageLinks?: string[] | undefined;
 }
 
 export class CreateCoachApplicationQuery implements ICreateCoachApplicationQuery {
