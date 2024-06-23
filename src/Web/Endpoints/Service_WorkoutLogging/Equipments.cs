@@ -4,6 +4,8 @@ using FitLog.Application.Equipments.Commands.Delete;
 using FitLog.Application.Equipments.Commands.UpdateEquipment;
 using FitLog.Application.Equipments.Queries.GetEquipmentsList;
 using FitLog.Application.Equipments.Queries.GetEquipmentDetails;
+using FitLog.Application.TodoItems.Commands.UpdateTodoItemDetail;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
@@ -15,8 +17,8 @@ public class Equipments : EndpointGroupBase
             .MapGet(GetEquipmentsWithPagination, "get-all")
             .MapGet(GetEquipmentById, "{id}")
             .MapPost(CreateEquipment)
-            .MapPut(DeleteEquipment, "{id}")
-            .MapDelete(UpdateEquipment, "{id}");
+            .MapPut(UpdateEquipment, "{id}")
+            .MapDelete(DeleteEquipment, "{id}");
     }
 
     public Task<PaginatedList<EquipmentDTO>> GetEquipmentsWithPagination(ISender sender, [AsParameters] GetEquipmentsWithPaginationQuery query)
@@ -24,8 +26,9 @@ public class Equipments : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public async Task<object> GetEquipmentById(ISender sender, [AsParameters] GetEquipmentDetailsQuery query)
+    public async Task<object> GetEquipmentById(ISender sender, int id)
     {
+        var query = new GetEquipmentDetailsQuery { EquipmentId = id };
         var result = await sender.Send(query);
         return result;
     }
@@ -35,13 +38,17 @@ public class Equipments : EndpointGroupBase
         return sender.Send(command);
     }
 
-    public Task<bool> UpdateEquipment(ISender sender, [AsParameters] UpdateEquipmentCommand command)
+    public async Task<IResult> UpdateEquipment(ISender sender, int id, [FromBody] UpdateEquipmentCommand command)
     {
-        return sender.Send(command);
+        if (id != command.EquipmentId) return Results.BadRequest();
+        await sender.Send(command);
+        return Results.NoContent();
     }
 
-    public Task<bool> DeleteEquipment(ISender sender, [AsParameters] DeleteEquipmentCommand command)
+    public async Task<IResult> DeleteEquipment(ISender sender, int id, [FromBody] DeleteEquipmentCommand command)
     {
-        return sender.Send(command);
+        if (id != command.EquipmentId) return Results.BadRequest();
+        await sender.Send(command);
+        return Results.NoContent();
     }
 }

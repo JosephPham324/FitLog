@@ -7,6 +7,8 @@ namespace FitLog.Domain.Entities;
 
 public partial class AspNetUser : IdentityUser<string>
 {
+    public string? GoogleID { get; set; }
+    public string? FacebookID { get; set; }
     public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; } = new List<AspNetUserClaim>();
 
     public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; } = new List<AspNetUserLogin>();
@@ -36,4 +38,8 @@ public partial class AspNetUser : IdentityUser<string>
     public virtual ICollection<WorkoutTemplate> WorkoutTemplateCreatedByNavigations { get; set; } = new List<WorkoutTemplate>();
 
     public virtual ICollection<WorkoutTemplate> WorkoutTemplateLastModifiedByNavigations { get; set; } = new List<WorkoutTemplate>();
+
+    //For coaching position application
+    public virtual ICollection<CoachApplication> CoachApplications { get; set; } = new List<CoachApplication>();
+    public virtual ICollection<CoachApplication> CoachApplicationsUpdated { get; set; } = new List<CoachApplication>();
 }

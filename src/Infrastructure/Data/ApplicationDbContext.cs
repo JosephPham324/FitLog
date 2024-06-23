@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
+    #region User Service
     public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 
     public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
@@ -29,16 +30,22 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
     public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
 
-    public virtual DbSet<Certification> Certifications { get; set; }
+    #endregion
 
+    #region Coaching Service
+    public virtual DbSet<Certification> Certifications { get; set; }
+    public virtual DbSet<CoachingBooking> CoachingBookings { get; set; }
+    public virtual DbSet<CoachingService> CoachingServices { get; set; }
+    public DbSet<CoachApplication> CoachApplications { get; set; }
+    #endregion
+
+    #region Chat Service
     public virtual DbSet<Chat> Chats { get; set; }
 
     public virtual DbSet<ChatLine> ChatLines { get; set; }
+    #endregion
 
-    public virtual DbSet<CoachingBooking> CoachingBookings { get; set; }
-
-    public virtual DbSet<CoachingService> CoachingServices { get; set; }
-
+    #region Workout Logging service
     public virtual DbSet<Equipment> Equipment { get; set; }
 
     public virtual DbSet<Exercise> Exercises { get; set; }
@@ -57,14 +64,12 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
     public virtual DbSet<SurveyAnswer> SurveyAnswers { get; set; }
 
-    //public virtual DbSet<SystemRole> SystemRoles { get; set; }
-
-
-    //public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<WorkoutLog> WorkoutLogs { get; set; }
 
     public virtual DbSet<WorkoutTemplate> WorkoutTemplates { get; set; }
+    #endregion
+
+
 
     public virtual DbSet<WorkoutTemplateExercise> WorkoutTemplateExercises { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -241,7 +246,7 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
             entity.Property(e => e.EquipmentId).HasColumnName("EquipmentID");
             entity.Property(e => e.EquipmentName).HasMaxLength(50);
             entity.Property(e => e.ImageUrl)
-                .HasMaxLength(256)
+                .HasMaxLength(4096) // Increase size for Base64 strings
                 .HasColumnName("ImageURL");
         });
 
@@ -255,7 +260,7 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
             entity.Property(e => e.ExerciseId).HasColumnName("ExerciseID");
             entity.Property(e => e.DemoUrl)
-                .HasMaxLength(256)
+                .HasMaxLength(4096) // Increase size for Base64 strings
                 .HasColumnName("DemoURL");
             entity.Property(e => e.EquipmentId).HasColumnName("EquipmentID");
             entity.Property(e => e.ExerciseName).HasMaxLength(100);
@@ -287,12 +292,18 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.ExerciseId).HasColumnName("ExerciseID");
-            entity.Property(e => e.FootageUrls).HasColumnName("FootageURLs");
+            entity.Property(e => e.FootageUrls)
+                .HasColumnType("nvarchar(max)") // Increase size for Base64 strings
+                .HasColumnName("FootageURLs");
             entity.Property(e => e.LastModified)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.NumberOfReps).HasMaxLength(50);
-            entity.Property(e => e.WeightsUsed).HasMaxLength(50);
+            entity.Property(e => e.NumberOfReps)
+                .HasColumnType("nvarchar(max)") // Increase size for JSON string
+                .HasColumnName("NumberOfReps");
+            entity.Property(e => e.WeightsUsed)
+                .HasColumnType("nvarchar(max)") // Increase size for JSON string
+                .HasColumnName("WeightsUsed");
             entity.Property(e => e.WorkoutLogId).HasColumnName("WorkoutLogID");
 
             entity.HasOne(d => d.Exercise).WithMany(p => p.ExerciseLogs)
@@ -312,10 +323,12 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
             entity.Property(e => e.MuscleGroupId).HasColumnName("MuscleGroupID");
             entity.Property(e => e.ImageUrl)
-                .HasMaxLength(256)
+                .HasMaxLength(4096) // Increase size for Base64 strings
                 .HasColumnName("ImageURL");
             entity.Property(e => e.MuscleGroupName).HasMaxLength(50);
         });
+
+
 
         modelBuilder.Entity<Profile>(entity =>
         {
@@ -324,8 +337,13 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
             entity.ToTable("Profile");
 
             entity.Property(e => e.ProfileId).HasColumnName("ProfileID");
-            entity.Property(e => e.ProfilePicture).HasMaxLength(256);
+            entity.Property(e => e.ProfilePicture)
+                .HasColumnType("nvarchar(max)") // Increase size for Base64 strings
+                .HasColumnName("ProfilePicture");
             entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.GalleryImageLinksJson)
+                .HasColumnType("nvarchar(max)") // Increase size for JSON string
+                .HasColumnName("GalleryImageLinks");
 
             entity.HasOne(d => d.User).WithMany(p => p.Profiles)
                 .HasForeignKey(d => d.UserId)
@@ -536,6 +554,21 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
             entity.HasOne(d => d.WorkoutTemplate).WithMany(p => p.WorkoutTemplateExercises)
                 .HasForeignKey(d => d.WorkoutTemplateId)
                 .HasConstraintName("FK__WorkoutTe__Worko__3F466844");
+        });
+
+        modelBuilder.Entity<CoachApplication>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasOne(e => e.Applicant)
+                .WithMany(u => u.CoachApplications)
+                .HasForeignKey(e => e.ApplicantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.StatusUpdatedBy)
+                .WithMany(u => u.CoachApplicationsUpdated)
+                .HasForeignKey(e => e.StatusUpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
         });
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
