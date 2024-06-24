@@ -21,11 +21,18 @@ public partial class Profile
     public List<string>? MajorAchievements { get; set; }
 
     public List<string>? GalleryImageLinks { get; set; }
+    [JsonPropertyName("instagram")]
+    public string? InstagramLink { get; set; }
+    [JsonPropertyName("youtube")]
+    public string? YouTubeLink { get; set; }
+    [JsonPropertyName("patreon")]
+    public string? PatreonLink { get; set; }
 
-    //Turns list into a JSON string for storage in the database
+    // Turns list into a JSON string for storage in the database
     public string GalleryImageLinksJson
     {
         get => JsonSerializer.Serialize(GalleryImageLinks);
         set => GalleryImageLinks = string.IsNullOrEmpty(value) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(value);
     }
 }
+
