@@ -6,7 +6,7 @@ namespace FitLog.Application.Exercises.Queries.GetExerciseDetails;
 public class ExerciseDetailsDTO
 {
     public int ExerciseId { get; set; }
-    public string? CreatedById { get; set; }
+    public string? CreatedBy { get; set; }
     public int? MuscleGroupId { get; set; }
     public int? EquipmentId { get; set; }
     public string? ExerciseName { get; set; }

@@ -4,7 +4,7 @@ namespace FitLog.Application.MuscleGroups.Queries.GetMuscleGroupDetails;
 
 public class MuscleGroupDTO
 {
-    public int Id { get; set; }
+    public int MuscleGroupId { get; set; }
     public string? MuscleGroupName { get; set; }
 
     public string? ImageUrl { get; set; }
