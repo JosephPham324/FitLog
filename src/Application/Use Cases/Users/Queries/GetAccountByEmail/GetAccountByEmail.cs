@@ -1,29 +1,45 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Users.Queries.GetUsers;
+using FitLog.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace FitLog.Application.Users.Queries.GetAccountByEmail;
 
-public record GetAccountByEmailQuery : IRequest<object>
+public record GetAccountsByEmailQuery : IRequest<IEnumerable<AspNetUserListDTO>?>
 {
+    public string Email { get; set; } = string.Empty;
 }
 
-public class GetAccountByEmailQueryValidator : AbstractValidator<GetAccountByEmailQuery>
+public class GetAccountsByEmailQueryValidator : AbstractValidator<GetAccountsByEmailQuery>
 {
-    public GetAccountByEmailQueryValidator()
+    public GetAccountsByEmailQueryValidator()
     {
     }
 }
 
-public class GetAccountByEmailQueryHandler : IRequestHandler<GetAccountByEmailQuery, object>
+public class GetAccountsByEmailQueryHandler : IRequestHandler<GetAccountsByEmailQuery, IEnumerable<AspNetUserListDTO>?>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly UserManager<AspNetUser> _userManager;
+    private readonly IMapper _mapper;
 
-    public GetAccountByEmailQueryHandler(IApplicationDbContext context)
+    public GetAccountsByEmailQueryHandler(UserManager<AspNetUser> userManager, IMapper mapper)
     {
-        _context = context;
+        _userManager = userManager;
+        _mapper = mapper;
     }
 
-    public Task<object> Handle(GetAccountByEmailQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AspNetUserListDTO>?> Handle(GetAccountsByEmailQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var users = await _userManager.Users
+                .Where(u => (u.Email ?? "").Contains(request.Email))
+                .ToListAsync(cancellationToken);
+
+        if (!users.Any())
+        {
+            return null;
+        }
+
+        var userDtos = _mapper.Map<List<AspNetUserListDTO>>(users);
+        return userDtos;
     }
 }

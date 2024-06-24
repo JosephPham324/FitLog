@@ -1697,6 +1697,98 @@ export class UsersClient {
         return Promise.resolve<PaginatedListOfAspNetUserListDTO>(null as any);
     }
 
+    searchUsersByEmail(email: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+        let url_ = this.baseUrl + "/api/Users/search-by-email?";
+        if (email === undefined)
+            throw new Error("The parameter 'email' must be defined.");
+        else if(email !== null)
+            url_ += "Email=" + encodeURIComponent("" + email) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearchUsersByEmail(_response);
+        });
+    }
+
+    protected processSearchUsersByEmail(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AspNetUserListDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+    }
+
+    searchUsersByLoginProvider(provider: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+        let url_ = this.baseUrl + "/api/Users/search-by-provider?";
+        if (provider === undefined)
+            throw new Error("The parameter 'provider' must be defined.");
+        else if(provider !== null)
+            url_ += "Provider=" + encodeURIComponent("" + provider) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearchUsersByLoginProvider(_response);
+        });
+    }
+
+    protected processSearchUsersByLoginProvider(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AspNetUserListDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+    }
+
     getUserProfile(userId: string | null): Promise<UserProfileDTO> {
         let url_ = this.baseUrl + "/api/Users/profile?";
         if (userId === undefined)
@@ -2810,7 +2902,7 @@ export interface IPaginatedListOfMuscleGroupDTO {
 }
 
 export class MuscleGroupDTO implements IMuscleGroupDTO {
-    id?: number;
+    muscleGroupId?: number;
     muscleGroupName?: string | undefined;
     imageUrl?: string | undefined;
 
@@ -2825,7 +2917,7 @@ export class MuscleGroupDTO implements IMuscleGroupDTO {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.muscleGroupId = _data["muscleGroupId"];
             this.muscleGroupName = _data["muscleGroupName"];
             this.imageUrl = _data["imageUrl"];
         }
@@ -2840,7 +2932,7 @@ export class MuscleGroupDTO implements IMuscleGroupDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["muscleGroupId"] = this.muscleGroupId;
         data["muscleGroupName"] = this.muscleGroupName;
         data["imageUrl"] = this.imageUrl;
         return data;
@@ -2848,13 +2940,13 @@ export class MuscleGroupDTO implements IMuscleGroupDTO {
 }
 
 export interface IMuscleGroupDTO {
-    id?: number;
+    muscleGroupId?: number;
     muscleGroupName?: string | undefined;
     imageUrl?: string | undefined;
 }
 
 export class MuscleGroupDTO2 implements IMuscleGroupDTO2 {
-    id?: number;
+    muscleGroupId?: number;
     muscleGroupName?: string | undefined;
     imageUrl?: string | undefined;
 
@@ -2869,7 +2961,7 @@ export class MuscleGroupDTO2 implements IMuscleGroupDTO2 {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.muscleGroupId = _data["muscleGroupId"];
             this.muscleGroupName = _data["muscleGroupName"];
             this.imageUrl = _data["imageUrl"];
         }
@@ -2884,7 +2976,7 @@ export class MuscleGroupDTO2 implements IMuscleGroupDTO2 {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["muscleGroupId"] = this.muscleGroupId;
         data["muscleGroupName"] = this.muscleGroupName;
         data["imageUrl"] = this.imageUrl;
         return data;
@@ -2892,7 +2984,7 @@ export class MuscleGroupDTO2 implements IMuscleGroupDTO2 {
 }
 
 export interface IMuscleGroupDTO2 {
-    id?: number;
+    muscleGroupId?: number;
     muscleGroupName?: string | undefined;
     imageUrl?: string | undefined;
 }
@@ -3790,13 +3882,13 @@ export interface IAspNetUserListDTO {
 }
 
 export class UserProfileDTO implements IUserProfileDTO {
-    userId?: string | undefined;
+    id?: string | undefined;
     userName?: string | undefined;
     email?: string | undefined;
     phoneNumber?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-    dateOfBirth?: Date;
+    dateOfBirth?: Date | undefined;
     gender?: string | undefined;
     programs?: ProgramDTO[];
     certifications?: CertificationDTO[];
@@ -3813,7 +3905,7 @@ export class UserProfileDTO implements IUserProfileDTO {
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
+            this.id = _data["id"];
             this.userName = _data["userName"];
             this.email = _data["email"];
             this.phoneNumber = _data["phoneNumber"];
@@ -3848,7 +3940,7 @@ export class UserProfileDTO implements IUserProfileDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
+        data["id"] = this.id;
         data["userName"] = this.userName;
         data["email"] = this.email;
         data["phoneNumber"] = this.phoneNumber;
@@ -3876,13 +3968,13 @@ export class UserProfileDTO implements IUserProfileDTO {
 }
 
 export interface IUserProfileDTO {
-    userId?: string | undefined;
+    id?: string | undefined;
     userName?: string | undefined;
     email?: string | undefined;
     phoneNumber?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-    dateOfBirth?: Date;
+    dateOfBirth?: Date | undefined;
     gender?: string | undefined;
     programs?: ProgramDTO[];
     certifications?: CertificationDTO[];
