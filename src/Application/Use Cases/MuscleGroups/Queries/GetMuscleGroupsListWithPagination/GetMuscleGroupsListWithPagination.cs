@@ -41,7 +41,7 @@ public class GetMuscleGroupsListWithPaginationQueryHandler : IRequestHandler<Get
             .OrderBy(mg => mg.MuscleGroupName)
             .Select(mg => new MuscleGroupDTO
             {
-                Id = mg.MuscleGroupId,
+                MuscleGroupId = mg.MuscleGroupId,
                 MuscleGroupName = mg.MuscleGroupName,
                 ImageUrl = mg.ImageUrl
             });
