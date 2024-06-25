@@ -14,7 +14,7 @@ public record UpdateWorkoutLogCommand : IRequest<bool>
 }
 public record UpdateExerciseLogCommand : IRequest<int>
 {
-    public int ExerciseLogId { get; init; }
+    public int? ExerciseLogId { get; init; }
     public int? ExerciseId { get; init; }
     public int? OrderInSession { get; init; }
     public int? OrderInSuperset { get; init; }
@@ -36,6 +36,9 @@ public record UpdateExerciseLogCommand : IRequest<int>
     }
 
     public string? FootageUrls { get; init; }
+
+    public bool IsDeleted { get; init; }  //flag to indicate deletion
+
 }
 
 public class UpdateWorkoutLogCommandValidator : AbstractValidator<UpdateWorkoutLogCommand>
@@ -59,12 +62,12 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
     public async Task<bool> Handle(UpdateWorkoutLogCommand request, CancellationToken cancellationToken)
     {
         var workoutLog = await _context.WorkoutLogs
-            .Include(wl => wl.ExerciseLogs)
-            .FirstOrDefaultAsync(wl => wl.WorkoutLogId == request.WorkoutLogId, cancellationToken);
+           .Include(wl => wl.ExerciseLogs)
+           .FirstOrDefaultAsync(wl => wl.WorkoutLogId == request.WorkoutLogId, cancellationToken);
 
         if (workoutLog == null)
         {
-            throw new NotFoundException(nameof(WorkoutLog), request.WorkoutLogId + "");
+            throw new NotFoundException(nameof(WorkoutLog), request.WorkoutLogId.ToString());
         }
 
         workoutLog.Note = request.Note;
@@ -80,17 +83,24 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
 
                 if (existingExerciseLog != null)
                 {
-                    existingExerciseLog.ExerciseId = exerciseLog.ExerciseId;
-                    existingExerciseLog.OrderInSession = exerciseLog.OrderInSession;
-                    existingExerciseLog.OrderInSuperset = exerciseLog.OrderInSuperset;
-                    existingExerciseLog.Note = exerciseLog.Note;
-                    existingExerciseLog.NumberOfSets = exerciseLog.NumberOfSets;
-                    existingExerciseLog.WeightsUsed = exerciseLog.WeightsUsed;
-                    existingExerciseLog.NumberOfReps = exerciseLog.NumberOfReps;
-                    existingExerciseLog.FootageUrls = exerciseLog.FootageUrls;
-                    existingExerciseLog.LastModified = DateTime.UtcNow;
+                    if (exerciseLog.IsDeleted)
+                    {
+                        _context.ExerciseLogs.Remove(existingExerciseLog);
+                    }
+                    else
+                    {
+                        existingExerciseLog.ExerciseId = exerciseLog.ExerciseId;
+                        existingExerciseLog.OrderInSession = exerciseLog.OrderInSession;
+                        existingExerciseLog.OrderInSuperset = exerciseLog.OrderInSuperset;
+                        existingExerciseLog.Note = exerciseLog.Note;
+                        existingExerciseLog.NumberOfSets = exerciseLog.NumberOfSets;
+                        existingExerciseLog.WeightsUsed = exerciseLog.WeightsUsed;
+                        existingExerciseLog.NumberOfReps = exerciseLog.NumberOfReps;
+                        existingExerciseLog.FootageUrls = exerciseLog.FootageUrls;
+                        existingExerciseLog.LastModified = DateTime.UtcNow;
+                    }
                 }
-                else
+                else if (!exerciseLog.IsDeleted)
                 {
                     var newExerciseLog = new ExerciseLog
                     {
@@ -117,3 +127,4 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
         return true;
     }
 }
+
