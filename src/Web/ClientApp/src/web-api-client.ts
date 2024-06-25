@@ -918,6 +918,46 @@ export class ExercisesClient {
         }
         return Promise.resolve<boolean>(null as any);
     }
+
+    importExercises(command: ImportExercisesCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Exercises/import-exercises";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processImportExercises(_response);
+        });
+    }
+
+    protected processImportExercises(response: Response): Promise<number> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
 }
 
 export class MuscleGroupsClient {
@@ -2837,6 +2877,110 @@ export interface IExerciseDTO {
     type?: string;
 }
 
+export class ImportExercisesCommand implements IImportExercisesCommand {
+    exercises?: ExerciseImport[];
+
+    constructor(data?: IImportExercisesCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["exercises"])) {
+                this.exercises = [] as any;
+                for (let item of _data["exercises"])
+                    this.exercises!.push(ExerciseImport.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ImportExercisesCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ImportExercisesCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.exercises)) {
+            data["exercises"] = [];
+            for (let item of this.exercises)
+                data["exercises"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IImportExercisesCommand {
+    exercises?: ExerciseImport[];
+}
+
+export class ExerciseImport implements IExerciseImport {
+    muscleGroupName?: string | undefined;
+    equipmentName?: string | undefined;
+    exerciseName?: string | undefined;
+    demoUrl?: string | undefined;
+    type?: string;
+    description?: string | undefined;
+    publicVisibility?: boolean | undefined;
+
+    constructor(data?: IExerciseImport) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.muscleGroupName = _data["muscleGroupName"];
+            this.equipmentName = _data["equipmentName"];
+            this.exerciseName = _data["exerciseName"];
+            this.demoUrl = _data["demoUrl"];
+            this.type = _data["type"];
+            this.description = _data["description"];
+            this.publicVisibility = _data["publicVisibility"];
+        }
+    }
+
+    static fromJS(data: any): ExerciseImport {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExerciseImport();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["muscleGroupName"] = this.muscleGroupName;
+        data["equipmentName"] = this.equipmentName;
+        data["exerciseName"] = this.exerciseName;
+        data["demoUrl"] = this.demoUrl;
+        data["type"] = this.type;
+        data["description"] = this.description;
+        data["publicVisibility"] = this.publicVisibility;
+        return data;
+    }
+}
+
+export interface IExerciseImport {
+    muscleGroupName?: string | undefined;
+    equipmentName?: string | undefined;
+    exerciseName?: string | undefined;
+    demoUrl?: string | undefined;
+    type?: string;
+    description?: string | undefined;
+    publicVisibility?: boolean | undefined;
+}
+
 export class PaginatedListOfMuscleGroupDTO implements IPaginatedListOfMuscleGroupDTO {
     items?: MuscleGroupDTO[];
     pageNumber?: number;
@@ -3454,7 +3598,7 @@ export interface IUpdateWorkoutLogCommand {
 }
 
 export class UpdateExerciseLogCommand implements IUpdateExerciseLogCommand {
-    exerciseLogId?: number;
+    exerciseLogId?: number | undefined;
     exerciseId?: number | undefined;
     orderInSession?: number | undefined;
     orderInSuperset?: number | undefined;
@@ -3465,6 +3609,7 @@ export class UpdateExerciseLogCommand implements IUpdateExerciseLogCommand {
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
+    isDeleted?: boolean;
 
     constructor(data?: IUpdateExerciseLogCommand) {
         if (data) {
@@ -3496,6 +3641,7 @@ export class UpdateExerciseLogCommand implements IUpdateExerciseLogCommand {
             this.weightsUsed = _data["weightsUsed"];
             this.numberOfReps = _data["numberOfReps"];
             this.footageUrls = _data["footageUrls"];
+            this.isDeleted = _data["isDeleted"];
         }
     }
 
@@ -3527,12 +3673,13 @@ export class UpdateExerciseLogCommand implements IUpdateExerciseLogCommand {
         data["weightsUsed"] = this.weightsUsed;
         data["numberOfReps"] = this.numberOfReps;
         data["footageUrls"] = this.footageUrls;
+        data["isDeleted"] = this.isDeleted;
         return data;
     }
 }
 
 export interface IUpdateExerciseLogCommand {
-    exerciseLogId?: number;
+    exerciseLogId?: number | undefined;
     exerciseId?: number | undefined;
     orderInSession?: number | undefined;
     orderInSuperset?: number | undefined;
@@ -3543,6 +3690,7 @@ export interface IUpdateExerciseLogCommand {
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
+    isDeleted?: boolean;
 }
 
 export class DeleteWorkoutLogCommand implements IDeleteWorkoutLogCommand {

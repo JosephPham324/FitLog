@@ -1,6 +1,7 @@
 ﻿using FitLog.Application.Common.Models;
 using FitLog.Application.Exercises.Commands.CreateExercise;
 using FitLog.Application.Exercises.Commands.DeleteExercise;
+using FitLog.Application.Exercises.Commands.ImportExercises;
 using FitLog.Application.Exercises.Commands.UpdateExercise;
 using FitLog.Application.Exercises.Queries.GetExerciseDetails;
 using FitLog.Application.Exercises.Queries.GetExercises;
@@ -19,6 +20,7 @@ public class Exercises : EndpointGroupBase
             .MapGet(GetExerciseTypes, "exercise-types")
             .MapGet(GetExerciseById, "{id}")
             .MapPost(CreateExercise)
+            .MapPost(ImportExercises, "import-exercises")
             .MapPut(UpdateExercise, "{id}")
             .MapDelete(DeleteExercise, "{id}");
     }
@@ -52,6 +54,11 @@ public class Exercises : EndpointGroupBase
     public Task<IEnumerable<string?>> GetExerciseTypes(ISender sender, [AsParameters] GetExercsieTypesQuery query)
     {
         return sender.Send(query);
+    }
+
+    public Task<int> ImportExercises(ISender sender, [FromBody] ImportExercisesCommand command)
+    {
+        return sender.Send(command);
     }
 }
 

@@ -826,6 +826,39 @@
         }
       }
     },
+    "/api/Exercises/import-exercises": {
+      "post": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "ImportExercises",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportExercisesCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/MuscleGroups/create": {
       "post": {
         "tags": [
@@ -2166,6 +2199,51 @@
           }
         }
       },
+      "ImportExercisesCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseImport"
+            }
+          }
+        }
+      },
+      "ExerciseImport": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "muscleGroupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "equipmentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "exerciseName": {
+            "type": "string",
+            "nullable": true
+          },
+          "demoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicVisibility": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
       "PaginatedListOfMuscleGroupDTO": {
         "type": "object",
         "additionalProperties": false,
@@ -2503,7 +2581,8 @@
         "properties": {
           "exerciseLogId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "exerciseId": {
             "type": "integer",
@@ -2556,6 +2635,9 @@
           "footageUrls": {
             "type": "string",
             "nullable": true
+          },
+          "isDeleted": {
+            "type": "boolean"
           }
         }
       },

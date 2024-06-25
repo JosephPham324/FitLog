@@ -20,6 +20,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Folder Include="Exercises\Commands\" />
     <Folder Include="Use Cases\CoachingService\" />
     <Folder Include="Use Cases\Equipments\EventHandlers\" />
     <Folder Include="Use Cases\Exercises\EventHandlers\" />
