@@ -297,6 +297,718 @@
         }
       }
     },
+    "/api/WeatherForecasts": {
+      "get": {
+        "tags": [
+          "WeatherForecasts"
+        ],
+        "operationId": "GetWeatherForecasts",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherForecast"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Equipments/get-all": {
+      "get": {
+        "tags": [
+          "Equipments"
+        ],
+        "operationId": "GetEquipmentsWithPagination",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfEquipmentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Equipments/{id}": {
+      "get": {
+        "tags": [
+          "Equipments"
+        ],
+        "operationId": "GetEquipmentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Equipments"
+        ],
+        "operationId": "UpdateEquipment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEquipmentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Equipments"
+        ],
+        "operationId": "DeleteEquipment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteEquipmentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Equipments": {
+      "post": {
+        "tags": [
+          "Equipments"
+        ],
+        "operationId": "CreateEquipment",
+        "parameters": [
+          {
+            "name": "EquipmentName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "ImageUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Exercises/paginated-all": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "GetExercisesWithPagination",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfExerciseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Exercises/exercise-types": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "GetExerciseTypes",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Exercises/{id}": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "GetExerciseById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Exercises": {
+      "post": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "CreateExercise",
+        "parameters": [
+          {
+            "name": "CreatedBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "MuscleGroupId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "EquipmentId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "ExerciseName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "DemoUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "Type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "Description",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 7
+          },
+          {
+            "name": "PublicVisibility",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 8
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "UpdateExercise",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "CreatedBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "MuscleGroupId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "EquipmentId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "ExerciseName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "DemoUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "Type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 7
+          },
+          {
+            "name": "Description",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 8
+          },
+          {
+            "name": "PublicVisibility",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 9
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "DeleteExercise",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MuscleGroups/create": {
+      "post": {
+        "tags": [
+          "MuscleGroups"
+        ],
+        "operationId": "CreateMuscleGroup",
+        "parameters": [
+          {
+            "name": "MuscleGroupName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "ImageUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MuscleGroups/get-list": {
+      "get": {
+        "tags": [
+          "MuscleGroups"
+        ],
+        "operationId": "GetMuscleGroupsList",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfMuscleGroupDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MuscleGroups": {
+      "get": {
+        "tags": [
+          "MuscleGroups"
+        ],
+        "operationId": "GetMuscleGroupsById",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MuscleGroupDTO2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MuscleGroups/{id}": {
+      "put": {
+        "tags": [
+          "MuscleGroups"
+        ],
+        "operationId": "UpdateMuscleGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "MuscleGroupName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "ImageUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMuscleGroupDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "MuscleGroups"
+        ],
+        "operationId": "DeleteMuscleGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TrainingSurvey/create": {
       "post": {
         "tags": [
@@ -387,6 +1099,346 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TrainingSurveyDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutLog/get-all": {
+      "get": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "GetWorkoutLogsWithPagination",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfWorkoutLogDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutLog/history": {
+      "get": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "GetWorkoutHistory",
+        "parameters": [
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutLog": {
+      "post": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "CreateExerciseLog",
+        "parameters": [
+          {
+            "name": "CreatedBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "Note",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "Duration",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "time",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "requestBody": {
+          "x-name": "ExerciseLogs",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateExerciseLogCommand"
+                }
+              }
+            }
+          },
+          "x-position": 4
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutLog/{id}": {
+      "put": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "UpdateWorkoutLog",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWorkoutLogCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "DeleteWorkoutLog",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteWorkoutLogCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Authentication/password-login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "PasswordLogin",
+        "parameters": [
+          {
+            "name": "Username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "Password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResultDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Authentication/google-login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "SignInWithGoogle",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Authentication/facebook-login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "SignInWithFacebook",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FacebookLoginRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -488,7 +1540,7 @@
         }
       }
     },
-    "/api/Users/get-all": {
+    "/api/Users/all": {
       "get": {
         "tags": [
           "Users"
@@ -530,12 +1582,24 @@
         }
       }
     },
-    "/api/WeatherForecasts": {
+    "/api/Users/search-by-email": {
       "get": {
         "tags": [
-          "WeatherForecasts"
+          "Users"
         ],
-        "operationId": "GetWeatherForecasts",
+        "operationId": "SearchUsersByEmail",
+        "parameters": [
+          {
+            "name": "Email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -544,8 +1608,185 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
+                    "nullable": true,
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                      }
+                    ]
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/search-by-provider": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SearchUsersByLoginProvider",
+        "parameters": [
+          {
+            "name": "Provider",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "nullable": true,
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/profile": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetUserProfile",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachProfile/{id}": {
+      "get": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "GetCoachProfileDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "UpdateCoachProfileDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCoachProfileCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachProfile/apply-coach": {
+      "post": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "CreateCoachApplication",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCoachApplicationQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
                 }
               }
             }
@@ -784,6 +2025,228 @@
           }
         }
       },
+      "WeatherForecast": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperatureF": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedListOfEquipmentDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EquipmentDTO"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EquipmentDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "equipmentName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateEquipmentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "equipmentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DeleteEquipmentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedListOfExerciseDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseDTO"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ExerciseDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "exerciseName": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "PaginatedListOfMuscleGroupDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MuscleGroupDTO"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MuscleGroupDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "muscleGroupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "muscleGroupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "MuscleGroupDTO2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "muscleGroupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "muscleGroupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateMuscleGroupDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "TrainingSurveyDTO": {
         "type": "object",
         "additionalProperties": false,
@@ -827,6 +2290,285 @@
           }
         }
       },
+      "PaginatedListOfWorkoutLogDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutLogDTO"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "WorkoutLogDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "exerciseLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseLogDTO"
+            }
+          }
+        }
+      },
+      "ExerciseLogDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfSets": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "footageUrls": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateExerciseLogCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfSets": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsedValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "numberOfRepsValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "footageUrls": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateWorkoutLogCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "exerciseLogs": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UpdateExerciseLogCommand"
+            }
+          }
+        }
+      },
+      "UpdateExerciseLogCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfSets": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsedValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "numberOfRepsValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "footageUrls": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DeleteWorkoutLogCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "LoginResultDTO": {
         "type": "object",
         "additionalProperties": false,
@@ -835,6 +2577,30 @@
             "type": "boolean"
           },
           "token": {
+            "type": "string"
+          }
+        }
+      },
+      "GoogleLoginRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "FacebookLoginRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
             "type": "string"
           }
         }
@@ -927,23 +2693,215 @@
           }
         }
       },
-      "WeatherForecast": {
+      "UserProfileDTO": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "date": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "programs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgramDTO"
+            }
+          },
+          "certifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CertificationDTO"
+            }
+          },
+          "coachingServices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoachingServiceDTO"
+            }
+          }
+        }
+      },
+      "ProgramDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "programId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "programName": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfWeeks": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "dateCreated": {
             "type": "string",
             "format": "date-time"
           },
-          "temperatureC": {
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "ageGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicProgram": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "CertificationDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "certificationId": {
             "type": "integer",
             "format": "int32"
           },
-          "temperatureF": {
+          "certificationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationDateIssued": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "certificationExpirationData": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        }
+      },
+      "CoachingServiceDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "coachingServiceId": {
             "type": "integer",
             "format": "int32"
           },
-          "summary": {
+          "serviceName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "serviceAvailability": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "availabilityAnnouncement": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateCoachProfileCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicture": {
+            "type": "string",
+            "nullable": true
+          },
+          "majorAchievements": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "galleryImageLinks": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateCoachApplicationQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
             "type": "string",
             "nullable": true
           }
