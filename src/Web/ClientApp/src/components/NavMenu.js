@@ -27,7 +27,7 @@ export class NavMenu extends Component {
         <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
 
           <NavbarBrand tag={Link} to="/">
-            <img src={logoImage} alt="FitLog Logo" className="logo-nav" /> {/* Thêm hình ?nh logo */}
+            <img src={logoImage} alt="FitLog Logo" className="logo-nav" /> {/* ThÃªm hÃ¬nh ?nh logo */}
             FitLog.Web
           </NavbarBrand>
 
@@ -47,6 +47,8 @@ export class NavMenu extends Component {
                 <a className="nav-link text-dark" href="/Identity/Account/Manage">Account</a>
               </NavItem>
               <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/ExerciseLog">ExerciseLog</NavLink>
+              </NavItem>
                 <NavLink tag={Link} className="text-dark" to="/Login">Login</NavLink>
               </NavItem>
               <NavItem>

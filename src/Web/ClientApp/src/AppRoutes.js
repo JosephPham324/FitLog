@@ -1,6 +1,7 @@
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
+import  ExerciseLog  from "./components/ExerciseLog";
 import Login from './components/Login';
 import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
@@ -19,6 +20,10 @@ const AppRoutes = [
   {
     path: '/fetch-data',
     element: <FetchData />
+  },
+  {
+    path: '/ExerciseLog',
+    element: <ExerciseLog />
   },
   {
     path: '/login',
