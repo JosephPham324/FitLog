@@ -41,6 +41,9 @@ export class NavMenu extends Component {
               <NavItem>
                 <a className="nav-link text-dark" href="/Identity/Account/Manage">Account</a>
               </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/ExerciseLog">ExerciseLog</NavLink>
+              </NavItem>
             </ul>
           </Collapse>
         </Navbar>
