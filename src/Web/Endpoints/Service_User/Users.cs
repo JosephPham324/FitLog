@@ -47,7 +47,7 @@ public class Users : EndpointGroupBase
     /// <param name="sender">The sender used to send the register command.</param>
     /// <param name="command">The register command containing the user's registration information.</param>
     /// <returns>A task that represents the asynchronous register operation. The task result contains the register result DTO.</returns>
-    public Task<RegisterResultDTO> Register(ISender sender, [AsParameters] RegisterCommand command)
+    public Task<RegisterResultDTO> Register(ISender sender, [FromBody] RegisterCommand command)
     {
         return sender.Send(command);
     }

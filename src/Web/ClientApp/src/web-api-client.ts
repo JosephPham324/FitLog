@@ -597,17 +597,17 @@ export class EquipmentsClient {
         return Promise.resolve<void>(null as any);
     }
 
-    createEquipment(equipmentName: string | null | undefined, imageUrl: string | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Equipments?";
-        if (equipmentName !== undefined && equipmentName !== null)
-            url_ += "EquipmentName=" + encodeURIComponent("" + equipmentName) + "&";
-        if (imageUrl !== undefined && imageUrl !== null)
-            url_ += "ImageUrl=" + encodeURIComponent("" + imageUrl) + "&";
+    createEquipment(command: CreateEquipmentCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Equipments";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -767,31 +767,17 @@ export class ExercisesClient {
         return Promise.resolve<void>(null as any);
     }
 
-    createExercise(createdBy: string | null | undefined, muscleGroupId: number | null | undefined, equipmentId: number | null | undefined, exerciseName: string | null | undefined, demoUrl: string | null | undefined, type: string | null, description: string | null | undefined, publicVisibility: boolean | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Exercises?";
-        if (createdBy !== undefined && createdBy !== null)
-            url_ += "CreatedBy=" + encodeURIComponent("" + createdBy) + "&";
-        if (muscleGroupId !== undefined && muscleGroupId !== null)
-            url_ += "MuscleGroupId=" + encodeURIComponent("" + muscleGroupId) + "&";
-        if (equipmentId !== undefined && equipmentId !== null)
-            url_ += "EquipmentId=" + encodeURIComponent("" + equipmentId) + "&";
-        if (exerciseName !== undefined && exerciseName !== null)
-            url_ += "ExerciseName=" + encodeURIComponent("" + exerciseName) + "&";
-        if (demoUrl !== undefined && demoUrl !== null)
-            url_ += "DemoUrl=" + encodeURIComponent("" + demoUrl) + "&";
-        if (type === undefined)
-            throw new Error("The parameter 'type' must be defined.");
-        else if(type !== null)
-            url_ += "Type=" + encodeURIComponent("" + type) + "&";
-        if (description !== undefined && description !== null)
-            url_ += "Description=" + encodeURIComponent("" + description) + "&";
-        if (publicVisibility !== undefined && publicVisibility !== null)
-            url_ += "PublicVisibility=" + encodeURIComponent("" + publicVisibility) + "&";
+    createExercise(command: CreateExerciseCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Exercises";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -821,35 +807,17 @@ export class ExercisesClient {
         return Promise.resolve<number>(null as any);
     }
 
-    updateExercise(exerciseId: number, createdBy: string | null | undefined, muscleGroupId: number | null | undefined, equipmentId: number | null | undefined, exerciseName: string | null | undefined, demoUrl: string | null | undefined, type: string | null, description: string | null | undefined, publicVisibility: boolean | null | undefined): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Exercises?";
-        if (exerciseId === undefined || exerciseId === null)
-            throw new Error("The parameter 'exerciseId' must be defined and cannot be null.");
-        else
-            url_ += "ExerciseId=" + encodeURIComponent("" + exerciseId) + "&";
-        if (createdBy !== undefined && createdBy !== null)
-            url_ += "CreatedBy=" + encodeURIComponent("" + createdBy) + "&";
-        if (muscleGroupId !== undefined && muscleGroupId !== null)
-            url_ += "MuscleGroupId=" + encodeURIComponent("" + muscleGroupId) + "&";
-        if (equipmentId !== undefined && equipmentId !== null)
-            url_ += "EquipmentId=" + encodeURIComponent("" + equipmentId) + "&";
-        if (exerciseName !== undefined && exerciseName !== null)
-            url_ += "ExerciseName=" + encodeURIComponent("" + exerciseName) + "&";
-        if (demoUrl !== undefined && demoUrl !== null)
-            url_ += "DemoUrl=" + encodeURIComponent("" + demoUrl) + "&";
-        if (type === undefined)
-            throw new Error("The parameter 'type' must be defined.");
-        else if(type !== null)
-            url_ += "Type=" + encodeURIComponent("" + type) + "&";
-        if (description !== undefined && description !== null)
-            url_ += "Description=" + encodeURIComponent("" + description) + "&";
-        if (publicVisibility !== undefined && publicVisibility !== null)
-            url_ += "PublicVisibility=" + encodeURIComponent("" + publicVisibility) + "&";
+    updateExercise(command: UpdateExerciseCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Exercises";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -879,17 +847,17 @@ export class ExercisesClient {
         return Promise.resolve<boolean>(null as any);
     }
 
-    deleteExercise(exerciseId: number): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Exercises?";
-        if (exerciseId === undefined || exerciseId === null)
-            throw new Error("The parameter 'exerciseId' must be defined and cannot be null.");
-        else
-            url_ += "ExerciseId=" + encodeURIComponent("" + exerciseId) + "&";
+    deleteExercise(command: DeleteExerciseCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Exercises";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "DELETE",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -970,17 +938,17 @@ export class MuscleGroupsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createMuscleGroup(muscleGroupName: string | null | undefined, imageUrl: string | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/MuscleGroups/create?";
-        if (muscleGroupName !== undefined && muscleGroupName !== null)
-            url_ += "MuscleGroupName=" + encodeURIComponent("" + muscleGroupName) + "&";
-        if (imageUrl !== undefined && imageUrl !== null)
-            url_ += "ImageUrl=" + encodeURIComponent("" + imageUrl) + "&";
+    createMuscleGroup(command: CreateMuscleGroupCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/MuscleGroups/create";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1088,20 +1056,17 @@ export class MuscleGroupsClient {
         return Promise.resolve<MuscleGroupDTO2>(null as any);
     }
 
-    updateMuscleGroup(id: number, muscleGroupName: string | null | undefined, imageUrl: string | null | undefined): Promise<UpdateMuscleGroupDTO> {
-        let url_ = this.baseUrl + "/api/MuscleGroups/{id}?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (muscleGroupName !== undefined && muscleGroupName !== null)
-            url_ += "MuscleGroupName=" + encodeURIComponent("" + muscleGroupName) + "&";
-        if (imageUrl !== undefined && imageUrl !== null)
-            url_ += "ImageUrl=" + encodeURIComponent("" + imageUrl) + "&";
+    updateMuscleGroup(command: UpdateMuscleGroupCommand): Promise<UpdateMuscleGroupDTO> {
+        let url_ = this.baseUrl + "/api/MuscleGroups";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1130,16 +1095,17 @@ export class MuscleGroupsClient {
         return Promise.resolve<UpdateMuscleGroupDTO>(null as any);
     }
 
-    deleteMuscleGroup(id: number): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/MuscleGroups/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    deleteMuscleGroup(command: DeleteMuscleGroupCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/MuscleGroups";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "DELETE",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1180,31 +1146,17 @@ export class TrainingSurveyClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createTrainingSurvey(userId: string | null | undefined, goal: string | null | undefined, daysPerWeek: number | null | undefined, experienceLevel: string | null | undefined, gymType: string | null | undefined, musclesPriority: string | null | undefined, age: number | null | undefined, lastModified: Date): Promise<TrainingSurveyDTO> {
-        let url_ = this.baseUrl + "/api/TrainingSurvey/create?";
-        if (userId !== undefined && userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (goal !== undefined && goal !== null)
-            url_ += "Goal=" + encodeURIComponent("" + goal) + "&";
-        if (daysPerWeek !== undefined && daysPerWeek !== null)
-            url_ += "DaysPerWeek=" + encodeURIComponent("" + daysPerWeek) + "&";
-        if (experienceLevel !== undefined && experienceLevel !== null)
-            url_ += "ExperienceLevel=" + encodeURIComponent("" + experienceLevel) + "&";
-        if (gymType !== undefined && gymType !== null)
-            url_ += "GymType=" + encodeURIComponent("" + gymType) + "&";
-        if (musclesPriority !== undefined && musclesPriority !== null)
-            url_ += "MusclesPriority=" + encodeURIComponent("" + musclesPriority) + "&";
-        if (age !== undefined && age !== null)
-            url_ += "Age=" + encodeURIComponent("" + age) + "&";
-        if (lastModified === undefined || lastModified === null)
-            throw new Error("The parameter 'lastModified' must be defined and cannot be null.");
-        else
-            url_ += "LastModified=" + encodeURIComponent(lastModified ? "" + lastModified.toISOString() : "") + "&";
+    createTrainingSurvey(command: CreateSurveyAnswerCommand): Promise<TrainingSurveyDTO> {
+        let url_ = this.baseUrl + "/api/TrainingSurvey/create";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1327,17 +1279,11 @@ export class WorkoutLogClient {
         return Promise.resolve<any>(null as any);
     }
 
-    createExerciseLog(createdBy: string | null | undefined, note: string | null | undefined, duration: string | null | undefined, exerciseLogs: CreateExerciseLogCommand[] | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/WorkoutLog?";
-        if (createdBy !== undefined && createdBy !== null)
-            url_ += "CreatedBy=" + encodeURIComponent("" + createdBy) + "&";
-        if (note !== undefined && note !== null)
-            url_ += "Note=" + encodeURIComponent("" + note) + "&";
-        if (duration !== undefined && duration !== null)
-            url_ += "Duration=" + encodeURIComponent("" + duration) + "&";
+    createExerciseLog(command: CreateWorkoutLogCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/WorkoutLog";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(exerciseLogs);
+        const content_ = JSON.stringify(command);
 
         let options_: RequestInit = {
             body: content_,
@@ -1470,21 +1416,17 @@ export class AuthenticationClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    passwordLogin(username: string | null, password: string | null): Promise<LoginResultDTO> {
-        let url_ = this.baseUrl + "/api/Authentication/password-login?";
-        if (username === undefined)
-            throw new Error("The parameter 'username' must be defined.");
-        else if(username !== null)
-            url_ += "Username=" + encodeURIComponent("" + username) + "&";
-        if (password === undefined)
-            throw new Error("The parameter 'password' must be defined.");
-        else if(password !== null)
-            url_ += "Password=" + encodeURIComponent("" + password) + "&";
+    passwordLogin(query: LoginQuery): Promise<LoginResultDTO> {
+        let url_ = this.baseUrl + "/api/Authentication/password-login";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(query);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1647,25 +1589,17 @@ export class UsersClient {
         return Promise.resolve<LoginResultDTO>(null as any);
     }
 
-    register(email: string | null, password: string | null, userName: string | null): Promise<RegisterResultDTO> {
-        let url_ = this.baseUrl + "/api/Users/register?";
-        if (email === undefined)
-            throw new Error("The parameter 'email' must be defined.");
-        else if(email !== null)
-            url_ += "Email=" + encodeURIComponent("" + email) + "&";
-        if (password === undefined)
-            throw new Error("The parameter 'password' must be defined.");
-        else if(password !== null)
-            url_ += "Password=" + encodeURIComponent("" + password) + "&";
-        if (userName === undefined)
-            throw new Error("The parameter 'userName' must be defined.");
-        else if(userName !== null)
-            url_ += "UserName=" + encodeURIComponent("" + userName) + "&";
+    register(command: RegisterCommand): Promise<RegisterResultDTO> {
+        let url_ = this.baseUrl + "/api/Users/register";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -2689,6 +2623,46 @@ export interface IEquipmentDTO {
     equipmentName?: string | undefined;
 }
 
+export class CreateEquipmentCommand implements ICreateEquipmentCommand {
+    equipmentName?: string | undefined;
+    imageUrl?: string | undefined;
+
+    constructor(data?: ICreateEquipmentCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.equipmentName = _data["equipmentName"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): CreateEquipmentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateEquipmentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["equipmentName"] = this.equipmentName;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface ICreateEquipmentCommand {
+    equipmentName?: string | undefined;
+    imageUrl?: string | undefined;
+}
+
 export class UpdateEquipmentCommand implements IUpdateEquipmentCommand {
     equipmentId?: number;
     equipmentName?: string | undefined;
@@ -2877,6 +2851,78 @@ export interface IExerciseDTO {
     type?: string;
 }
 
+export class CreateExerciseCommand implements ICreateExerciseCommand {
+    createdBy?: string | undefined;
+    muscleGroupIds?: number[];
+    equipmentId?: number | undefined;
+    exerciseName?: string | undefined;
+    demoUrl?: string | undefined;
+    type?: string;
+    description?: string | undefined;
+    publicVisibility?: boolean | undefined;
+
+    constructor(data?: ICreateExerciseCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.createdBy = _data["createdBy"];
+            if (Array.isArray(_data["muscleGroupIds"])) {
+                this.muscleGroupIds = [] as any;
+                for (let item of _data["muscleGroupIds"])
+                    this.muscleGroupIds!.push(item);
+            }
+            this.equipmentId = _data["equipmentId"];
+            this.exerciseName = _data["exerciseName"];
+            this.demoUrl = _data["demoUrl"];
+            this.type = _data["type"];
+            this.description = _data["description"];
+            this.publicVisibility = _data["publicVisibility"];
+        }
+    }
+
+    static fromJS(data: any): CreateExerciseCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateExerciseCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["createdBy"] = this.createdBy;
+        if (Array.isArray(this.muscleGroupIds)) {
+            data["muscleGroupIds"] = [];
+            for (let item of this.muscleGroupIds)
+                data["muscleGroupIds"].push(item);
+        }
+        data["equipmentId"] = this.equipmentId;
+        data["exerciseName"] = this.exerciseName;
+        data["demoUrl"] = this.demoUrl;
+        data["type"] = this.type;
+        data["description"] = this.description;
+        data["publicVisibility"] = this.publicVisibility;
+        return data;
+    }
+}
+
+export interface ICreateExerciseCommand {
+    createdBy?: string | undefined;
+    muscleGroupIds?: number[];
+    equipmentId?: number | undefined;
+    exerciseName?: string | undefined;
+    demoUrl?: string | undefined;
+    type?: string;
+    description?: string | undefined;
+    publicVisibility?: boolean | undefined;
+}
+
 export class ImportExercisesCommand implements IImportExercisesCommand {
     exercises?: ExerciseImport[];
 
@@ -2922,7 +2968,7 @@ export interface IImportExercisesCommand {
 }
 
 export class ExerciseImport implements IExerciseImport {
-    muscleGroupName?: string | undefined;
+    muscleGroupNames?: string[];
     equipmentName?: string | undefined;
     exerciseName?: string | undefined;
     demoUrl?: string | undefined;
@@ -2941,7 +2987,11 @@ export class ExerciseImport implements IExerciseImport {
 
     init(_data?: any) {
         if (_data) {
-            this.muscleGroupName = _data["muscleGroupName"];
+            if (Array.isArray(_data["muscleGroupNames"])) {
+                this.muscleGroupNames = [] as any;
+                for (let item of _data["muscleGroupNames"])
+                    this.muscleGroupNames!.push(item);
+            }
             this.equipmentName = _data["equipmentName"];
             this.exerciseName = _data["exerciseName"];
             this.demoUrl = _data["demoUrl"];
@@ -2960,7 +3010,11 @@ export class ExerciseImport implements IExerciseImport {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["muscleGroupName"] = this.muscleGroupName;
+        if (Array.isArray(this.muscleGroupNames)) {
+            data["muscleGroupNames"] = [];
+            for (let item of this.muscleGroupNames)
+                data["muscleGroupNames"].push(item);
+        }
         data["equipmentName"] = this.equipmentName;
         data["exerciseName"] = this.exerciseName;
         data["demoUrl"] = this.demoUrl;
@@ -2972,13 +3026,165 @@ export class ExerciseImport implements IExerciseImport {
 }
 
 export interface IExerciseImport {
-    muscleGroupName?: string | undefined;
+    muscleGroupNames?: string[];
     equipmentName?: string | undefined;
     exerciseName?: string | undefined;
     demoUrl?: string | undefined;
     type?: string;
     description?: string | undefined;
     publicVisibility?: boolean | undefined;
+}
+
+export class UpdateExerciseCommand implements IUpdateExerciseCommand {
+    exerciseId?: number;
+    createdBy?: string | undefined;
+    muscleGroupIds?: number[];
+    equipmentId?: number | undefined;
+    exerciseName?: string | undefined;
+    demoUrl?: string | undefined;
+    type?: string;
+    description?: string | undefined;
+    publicVisibility?: boolean | undefined;
+
+    constructor(data?: IUpdateExerciseCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseId = _data["exerciseId"];
+            this.createdBy = _data["createdBy"];
+            if (Array.isArray(_data["muscleGroupIds"])) {
+                this.muscleGroupIds = [] as any;
+                for (let item of _data["muscleGroupIds"])
+                    this.muscleGroupIds!.push(item);
+            }
+            this.equipmentId = _data["equipmentId"];
+            this.exerciseName = _data["exerciseName"];
+            this.demoUrl = _data["demoUrl"];
+            this.type = _data["type"];
+            this.description = _data["description"];
+            this.publicVisibility = _data["publicVisibility"];
+        }
+    }
+
+    static fromJS(data: any): UpdateExerciseCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateExerciseCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseId"] = this.exerciseId;
+        data["createdBy"] = this.createdBy;
+        if (Array.isArray(this.muscleGroupIds)) {
+            data["muscleGroupIds"] = [];
+            for (let item of this.muscleGroupIds)
+                data["muscleGroupIds"].push(item);
+        }
+        data["equipmentId"] = this.equipmentId;
+        data["exerciseName"] = this.exerciseName;
+        data["demoUrl"] = this.demoUrl;
+        data["type"] = this.type;
+        data["description"] = this.description;
+        data["publicVisibility"] = this.publicVisibility;
+        return data;
+    }
+}
+
+export interface IUpdateExerciseCommand {
+    exerciseId?: number;
+    createdBy?: string | undefined;
+    muscleGroupIds?: number[];
+    equipmentId?: number | undefined;
+    exerciseName?: string | undefined;
+    demoUrl?: string | undefined;
+    type?: string;
+    description?: string | undefined;
+    publicVisibility?: boolean | undefined;
+}
+
+export class DeleteExerciseCommand implements IDeleteExerciseCommand {
+    exerciseId?: number;
+
+    constructor(data?: IDeleteExerciseCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseId = _data["exerciseId"];
+        }
+    }
+
+    static fromJS(data: any): DeleteExerciseCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteExerciseCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseId"] = this.exerciseId;
+        return data;
+    }
+}
+
+export interface IDeleteExerciseCommand {
+    exerciseId?: number;
+}
+
+export class CreateMuscleGroupCommand implements ICreateMuscleGroupCommand {
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+
+    constructor(data?: ICreateMuscleGroupCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.muscleGroupName = _data["muscleGroupName"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): CreateMuscleGroupCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMuscleGroupCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["muscleGroupName"] = this.muscleGroupName;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface ICreateMuscleGroupCommand {
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
 }
 
 export class PaginatedListOfMuscleGroupDTO implements IPaginatedListOfMuscleGroupDTO {
@@ -3181,6 +3387,86 @@ export interface IUpdateMuscleGroupDTO {
     errors?: string[];
 }
 
+export class UpdateMuscleGroupCommand implements IUpdateMuscleGroupCommand {
+    id?: number;
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+
+    constructor(data?: IUpdateMuscleGroupCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.muscleGroupName = _data["muscleGroupName"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): UpdateMuscleGroupCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateMuscleGroupCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["muscleGroupName"] = this.muscleGroupName;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface IUpdateMuscleGroupCommand {
+    id?: number;
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+}
+
+export class DeleteMuscleGroupCommand implements IDeleteMuscleGroupCommand {
+    id?: number;
+
+    constructor(data?: IDeleteMuscleGroupCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DeleteMuscleGroupCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteMuscleGroupCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface IDeleteMuscleGroupCommand {
+    id?: number;
+}
+
 export class TrainingSurveyDTO implements ITrainingSurveyDTO {
     userId!: string;
     goal?: string | undefined;
@@ -3236,6 +3522,70 @@ export class TrainingSurveyDTO implements ITrainingSurveyDTO {
 
 export interface ITrainingSurveyDTO {
     userId: string;
+    goal?: string | undefined;
+    daysPerWeek?: number | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    age?: number | undefined;
+    lastModified?: Date;
+}
+
+export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
+    userId?: string | undefined;
+    goal?: string | undefined;
+    daysPerWeek?: number | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    age?: number | undefined;
+    lastModified?: Date;
+
+    constructor(data?: ICreateSurveyAnswerCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.goal = _data["goal"];
+            this.daysPerWeek = _data["daysPerWeek"];
+            this.experienceLevel = _data["experienceLevel"];
+            this.gymType = _data["gymType"];
+            this.musclesPriority = _data["musclesPriority"];
+            this.age = _data["age"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateSurveyAnswerCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSurveyAnswerCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["goal"] = this.goal;
+        data["daysPerWeek"] = this.daysPerWeek;
+        data["experienceLevel"] = this.experienceLevel;
+        data["gymType"] = this.gymType;
+        data["musclesPriority"] = this.musclesPriority;
+        data["age"] = this.age;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateSurveyAnswerCommand {
+    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -3451,6 +3801,62 @@ export interface IExerciseLogDTO {
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
+}
+
+export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
+    createdBy?: string | undefined;
+    note?: string | undefined;
+    duration?: string | undefined;
+    exerciseLogs?: CreateExerciseLogCommand[] | undefined;
+
+    constructor(data?: ICreateWorkoutLogCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.createdBy = _data["createdBy"];
+            this.note = _data["note"];
+            this.duration = _data["duration"];
+            if (Array.isArray(_data["exerciseLogs"])) {
+                this.exerciseLogs = [] as any;
+                for (let item of _data["exerciseLogs"])
+                    this.exerciseLogs!.push(CreateExerciseLogCommand.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateWorkoutLogCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateWorkoutLogCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["createdBy"] = this.createdBy;
+        data["note"] = this.note;
+        data["duration"] = this.duration;
+        if (Array.isArray(this.exerciseLogs)) {
+            data["exerciseLogs"] = [];
+            for (let item of this.exerciseLogs)
+                data["exerciseLogs"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ICreateWorkoutLogCommand {
+    createdBy?: string | undefined;
+    note?: string | undefined;
+    duration?: string | undefined;
+    exerciseLogs?: CreateExerciseLogCommand[] | undefined;
 }
 
 export class CreateExerciseLogCommand implements ICreateExerciseLogCommand {
@@ -3769,6 +4175,46 @@ export interface ILoginResultDTO {
     token?: string;
 }
 
+export class LoginQuery implements ILoginQuery {
+    username?: string;
+    password?: string;
+
+    constructor(data?: ILoginQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.username = _data["username"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): LoginQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["username"] = this.username;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface ILoginQuery {
+    username?: string;
+    password?: string;
+}
+
 export class GoogleLoginRequest implements IGoogleLoginRequest {
     token?: string;
 
@@ -3895,6 +4341,50 @@ export class RegisterResultDTO implements IRegisterResultDTO {
 export interface IRegisterResultDTO {
     success?: boolean;
     errors?: string[];
+}
+
+export class RegisterCommand implements IRegisterCommand {
+    email?: string;
+    password?: string;
+    userName?: string;
+
+    constructor(data?: IRegisterCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.userName = _data["userName"];
+        }
+    }
+
+    static fromJS(data: any): RegisterCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["userName"] = this.userName;
+        return data;
+    }
+}
+
+export interface IRegisterCommand {
+    email?: string;
+    password?: string;
+    userName?: string;
 }
 
 export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetUserListDTO {

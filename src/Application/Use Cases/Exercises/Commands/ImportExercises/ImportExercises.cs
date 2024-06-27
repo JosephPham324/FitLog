@@ -5,7 +5,7 @@ namespace FitLog.Application.Exercises.Commands.ImportExercises;
 
 public record ExerciseImport
 {
-    public string? MuscleGroupName { get; init; }
+    public List<string> MuscleGroupNames { get; init; } = new List<string>();
     public string? EquipmentName { get; init; }
     public string? ExerciseName { get; init; }
     public string? DemoUrl { get; init; }
@@ -13,6 +13,7 @@ public record ExerciseImport
     public string? Description { get; init; }
     public bool? PublicVisibility { get; init; }
 }
+
 
 public record ImportExercisesCommand : IRequest<int>
 {
@@ -26,12 +27,14 @@ public class ImportExercisesCommandValidator : AbstractValidator<ImportExercises
         {
             exercise.RuleFor(e => e.ExerciseName).NotEmpty().MaximumLength(200);
             exercise.RuleFor(e => e.Type).NotEmpty();
-            exercise.RuleFor(e => e.MuscleGroupName).NotEmpty();
+            exercise.RuleFor(e => e.MuscleGroupNames).NotEmpty().Must(names => names.Count > 0);
             exercise.RuleFor(e => e.EquipmentName).NotEmpty();
-            exercise.RuleFor(e => e.DemoUrl).Must(Common.ValidationRules.ValidationRules.BeAValidUrl).When(e => !string.IsNullOrEmpty(e.DemoUrl));
+            exercise.RuleFor(e => e.DemoUrl).Must(Common.ValidationRules.ValidationRules.BeAValidUrl)
+                .When(e => !string.IsNullOrEmpty(e.DemoUrl));
         });
     }
 }
+
 
 
 public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesCommand, int>
@@ -49,40 +52,41 @@ public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesComm
 
         foreach (var exerciseImport in request.Exercises)
         {
-            var muscleGroup = await _context.MuscleGroups
-                .FirstOrDefaultAsync(mg => mg.MuscleGroupName == exerciseImport.MuscleGroupName, cancellationToken);
-            if (muscleGroup == null)
+            List<MuscleGroup> muscleGroups = new List<MuscleGroup>();
+            foreach (var groupName in exerciseImport.MuscleGroupNames)
             {
-                muscleGroup = new MuscleGroup
+                var muscleGroup = await _context.MuscleGroups
+                    .FirstOrDefaultAsync(mg => mg.MuscleGroupName == groupName, cancellationToken);
+                if (muscleGroup == null)
                 {
-                    MuscleGroupName = exerciseImport.MuscleGroupName,
-                };
-                _context.MuscleGroups.Add(muscleGroup);
-                await _context.SaveChangesAsync(cancellationToken);
+                    muscleGroup = new MuscleGroup { MuscleGroupName = groupName };
+                    _context.MuscleGroups.Add(muscleGroup);
+                }
+                muscleGroups.Add(muscleGroup);
             }
 
             var equipment = await _context.Equipment
                 .FirstOrDefaultAsync(e => e.EquipmentName == exerciseImport.EquipmentName, cancellationToken);
             if (equipment == null)
             {
-                equipment = new Equipment
-                {
-                    EquipmentName = exerciseImport.EquipmentName,
-                };
+                equipment = new Equipment { EquipmentName = exerciseImport.EquipmentName };
                 _context.Equipment.Add(equipment);
-                await _context.SaveChangesAsync(cancellationToken);
             }
 
             var exercise = new Exercise
             {
-                MuscleGroupId = muscleGroup.MuscleGroupId,
                 EquipmentId = equipment.EquipmentId,
                 ExerciseName = exerciseImport.ExerciseName,
                 DemoUrl = exerciseImport.DemoUrl,
                 Type = exerciseImport.Type,
                 Description = exerciseImport.Description,
-                PublicVisibility = exerciseImport.PublicVisibility,
+                PublicVisibility = exerciseImport.PublicVisibility
             };
+
+            foreach (var muscleGroup in muscleGroups)
+            {
+                exercise.ExerciseMuscleGroups.Add(new ExerciseMuscleGroup { MuscleGroup = muscleGroup });
+            }
 
             _context.Exercises.Add(exercise);
             importedCount++;
@@ -92,4 +96,5 @@ public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesComm
         return importedCount;
     }
 }
+
 

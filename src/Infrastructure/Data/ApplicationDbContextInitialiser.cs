@@ -149,13 +149,75 @@ public class ApplicationDbContextInitialiser
         // Seed Exercises if necessary
         if (!_context.Exercises.Any())
         {
+            // Create MuscleGroups if they do not exist.
+            var muscleGroups = new List<MuscleGroup>
+            {
+                new MuscleGroup { MuscleGroupName = "Chest" },  // Assume ID 1
+                new MuscleGroup { MuscleGroupName = "Back" },   // Assume ID 2
+                new MuscleGroup { MuscleGroupName = "Legs" }    // Assume ID 3
+            };
+
+            foreach (var mg in muscleGroups)
+            {
+                if (!_context.MuscleGroups.Any(x => x.MuscleGroupName == mg.MuscleGroupName))
+                {
+                    _context.MuscleGroups.Add(mg);
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            // Equipment assumed similar to muscle groups.
+            var equipmentList = new List<Equipment>
+            {
+                new Equipment { EquipmentName = "Barbell" }, // Assume ID 2
+                new Equipment { EquipmentName = "None" }     // Assume null handled
+            };
+
+            foreach (var eq in equipmentList)
+            {
+                if (!_context.Equipment.Any(e => e.EquipmentName == eq.EquipmentName))
+                {
+                    _context.Equipment.Add(eq);
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            // Adding exercises with MuscleGroup associations
             _context.Exercises.AddRange(
-                new Exercise { ExerciseName = "Bench Press", MuscleGroupId = 1, EquipmentId = 2, Type = ExerciseTypes.WeightResistance, DemoUrl = null },
-                new Exercise { ExerciseName = "Pull-Up", MuscleGroupId = 2, EquipmentId = null, Type = ExerciseTypes.Calisthenics, DemoUrl = null },
-                new Exercise { ExerciseName = "Squat", MuscleGroupId = 3, EquipmentId = 2, Type = ExerciseTypes.WeightResistance, DemoUrl = null }
+                new Exercise
+                {
+                    ExerciseName = "Bench Press",
+                    EquipmentId = _context.Equipment.FirstOrDefault(e => e.EquipmentName == "Barbell")?.EquipmentId,
+                    Type = ExerciseTypes.WeightResistance,
+                    ExerciseMuscleGroups = new List<ExerciseMuscleGroup>
+                    {
+                            new ExerciseMuscleGroup { MuscleGroup = _context.MuscleGroups.FirstOrDefault(mg=>mg.MuscleGroupName=="Chesst") ?? new MuscleGroup() }
+                    }
+                },
+                new Exercise
+                {
+                    ExerciseName = "Pull-Up",
+                    EquipmentId = null, // No equipment specified
+                    Type = ExerciseTypes.Calisthenics,
+                    ExerciseMuscleGroups = new List<ExerciseMuscleGroup>
+                    {
+                            new ExerciseMuscleGroup { MuscleGroup = _context.MuscleGroups.FirstOrDefault(mg => mg.MuscleGroupName == "Back") ?? new MuscleGroup()}
+                    }
+                },
+                new Exercise
+                {
+                    ExerciseName = "Squat",
+                    EquipmentId = _context.Equipment.FirstOrDefault(e => e.EquipmentName == "Barbell")?.EquipmentId,
+                    Type = ExerciseTypes.WeightResistance,
+                    ExerciseMuscleGroups = new List<ExerciseMuscleGroup>
+                    {
+                            new ExerciseMuscleGroup { MuscleGroup = _context.MuscleGroups.FirstOrDefault(mg => mg.MuscleGroupName == "Legs") ?? new MuscleGroup()}
+                    }
+                }
             );
 
             await _context.SaveChangesAsync();
         }
+
     }
 }

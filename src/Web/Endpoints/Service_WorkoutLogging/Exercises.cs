@@ -36,17 +36,17 @@ public class Exercises : EndpointGroupBase
         return result is not null ? Results.Ok(result) : Results.NotFound();
     }
 
-    public Task<int> CreateExercise(ISender sender, [AsParameters]CreateExerciseCommand command)
+    public Task<int> CreateExercise(ISender sender, [FromBody]CreateExerciseCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> UpdateExercise(ISender sender, [AsParameters] UpdateExerciseCommand command)
+    public Task<bool> UpdateExercise(ISender sender, [FromBody] UpdateExerciseCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> DeleteExercise(ISender sender, [AsParameters] DeleteExerciseCommand command)
+    public Task<bool> DeleteExercise(ISender sender, [FromBody] DeleteExerciseCommand command)
     {
         return sender.Send(command);
     }

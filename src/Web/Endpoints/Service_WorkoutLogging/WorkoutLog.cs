@@ -36,7 +36,7 @@ public class WorkoutLog : EndpointGroupBase
         return result;
     }
 
-    public Task<int> CreateExerciseLog(ISender sender, [AsParameters] CreateWorkoutLogCommand command)
+    public Task<int> CreateExerciseLog(ISender sender, [FromBody] CreateWorkoutLogCommand command)
     {
         return sender.Send(command);
     }

@@ -256,7 +256,6 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
             entity.ToTable("Exercise");
 
-            entity.HasIndex(e => e.MuscleGroupId, "IDX_Exercise_MuscleGroupID");
 
             entity.Property(e => e.ExerciseId).HasColumnName("ExerciseID");
             entity.Property(e => e.DemoUrl)
@@ -264,7 +263,6 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
                 .HasColumnName("DemoURL");
             entity.Property(e => e.EquipmentId).HasColumnName("EquipmentID");
             entity.Property(e => e.ExerciseName).HasMaxLength(100);
-            entity.Property(e => e.MuscleGroupId).HasColumnName("MuscleGroupID");
             entity.Property(e => e.Type).HasMaxLength(20);
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Exercises)
@@ -276,9 +274,6 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
                 .HasForeignKey(d => d.EquipmentId)
                 .HasConstraintName("FK__Exercise__Equipm__37A5467C");
 
-            entity.HasOne(d => d.MuscleGroup).WithMany(p => p.Exercises)
-                .HasForeignKey(d => d.MuscleGroupId)
-                .HasConstraintName("FK__Exercise__Muscle__36B12243");
         });
 
         modelBuilder.Entity<ExerciseLog>(entity =>
@@ -327,6 +322,14 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
                 .HasColumnName("ImageURL");
             entity.Property(e => e.MuscleGroupName).HasMaxLength(50);
         });
+
+        modelBuilder.Entity<ExerciseMuscleGroup>(entity =>
+        {
+            entity.HasKey(e => new { e.ExerciseId, e.MuscleGroupId });
+            entity.HasOne(d => d.Exercise).WithMany(p => p.ExerciseMuscleGroups).HasForeignKey(d => d.ExerciseId);
+            entity.HasOne(d => d.MuscleGroup).WithMany(p => p.ExerciseMuscleGroups).HasForeignKey(d => d.MuscleGroupId);
+        });
+
 
 
 
