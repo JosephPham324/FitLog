@@ -95,3 +95,7 @@ img {
     height: 100px;
     object-fit: cover;
 }
+.upload-button {
+    margin-top: 6px;
+    border: 2px solid black;
+}
