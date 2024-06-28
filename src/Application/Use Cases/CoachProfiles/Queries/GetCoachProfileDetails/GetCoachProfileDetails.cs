@@ -1,4 +1,5 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Use_Cases.CoachProfiles.Queries.GetCoachProfileDetails;
 
 namespace FitLog.Application.CoachProfiles.Queries.GetCoachProfileDetails;
 
@@ -25,10 +26,12 @@ public class GetCoachProfileDetailsQueryValidator : AbstractValidator<GetCoachPr
 public class GetCoachProfileDetailsQueryHandler : IRequestHandler<GetCoachProfileDetailsQuery, CoachProfileDetailsDto>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetCoachProfileDetailsQueryHandler(IApplicationDbContext context)
+    public GetCoachProfileDetailsQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<CoachProfileDetailsDto> Handle(GetCoachProfileDetailsQuery request, CancellationToken cancellationToken)
@@ -37,19 +40,20 @@ public class GetCoachProfileDetailsQueryHandler : IRequestHandler<GetCoachProfil
             .Include(p => p.User)
             .FirstOrDefaultAsync(p => p.UserId == request.UserId, cancellationToken);
 
+        var programs = await _context.Programs.
+            Where(p => p.UserId == request.UserId).ToListAsync(cancellationToken);
+
+
+
         if (profile == null)
         {
             throw new NotFoundException(nameof(Profile), request.UserId);
         }
 
-        return new CoachProfileDetailsDto
-        {
-            ProfileId = profile.ProfileId,
-            UserId = profile.UserId,
-            Bio = profile.Bio,
-            ProfilePicture = profile.ProfilePicture,
-            MajorAchievements = profile.MajorAchievements,
-            GalleryImageLinks = profile.GalleryImageLinks
-        };
+        var profileDto = _mapper.Map<CoachProfileDetailsDto>(profile);
+        profileDto.ProgramsOverview = _mapper.Map<IEnumerable<ProgramOverviewDto>>(programs);
+
+        return profileDto;
+
     }
 }

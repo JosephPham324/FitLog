@@ -1763,6 +1763,52 @@ export class UsersClient {
         return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
     }
 
+    searchUsersByUserName(username: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+        let url_ = this.baseUrl + "/api/Users/search-by-username?";
+        if (username === undefined)
+            throw new Error("The parameter 'username' must be defined.");
+        else if(username !== null)
+            url_ += "Username=" + encodeURIComponent("" + username) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearchUsersByUserName(_response);
+        });
+    }
+
+    protected processSearchUsersByUserName(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AspNetUserListDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+    }
+
     getUserProfile(userId: string | null): Promise<UserProfileDTO> {
         let url_ = this.baseUrl + "/api/Users/profile?";
         if (userId === undefined)

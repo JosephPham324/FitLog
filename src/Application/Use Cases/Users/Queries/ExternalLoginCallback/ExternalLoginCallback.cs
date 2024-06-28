@@ -22,6 +22,7 @@ public class ExternalLoginCallbackQueryValidator : AbstractValidator<ExternalLog
     }
 }
 
+[Obsolete]
 public class ExternalLoginCallbackQueryHandler : IRequestHandler<ExternalLoginCallbackQuery, string>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;

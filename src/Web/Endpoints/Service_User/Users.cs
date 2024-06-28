@@ -13,6 +13,7 @@ using FitLog.Application.Users.Queries.Login;
 using FitLog.Application.Users.Queries.GetUsers;
 using FitLog.Application.Users.Queries.GetAccountByEmail;
 using FitLog.Application.Users.Queries.GetAccountByExternalProvider;
+using FitLog.Application.Users.Queries.GetAccountByUsername;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
@@ -27,6 +28,7 @@ public class Users : EndpointGroupBase
             .MapGet(GetUserList, "all")
             .MapGet(SearchUsersByEmail, "search-by-email")
             .MapGet(SearchUsersByLoginProvider,"search-by-provider")
+            .MapGet(SearchUsersByUserName,"search-by-username")
             .MapGet(GetUserProfile, "profile");
     }
 
@@ -90,6 +92,11 @@ public class Users : EndpointGroupBase
     }
 
     public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByLoginProvider(ISender sender, [AsParameters] GetAccountByExternalProviderQuery request)
+    {
+        return sender.Send(request);
+    }
+
+    public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByUserName(ISender sender, [AsParameters] GetAccountByUsernameQuery request)
     {
         return sender.Send(request);
     }
