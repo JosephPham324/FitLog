@@ -1,4 +1,6 @@
-﻿using Azure.Identity;
+﻿using System.Net.Mail;
+using System.Net;
+using Azure.Identity;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Infrastructure.Data;
 using FitLog.Web.Services;
@@ -23,6 +25,19 @@ public static class DependencyInjection
 
         services.AddExceptionHandler<CustomExceptionHandler>();
 
+        services.AddFluentEmail("nhatquangvl2003@gmail.com")
+        .AddRazorRenderer()
+        .AddSmtpSender(new SmtpClient("smtp.gmail.com")
+        {
+            UseDefaultCredentials = false,
+            Port = 587,
+            Credentials = new NetworkCredential("nhatquangvl2003@gmail.com", "ltls ondo iulg rmsm"),
+            EnableSsl = true,
+        });
+
+
+        services.AddSingleton<IEmailService, SmtpEmailService>();
+
         services.AddRazorPages();
 
 
@@ -37,6 +52,12 @@ public static class DependencyInjection
             configure.Title = "FitLog API";
 
         });
+
+        services.Configure<ExceptionHandlerOptions>(options =>
+        {
+            options.AllowStatusCode404Response = true;
+        });
+
 
         return services;
     }

@@ -14,6 +14,9 @@ using FitLog.Application.Users.Queries.GetUsers;
 using FitLog.Application.Users.Queries.GetAccountByEmail;
 using FitLog.Application.Users.Queries.GetAccountByExternalProvider;
 using FitLog.Application.Users.Queries.GetAccountByUsername;
+using FitLog.Application.Users.Commands.CreateUser;
+using FitLog.Application.Users.Commands.DeleteAccount;
+using FitLog.Application.Users.Commands.RecoverAccount;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
@@ -29,7 +32,10 @@ public class Users : EndpointGroupBase
             .MapGet(SearchUsersByEmail, "search-by-email")
             .MapGet(SearchUsersByLoginProvider,"search-by-provider")
             .MapGet(SearchUsersByUserName,"search-by-username")
-            .MapGet(GetUserProfile, "profile");
+            .MapGet(GetUserProfile, "profile")
+            .MapPost(CreateUser, "create-account")
+            .MapDelete(DeleteAccount, "delete-account/{id}")
+            .MapPost(RecoverAccount, "recover-account");
     }
 
     /// <summary>
@@ -99,5 +105,22 @@ public class Users : EndpointGroupBase
     public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByUserName(ISender sender, [AsParameters] GetAccountByUsernameQuery request)
     {
         return sender.Send(request);
+    }
+
+    public Task<RegisterResultDTO> CreateUser(ISender sender, [FromBody] CreateUserCommand command)
+    {
+        return sender.Send(command);
+    }
+
+    //Delete account endpoint
+    public Task<bool> DeleteAccount(ISender sender,string id)
+    {
+        return sender.Send(new DeleteAccountCommand(id));
+    }
+
+    //Recover account endpoint
+    public Task<RecoveryResultDTO> RecoverAccount(ISender sender, [FromBody] RecoverAccountCommand command)
+    {
+        return sender.Send(command);
     }
 }

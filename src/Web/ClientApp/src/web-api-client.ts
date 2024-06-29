@@ -1847,6 +1847,123 @@ export class UsersClient {
         }
         return Promise.resolve<UserProfileDTO>(null as any);
     }
+
+    createUser(command: CreateUserCommand): Promise<RegisterResultDTO> {
+        let url_ = this.baseUrl + "/api/Users/create-account";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateUser(_response);
+        });
+    }
+
+    protected processCreateUser(response: Response): Promise<RegisterResultDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RegisterResultDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RegisterResultDTO>(null as any);
+    }
+
+    deleteAccount(id: string): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Users/delete-account/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteAccount(_response);
+        });
+    }
+
+    protected processDeleteAccount(response: Response): Promise<boolean> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    recoverAccount(command: RecoverAccountCommand): Promise<RecoveryResultDTO> {
+        let url_ = this.baseUrl + "/api/Users/recover-account";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRecoverAccount(_response);
+        });
+    }
+
+    protected processRecoverAccount(response: Response): Promise<RecoveryResultDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RecoveryResultDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RecoveryResultDTO>(null as any);
+    }
 }
 
 export class CoachProfileClient {
@@ -4851,6 +4968,130 @@ export interface ICoachingServiceDTO {
     price?: number | undefined;
     serviceAvailability?: boolean | undefined;
     availabilityAnnouncement?: string | undefined;
+}
+
+export class CreateUserCommand implements ICreateUserCommand {
+    email?: string;
+    password?: string;
+    userName?: string;
+    role?: string;
+
+    constructor(data?: ICreateUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.userName = _data["userName"];
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): CreateUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["userName"] = this.userName;
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface ICreateUserCommand {
+    email?: string;
+    password?: string;
+    userName?: string;
+    role?: string;
+}
+
+export class RecoveryResultDTO implements IRecoveryResultDTO {
+    success?: boolean;
+    message?: string | undefined;
+
+    constructor(data?: IRecoveryResultDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+        }
+    }
+
+    static fromJS(data: any): RecoveryResultDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecoveryResultDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        return data;
+    }
+}
+
+export interface IRecoveryResultDTO {
+    success?: boolean;
+    message?: string | undefined;
+}
+
+export class RecoverAccountCommand implements IRecoverAccountCommand {
+    email?: string;
+
+    constructor(data?: IRecoverAccountCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): RecoverAccountCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecoverAccountCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface IRecoverAccountCommand {
+    email?: string;
 }
 
 export class UpdateCoachProfileCommand implements IUpdateCoachProfileCommand {

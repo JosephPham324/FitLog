@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Domain.Constants;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitLog.Application.Common.ValidationRules;
@@ -33,5 +34,10 @@ public static class ValidationRules
     private static bool Exists<T>(IApplicationDbContext context, params object[] keys) where T : class
     {
         return context.Set<T>().Find(keys) != null;
+    }
+
+    public static bool BeAValidRole(string role)
+    {
+        return role == Roles.Administrator || role == Roles.Member || role == Roles.Coach;
     }
 }
