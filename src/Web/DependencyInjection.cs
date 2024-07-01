@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddWebServices(this IServiceCollection services)
+    public static IServiceCollection AddWebServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -25,15 +25,17 @@ public static class DependencyInjection
 
         services.AddExceptionHandler<CustomExceptionHandler>();
 
-        services.AddFluentEmail("nhatquangvl2003@gmail.com")
-        .AddRazorRenderer()
-        .AddSmtpSender(new SmtpClient("smtp.gmail.com")
-        {
-            UseDefaultCredentials = false,
-            Port = 587,
-            Credentials = new NetworkCredential("nhatquangvl2003@gmail.com", "ltls ondo iulg rmsm"),
-            EnableSsl = true,
-        });
+        var emailSettings = configuration.GetSection("EmailSettings");
+
+        services.AddFluentEmail(emailSettings["FromEmail"])
+           .AddRazorRenderer()
+           .AddSmtpSender(new SmtpClient(emailSettings["SmtpHost"])
+           {
+               UseDefaultCredentials = false,
+               Port = Int32.Parse(emailSettings["SmtpPort"]??"0"),
+               Credentials = new NetworkCredential(emailSettings["SmtpUser"], emailSettings["SmtpPass"]),
+               EnableSsl = true,
+           });
 
 
         services.AddSingleton<IEmailService, SmtpEmailService>();
