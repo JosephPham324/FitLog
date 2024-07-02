@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
@@ -38,6 +39,22 @@ public static class ValidationRules
 
     public static bool BeAValidRole(string role)
     {
-        return role == Roles.Administrator || role == Roles.Member || role == Roles.Coach;
+        var type = typeof(CoachApplicationStatus);
+        var validRoles = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                   .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                   .Select(fi => fi?.GetRawConstantValue()?.ToString())
+                   .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return validRoles.Contains(role);
+    }
+
+    public static bool BeAValidCoachApplicationStatus(string status)
+    {
+        var type = typeof(CoachApplicationStatus);
+        var validStatuses = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                   .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                   .Select(fi => fi?.GetRawConstantValue()?.ToString())
+                   .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return validStatuses.Contains(status);
     }
 }

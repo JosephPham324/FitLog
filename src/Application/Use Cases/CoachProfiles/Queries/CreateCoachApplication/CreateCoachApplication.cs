@@ -40,8 +40,8 @@ public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApp
         {
             ApplicantId = userId,
             Status = "Pending",
-            StatusUpdateTime = DateTime.UtcNow,
-            StatusUpdatedById = userId // Assuming the applicant is also the updater initially
+            LastModified = DateTime.UtcNow,
+            LastModifiedBy = userId // Assuming the applicant is also the updater initially
         };
 
         _context.CoachApplications.Add(coachApplication);

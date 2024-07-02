@@ -561,8 +561,10 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
         modelBuilder.Entity<CoachApplication>(entity =>
         {
+            // Configure primary key
             entity.HasKey(e => e.Id);
 
+            // Configure relationships
             entity.HasOne(e => e.Applicant)
                 .WithMany(u => u.CoachApplications)
                 .HasForeignKey(e => e.ApplicantId)
@@ -570,8 +572,16 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
             entity.HasOne(e => e.StatusUpdatedBy)
                 .WithMany(u => u.CoachApplicationsUpdated)
-                .HasForeignKey(e => e.StatusUpdatedById)
+                .HasForeignKey(e => e.LastModifiedBy)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure other properties if needed
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasDefaultValue("Pending");
+
+            entity.Property(e => e.StatusReason)
+                .HasMaxLength(500);
         });
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }

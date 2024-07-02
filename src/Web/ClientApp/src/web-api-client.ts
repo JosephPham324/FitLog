@@ -2097,6 +2097,94 @@ export class CoachProfileClient {
         }
         return Promise.resolve<boolean>(null as any);
     }
+
+    updateCoachApplication(id: string, request: UpdateCoachApplicationStatusCommand): Promise<any> {
+        let url_ = this.baseUrl + "/api/CoachProfile/update-application?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateCoachApplication(_response);
+        });
+    }
+
+    protected processUpdateCoachApplication(response: Response): Promise<any> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<any>(null as any);
+    }
+
+    getApplicationsWithPagination(pageNumber: number, pageSize: number): Promise<any> {
+        let url_ = this.baseUrl + "/api/CoachProfile/paginated-list?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApplicationsWithPagination(_response);
+        });
+    }
+
+    protected processGetApplicationsWithPagination(response: Response): Promise<any> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<any>(null as any);
+    }
 }
 
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
@@ -5196,6 +5284,54 @@ export class CreateCoachApplicationQuery implements ICreateCoachApplicationQuery
 
 export interface ICreateCoachApplicationQuery {
     token?: string | undefined;
+}
+
+export class UpdateCoachApplicationStatusCommand implements IUpdateCoachApplicationStatusCommand {
+    applicationId?: number;
+    status?: string;
+    statusReason?: string | undefined;
+    updatedById?: string;
+
+    constructor(data?: IUpdateCoachApplicationStatusCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.applicationId = _data["applicationId"];
+            this.status = _data["status"];
+            this.statusReason = _data["statusReason"];
+            this.updatedById = _data["updatedById"];
+        }
+    }
+
+    static fromJS(data: any): UpdateCoachApplicationStatusCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateCoachApplicationStatusCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["applicationId"] = this.applicationId;
+        data["status"] = this.status;
+        data["statusReason"] = this.statusReason;
+        data["updatedById"] = this.updatedById;
+        return data;
+    }
+}
+
+export interface IUpdateCoachApplicationStatusCommand {
+    applicationId?: number;
+    status?: string;
+    statusReason?: string | undefined;
+    updatedById?: string;
 }
 
 function formatDate(d: Date) {
