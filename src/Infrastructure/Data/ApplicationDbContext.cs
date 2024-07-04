@@ -519,12 +519,20 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
         modelBuilder.Entity<WorkoutTemplate>(entity =>
         {
-            entity.HasKey(e => e.WorkoutTemplateId).HasName("PK__WorkoutT__8959FF2F261B5AB7");
+            entity.HasKey(e => e.Id).HasName("PK__WorkoutT__8959FF2F261B5AB7");
 
             entity.ToTable("WorkoutTemplate");
 
-            entity.Property(e => e.WorkoutTemplateId).HasColumnName("WorkoutTemplateID");
-            entity.Property(e => e.LastModified).HasColumnType("datetime");
+            entity.Property(e => e.Id).HasColumnName("WorkoutTemplateID");
+
+            entity.Property(e => e.LastModified)
+                  .HasColumnType("datetimeoffset") // Update column type to datetimeoffset
+                  .IsRequired(); // Make it required if needed
+
+            entity.Property(e => e.Created)
+            .HasColumnType("datetimeoffset") // Update column type to datetimeoffset
+            .IsRequired(); // Make it required if needed
+
             entity.Property(e => e.TemplateName).HasMaxLength(100);
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.WorkoutTemplateCreatedByNavigations)
