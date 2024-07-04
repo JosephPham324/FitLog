@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 using FitLog.Application.Common.Interfaces;
 
@@ -12,6 +13,7 @@ public class CurrentUser : IUser
     {
         _httpContextAccessor = httpContextAccessor;
     }
+
 
     public string? Id => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 }

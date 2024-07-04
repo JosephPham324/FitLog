@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Endpoints\NewFolder\" />
+    <Folder Include="Endpoints\Service_Chat\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

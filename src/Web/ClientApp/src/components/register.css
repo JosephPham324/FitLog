@@ -1,0 +1,138 @@
+﻿.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin-bottom: 100px;
+}
+
+.register-content {
+    display: flex;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.register-left, .register-right {
+    flex: 1;
+    padding: 20px;
+}
+
+.register-left {
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Để định vị tuyệt đối hình nền */
+    overflow: hidden; /* Đảm bảo không có phần nào của hình ảnh tràn ra ngoài */
+}
+
+.background-image {
+    position: absolute; /* Định vị tuyệt đối */
+    top: 0; /* Dán vào phía trên */
+    left: 0; /* Dán vào phía trái */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Đảm bảo hình ảnh bao phủ toàn bộ không gian */
+    z-index: 0; /* Đảm bảo hình nằm dưới */
+}
+
+.overlay {
+    position: absolute; /* Định vị tuyệt đối */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Lớp phủ màu đen mờ */
+    z-index: 1; /* Đảm bảo lớp phủ nằm trên hình nền nhưng dưới chữ */
+}
+
+.logo-res {
+    margin-bottom: 20px;
+    border: 2px solid #000000;
+    border-radius: 70px;
+    z-index: 2; /* Đảm bảo logo nằm trên lớp phủ */
+}
+
+.logo-image {
+    width: 150px;
+}
+
+.heading {
+    text-align: center;
+    color: #fff; /* Đổi màu chữ thành trắng */
+    font-size: 32px;
+    z-index: 2; /* Đảm bảo tiêu đề nằm trên lớp phủ */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Đổ bóng cho chữ để dễ nhìn hơn */
+}
+
+.register-right {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: -17px;
+}
+
+.register-form {
+    width: 100%;
+}
+
+.register-button {
+    margin-top: 20px;
+    background-color: #007BFF; /* Matching the color of the login button */
+    color: white;
+}
+
+.or-text {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.btn.google, .btn.facebook {
+    width: 100%;
+    margin-top: 15px;
+    color: white;
+    margin-right: 60px;
+}
+
+.btn.google {
+    background-color: #DB4437;
+}
+
+.btn.facebook {
+    background-color: #4267B2;
+}
+
+.signin-link {
+    display: block;
+    margin-top: 10px;
+    color: #1c0808;
+    text-align: right;
+    text-decoration: none;
+}
+
+.red-text {
+    color: #f05454;
+    font-size: 32px;
+}
+
+.blue-text {
+    color: #f05454;
+    font-size: 32px;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #33CCFF, #33CC33, #FF99FF, #FFCC00, #FF6699, #9933FF, #FF6600);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.terms-policy-register {
+    text-align: center;
+}
+
+.register-text {
+    text-align: center;
+    font-size: 50px;
+}

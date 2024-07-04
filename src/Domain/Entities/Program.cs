@@ -10,6 +10,7 @@ public partial class Program
     public string? UserId { get; set; }
 
     public string ProgramName { get; set; } = null!;
+    public string? ProgramThumbnail { get; set; }
 
     public int? NumberOfWeeks { get; set; }
 

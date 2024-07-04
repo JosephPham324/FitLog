@@ -3,6 +3,9 @@ import { Route, Routes } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { Layout } from './components/Layout';
 import './custom.css';
+import { Profile } from './page/Profile';
+import { ChangePassword } from './page/ChangePassword';
+import TrainingBoard from './page/TrainingBoard';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -15,6 +18,9 @@ export default class App extends Component {
             const { element, ...rest } = route;
             return <Route key={index} {...rest} element={element} />;
           })}
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/changepassword' element={<ChangePassword />} />
+          <Route path='/trainingBoard' element={<TrainingBoard />} />
         </Routes>
       </Layout>
     );

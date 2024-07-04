@@ -2,11 +2,11 @@
 
 namespace FitLog.Application.TodoLists.Commands.CreateTodoList;
 
-public class CreateTodoListCommandValidator : AbstractValidator<CreateTodoListCommand>
+public class CreateEquipmentCommandValidator : AbstractValidator<CreateTodoListCommand>
 {
     private readonly IApplicationDbContext _context;
 
-    public CreateTodoListCommandValidator(IApplicationDbContext context)
+    public CreateEquipmentCommandValidator(IApplicationDbContext context)
     {
         _context = context;
 

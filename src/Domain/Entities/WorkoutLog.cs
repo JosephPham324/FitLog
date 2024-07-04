@@ -12,6 +12,7 @@ public partial class WorkoutLog
     public string? Note { get; set; }
 
     public TimeOnly? Duration { get; set; }
+    public DateTime? DateCreated { get; set; }
 
     public DateTime? LastModified { get; set; }
 
