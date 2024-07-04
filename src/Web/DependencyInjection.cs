@@ -40,7 +40,11 @@ public static class DependencyInjection
 
         services.AddSingleton<IEmailService, SmtpEmailService>();
 
+        services.AddSignalR();
+
         services.AddRazorPages();
+
+       
 
 
         // Customise default API behaviour
