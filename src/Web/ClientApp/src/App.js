@@ -7,6 +7,7 @@ import { Profile } from './page/Profile';
 import { ChangePassword } from './page/ChangePassword';
 import TrainingBoard from './page/TrainingBoard';
 
+
 export default class App extends Component {
   static displayName = App.name;
 
@@ -26,3 +27,6 @@ export default class App extends Component {
     );
   }
 }
+
+
+
