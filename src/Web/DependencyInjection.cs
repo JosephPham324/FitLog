@@ -13,6 +13,7 @@ public static class DependencyInjection
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
 
+        services.AddScoped<IUserTokenService, CurrentUserFromToken>();
         services.AddScoped<IUser, CurrentUser>();
 
         services.AddHttpContextAccessor();
@@ -23,6 +24,7 @@ public static class DependencyInjection
         services.AddExceptionHandler<CustomExceptionHandler>();
 
         services.AddRazorPages();
+
 
         // Customise default API behaviour
         services.Configure<ApiBehaviorOptions>(options =>

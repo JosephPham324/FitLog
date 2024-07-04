@@ -1,5 +1,13 @@
 ﻿import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Button } from '@material-ui/core';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Button,
+} from '@mui/material';
 import './EquipmentsList.css';
 
 const EquipmentsList = () => {

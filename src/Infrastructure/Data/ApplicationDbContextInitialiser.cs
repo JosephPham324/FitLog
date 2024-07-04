@@ -76,6 +76,22 @@ public class ApplicationDbContextInitialiser
             await _roleManager.CreateAsync(administratorRole);
         }
 
+        var memberRole = new AspNetRole(Roles.Member);
+        memberRole.Id = Guid.NewGuid().ToString();
+
+        if (_roleManager.Roles.All(r => r.Name != memberRole.Name))
+        {
+            await _roleManager.CreateAsync(memberRole);
+        }
+
+        var coachRole = new AspNetRole(Roles.Coach);
+        coachRole.Id = Guid.NewGuid().ToString();
+
+        if (_roleManager.Roles.All(r => r.Name != coachRole.Name))
+        {
+            await _roleManager.CreateAsync(coachRole);
+        }
+
         // Default users
         var administrator = new AspNetUser { Id = Guid.NewGuid().ToString(),   UserName = "administrator@localhost", Email = "administrator@localhost" };
 
@@ -103,6 +119,41 @@ public class ApplicationDbContextInitialiser
                     new TodoItem { Title = "Reward yourself with a nice, long nap 🏆" },
                 }
             });
+
+            await _context.SaveChangesAsync();
+        }
+
+        if (!_context.Equipment.Any())
+        {
+            _context.Equipment.AddRange(
+                new Equipment { EquipmentName = "Dumbbell", ImageUrl = null },
+                new Equipment { EquipmentName = "Barbell", ImageUrl = null },
+                new Equipment { EquipmentName = "Kettlebell", ImageUrl = null }
+            );
+
+            await _context.SaveChangesAsync();
+        }
+
+        // Seed Muscle Groups if necessary
+        if (!_context.MuscleGroups.Any())
+        {
+            _context.MuscleGroups.AddRange(
+                new MuscleGroup { MuscleGroupName = "Chest", ImageUrl = null },
+                new MuscleGroup { MuscleGroupName = "Back", ImageUrl = null },
+                new MuscleGroup { MuscleGroupName = "Legs", ImageUrl = null }
+            );
+
+            await _context.SaveChangesAsync();
+        }
+
+        // Seed Exercises if necessary
+        if (!_context.Exercises.Any())
+        {
+            _context.Exercises.AddRange(
+                new Exercise { ExerciseName = "Bench Press", MuscleGroupId = 1, EquipmentId = 2, Type = ExerciseTypes.WeightResistance, DemoUrl = null },
+                new Exercise { ExerciseName = "Pull-Up", MuscleGroupId = 2, EquipmentId = null, Type = ExerciseTypes.Calisthenics, DemoUrl = null },
+                new Exercise { ExerciseName = "Squat", MuscleGroupId = 3, EquipmentId = 2, Type = ExerciseTypes.WeightResistance, DemoUrl = null }
+            );
 
             await _context.SaveChangesAsync();
         }
