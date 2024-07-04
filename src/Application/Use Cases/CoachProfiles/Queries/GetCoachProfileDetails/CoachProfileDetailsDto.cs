@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Users.Queries.GetUserDetails;
+﻿using FitLog.Application.Use_Cases.CoachProfiles.Queries.GetCoachProfileDetails;
+using FitLog.Application.Users.Queries.GetUserDetails;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.CoachProfiles.Queries.GetCoachProfileDetails;
@@ -11,6 +12,7 @@ public class CoachProfileDetailsDto
     public string? ProfilePicture { get; set; }
     public List<string>? MajorAchievements { get; set; }
     public List<string>? GalleryImageLinks { get; set; }
+    public IEnumerable<ProgramOverviewDto>? ProgramsOverview { get; set; }
 
     private class Mapping : AutoMapper.Profile
     {

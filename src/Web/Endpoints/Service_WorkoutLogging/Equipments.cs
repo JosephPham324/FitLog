@@ -33,7 +33,7 @@ public class Equipments : EndpointGroupBase
         return result;
     }
 
-    public Task<int> CreateEquipment(ISender sender, [AsParameters] CreateEquipmentCommand command)
+    public Task<int> CreateEquipment(ISender sender, [FromBody] CreateEquipmentCommand command)
     {
         return sender.Send(command);
     }

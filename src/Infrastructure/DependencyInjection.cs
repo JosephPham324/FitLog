@@ -46,9 +46,10 @@ public static class DependencyInjection
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 8;
             })
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
-        _ = services.AddAuthentication(options =>
+        services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -78,9 +79,7 @@ public static class DependencyInjection
             {
                 facebookOptions.AppId = configuration["Authentication:Facebook:AppId"] ??"";
                 facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"] ??"";
-            }); ;
-;
-
+            });
 
         services.AddSingleton(TimeProvider.System);
         services.AddTransient<IIdentityService, IdentityService>();

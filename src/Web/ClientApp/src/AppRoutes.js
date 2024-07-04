@@ -8,6 +8,7 @@ import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
+import ChatPage from "./page/ChatPage";
 
 const AppRoutes = [
   {
@@ -49,6 +50,10 @@ const AppRoutes = [
   {
     path: '/admin/management/equipments',
     element: <EquipmentsList />
+  },
+  {
+    path: '/chat',
+    element: <ChatPage/>
   }
 
 ];

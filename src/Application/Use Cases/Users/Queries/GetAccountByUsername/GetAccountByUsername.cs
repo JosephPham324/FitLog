@@ -1,29 +1,45 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Users.Queries.GetUsers;
 
 namespace FitLog.Application.Users.Queries.GetAccountByUsername;
 
-public record GetAccountByUsernameQuery : IRequest<object>
+public record GetAccountByUsernameQuery : IRequest<IEnumerable<AspNetUserListDTO>?>
 {
+    public string Username { get; set; } = string.Empty;
 }
+
 
 public class GetAccountByUsernameQueryValidator : AbstractValidator<GetAccountByUsernameQuery>
 {
     public GetAccountByUsernameQueryValidator()
     {
+        RuleFor(x => x.Username).NotEmpty().WithMessage("Username is required.");
     }
 }
 
-public class GetAccountByUsernameQueryHandler : IRequestHandler<GetAccountByUsernameQuery, object>
+
+public class GetAccountByUsernameQueryHandler : IRequestHandler<GetAccountByUsernameQuery, IEnumerable<AspNetUserListDTO>?>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetAccountByUsernameQueryHandler(IApplicationDbContext context)
+    public GetAccountByUsernameQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public Task<object> Handle(GetAccountByUsernameQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AspNetUserListDTO>?> Handle(GetAccountByUsernameQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var users = await _context.AspNetUsers
+            .Where(u => EF.Functions.Like(u.UserName, $"%{request.Username}%"))
+            .ToListAsync(cancellationToken);
+
+        if (users == null || users.Count == 0)
+        {
+            return new List<AspNetUserListDTO>(); // Return an empty list if no users found
+        }
+
+        return _mapper.Map<List<AspNetUserListDTO>>(users);
     }
 }

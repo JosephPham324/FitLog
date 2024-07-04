@@ -102,6 +102,12 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.Property<string>("GoogleID")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsRestricted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -258,21 +264,33 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("StatusUpdateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("StatusUpdatedById")
+                    b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Pending");
+
+                    b.Property<string>("StatusReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicantId");
 
-                    b.HasIndex("StatusUpdatedById");
+                    b.HasIndex("LastModifiedBy");
 
                     b.ToTable("CoachApplications");
                 });
@@ -409,10 +427,6 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("MuscleGroupId")
-                        .HasColumnType("int")
-                        .HasColumnName("MuscleGroupID");
-
                     b.Property<bool?>("PublicVisibility")
                         .HasColumnType("bit");
 
@@ -427,8 +441,6 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.HasIndex("EquipmentId");
-
-                    b.HasIndex(new[] { "MuscleGroupId" }, "IDX_Exercise_MuscleGroupID");
 
                     b.ToTable("Exercise", (string)null);
                 });
@@ -501,6 +513,21 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.HasIndex("WorkoutLogId");
 
                     b.ToTable("ExerciseLog", (string)null);
+                });
+
+            modelBuilder.Entity("FitLog.Domain.Entities.ExerciseMuscleGroup", b =>
+                {
+                    b.Property<int>("ExerciseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MuscleGroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExerciseId", "MuscleGroupId");
+
+                    b.HasIndex("MuscleGroupId");
+
+                    b.ToTable("ExerciseMuscleGroup");
                 });
 
             modelBuilder.Entity("FitLog.Domain.Entities.MuscleGroup", b =>
@@ -889,12 +916,15 @@ namespace FitLog.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("FitLog.Domain.Entities.WorkoutTemplate", b =>
                 {
-                    b.Property<int>("WorkoutTemplateId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("WorkoutTemplateID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WorkoutTemplateId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(450)");
@@ -902,8 +932,11 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.Property<string>("Duration")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime");
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(450)");
@@ -912,7 +945,7 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("WorkoutTemplateId")
+                    b.HasKey("Id")
                         .HasName("PK__WorkoutT__8959FF2F261B5AB7");
 
                     b.HasIndex("CreatedBy");
@@ -1201,7 +1234,7 @@ namespace FitLog.Infrastructure.Data.Migrations
 
                     b.HasOne("FitLog.Domain.Entities.AspNetUser", "StatusUpdatedBy")
                         .WithMany("CoachApplicationsUpdated")
-                        .HasForeignKey("StatusUpdatedById")
+                        .HasForeignKey("LastModifiedBy")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Applicant");
@@ -1248,16 +1281,9 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasForeignKey("EquipmentId")
                         .HasConstraintName("FK__Exercise__Equipm__37A5467C");
 
-                    b.HasOne("FitLog.Domain.Entities.MuscleGroup", "MuscleGroup")
-                        .WithMany("Exercises")
-                        .HasForeignKey("MuscleGroupId")
-                        .HasConstraintName("FK__Exercise__Muscle__36B12243");
-
                     b.Navigation("CreatedByNavigation");
 
                     b.Navigation("Equipment");
-
-                    b.Navigation("MuscleGroup");
                 });
 
             modelBuilder.Entity("FitLog.Domain.Entities.ExerciseLog", b =>
@@ -1275,6 +1301,25 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.Navigation("Exercise");
 
                     b.Navigation("WorkoutLog");
+                });
+
+            modelBuilder.Entity("FitLog.Domain.Entities.ExerciseMuscleGroup", b =>
+                {
+                    b.HasOne("FitLog.Domain.Entities.Exercise", "Exercise")
+                        .WithMany("ExerciseMuscleGroups")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FitLog.Domain.Entities.MuscleGroup", "MuscleGroup")
+                        .WithMany("ExerciseMuscleGroups")
+                        .HasForeignKey("MuscleGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exercise");
+
+                    b.Navigation("MuscleGroup");
                 });
 
             modelBuilder.Entity("FitLog.Domain.Entities.Profile", b =>
@@ -1542,12 +1587,14 @@ namespace FitLog.Infrastructure.Data.Migrations
                 {
                     b.Navigation("ExerciseLogs");
 
+                    b.Navigation("ExerciseMuscleGroups");
+
                     b.Navigation("WorkoutTemplateExercises");
                 });
 
             modelBuilder.Entity("FitLog.Domain.Entities.MuscleGroup", b =>
                 {
-                    b.Navigation("Exercises");
+                    b.Navigation("ExerciseMuscleGroups");
                 });
 
             modelBuilder.Entity("FitLog.Domain.Entities.Program", b =>

@@ -9,7 +9,7 @@ namespace FitLog.Application.Exercises.Commands.CreateExercise;
 public record CreateExerciseCommand : IRequest<int>
 {
     public string? CreatedBy { get; init; }
-    public int? MuscleGroupId { get; init; }
+    public List<int> MuscleGroupIds { get; init; } = new List<int>();
     public int? EquipmentId { get; init; }
     public string? ExerciseName { get; init; }
     public string? DemoUrl { get; init; }
@@ -21,7 +21,6 @@ public record CreateExerciseCommand : IRequest<int>
 public class CreateExerciseCommandValidator : AbstractValidator<CreateExerciseCommand>
 {
     private readonly IApplicationDbContext _context;
-
     public CreateExerciseCommandValidator(IApplicationDbContext context)
     {
         _context = context;
@@ -35,12 +34,12 @@ public class CreateExerciseCommandValidator : AbstractValidator<CreateExerciseCo
             .Must(BeAValidExerciseType).WithMessage("Invalid exercise type.");
 
         RuleFor(e => e.ExerciseName)
-            .NotEmpty()
-            .MaximumLength(200);
+                .NotEmpty()
+                .MaximumLength(200);
 
-        RuleFor(e => e.MuscleGroupId)
+        RuleFor(e => e.MuscleGroupIds)
             .NotEmpty()
-            .MustAsync(MuscleGroupExists).WithMessage("Muscle group does not exist.");
+            .MustAsync(MuscleGroupsExist).WithMessage("One or more muscle groups do not exist.");
 
         RuleFor(e => e.EquipmentId)
             .NotEmpty()
@@ -51,6 +50,14 @@ public class CreateExerciseCommandValidator : AbstractValidator<CreateExerciseCo
             .When(e => !string.IsNullOrEmpty(e.DemoUrl))
             .WithMessage("Invalid URL format.");
     }
+
+    private async Task<bool> MuscleGroupsExist(List<int> muscleGroupIds, CancellationToken cancellationToken)
+    {
+        return muscleGroupIds.Count > 0 &&
+               await _context.MuscleGroups.CountAsync(mg => muscleGroupIds.Contains(mg.MuscleGroupId), cancellationToken) == muscleGroupIds.Count;
+    }
+
+
 
     private bool BeAValidExerciseType(string type)
     {
@@ -64,12 +71,6 @@ public class CreateExerciseCommandValidator : AbstractValidator<CreateExerciseCo
     private async Task<bool> UserExists(string? userId, CancellationToken cancellationToken)
     {
         return await _context.AspNetUsers.AnyAsync(u => u.Id == userId, cancellationToken);
-    }
-
-    private async Task<bool> MuscleGroupExists(int? muscleGroupId, CancellationToken cancellationToken)
-    {
-        if (muscleGroupId == null) return false;
-        return await _context.MuscleGroups.AnyAsync(mg => mg.MuscleGroupId == muscleGroupId, cancellationToken);
     }
 
     private async Task<bool> EquipmentExists(int? equipmentId, CancellationToken cancellationToken)
@@ -98,7 +99,6 @@ public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseComman
         var entity = new Exercise
         {
             CreatedBy = request.CreatedBy,
-            MuscleGroupId = request.MuscleGroupId,
             EquipmentId = request.EquipmentId,
             ExerciseName = request.ExerciseName,
             DemoUrl = request.DemoUrl,
@@ -107,8 +107,12 @@ public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseComman
             PublicVisibility = request.PublicVisibility
         };
 
+        foreach (var muscleGroupId in request.MuscleGroupIds)
+        {
+            entity.ExerciseMuscleGroups.Add(new ExerciseMuscleGroup { MuscleGroupId = muscleGroupId });
+        }
+
         _context.Exercises.Add(entity);
-        
         await _context.SaveChangesAsync(cancellationToken);
         return entity.ExerciseId;
     }
