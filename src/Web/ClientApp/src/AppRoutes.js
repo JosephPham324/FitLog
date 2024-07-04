@@ -1,6 +1,7 @@
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
+import { MuscleGroup } from "./components/MuscleGroup";
 import  ExerciseLog  from "./components/ExerciseLog";
 import Login from './components/Login';
 import Register from './components/Register';
@@ -20,6 +21,10 @@ const AppRoutes = [
   {
     path: '/fetch-data',
     element: <FetchData />
+  },
+  {
+    path: '/MuscleGroup',
+    element: <MuscleGroup />
   },
   {
     path: '/ExerciseLog',
@@ -45,6 +50,7 @@ const AppRoutes = [
     path: '/admin/management/equipments',
     element: <EquipmentsList />
   }
+
 ];
 
 export default AppRoutes;
