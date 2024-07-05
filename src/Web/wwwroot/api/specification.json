@@ -1099,6 +1099,190 @@
         }
       }
     },
+    "/api/WorkoutTemplates/create-personal-template": {
+      "post": {
+        "tags": [
+          "WorkoutTemplates"
+        ],
+        "operationId": "CreatePersonalTemplate",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePersonalTemplateCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutTemplates/create-workout-template": {
+      "post": {
+        "tags": [
+          "WorkoutTemplates"
+        ],
+        "operationId": "CreateWorkoutTemplate",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkoutTemplateCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutTemplates/update-workout-template/{id}": {
+      "put": {
+        "tags": [
+          "WorkoutTemplates"
+        ],
+        "operationId": "UpdateWorkoutTemplate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWorkoutTemplateCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutTemplates/delete-workout-template/{id}": {
+      "delete": {
+        "tags": [
+          "WorkoutTemplates"
+        ],
+        "operationId": "DeleteWorkoutTemplate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutTemplates/get-public-templates": {
+      "get": {
+        "tags": [
+          "WorkoutTemplates"
+        ],
+        "operationId": "GetPublicTemplates",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfWorkoutTemplate"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Authentication/password-login": {
       "post": {
         "tags": [
@@ -2778,6 +2962,1572 @@
         "additionalProperties": false,
         "properties": {
           "workoutLogId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CreatePersonalTemplateCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userToken": {
+            "type": "string"
+          },
+          "templateName": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "nullable": true
+          },
+          "workoutTemplateExercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonalTemplateExerciseDto"
+            }
+          }
+        }
+      },
+      "PersonalTemplateExerciseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "setsRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "intensityPercentage": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rpeRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numbersOfReps": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateWorkoutTemplateCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "templateName": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "nullable": true
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
+          "workoutTemplateExercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutTemplateExerciseDto"
+            }
+          }
+        }
+      },
+      "WorkoutTemplateExerciseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "setsRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "intensityPercentage": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rpeRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numbersOfReps": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateWorkoutTemplateCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "templateName": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "nullable": true
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
+          "workoutTemplateExercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutTemplateExerciseDto2"
+            }
+          }
+        }
+      },
+      "WorkoutTemplateExerciseDto2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "setsRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "intensityPercentage": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rpeRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numbersOfReps": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedListOfWorkoutTemplate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutTemplate"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "WorkoutTemplate": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "templateName": {
+                "type": "string",
+                "nullable": true
+              },
+              "duration": {
+                "type": "string",
+                "nullable": true
+              },
+              "isPublic": {
+                "type": "boolean"
+              },
+              "createdByNavigation": {
+                "$ref": "#/components/schemas/AspNetUser"
+              },
+              "lastModifiedByNavigation": {
+                "$ref": "#/components/schemas/AspNetUser"
+              },
+              "programWorkouts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ProgramWorkout"
+                }
+              },
+              "workoutTemplateExercises": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WorkoutTemplateExercise"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "AspNetUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUserOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "googleID": {
+                "type": "string",
+                "nullable": true
+              },
+              "facebookID": {
+                "type": "string",
+                "nullable": true
+              },
+              "firstName": {
+                "type": "string",
+                "nullable": true
+              },
+              "lastName": {
+                "type": "string",
+                "nullable": true
+              },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "gender": {
+                "type": "string",
+                "nullable": true
+              },
+              "isRestricted": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "isDeleted": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "aspNetUserClaims": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AspNetUserClaim"
+                }
+              },
+              "aspNetUserLogins": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AspNetUserLogin"
+                }
+              },
+              "aspNetUserTokens": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AspNetUserToken"
+                }
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AspNetRole"
+                }
+              },
+              "certifications": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Certification"
+                }
+              },
+              "coachingBookings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CoachingBooking"
+                }
+              },
+              "coachingServices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CoachingService"
+                }
+              },
+              "exercises": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Exercise"
+                }
+              },
+              "profiles": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              },
+              "programEnrollments": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ProgramEnrollment"
+                }
+              },
+              "programs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Program"
+                }
+              },
+              "surveyAnswers": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SurveyAnswer"
+                }
+              },
+              "workoutLogs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WorkoutLog"
+                }
+              },
+              "workoutTemplateCreatedByNavigations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WorkoutTemplate"
+                }
+              },
+              "workoutTemplateLastModifiedByNavigations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WorkoutTemplate"
+                }
+              },
+              "coachApplications": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CoachApplication"
+                }
+              },
+              "coachApplicationsUpdated": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CoachApplication"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "AspNetUserClaim": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUserClaimOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            }
+          }
+        ]
+      },
+      "IdentityUserClaimOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "claimType": {
+            "type": "string",
+            "nullable": true
+          },
+          "claimValue": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "AspNetUserLogin": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUserLoginOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "IdentityUserLoginOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "loginProvider": {
+            "type": "string"
+          },
+          "providerKey": {
+            "type": "string"
+          },
+          "providerDisplayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "AspNetUserToken": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUserTokenOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            }
+          }
+        ]
+      },
+      "IdentityUserTokenOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "loginProvider": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "AspNetRole": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityRoleOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "roleDesc": {
+                "type": "string",
+                "nullable": true
+              },
+              "aspNetRoleClaims": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AspNetRoleClaim"
+                }
+              },
+              "users": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AspNetUser"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "AspNetRoleClaim": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityRoleClaimOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "role": {
+                "$ref": "#/components/schemas/AspNetRole"
+              }
+            }
+          }
+        ]
+      },
+      "IdentityRoleClaimOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roleId": {
+            "type": "string",
+            "nullable": true
+          },
+          "claimType": {
+            "type": "string",
+            "nullable": true
+          },
+          "claimValue": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "IdentityRoleOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedName": {
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Certification": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "certificationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationDateIssued": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "certificationExpirationData": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          }
+        }
+      },
+      "CoachingBooking": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bookingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "coachingServiceId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paymentDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "coachingService": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CoachingService"
+              }
+            ]
+          },
+          "user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          }
+        }
+      },
+      "CoachingService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "coachingServiceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "serviceName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "serviceAvailability": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "availabilityAnnouncement": {
+            "type": "string",
+            "nullable": true
+          },
+          "coachingBookings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoachingBooking"
+            }
+          },
+          "createdByNavigation": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          }
+        }
+      },
+      "Exercise": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "exerciseName": {
+            "type": "string",
+            "nullable": true
+          },
+          "demoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicVisibility": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdByNavigation": {
+            "$ref": "#/components/schemas/AspNetUser"
+          },
+          "equipment": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Equipment"
+              }
+            ]
+          },
+          "exerciseLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseLog"
+            }
+          },
+          "workoutTemplateExercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutTemplateExercise"
+            }
+          },
+          "exerciseMuscleGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseMuscleGroup"
+            }
+          }
+        }
+      },
+      "Equipment": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "equipmentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "exercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Exercise"
+            }
+          }
+        }
+      },
+      "ExerciseLog": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfSets": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsedValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "numberOfRepsValue": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "footageURLsList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "footageUrls": {
+            "type": "string",
+            "nullable": true
+          },
+          "exercise": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Exercise"
+              }
+            ]
+          },
+          "workoutLog": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WorkoutLog"
+              }
+            ]
+          }
+        }
+      },
+      "WorkoutLog": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdByNavigation": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          },
+          "exerciseLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseLog"
+            }
+          }
+        }
+      },
+      "WorkoutTemplateExercise": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseTemlateId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workoutTemplateId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "setsRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "intensityPercentage": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rpeRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numbersOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "exercise": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Exercise"
+              }
+            ]
+          },
+          "workoutTemplate": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WorkoutTemplate"
+              }
+            ]
+          }
+        }
+      },
+      "ExerciseMuscleGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "muscleGroupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "exercise": {
+            "$ref": "#/components/schemas/Exercise"
+          },
+          "muscleGroup": {
+            "$ref": "#/components/schemas/MuscleGroup"
+          }
+        }
+      },
+      "MuscleGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "muscleGroupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "muscleGroupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "exerciseMuscleGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseMuscleGroup"
+            }
+          }
+        }
+      },
+      "Profile": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "profileId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "overview": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicture": {
+            "type": "string",
+            "nullable": true
+          },
+          "user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          },
+          "majorAchievements": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "galleryImageLinks": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "instagram": {
+            "type": "string",
+            "nullable": true
+          },
+          "youtube": {
+            "type": "string",
+            "nullable": true
+          },
+          "patreon": {
+            "type": "string",
+            "nullable": true
+          },
+          "galleryImageLinksJson": {
+            "type": "string"
+          }
+        }
+      },
+      "ProgramEnrollment": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enrollmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "programId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "enrolledDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "currentWeekNo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "currentWorkoutOrder": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "program": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Program"
+              }
+            ]
+          },
+          "user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          }
+        }
+      },
+      "Program": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "programId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "programName": {
+            "type": "string"
+          },
+          "programThumbnail": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfWeeks": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "ageGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicProgram": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "programEnrollments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgramEnrollment"
+            }
+          },
+          "programWorkouts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgramWorkout"
+            }
+          },
+          "user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          }
+        }
+      },
+      "ProgramWorkout": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "programWorkoutId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "programId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "workoutTemplateId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weekNumber": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "program": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Program"
+              }
+            ]
+          },
+          "workoutTemplate": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WorkoutTemplate"
+              }
+            ]
+          }
+        }
+      },
+      "SurveyAnswer": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "surveyAnswerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          }
+        }
+      },
+      "CoachApplication": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "applicantId": {
+                "type": "string"
+              },
+              "applicant": {
+                "$ref": "#/components/schemas/AspNetUser"
+              },
+              "status": {
+                "type": "string"
+              },
+              "statusReason": {
+                "type": "string",
+                "nullable": true
+              },
+              "statusUpdatedBy": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/AspNetUser"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "BaseAuditableEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false,
+            "properties": {
+              "created": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "createdBy": {
+                "type": "string",
+                "nullable": true
+              },
+              "lastModified": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "lastModifiedBy": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "BaseEntity": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "domainEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BaseEvent"
+            }
+          }
+        }
+      },
+      "BaseEvent": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false
+      },
+      "IdentityUserOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedUserName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailConfirmed": {
+            "type": "boolean"
+          },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "securityStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumberConfirmed": {
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "lockoutEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lockoutEnabled": {
+            "type": "boolean"
+          },
+          "accessFailedCount": {
             "type": "integer",
             "format": "int32"
           }
