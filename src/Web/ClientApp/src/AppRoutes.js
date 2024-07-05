@@ -9,6 +9,7 @@ import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
 import ChatPage from "./page/ChatPage";
+import UserListPage from "./page/TestAxios"; 
 
 const AppRoutes = [
   {
@@ -54,6 +55,10 @@ const AppRoutes = [
   {
     path: '/chat',
     element: <ChatPage/>
+  },
+  {
+    path: '/users-list',
+    element: <UserListPage />
   }
 
 ];
