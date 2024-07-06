@@ -226,11 +226,11 @@ public class ApplicationDbContext : IdentityDbContext<AspNetUser,AspNetRole,stri
 
         modelBuilder.Entity<CoachingService>(entity =>
         {
-            entity.HasKey(e => e.CoachingServiceId).HasName("PK__Coaching__7CB5DCB74574309F");
+            entity.HasKey(e => e.Id).HasName("PK__Coaching__7CB5DCB74574309F");
 
             entity.ToTable("CoachingService");
 
-            entity.Property(e => e.CoachingServiceId).HasColumnName("CoachingServiceID");
+            entity.Property(e => e.Id).HasColumnName("CoachingServiceID");
             entity.Property(e => e.Price).HasColumnType("money");
             entity.Property(e => e.ServiceName).HasMaxLength(100);
 
