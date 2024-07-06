@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useContext, useEffect } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './login.css';
 import axios from 'axios';
@@ -9,18 +9,33 @@ import logo from '../assets/Logo.png';
 import image7 from '../assets/image7.png';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { setCookie } from '../utils/cookiesOperations';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated, login } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/'); // Redirect to index page if already authenticated
+    }
+  }, [isAuthenticated, navigate]);
 
   const setAuthCookies = (jwtToken) => {
     const parts = jwtToken.split('.');
     setCookie('jwtHeaderPayload', `${parts[0]}.${parts[1]}`, 1);
     setCookie('jwtSignature', parts[2], 1);
-    //document.cookie = `jwtHeaderPayload=${parts[0]}.${parts[1]}; Secure; SameSite=Strict; path=/`;
-    //document.cookie = `jwtSignature=${parts[2]}; HttpOnly; Secure; SameSite=Strict; path=/`;
+  };
+
+  const SignIn = (jwtToken) => {
+    setAuthCookies(jwtToken);
+    login();
+    //redirect to index
   };
 
   const handleGoogleLoginSuccess = async (credentialResponse) => {
@@ -34,9 +49,8 @@ const Login = () => {
       console.log(response);
 
       const jwtToken = response.data;
-
-      setAuthCookies(jwtToken);
-      localStorage.setItem('jwtToken', jwtToken);
+      SignIn(jwtToken);
+      //setAuthCookies(jwtToken);
       console.log('JWT Token:', jwtToken);
     } catch (error) {
       console.error('Error sending token to backend:', error);
@@ -54,8 +68,7 @@ const Login = () => {
     try {
       const result = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/Authentication/facebook-login`, { name, email, UserId: id });
       const jwtToken = result.data;
-      setAuthCookies(jwtToken);
-      localStorage.setItem('jwtToken', jwtToken);
+      SignIn(jwtToken);
       console.log('JWT Token:', jwtToken);
     } catch (error) {
       console.error('Error sending token to backend:', error);
@@ -75,8 +88,7 @@ const Login = () => {
       const loginResult = response.data;
 
       if (loginResult.success) {
-        setAuthCookies(loginResult.token);
-        localStorage.setItem('jwtToken', loginResult.token);
+        SignIn(loginResult.token);
         console.log('JWT Token:', loginResult.token);
       } else {
         setError('Invalid username or password');
