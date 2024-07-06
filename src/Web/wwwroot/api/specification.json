@@ -596,6 +596,48 @@
             "description": ""
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "UpdateExercise",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateExerciseCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/Exercises": {
@@ -610,36 +652,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateExerciseCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Exercises"
-        ],
-        "operationId": "UpdateExercise",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateExerciseCommand"
               }
             }
           },
@@ -815,17 +827,17 @@
           }
         }
       },
-      "put": {
+      "delete": {
         "tags": [
           "MuscleGroups"
         ],
-        "operationId": "UpdateMuscleGroup",
+        "operationId": "DeleteMuscleGroup",
         "requestBody": {
           "x-name": "command",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateMuscleGroupCommand"
+                "$ref": "#/components/schemas/DeleteMuscleGroupCommand"
               }
             }
           },
@@ -844,23 +856,37 @@
             }
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/MuscleGroups/{id}": {
+      "put": {
         "tags": [
           "MuscleGroups"
         ],
-        "operationId": "DeleteMuscleGroup",
+        "operationId": "UpdateMuscleGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeleteMuscleGroupCommand"
+                "$ref": "#/components/schemas/UpdateMuscleGroupCommand"
               }
             }
           },
           "required": true,
-          "x-position": 1
+          "x-position": 2
         },
         "responses": {
           "200": {

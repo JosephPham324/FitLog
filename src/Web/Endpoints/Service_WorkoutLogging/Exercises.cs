@@ -41,7 +41,7 @@ public class Exercises : EndpointGroupBase
         return sender.Send(command);
     }
 
-    public Task<Result> UpdateExercise(ISender sender, [FromBody] UpdateExerciseCommand command)
+    public Task<Result> UpdateExercise(ISender sender, int id, [FromBody] UpdateExerciseCommand command)
     {
         return sender.Send(command);
     }

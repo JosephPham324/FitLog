@@ -43,7 +43,7 @@ public class MuscleGroups : EndpointGroupBase
 
     }
 
-    public Task<Result> UpdateMuscleGroup(ISender sender, [FromBody] UpdateMuscleGroupCommand command)
+    public Task<Result> UpdateMuscleGroup(ISender sender, int id, [FromBody] UpdateMuscleGroupCommand command)
     {
         return sender.Send(command);
     }
