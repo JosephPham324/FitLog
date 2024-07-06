@@ -521,7 +521,7 @@ export class EquipmentsClient {
         return Promise.resolve<any>(null as any);
     }
 
-    updateEquipment(id: number, command: UpdateEquipmentCommand): Promise<void> {
+    updateEquipment(id: number, command: UpdateEquipmentCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Equipments/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -535,6 +535,7 @@ export class EquipmentsClient {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -543,23 +544,26 @@ export class EquipmentsClient {
         });
     }
 
-    protected processUpdateEquipment(response: Response): Promise<void> {
+    protected processUpdateEquipment(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    deleteEquipment(id: number, command: DeleteEquipmentCommand): Promise<void> {
+    deleteEquipment(id: number, command: DeleteEquipmentCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Equipments/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -573,6 +577,7 @@ export class EquipmentsClient {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -581,23 +586,26 @@ export class EquipmentsClient {
         });
     }
 
-    protected processDeleteEquipment(response: Response): Promise<void> {
+    protected processDeleteEquipment(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    createEquipment(command: CreateEquipmentCommand): Promise<number> {
+    createEquipment(command: CreateEquipmentCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Equipments";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -617,7 +625,7 @@ export class EquipmentsClient {
         });
     }
 
-    protected processCreateEquipment(response: Response): Promise<number> {
+    protected processCreateEquipment(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -625,8 +633,7 @@ export class EquipmentsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -634,7 +641,7 @@ export class EquipmentsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 }
 
@@ -767,7 +774,7 @@ export class ExercisesClient {
         return Promise.resolve<void>(null as any);
     }
 
-    createExercise(command: CreateExerciseCommand): Promise<number> {
+    createExercise(command: CreateExerciseCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Exercises";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -787,7 +794,7 @@ export class ExercisesClient {
         });
     }
 
-    protected processCreateExercise(response: Response): Promise<number> {
+    protected processCreateExercise(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -795,8 +802,7 @@ export class ExercisesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -804,10 +810,10 @@ export class ExercisesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    updateExercise(command: UpdateExerciseCommand): Promise<boolean> {
+    updateExercise(command: UpdateExerciseCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Exercises";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -827,7 +833,7 @@ export class ExercisesClient {
         });
     }
 
-    protected processUpdateExercise(response: Response): Promise<boolean> {
+    protected processUpdateExercise(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -835,8 +841,7 @@ export class ExercisesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -844,10 +849,10 @@ export class ExercisesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    deleteExercise(command: DeleteExerciseCommand): Promise<boolean> {
+    deleteExercise(command: DeleteExerciseCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Exercises";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -867,7 +872,7 @@ export class ExercisesClient {
         });
     }
 
-    protected processDeleteExercise(response: Response): Promise<boolean> {
+    protected processDeleteExercise(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -875,8 +880,7 @@ export class ExercisesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -884,10 +888,10 @@ export class ExercisesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    importExercises(command: ImportExercisesCommand): Promise<number> {
+    importExercises(command: ImportExercisesCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Exercises/import-exercises";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -907,7 +911,7 @@ export class ExercisesClient {
         });
     }
 
-    protected processImportExercises(response: Response): Promise<number> {
+    protected processImportExercises(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -915,8 +919,7 @@ export class ExercisesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -924,7 +927,7 @@ export class ExercisesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 }
 
@@ -938,7 +941,7 @@ export class MuscleGroupsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createMuscleGroup(command: CreateMuscleGroupCommand): Promise<number> {
+    createMuscleGroup(command: CreateMuscleGroupCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/MuscleGroups/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -958,7 +961,7 @@ export class MuscleGroupsClient {
         });
     }
 
-    protected processCreateMuscleGroup(response: Response): Promise<number> {
+    protected processCreateMuscleGroup(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -966,8 +969,7 @@ export class MuscleGroupsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -975,7 +977,7 @@ export class MuscleGroupsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
     getMuscleGroupsList(pageNumber: number, pageSize: number): Promise<PaginatedListOfMuscleGroupDTO> {
@@ -1056,7 +1058,7 @@ export class MuscleGroupsClient {
         return Promise.resolve<MuscleGroupDTO2>(null as any);
     }
 
-    updateMuscleGroup(command: UpdateMuscleGroupCommand): Promise<UpdateMuscleGroupDTO> {
+    updateMuscleGroup(command: UpdateMuscleGroupCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/MuscleGroups";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1076,7 +1078,7 @@ export class MuscleGroupsClient {
         });
     }
 
-    protected processUpdateMuscleGroup(response: Response): Promise<UpdateMuscleGroupDTO> {
+    protected processUpdateMuscleGroup(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1084,7 +1086,7 @@ export class MuscleGroupsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UpdateMuscleGroupDTO.fromJS(resultData200);
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1092,10 +1094,10 @@ export class MuscleGroupsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UpdateMuscleGroupDTO>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    deleteMuscleGroup(command: DeleteMuscleGroupCommand): Promise<boolean> {
+    deleteMuscleGroup(command: DeleteMuscleGroupCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/MuscleGroups";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1115,7 +1117,7 @@ export class MuscleGroupsClient {
         });
     }
 
-    protected processDeleteMuscleGroup(response: Response): Promise<boolean> {
+    protected processDeleteMuscleGroup(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1123,8 +1125,7 @@ export class MuscleGroupsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1132,7 +1133,7 @@ export class MuscleGroupsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 }
 
@@ -1146,7 +1147,7 @@ export class TrainingSurveyClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createTrainingSurvey(command: CreateSurveyAnswerCommand): Promise<TrainingSurveyDTO> {
+    createTrainingSurvey(command: CreateSurveyAnswerCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/TrainingSurvey/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1166,7 +1167,7 @@ export class TrainingSurveyClient {
         });
     }
 
-    protected processCreateTrainingSurvey(response: Response): Promise<TrainingSurveyDTO> {
+    protected processCreateTrainingSurvey(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1174,7 +1175,7 @@ export class TrainingSurveyClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TrainingSurveyDTO.fromJS(resultData200);
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1182,7 +1183,7 @@ export class TrainingSurveyClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<TrainingSurveyDTO>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 }
 
@@ -1279,7 +1280,7 @@ export class WorkoutLogClient {
         return Promise.resolve<any>(null as any);
     }
 
-    createExerciseLog(command: CreateWorkoutLogCommand): Promise<number> {
+    createExerciseLog(command: CreateWorkoutLogCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutLog";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1299,7 +1300,7 @@ export class WorkoutLogClient {
         });
     }
 
-    protected processCreateExerciseLog(response: Response): Promise<number> {
+    protected processCreateExerciseLog(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1307,8 +1308,7 @@ export class WorkoutLogClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1316,10 +1316,10 @@ export class WorkoutLogClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    updateWorkoutLog(id: number, command: UpdateWorkoutLogCommand): Promise<boolean> {
+    updateWorkoutLog(id: number, command: UpdateWorkoutLogCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutLog/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1342,7 +1342,7 @@ export class WorkoutLogClient {
         });
     }
 
-    protected processUpdateWorkoutLog(response: Response): Promise<boolean> {
+    protected processUpdateWorkoutLog(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1350,8 +1350,7 @@ export class WorkoutLogClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1359,10 +1358,10 @@ export class WorkoutLogClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    deleteWorkoutLog(id: number, command: DeleteWorkoutLogCommand): Promise<boolean> {
+    deleteWorkoutLog(id: number, command: DeleteWorkoutLogCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutLog/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1385,7 +1384,7 @@ export class WorkoutLogClient {
         });
     }
 
-    protected processDeleteWorkoutLog(response: Response): Promise<boolean> {
+    protected processDeleteWorkoutLog(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1393,8 +1392,7 @@ export class WorkoutLogClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1402,7 +1400,7 @@ export class WorkoutLogClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 }
 
@@ -1805,7 +1803,7 @@ export class UsersClient {
         return Promise.resolve<LoginResultDTO>(null as any);
     }
 
-    register(command: RegisterCommand): Promise<RegisterResultDTO> {
+    register(command: RegisterCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Users/register";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1825,7 +1823,7 @@ export class UsersClient {
         });
     }
 
-    protected processRegister(response: Response): Promise<RegisterResultDTO> {
+    protected processRegister(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1833,7 +1831,7 @@ export class UsersClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RegisterResultDTO.fromJS(resultData200);
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1841,7 +1839,7 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RegisterResultDTO>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
     getUserList(pageNumber: number, pageSize: number): Promise<PaginatedListOfAspNetUserListDTO> {
@@ -2064,7 +2062,7 @@ export class UsersClient {
         return Promise.resolve<UserProfileDTO>(null as any);
     }
 
-    createUser(command: CreateUserCommand): Promise<RegisterResultDTO> {
+    createUser(command: CreateUserCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Users/create-account";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2084,7 +2082,7 @@ export class UsersClient {
         });
     }
 
-    protected processCreateUser(response: Response): Promise<RegisterResultDTO> {
+    protected processCreateUser(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2092,7 +2090,7 @@ export class UsersClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RegisterResultDTO.fromJS(resultData200);
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2100,10 +2098,10 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RegisterResultDTO>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    deleteAccount(id: string): Promise<boolean> {
+    deleteAccount(id: string): Promise<Result> {
         let url_ = this.baseUrl + "/api/Users/delete-account/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -2122,7 +2120,7 @@ export class UsersClient {
         });
     }
 
-    protected processDeleteAccount(response: Response): Promise<boolean> {
+    protected processDeleteAccount(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2130,8 +2128,7 @@ export class UsersClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2139,10 +2136,10 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    recoverAccount(command: RecoverAccountCommand): Promise<RecoveryResultDTO> {
+    recoverAccount(command: RecoverAccountCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Users/recover-account";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2162,7 +2159,7 @@ export class UsersClient {
         });
     }
 
-    protected processRecoverAccount(response: Response): Promise<RecoveryResultDTO> {
+    protected processRecoverAccount(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2170,7 +2167,7 @@ export class UsersClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RecoveryResultDTO.fromJS(resultData200);
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2178,7 +2175,7 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RecoveryResultDTO>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 }
 
@@ -2230,7 +2227,7 @@ export class CoachingServicesClient {
         return Promise.resolve<CoachingServiceDetailsDto>(null as any);
     }
 
-    updateCoachingService(id: number, command: UpdateCoachingServiceCommand): Promise<void> {
+    updateCoachingService(id: number, command: UpdateCoachingServiceCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/CoachingServices/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -2244,6 +2241,7 @@ export class CoachingServicesClient {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -2252,23 +2250,26 @@ export class CoachingServicesClient {
         });
     }
 
-    protected processUpdateCoachingService(response: Response): Promise<void> {
+    protected processUpdateCoachingService(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    deleteCoachingService(id: number): Promise<void> {
+    deleteCoachingService(id: number): Promise<Result> {
         let url_ = this.baseUrl + "/api/CoachingServices/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -2278,6 +2279,7 @@ export class CoachingServicesClient {
         let options_: RequestInit = {
             method: "DELETE",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -2286,20 +2288,23 @@ export class CoachingServicesClient {
         });
     }
 
-    protected processDeleteCoachingService(response: Response): Promise<void> {
+    protected processDeleteCoachingService(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
     getPaginatedCoachingServices(pageNumber: number, pageSize: number): Promise<PaginatedListOfCoachingServiceDTO> {
@@ -2345,7 +2350,7 @@ export class CoachingServicesClient {
         return Promise.resolve<PaginatedListOfCoachingServiceDTO>(null as any);
     }
 
-    createCoachingService(command: CreateCoachingServiceCommand): Promise<number> {
+    createCoachingService(command: CreateCoachingServiceCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/CoachingServices";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2365,7 +2370,7 @@ export class CoachingServicesClient {
         });
     }
 
-    protected processCreateCoachingService(response: Response): Promise<number> {
+    protected processCreateCoachingService(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2373,8 +2378,7 @@ export class CoachingServicesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2382,7 +2386,7 @@ export class CoachingServicesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
     getPaginatedCoachingServicesOfUser(userIdPath: string, pageNumber: number, pageSize: number): Promise<PaginatedListOfCoachingServiceDTO> {
@@ -2481,7 +2485,7 @@ export class CoachProfileClient {
         return Promise.resolve<any>(null as any);
     }
 
-    updateCoachProfileDetails(id: string, request: UpdateCoachProfileCommand): Promise<any> {
+    updateCoachProfileDetails(id: string, request: UpdateCoachProfileCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/CoachProfile/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -2504,7 +2508,7 @@ export class CoachProfileClient {
         });
     }
 
-    protected processUpdateCoachProfileDetails(response: Response): Promise<any> {
+    protected processUpdateCoachProfileDetails(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2512,8 +2516,7 @@ export class CoachProfileClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2521,10 +2524,10 @@ export class CoachProfileClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    createCoachApplication(request: CreateCoachApplicationQuery): Promise<boolean> {
+    createCoachApplication(request: CreateCoachApplicationQuery): Promise<Result> {
         let url_ = this.baseUrl + "/api/CoachProfile/apply-coach";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2544,7 +2547,7 @@ export class CoachProfileClient {
         });
     }
 
-    protected processCreateCoachApplication(response: Response): Promise<boolean> {
+    protected processCreateCoachApplication(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2552,8 +2555,7 @@ export class CoachProfileClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2561,10 +2563,10 @@ export class CoachProfileClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    updateCoachApplication(id: string, request: UpdateCoachApplicationStatusCommand): Promise<any> {
+    updateCoachApplication(id: string, request: UpdateCoachApplicationStatusCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/CoachProfile/update-application?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined and cannot be null.");
@@ -2588,7 +2590,7 @@ export class CoachProfileClient {
         });
     }
 
-    protected processUpdateCoachApplication(response: Response): Promise<any> {
+    protected processUpdateCoachApplication(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2596,8 +2598,7 @@ export class CoachProfileClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2605,10 +2606,10 @@ export class CoachProfileClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    getApplicationsWithPagination(pageNumber: number, pageSize: number): Promise<any> {
+    getApplicationsWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfCoachApplicationDto> {
         let url_ = this.baseUrl + "/api/CoachProfile/paginated-list?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
@@ -2632,7 +2633,7 @@ export class CoachProfileClient {
         });
     }
 
-    protected processGetApplicationsWithPagination(response: Response): Promise<any> {
+    protected processGetApplicationsWithPagination(response: Response): Promise<PaginatedListOfCoachApplicationDto> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2640,8 +2641,7 @@ export class CoachProfileClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = PaginatedListOfCoachApplicationDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2649,7 +2649,7 @@ export class CoachProfileClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<PaginatedListOfCoachApplicationDto>(null as any);
     }
 }
 
@@ -3338,6 +3338,54 @@ export class EquipmentDTO implements IEquipmentDTO {
 export interface IEquipmentDTO {
     equipmentId?: number;
     equipmentName?: string | undefined;
+}
+
+export class Result implements IResult {
+    success?: boolean;
+    errors?: string[];
+
+    constructor(data?: IResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): Result {
+        data = typeof data === 'object' ? data : {};
+        let result = new Result();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IResult {
+    success?: boolean;
+    errors?: string[];
 }
 
 export class CreateEquipmentCommand implements ICreateEquipmentCommand {
@@ -4056,54 +4104,6 @@ export interface IMuscleGroupDTO2 {
     imageUrl?: string | undefined;
 }
 
-export class UpdateMuscleGroupDTO implements IUpdateMuscleGroupDTO {
-    success?: boolean;
-    errors?: string[];
-
-    constructor(data?: IUpdateMuscleGroupDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.success = _data["success"];
-            if (Array.isArray(_data["errors"])) {
-                this.errors = [] as any;
-                for (let item of _data["errors"])
-                    this.errors!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): UpdateMuscleGroupDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateMuscleGroupDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["success"] = this.success;
-        if (Array.isArray(this.errors)) {
-            data["errors"] = [];
-            for (let item of this.errors)
-                data["errors"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IUpdateMuscleGroupDTO {
-    success?: boolean;
-    errors?: string[];
-}
-
 export class UpdateMuscleGroupCommand implements IUpdateMuscleGroupCommand {
     id?: number;
     muscleGroupName?: string | undefined;
@@ -4182,70 +4182,6 @@ export class DeleteMuscleGroupCommand implements IDeleteMuscleGroupCommand {
 
 export interface IDeleteMuscleGroupCommand {
     id?: number;
-}
-
-export class TrainingSurveyDTO implements ITrainingSurveyDTO {
-    userId!: string;
-    goal?: string | undefined;
-    daysPerWeek?: number | undefined;
-    experienceLevel?: string | undefined;
-    gymType?: string | undefined;
-    musclesPriority?: string | undefined;
-    age?: number | undefined;
-    lastModified?: Date;
-
-    constructor(data?: ITrainingSurveyDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.userId = _data["userId"];
-            this.goal = _data["goal"];
-            this.daysPerWeek = _data["daysPerWeek"];
-            this.experienceLevel = _data["experienceLevel"];
-            this.gymType = _data["gymType"];
-            this.musclesPriority = _data["musclesPriority"];
-            this.age = _data["age"];
-            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): TrainingSurveyDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new TrainingSurveyDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        data["goal"] = this.goal;
-        data["daysPerWeek"] = this.daysPerWeek;
-        data["experienceLevel"] = this.experienceLevel;
-        data["gymType"] = this.gymType;
-        data["musclesPriority"] = this.musclesPriority;
-        data["age"] = this.age;
-        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ITrainingSurveyDTO {
-    userId: string;
-    goal?: string | undefined;
-    daysPerWeek?: number | undefined;
-    experienceLevel?: string | undefined;
-    gymType?: string | undefined;
-    musclesPriority?: string | undefined;
-    age?: number | undefined;
-    lastModified?: Date;
 }
 
 export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
@@ -7620,54 +7556,6 @@ export interface IFacebookLoginRequest {
     email?: string;
 }
 
-export class RegisterResultDTO implements IRegisterResultDTO {
-    success?: boolean;
-    errors?: string[];
-
-    constructor(data?: IRegisterResultDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.success = _data["success"];
-            if (Array.isArray(_data["errors"])) {
-                this.errors = [] as any;
-                for (let item of _data["errors"])
-                    this.errors!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): RegisterResultDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new RegisterResultDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["success"] = this.success;
-        if (Array.isArray(this.errors)) {
-            data["errors"] = [];
-            for (let item of this.errors)
-                data["errors"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IRegisterResultDTO {
-    success?: boolean;
-    errors?: string[];
-}
-
 export class RegisterCommand implements IRegisterCommand {
     email?: string;
     password?: string;
@@ -8180,46 +8068,6 @@ export interface ICreateUserCommand {
     role?: string;
 }
 
-export class RecoveryResultDTO implements IRecoveryResultDTO {
-    success?: boolean;
-    message?: string | undefined;
-
-    constructor(data?: IRecoveryResultDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.success = _data["success"];
-            this.message = _data["message"];
-        }
-    }
-
-    static fromJS(data: any): RecoveryResultDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new RecoveryResultDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["success"] = this.success;
-        data["message"] = this.message;
-        return data;
-    }
-}
-
-export interface IRecoveryResultDTO {
-    success?: boolean;
-    message?: string | undefined;
-}
-
 export class RecoverAccountCommand implements IRecoverAccountCommand {
     email?: string;
 
@@ -8670,6 +8518,134 @@ export interface IUpdateCoachApplicationStatusCommand {
     status?: string;
     statusReason?: string | undefined;
     updatedById?: string;
+}
+
+export class PaginatedListOfCoachApplicationDto implements IPaginatedListOfCoachApplicationDto {
+    items?: CoachApplicationDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfCoachApplicationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CoachApplicationDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfCoachApplicationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfCoachApplicationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfCoachApplicationDto {
+    items?: CoachApplicationDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class CoachApplicationDto implements ICoachApplicationDto {
+    id?: number;
+    applicantId?: string;
+    status?: string;
+    statusReason?: string | undefined;
+    created?: Date;
+    lastModified?: Date;
+    applicantName?: string;
+    applicantEmail?: string;
+
+    constructor(data?: ICoachApplicationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.applicantId = _data["applicantId"];
+            this.status = _data["status"];
+            this.statusReason = _data["statusReason"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.applicantName = _data["applicantName"];
+            this.applicantEmail = _data["applicantEmail"];
+        }
+    }
+
+    static fromJS(data: any): CoachApplicationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CoachApplicationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["applicantId"] = this.applicantId;
+        data["status"] = this.status;
+        data["statusReason"] = this.statusReason;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["applicantName"] = this.applicantName;
+        data["applicantEmail"] = this.applicantEmail;
+        return data;
+    }
+}
+
+export interface ICoachApplicationDto {
+    id?: number;
+    applicantId?: string;
+    status?: string;
+    statusReason?: string | undefined;
+    created?: Date;
+    lastModified?: Date;
+    applicantName?: string;
+    applicantEmail?: string;
 }
 
 function formatDate(d: Date) {

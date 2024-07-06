@@ -55,7 +55,7 @@ public class Users : EndpointGroupBase
     /// <param name="sender">The sender used to send the register command.</param>
     /// <param name="command">The register command containing the user's registration information.</param>
     /// <returns>A task that represents the asynchronous register operation. The task result contains the register result DTO.</returns>
-    public Task<RegisterResultDTO> Register(ISender sender, [FromBody] RegisterCommand command)
+    public Task<Result> Register(ISender sender, [FromBody] RegisterCommand command)
     {
         return sender.Send(command);
     }
@@ -107,19 +107,19 @@ public class Users : EndpointGroupBase
         return sender.Send(request);
     }
 
-    public Task<RegisterResultDTO> CreateUser(ISender sender, [FromBody] CreateUserCommand command)
+    public Task<Result> CreateUser(ISender sender, [FromBody] CreateUserCommand command)
     {
         return sender.Send(command);
     }
 
     //Delete account endpoint
-    public Task<bool> DeleteAccount(ISender sender,string id)
+    public Task<Result> DeleteAccount(ISender sender,string id)
     {
         return sender.Send(new DeleteAccountCommand(id));
     }
 
     //Recover account endpoint
-    public Task<RecoveryResultDTO> RecoverAccount(ISender sender, [FromBody] RecoverAccountCommand command)
+    public Task<Result> RecoverAccount(ISender sender, [FromBody] RecoverAccountCommand command)
     {
         return sender.Send(command);
     }

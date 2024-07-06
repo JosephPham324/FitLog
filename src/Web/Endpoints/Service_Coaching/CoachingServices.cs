@@ -40,21 +40,21 @@ public class CoachingServices : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public Task<int> CreateCoachingService(ISender sender, [FromBody] CreateCoachingServiceCommand command)
+    public Task<Result> CreateCoachingService(ISender sender, [FromBody] CreateCoachingServiceCommand command)
     {
         return sender.Send(command);
     }
 
-    public async Task<IResult> UpdateCoachingService(ISender sender, int id, [FromBody] UpdateCoachingServiceCommand command)
+    public async Task<Result> UpdateCoachingService(ISender sender, int id, [FromBody] UpdateCoachingServiceCommand command)
     {
-        if (id != command.Id) return Results.BadRequest("None matching id between request and data");
-        await sender.Send(command);
-        return Results.NoContent();
+        if (id != command.Id) return Result.Failure(["Id doesn't match instance"]);
+        var result = await sender.Send(command);
+        return result;
     }
 
-    public async Task<IResult> DeleteCoachingService(ISender sender, int id)
+    public async Task<Result> DeleteCoachingService(ISender sender, int id)
     {
-        await sender.Send(new DeleteCoachingServiceCommand { Id = id });
-        return Results.NoContent();
+        var result = await sender.Send(new DeleteCoachingServiceCommand { Id = id });
+        return result;
     }
 }

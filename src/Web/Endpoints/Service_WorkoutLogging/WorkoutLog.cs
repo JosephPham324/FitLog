@@ -36,15 +36,15 @@ public class WorkoutLog : EndpointGroupBase
         return result;
     }
 
-    public Task<int> CreateExerciseLog(ISender sender, [FromBody] CreateWorkoutLogCommand command)
+    public Task<Result> CreateExerciseLog(ISender sender, [FromBody] CreateWorkoutLogCommand command)
     {
         return sender.Send(command);
     }
-    public Task<bool> DeleteWorkoutLog(ISender sender, int id, [FromBody] DeleteWorkoutLogCommand command)
+    public Task<Result> DeleteWorkoutLog(ISender sender, int id, [FromBody] DeleteWorkoutLogCommand command)
     {
         return sender.Send(command);
     }
-    public Task<bool> UpdateWorkoutLog(ISender sender, int id, [FromBody] UpdateWorkoutLogCommand command)
+    public Task<Result> UpdateWorkoutLog(ISender sender, int id, [FromBody] UpdateWorkoutLogCommand command)
     {
         return sender.Send(command);
     }

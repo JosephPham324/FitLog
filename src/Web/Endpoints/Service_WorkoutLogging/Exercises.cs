@@ -36,17 +36,17 @@ public class Exercises : EndpointGroupBase
         return result is not null ? Results.Ok(result) : Results.NotFound();
     }
 
-    public Task<int> CreateExercise(ISender sender, [FromBody]CreateExerciseCommand command)
+    public Task<Result> CreateExercise(ISender sender, [FromBody]CreateExerciseCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> UpdateExercise(ISender sender, [FromBody] UpdateExerciseCommand command)
+    public Task<Result> UpdateExercise(ISender sender, [FromBody] UpdateExerciseCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> DeleteExercise(ISender sender, [FromBody] DeleteExerciseCommand command)
+    public Task<Result> DeleteExercise(ISender sender, [FromBody] DeleteExerciseCommand command)
     {
         return sender.Send(command);
     }
@@ -56,7 +56,7 @@ public class Exercises : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public Task<int> ImportExercises(ISender sender, [FromBody] ImportExercisesCommand command)
+    public Task<Result> ImportExercises(ISender sender, [FromBody] ImportExercisesCommand command)
     {
         return sender.Send(command);
     }

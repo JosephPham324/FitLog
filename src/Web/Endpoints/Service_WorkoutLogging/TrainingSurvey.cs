@@ -1,4 +1,5 @@
-﻿using FitLog.Application.TrainingSurveys.Commands;
+﻿using FitLog.Application.Common.Models;
+using FitLog.Application.TrainingSurveys.Commands;
 using FitLog.Application.Users.Queries.GetUsers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Win32;
@@ -13,7 +14,7 @@ public class TrainingSurvey : EndpointGroupBase
             .MapPost(CreateTrainingSurvey, "create");
     }
 
-    public Task<TrainingSurveyDTO> CreateTrainingSurvey(ISender sender, [FromBody] CreateSurveyAnswerCommand command)
+    public Task<Result> CreateTrainingSurvey(ISender sender, [FromBody] CreateSurveyAnswerCommand command)
     {
         return sender.Send(command);
     }

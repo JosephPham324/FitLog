@@ -1,9 +1,10 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.CoachProfiles.Queries.CreateCoachApplication;
 
-public record CreateCoachApplicationQuery : IRequest<bool>
+public record CreateCoachApplicationQuery : IRequest<Result>
 {
     public string? Token { get; init; }
 }
@@ -15,7 +16,7 @@ public class CreateCoachApplicationQueryValidator : AbstractValidator<CreateCoac
     }
 }
 
-public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApplicationQuery, bool>
+public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApplicationQuery, Result>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUserTokenService _tokenService;
@@ -26,14 +27,15 @@ public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApp
         _tokenService = tokenService;
     }
 
-    public async Task<bool> Handle(CreateCoachApplicationQuery request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateCoachApplicationQuery request, CancellationToken cancellationToken)
     {
         var userId = _tokenService.GetUserIdFromGivenToken(request.Token??"");
 
 
         if (userId == null)
         {
-            throw new UnauthorizedAccessException("User is not authenticated");
+            return Result.Failure(["User is not authenticated"]);
+            //throw new UnauthorizedAccessException("User is not authenticated");
         }
 
         var coachApplication = new CoachApplication
@@ -47,6 +49,6 @@ public class CreateCoachApplicationQueryHandler : IRequestHandler<CreateCoachApp
         _context.CoachApplications.Add(coachApplication);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result.Successful();
     }
 }
