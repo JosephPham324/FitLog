@@ -1,10 +1,11 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Constants;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Exercises.Commands.UpdateExercise;
 
-public record UpdateExerciseCommand : IRequest<bool>
+public record UpdateExerciseCommand : IRequest<Result>
 {
     public int ExerciseId { get; init; }
     public string? CreatedBy { get; init; }
@@ -83,7 +84,7 @@ public class UpdateExerciseCommandValidator : AbstractValidator<UpdateExerciseCo
     }
 }
 
-public class UpdateExerciseCommandHandler : IRequestHandler<UpdateExerciseCommand, bool>
+public class UpdateExerciseCommandHandler : IRequestHandler<UpdateExerciseCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -92,7 +93,7 @@ public class UpdateExerciseCommandHandler : IRequestHandler<UpdateExerciseComman
         _context = context;
     }
 
-    public async Task<bool> Handle(UpdateExerciseCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateExerciseCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Exercises
             .Include(e => e.ExerciseMuscleGroups)
@@ -100,7 +101,7 @@ public class UpdateExerciseCommandHandler : IRequestHandler<UpdateExerciseComman
 
         if (entity == null)
         {
-            return false; // Entity not found
+            return Result.Failure(["Exercise not found"]); // Entity not found
         }
 
         entity.CreatedBy = request.CreatedBy;
@@ -121,12 +122,12 @@ public class UpdateExerciseCommandHandler : IRequestHandler<UpdateExerciseComman
         try
         {
             await _context.SaveChangesAsync(cancellationToken);
-            return true; // Successfully updated
+            return Result.Successful(); // Successfully updated
         }
         catch (Exception)
         {
             // Log the exception (optional)
-            return false; // Update failed
+            return Result.Failure(["Error updating exercise"]); // Update failed
         }
     }
 }

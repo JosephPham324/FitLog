@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Equipments.Commands.CreateEquipment;
-public record CreateEquipmentCommand : IRequest<int>
+public record CreateEquipmentCommand : IRequest<Result>
 {
     public string? EquipmentName { get; set; }
 
@@ -16,7 +17,7 @@ public record CreateEquipmentCommand : IRequest<int>
 
 
 
-public class CreateEquipmentCommandHandler : IRequestHandler<CreateEquipmentCommand, int>
+public class CreateEquipmentCommandHandler : IRequestHandler<CreateEquipmentCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -25,7 +26,7 @@ public class CreateEquipmentCommandHandler : IRequestHandler<CreateEquipmentComm
         _context = context;
     }
 
-    public async Task<int> Handle(CreateEquipmentCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateEquipmentCommand request, CancellationToken cancellationToken)
     {
         var entity = new Equipment
         {
@@ -37,6 +38,6 @@ public class CreateEquipmentCommandHandler : IRequestHandler<CreateEquipmentComm
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return entity.EquipmentId;
+        return Result.Successful();
     }
 }

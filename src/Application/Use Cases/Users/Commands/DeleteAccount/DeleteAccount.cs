@@ -1,8 +1,9 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.Users.Commands.DeleteAccount;
 
-public record DeleteAccountCommand(string UserId) : IRequest<bool>; // Returns true if deletion is successful
+public record DeleteAccountCommand(string UserId) : IRequest<Result>; // Returns true if deletion is successful
 
 
 public class DeleteAccountCommandValidator : AbstractValidator<DeleteAccountCommand>
@@ -13,7 +14,7 @@ public class DeleteAccountCommandValidator : AbstractValidator<DeleteAccountComm
     }
 }
 
-public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand, bool>
+public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,13 +23,13 @@ public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand,
         _context = context;
     }
 
-    public async Task<bool> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
     {
         var user = await _context.AspNetUsers.FindAsync(request.UserId);
 
         if (user == null)
         {
-            throw new NotFoundException("Not found", $"Account with ID {request.UserId} not found");
+            return Result.Failure([$"Account with ID {request.UserId} not found"]);
         }
 
         // Perform a soft delete by setting the IsDeleted flag
@@ -37,7 +38,7 @@ public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand,
         _context.AspNetUsers.Update(user);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result.Successful();
     }
 }
 

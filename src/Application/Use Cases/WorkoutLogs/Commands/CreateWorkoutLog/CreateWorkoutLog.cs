@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Application.ExerciseLogs.Commands.CreateExerciseLogs;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
 
-public record CreateWorkoutLogCommand : IRequest<int>
+public record CreateWorkoutLogCommand : IRequest<Result>
 {
     public string? CreatedBy { get; init; }
     public string? Note { get; init; }
@@ -13,7 +14,7 @@ public record CreateWorkoutLogCommand : IRequest<int>
     public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
 }
 
-public record CreateExerciseLogCommand : IRequest<int>
+public record CreateExerciseLogCommand : IRequest<Result>
 {
     public int? ExerciseId { get; init; }
     public int? OrderInSession { get; init; }
@@ -47,7 +48,7 @@ public class CreateWorkoutLogCommandValidator : AbstractValidator<CreateWorkoutL
     }
 }
 
-public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCommand, int>
+public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -56,7 +57,7 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
         _context = context;
     }
 
-    public async Task<int> Handle(CreateWorkoutLogCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateWorkoutLogCommand request, CancellationToken cancellationToken)
     {
         var workoutLog = new WorkoutLog
         {
@@ -95,7 +96,7 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return workoutLog.WorkoutLogId;
+        return Result.Successful();
     }
 }
 

@@ -4,15 +4,15 @@ public class Result
 {
     internal Result(bool succeeded, IEnumerable<string> errors)
     {
-        Succeeded = succeeded;
+        Success = succeeded;
         Errors = errors.ToArray();
     }
 
-    public bool Succeeded { get; init; }
+    public bool Success { get; init; }
 
     public string[] Errors { get; init; }
 
-    public static Result Success()
+    public static Result Successful()
     {
         return new Result(true, Array.Empty<string>());
     }

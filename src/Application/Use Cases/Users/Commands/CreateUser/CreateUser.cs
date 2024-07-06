@@ -1,4 +1,5 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Application.Users.Commands.Regiser;
 using FitLog.Domain.Constants;
 using FitLog.Domain.Entities;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FitLog.Application.Users.Commands.CreateUser;
 
-public record CreateUserCommand : IRequest<RegisterResultDTO>
+public record CreateUserCommand : IRequest<Result>
 {
     public string Email { get; init; } = string.Empty;
     public string Password { get; init; } = string.Empty;
@@ -27,7 +28,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 
     
 }
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, RegisterResultDTO>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result>
 {
     private readonly UserManager<AspNetUser> _userManager;
 
@@ -36,7 +37,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Regis
         _userManager = userManager;
     }
 
-    public async Task<RegisterResultDTO> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var user = new AspNetUser
         {
@@ -47,16 +48,16 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Regis
         var createUserResult = await _userManager.CreateAsync(user, request.Password);
         if (!createUserResult.Succeeded)
         {
-            return new RegisterResultDTO { Success = false, Errors = createUserResult.Errors.Select(e => e.Description) };
+            return Result.Failure(createUserResult.Errors.Select(e=>e.Description));
         }
 
         // Adding role to user
         var roleAddResult = await _userManager.AddToRoleAsync(user, request.Role);
         if (!roleAddResult.Succeeded)
         {
-            return new RegisterResultDTO { Success = false, Errors = roleAddResult.Errors.Select(e => e.Description) };
+            return Result.Failure(roleAddResult.Errors.Select(e => e.Description));
         }
 
-        return new RegisterResultDTO { Success = true };
+        return Result.Successful();
     }
 }

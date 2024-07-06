@@ -1,9 +1,10 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.CoachingServices.Commands.UpdateCoachingService;
 
-public record UpdateCoachingServiceCommand : IRequest<bool>
+public record UpdateCoachingServiceCommand : IRequest<Result>
 {
     public int Id { get; init; }
     public string ServiceName { get; init; } = null!;
@@ -28,7 +29,7 @@ public class UpdateCoachingServiceCommandValidator : AbstractValidator<UpdateCoa
     }
 }
 
-public class UpdateCoachingServiceCommandHandler : IRequestHandler<UpdateCoachingServiceCommand, bool>
+public class UpdateCoachingServiceCommandHandler : IRequestHandler<UpdateCoachingServiceCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -37,7 +38,7 @@ public class UpdateCoachingServiceCommandHandler : IRequestHandler<UpdateCoachin
         _context = context;
     }
 
-    public async Task<bool> Handle(UpdateCoachingServiceCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateCoachingServiceCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.CoachingServices
             .FirstOrDefaultAsync(cs => cs.Id == request.Id, cancellationToken);
@@ -58,6 +59,6 @@ public class UpdateCoachingServiceCommandHandler : IRequestHandler<UpdateCoachin
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result.Successful();
     }
 }

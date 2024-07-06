@@ -70,7 +70,7 @@ public class IdentityService : IIdentityService
     {
         var user = await _userManager.FindByIdAsync(userId);
 
-        return user != null ? await DeleteUserAsync(user) : Result.Success();
+        return user != null ? await DeleteUserAsync(user) : Result.Successful();
     }
 
     public async Task<Result> DeleteUserAsync(AspNetUser user)

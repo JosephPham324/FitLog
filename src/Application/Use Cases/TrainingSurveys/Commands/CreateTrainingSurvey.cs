@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.TrainingSurveys.Commands;
-public record CreateSurveyAnswerCommand : IRequest<TrainingSurveyDTO>
+public record CreateSurveyAnswerCommand : IRequest<Result>
 {
     public string? UserId { get; set; }
     public string? Goal { get; set; }
@@ -19,7 +20,7 @@ public record CreateSurveyAnswerCommand : IRequest<TrainingSurveyDTO>
 
     public DateTime LastModified { get; set; } = DateTime.UtcNow;
 }
-    public class CreateSurveyAnswerCommandHandler :  IRequestHandler<CreateSurveyAnswerCommand, TrainingSurveyDTO>
+    public class CreateSurveyAnswerCommandHandler :  IRequestHandler<CreateSurveyAnswerCommand, Result>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -30,7 +31,7 @@ public record CreateSurveyAnswerCommand : IRequest<TrainingSurveyDTO>
         _mapper = mapper;
     }
 
-    public async Task<TrainingSurveyDTO> Handle(CreateSurveyAnswerCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateSurveyAnswerCommand command, CancellationToken cancellationToken)
     {
         var surveyAnswer = new SurveyAnswer
         {
@@ -47,6 +48,6 @@ public record CreateSurveyAnswerCommand : IRequest<TrainingSurveyDTO>
         _context.SurveyAnswers.Add(surveyAnswer);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<TrainingSurveyDTO>(surveyAnswer);
+        return Result.Successful();
     }
 }

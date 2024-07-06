@@ -1,8 +1,9 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.Users.Commands.UpdateUser;
 
-public record UpdateUserCommand : IRequest<object>
+public record UpdateUserCommand : IRequest<Result>
 {
 }
 
@@ -13,7 +14,7 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
     }
 }
 
-public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, object>
+public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,7 +23,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, objec
         _context = context;
     }
 
-    public Task<object> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    public Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

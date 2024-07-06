@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.CoachingServices.Commands.CreateCoachingService;
 
-public record CreateCoachingServiceCommand : IRequest<int>
+public record CreateCoachingServiceCommand : IRequest<Result>
 {
     public string ServiceName { get; init; } = null!;
     public string? Description { get; init; }
@@ -30,7 +31,7 @@ public class CreateCoachingServiceCommandValidator : AbstractValidator<CreateCoa
     }
 }
 
-public class CreateCoachingServiceCommandHandler : IRequestHandler<CreateCoachingServiceCommand, int>
+public class CreateCoachingServiceCommandHandler : IRequestHandler<CreateCoachingServiceCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -39,7 +40,7 @@ public class CreateCoachingServiceCommandHandler : IRequestHandler<CreateCoachin
         _context = context;
     }
 
-    public async Task<int> Handle(CreateCoachingServiceCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateCoachingServiceCommand request, CancellationToken cancellationToken)
     {
 
         var defaultUser = await _context.AspNetUsers.FirstOrDefaultAsync(cancellationToken);
@@ -63,6 +64,6 @@ public class CreateCoachingServiceCommandHandler : IRequestHandler<CreateCoachin
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return entity.Id;
+        return Result.Successful();
     }
 }

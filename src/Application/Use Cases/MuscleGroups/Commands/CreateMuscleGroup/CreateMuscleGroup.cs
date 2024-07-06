@@ -1,10 +1,11 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
 using FitLog.Application.Common.ValidationRules;
+using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.MuscleGroups.Commands.CreateMuscleGroup;
 
-public record CreateMuscleGroupCommand : IRequest<int>
+public record CreateMuscleGroupCommand : IRequest<Result>
 {
     public string? MuscleGroupName { get; set; }
     public string? ImageUrl { get; set; }
@@ -38,7 +39,7 @@ public class CreateMuscleGroupCommandValidator : AbstractValidator<CreateMuscleG
 }
 
 
-public class CreateMuscleGroupCommandHandler : IRequestHandler<CreateMuscleGroupCommand, int>
+public class CreateMuscleGroupCommandHandler : IRequestHandler<CreateMuscleGroupCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -47,7 +48,7 @@ public class CreateMuscleGroupCommandHandler : IRequestHandler<CreateMuscleGroup
         _context = context;
     }
 
-    public async Task<int> Handle(CreateMuscleGroupCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateMuscleGroupCommand request, CancellationToken cancellationToken)
     {
         var entity = new MuscleGroup
         {
@@ -59,6 +60,6 @@ public class CreateMuscleGroupCommandHandler : IRequestHandler<CreateMuscleGroup
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return entity.MuscleGroupId;
+        return Result.Successful();
     }
 }

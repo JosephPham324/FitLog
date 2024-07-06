@@ -1,9 +1,10 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.CoachingServices.Commands.DeleteCoachingService;
 
-public record DeleteCoachingServiceCommand : IRequest<bool>
+public record DeleteCoachingServiceCommand : IRequest<Result>
 {
     public int Id { get; init; }
 }
@@ -17,7 +18,7 @@ public class DeleteCoachingServiceCommandValidator : AbstractValidator<DeleteCoa
     }
 }
 
-public class DeleteCoachingServiceCommandHandler : IRequestHandler<DeleteCoachingServiceCommand, bool>
+public class DeleteCoachingServiceCommandHandler : IRequestHandler<DeleteCoachingServiceCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -26,7 +27,7 @@ public class DeleteCoachingServiceCommandHandler : IRequestHandler<DeleteCoachin
         _context = context;
     }
 
-    public async Task<bool> Handle(DeleteCoachingServiceCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteCoachingServiceCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.CoachingServices
             .FirstOrDefaultAsync(cs => cs.Id == request.Id, cancellationToken);
@@ -40,6 +41,6 @@ public class DeleteCoachingServiceCommandHandler : IRequestHandler<DeleteCoachin
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result.Successful();
     }
 }

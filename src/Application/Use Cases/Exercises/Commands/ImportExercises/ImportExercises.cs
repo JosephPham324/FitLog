@@ -1,4 +1,5 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Exercises.Commands.ImportExercises;
@@ -15,7 +16,7 @@ public record ExerciseImport
 }
 
 
-public record ImportExercisesCommand : IRequest<int>
+public record ImportExercisesCommand : IRequest<Result>
 {
     public List<ExerciseImport> Exercises { get; init; } = new();
 }
@@ -37,7 +38,7 @@ public class ImportExercisesCommandValidator : AbstractValidator<ImportExercises
 
 
 
-public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesCommand, int>
+public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -46,7 +47,7 @@ public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesComm
         _context = context;
     }
 
-    public async Task<int> Handle(ImportExercisesCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(ImportExercisesCommand request, CancellationToken cancellationToken)
     {
         int importedCount = 0;
 
@@ -93,7 +94,7 @@ public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesComm
         }
 
         await _context.SaveChangesAsync(cancellationToken);
-        return importedCount;
+        return Result.Successful();
     }
 }
 

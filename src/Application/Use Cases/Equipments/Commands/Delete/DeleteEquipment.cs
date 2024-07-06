@@ -1,8 +1,9 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.Equipments.Commands.Delete;
 
-public record DeleteEquipmentCommand : IRequest<bool>
+public record DeleteEquipmentCommand : IRequest<Result>
 {
     public int EquipmentId { get; init; }
 }
@@ -14,7 +15,7 @@ public class DeleteEquipmentCommandValidator : AbstractValidator<DeleteEquipment
     }
 }
 
-public class DeleteEquipmentCommandHandler : IRequestHandler<DeleteEquipmentCommand, bool>
+public class DeleteEquipmentCommandHandler : IRequestHandler<DeleteEquipmentCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -23,13 +24,13 @@ public class DeleteEquipmentCommandHandler : IRequestHandler<DeleteEquipmentComm
         _context = context;
     }
 
-    public async Task<bool> Handle(DeleteEquipmentCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteEquipmentCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Equipment.FindAsync(new object[] { request.EquipmentId }, cancellationToken);
 
         if (entity == null)
         {
-            return false; // Entity not found
+            return Result.Failure(["Entity not found"]); // Entity not found
         }
 
         _context.Equipment.Remove(entity);
@@ -37,14 +38,14 @@ public class DeleteEquipmentCommandHandler : IRequestHandler<DeleteEquipmentComm
         try
         {
             await _context.SaveChangesAsync(cancellationToken);
-            return true; // Successfully deleted
+            return Result.Successful(); // Successfully deleted
         }
         catch (Exception)
         {
             // Log the exception (optional)
             // _logger.LogError(ex, "Error deleting equipment");
 
-            return false; // Deletion failed
+            return Result.Failure(["Error deleting equipment"]); // Deletion failed
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System.Text.Json;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutLogs.Commands.UpdateWorkoutLog;
 
-public record UpdateWorkoutLogCommand : IRequest<bool>
+public record UpdateWorkoutLogCommand : IRequest<Result>
 {
 
     public int WorkoutLogId { get; init; }
@@ -12,7 +13,7 @@ public record UpdateWorkoutLogCommand : IRequest<bool>
     public TimeOnly? Duration { get; init; }
     public List<UpdateExerciseLogCommand>? ExerciseLogs { get; init; }
 }
-public record UpdateExerciseLogCommand : IRequest<int>
+public record UpdateExerciseLogCommand : IRequest<Result>
 {
     public int? ExerciseLogId { get; init; }
     public int? ExerciseId { get; init; }
@@ -50,7 +51,7 @@ public class UpdateWorkoutLogCommandValidator : AbstractValidator<UpdateWorkoutL
     }
 }
 
-public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCommand, bool>
+public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -59,7 +60,7 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
         _context = context;
     }
 
-    public async Task<bool> Handle(UpdateWorkoutLogCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateWorkoutLogCommand request, CancellationToken cancellationToken)
     {
         var workoutLog = await _context.WorkoutLogs
            .Include(wl => wl.ExerciseLogs)
@@ -67,7 +68,8 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
 
         if (workoutLog == null)
         {
-            throw new NotFoundException(nameof(WorkoutLog), request.WorkoutLogId.ToString());
+            return Result.Failure([$"Workout log with ID {request.WorkoutLogId} not found."]);
+            //throw new NotFoundException(nameof(WorkoutLog), request.WorkoutLogId.ToString());
         }
 
         workoutLog.Note = request.Note;
@@ -124,7 +126,7 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result.Successful();
     }
 }
 

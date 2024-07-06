@@ -3,10 +3,11 @@ using FitLog.Application.Common.ValidationRules;
 using FitLog.Domain.Entities;
 using FitLog.Domain.Constants;
 using Microsoft.Extensions.Logging;
+using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.Exercises.Commands.CreateExercise;
 
-public record CreateExerciseCommand : IRequest<int>
+public record CreateExerciseCommand : IRequest<Result>
 {
     public string? CreatedBy { get; init; }
     public List<int> MuscleGroupIds { get; init; } = new List<int>();
@@ -85,7 +86,7 @@ public class CreateExerciseCommandValidator : AbstractValidator<CreateExerciseCo
     }
 }
 
-public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseCommand, int>
+public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -94,7 +95,7 @@ public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseComman
         _context = context;
     }
 
-    public async Task<int> Handle(CreateExerciseCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateExerciseCommand request, CancellationToken cancellationToken)
     {
         var entity = new Exercise
         {
@@ -114,6 +115,6 @@ public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseComman
 
         _context.Exercises.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
-        return entity.ExerciseId;
+        return Result.Successful();
     }
 }

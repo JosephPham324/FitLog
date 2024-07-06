@@ -1,9 +1,10 @@
 ﻿using System.Text.Json;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.CoachProfiles.Commands.UpdateCoachProfile;
 
-public record UpdateCoachProfileCommand : IRequest<object>
+public record UpdateCoachProfileCommand : IRequest<Result>
 {
     public string UserId { get; init; }
     public string? Bio { get; init; }
@@ -29,7 +30,7 @@ public class UpdateCoachProfileQueryValidator : AbstractValidator<UpdateCoachPro
     }
 }
 
-public class UpdateCoachProfileCommandHandler : IRequestHandler<UpdateCoachProfileCommand, object>
+public class UpdateCoachProfileCommandHandler : IRequestHandler<UpdateCoachProfileCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -38,7 +39,7 @@ public class UpdateCoachProfileCommandHandler : IRequestHandler<UpdateCoachProfi
         _context = context;
     }
 
-    public async Task<object> Handle(UpdateCoachProfileCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateCoachProfileCommand request, CancellationToken cancellationToken)
     {
         var profile = await _context.Profiles
             .FirstOrDefaultAsync(p => p.UserId == request.UserId, cancellationToken);
@@ -69,14 +70,6 @@ public class UpdateCoachProfileCommandHandler : IRequestHandler<UpdateCoachProfi
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new
-        {
-            ProfileId = profile.ProfileId,
-            UserId = profile.UserId,
-            Bio = profile.Bio,
-            ProfilePicture = profile.ProfilePicture,
-            MajorAchievements = profile.MajorAchievements,
-            GalleryImageLinks = profile.GalleryImageLinks
-        };
+        return Result.Successful();
     }
 }

@@ -1,10 +1,11 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
 using FitLog.Application.Common.ValidationRules;
+using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.CoachProfiles.Commands.UpdateCoachApplicationStatus;
 
-public record UpdateCoachApplicationStatusCommand : IRequest<bool>
+public record UpdateCoachApplicationStatusCommand : IRequest<Result>
 {
     public int ApplicationId { get; init; }
     public string Status { get; init; } = null!;
@@ -25,7 +26,7 @@ public class UpdateCoachApplicationStatusCommandValidator : AbstractValidator<Up
     }
 }
 
-public class UpdateCoachApplicationStatusCommandHandler : IRequestHandler<UpdateCoachApplicationStatusCommand, bool>
+public class UpdateCoachApplicationStatusCommandHandler : IRequestHandler<UpdateCoachApplicationStatusCommand, Result>
 {
     private readonly IApplicationDbContext _context;
     private readonly IEmailService _emailService;
@@ -36,7 +37,7 @@ public class UpdateCoachApplicationStatusCommandHandler : IRequestHandler<Update
         _emailService = emailService;
     }
 
-    public async Task<bool> Handle(UpdateCoachApplicationStatusCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateCoachApplicationStatusCommand request, CancellationToken cancellationToken)
     {
         var application = await _context.CoachApplications
             .Include(ca => ca.Applicant) // Ensure Applicant is loaded
@@ -65,6 +66,6 @@ public class UpdateCoachApplicationStatusCommandHandler : IRequestHandler<Update
 
         await _emailService.SendAsync(recepientAddress ?? "", emailSubject, emailBody);
 
-        return true;
+        return Result.Successful();
     }
 }
