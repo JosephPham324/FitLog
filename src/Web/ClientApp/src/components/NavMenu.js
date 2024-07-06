@@ -3,6 +3,7 @@ import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from '
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 import logoImage from '../assets/Logo.png';
+import LogoutButton from './LogoutButton';
 
 export class NavMenu extends Component {
   static displayName = NavMenu.name;
@@ -57,6 +58,9 @@ export class NavMenu extends Component {
               </NavItem>
               <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/Register">Register</NavLink>
+              </NavItem>
+              <NavItem>
+                <LogoutButton />
               </NavItem>
               {/* <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/EquipmentsList">Equipments List</NavLink>

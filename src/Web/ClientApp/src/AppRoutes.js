@@ -2,14 +2,15 @@ import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import { MuscleGroup } from "./components/MuscleGroup";
-import  ExerciseLog  from "./components/ExerciseLog";
-import Login from './components/Login';
+import ExerciseLog from "./components/ExerciseLog";
+import Login from './components/GoogleLogin';
 import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
 import ChatPage from "./page/ChatPage";
 import UserListPage from "./page/TestAxios"; 
+import Logout from "./components/Logout";
 
 const AppRoutes = [
   {
@@ -59,6 +60,10 @@ const AppRoutes = [
   {
     path: '/users-list',
     element: <UserListPage />
+  },
+  {
+    path: '/log-out',
+    element: <Logout/>
   }
 
 ];
