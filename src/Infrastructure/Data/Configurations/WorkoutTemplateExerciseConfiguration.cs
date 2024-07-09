@@ -22,7 +22,8 @@ namespace FitLog.Infrastructure.Data.Configurations
                 .HasForeignKey(d => d.ExerciseId)
                 .HasConstraintName("FK__WorkoutTe__Exerc__403A8C7D");
 
-            builder.HasOne(d => d.WorkoutTemplate).WithMany(p => p.WorkoutTemplateExercises)
+            builder.HasOne(d => d.WorkoutTemplate)
+                .WithMany(p => p.WorkoutTemplateExercises)
                 .HasForeignKey(d => d.WorkoutTemplateId)
                 .HasConstraintName("FK__WorkoutTe__Worko__3F466844");
         }
