@@ -7,11 +7,13 @@ import { Profile } from './page/Profile';
 import { ChangePassword } from './page/ChangePassword';
 import TrainingBoard from './page/TrainingBoard';
 
+
 export default class App extends Component {
   static displayName = App.name;
 
   render() {
     return (
+
       <Layout>
         <Routes>
           {AppRoutes.map((route, index) => {
@@ -26,3 +28,6 @@ export default class App extends Component {
     );
   }
 }
+
+
+

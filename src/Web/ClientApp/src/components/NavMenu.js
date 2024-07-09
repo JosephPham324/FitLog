@@ -3,6 +3,8 @@ import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from '
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 import logoImage from '../assets/Logo.png';
+import LogoutButton from './LogoutButton';
+
 export class NavMenu extends Component {
   static displayName = NavMenu.name;
 
@@ -24,10 +26,9 @@ export class NavMenu extends Component {
   render() {
     return (
       <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
-
+        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
           <NavbarBrand tag={Link} to="/">
-            <img src={logoImage} alt="FitLog Logo" className="logo-nav" /> {/* Thêm hình ?nh logo */}
+            <img src={logoImage} alt="FitLog Logo" className="logo-nav" /> {/* Logo image */}
             FitLog.Web
           </NavbarBrand>
 
@@ -47,14 +48,23 @@ export class NavMenu extends Component {
                 <a className="nav-link text-dark" href="/Identity/Account/Manage">Account</a>
               </NavItem>
               <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/MuscleGroup">Muscle Group</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/ExerciseLog">Exercise Log</NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/Login">Login</NavLink>
               </NavItem>
               <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/Register">Register</NavLink>
               </NavItem>
-              {/*<NavItem>*/}
-              {/*  <NavLink tag={Link} className="text-dark" to="/EquipmentsList">EquipmentsList</NavLink>*/}
-              {/*</NavItem>*/}
+              <NavItem>
+                <LogoutButton />
+              </NavItem>
+              {/* <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/EquipmentsList">Equipments List</NavLink>
+              </NavItem> */}
             </ul>
           </Collapse>
         </Navbar>

@@ -1,9 +1,11 @@
 ﻿using FitLog.Application.Common.Models;
 using FitLog.Application.Exercises.Commands.CreateExercise;
 using FitLog.Application.Exercises.Commands.DeleteExercise;
+using FitLog.Application.Exercises.Commands.ImportExercises;
 using FitLog.Application.Exercises.Commands.UpdateExercise;
 using FitLog.Application.Exercises.Queries.GetExerciseDetails;
 using FitLog.Application.Exercises.Queries.GetExercises;
+using FitLog.Application.Exercises.Queries.GetExercsieTypes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
@@ -14,9 +16,11 @@ public class Exercises : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapGet(GetExercisesWithPagination, "get-all")
+            .MapGet(GetExercisesWithPagination, "paginated-all")
+            .MapGet(GetExerciseTypes, "exercise-types")
             .MapGet(GetExerciseById, "{id}")
             .MapPost(CreateExercise)
+            .MapPost(ImportExercises, "import-exercises")
             .MapPut(UpdateExercise, "{id}")
             .MapDelete(DeleteExercise, "{id}");
     }
@@ -32,17 +36,27 @@ public class Exercises : EndpointGroupBase
         return result is not null ? Results.Ok(result) : Results.NotFound();
     }
 
-    public Task<int> CreateExercise(ISender sender, [AsParameters]CreateExerciseCommand command)
+    public Task<Result> CreateExercise(ISender sender, [FromBody]CreateExerciseCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> UpdateExercise(ISender sender, [AsParameters] UpdateExerciseCommand command)
+    public Task<Result> UpdateExercise(ISender sender, int id, [FromBody] UpdateExerciseCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> DeleteExercise(ISender sender, [AsParameters] DeleteExerciseCommand command)
+    public Task<Result> DeleteExercise(ISender sender, [FromBody] DeleteExerciseCommand command)
+    {
+        return sender.Send(command);
+    }
+
+    public Task<IEnumerable<string?>> GetExerciseTypes(ISender sender, [AsParameters] GetExercsieTypesQuery query)
+    {
+        return sender.Send(query);
+    }
+
+    public Task<Result> ImportExercises(ISender sender, [FromBody] ImportExercisesCommand command)
     {
         return sender.Send(command);
     }

@@ -4,7 +4,11 @@ using FitLog.Application.Equipments.Commands.CreateEquipment;
 using FitLog.Application.Equipments.Queries.GetEquipmentDetails;
 using FitLog.Application.Equipments.Queries.GetEquipmentsList;
 using FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
+using FitLog.Application.WorkoutLogs.Commands.DeleteWorkoutLog;
+using FitLog.Application.WorkoutLogs.Commands.UpdateWorkoutLog;
+using FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
@@ -14,8 +18,11 @@ public class WorkoutLog : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapGet(GetWorkoutLogsWithPagination, "get-all")
-            .MapPost(CreateExerciseLog);
-            
+            .MapGet(GetWorkoutHistory, "history")
+            .MapPost(CreateExerciseLog)
+            .MapPut(UpdateWorkoutLog,"{id}")
+            .MapDelete(DeleteWorkoutLog,"{id}");
+
     }
 
     public Task<PaginatedList<WorkoutLogDTO>> GetWorkoutLogsWithPagination(ISender sender, [AsParameters] GetWorkoutLogsWithPaginationQuery query)
@@ -29,8 +36,20 @@ public class WorkoutLog : EndpointGroupBase
         return result;
     }
 
-    public Task<int> CreateExerciseLog(ISender sender, [AsParameters] CreateWorkoutLogCommand command)
+    public Task<Result> CreateExerciseLog(ISender sender, [FromBody] CreateWorkoutLogCommand command)
     {
         return sender.Send(command);
+    }
+    public Task<Result> DeleteWorkoutLog(ISender sender, int id, [FromBody] DeleteWorkoutLogCommand command)
+    {
+        return sender.Send(command);
+    }
+    public Task<Result> UpdateWorkoutLog(ISender sender, int id, [FromBody] UpdateWorkoutLogCommand command)
+    {
+        return sender.Send(command);
+    }
+    public Task<object> GetWorkoutHistory(ISender sender, [AsParameters] GetWorkoutHistoryQuery query)
+    {
+        return sender.Send(query);
     }
 }

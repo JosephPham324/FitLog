@@ -10,6 +10,7 @@ using FitLog.Application.MuscleGroups.Commands.UpdateMuscleGroup;
 using FitLog.Application.MuscleGroups.Queries.GetMuscleGroupDetails;
 using FitLog.Application.MuscleGroups.Queries.GetMuscleGroupsListWithPagination;
 using FitLog.Application.TrainingSurveys.Commands;
+using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
@@ -25,7 +26,7 @@ public class MuscleGroups : EndpointGroupBase
             .MapPut(UpdateMuscleGroup, "{id}")
             .MapDelete(DeleteMuscleGroup, "{id}");
     }
-    public Task<int> CreateMuscleGroup(ISender sender, [AsParameters] CreateMuscleGroupCommand command)
+    public Task<Result> CreateMuscleGroup(ISender sender, [FromBody] CreateMuscleGroupCommand command)
     {
         return sender.Send(command);
     }
@@ -42,12 +43,12 @@ public class MuscleGroups : EndpointGroupBase
 
     }
 
-    public Task<UpdateMuscleGroupDTO> UpdateMuscleGroup(ISender sender, [AsParameters] UpdateMuscleGroupCommand command)
+    public Task<Result> UpdateMuscleGroup(ISender sender, int id, [FromBody] UpdateMuscleGroupCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> DeleteMuscleGroup(ISender sender, [AsParameters] DeleteMuscleGroupCommand command)
+    public Task<Result> DeleteMuscleGroup(ISender sender, [FromBody] DeleteMuscleGroupCommand command)
     {
         return sender.Send(command);
     }

@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 namespace FitLog.Domain.Entities;
 
-public partial class CoachingService
+public partial class CoachingService : BaseAuditableEntity
 {
-    public int CoachingServiceId { get; set; }
-
-    public string? CreatedBy { get; set; }
+    //public int /*CoachingServiceId*/ { get; set; }
 
     public string ServiceName { get; set; } = null!;
 

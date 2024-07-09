@@ -1,10 +1,16 @@
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
-import Login from './components/Login';
+import { MuscleGroup } from "./components/MuscleGroup";
+import ExerciseLog from "./components/ExerciseLog";
+import Login from './components/GoogleLogin';
 import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
+import GoogleOAuthProvider from './components/GoogleLogin';
+import ChatPage from "./page/ChatPage";
+import UserListPage from "./page/TestAxios"; 
+import Logout from "./components/Logout";
 
 const AppRoutes = [
   {
@@ -20,8 +26,20 @@ const AppRoutes = [
     element: <FetchData />
   },
   {
+    path: '/MuscleGroup',
+    element: <MuscleGroup />
+  },
+  {
+    path: '/ExerciseLog',
+    element: <ExerciseLog />
+  },
+  {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '/google-login',
+    element: <GoogleOAuthProvider />
   },
   {
     path: '/register',
@@ -34,7 +52,20 @@ const AppRoutes = [
   {
     path: '/admin/management/equipments',
     element: <EquipmentsList />
+  },
+  {
+    path: '/chat',
+    element: <ChatPage/>
+  },
+  {
+    path: '/users-list',
+    element: <UserListPage />
+  },
+  {
+    path: '/log-out',
+    element: <Logout/>
   }
+
 ];
 
 export default AppRoutes;

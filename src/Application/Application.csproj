@@ -9,6 +9,8 @@
     <PackageReference Include="Ardalis.GuardClauses" />
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Google.Apis.Auth" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
   </ItemGroup>
@@ -18,26 +20,22 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="CoachingService\" />
-    <Folder Include="Equipments\EventHandlers\" />
-    <Folder Include="Exercises\Commands\" />
-    <Folder Include="Exercises\EventHandlers\" />
-    <Folder Include="MuscleGroups\EventHandlers\" />
-    <Folder Include="Roles\Commands\" />
-    <Folder Include="Roles\EventHandlers\" />
-    <Folder Include="Roles\Queries\" />
-    <Folder Include="Users\Commands\UpdateProfile\" />
-    <Folder Include="WorkoutLogs\Commands\" />
-    <Folder Include="WorkoutLogs\EventHandlers\" />
-    <Folder Include="WorkoutPrograms\Commands\" />
-    <Folder Include="WorkoutPrograms\EventHandlers\" />
-    <Folder Include="WorkoutPrograms\Queries\" />
-    <Folder Include="TrainingSurveys\Queries\" />
-    <Folder Include="Users\EventHandlers\" />
-    <Folder Include="TrainingSurveys\Commands\" />
-    <Folder Include="WorkoutTemplates\Commands\" />
-    <Folder Include="WorkoutTemplates\EventHandlers\" />
-    <Folder Include="WorkoutTemplates\Queries\" />
+    <Folder Include="Use Cases\Equipments\EventHandlers\" />
+    <Folder Include="Use Cases\Exercises\EventHandlers\" />
+    <Folder Include="Use Cases\MuscleGroups\EventHandlers\" />
+    <Folder Include="Use Cases\Roles\Commands\" />
+    <Folder Include="Use Cases\Roles\EventHandlers\" />
+    <Folder Include="Use Cases\Roles\Queries\" />
+    <Folder Include="Use Cases\Users\Commands\UpdateProfile\" />
+    <Folder Include="Use Cases\WorkoutLogs\EventHandlers\" />
+    <Folder Include="Use Cases\WorkoutPrograms\Commands\" />
+    <Folder Include="Use Cases\WorkoutPrograms\EventHandlers\" />
+    <Folder Include="Use Cases\WorkoutPrograms\Queries\" />
+    <Folder Include="Use Cases\TrainingSurveys\Queries\" />
+    <Folder Include="Use Cases\Users\EventHandlers\" />
+    <Folder Include="Use Cases\WorkoutTemplates\Commands\" />
+    <Folder Include="Use Cases\WorkoutTemplates\EventHandlers\" />
+    <Folder Include="Use Cases\WorkoutTemplates\Queries\" />
   </ItemGroup>
 
 </Project>

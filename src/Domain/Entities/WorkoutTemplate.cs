@@ -3,20 +3,12 @@ using System.Collections.Generic;
 
 namespace FitLog.Domain.Entities;
 
-public partial class WorkoutTemplate
+public partial class WorkoutTemplate : BaseAuditableEntity
 {
-    public int WorkoutTemplateId { get; set; }
-
-    public string? CreatedBy { get; set; }
-
-    public string? TemplateName { get; set; }
-
-    public string? Duration { get; set; }
-
-    public string? LastModifiedBy { get; set; }
-
-    public DateTime? LastModified { get; set; }
-
+    //public int WorkoutTemplateId { get; set; } //ID
+    public string? TemplateName { get; set; } //Name
+    public string? Duration { get; set; } //Duration
+    public bool IsPublic { get; set; } //Viewable by all users or not
     public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
 
     public virtual AspNetUser LastModifiedByNavigation { get; set; } = null!;
