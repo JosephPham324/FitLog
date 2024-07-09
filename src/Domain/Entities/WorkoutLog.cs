@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace FitLog.Domain.Entities;
 
-public partial class WorkoutLog
+public partial class WorkoutLog : BaseAuditableEntity
 {
-    public int WorkoutLogId { get; set; }
+    //public int WorkoutLogId { get; set; }
 
-    public string? CreatedBy { get; set; }
+    //public string? CreatedBy { get; set; }
 
     public string? Note { get; set; }
 
     public TimeOnly? Duration { get; set; }
-    public DateTime? DateCreated { get; set; }
+    //public DateTime? DateCreated { get; set; }
 
-    public DateTime? LastModified { get; set; }
+    //public DateTime? LastModified { get; set; }
 
     public virtual AspNetUser? CreatedByNavigation { get; set; }
 

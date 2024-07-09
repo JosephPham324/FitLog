@@ -31,7 +31,7 @@ public class DeleteWorkoutLogCommandHandler : IRequestHandler<DeleteWorkoutLogCo
     {
         var workoutLog = await _context.WorkoutLogs
            .Include(wl => wl.ExerciseLogs)
-           .FirstOrDefaultAsync(wl => wl.WorkoutLogId == request.WorkoutLogId, cancellationToken);
+           .FirstOrDefaultAsync(wl => wl.Id == request.WorkoutLogId, cancellationToken);
 
         if (workoutLog == null)
         {

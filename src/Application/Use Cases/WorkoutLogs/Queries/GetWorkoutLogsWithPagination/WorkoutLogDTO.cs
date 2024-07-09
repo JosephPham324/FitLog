@@ -9,7 +9,8 @@ public class WorkoutLogDTO
     public string? CreatedBy { get; set; }
     public string? Note { get; set; }
     public TimeOnly? Duration { get; set; }
-    public DateTime? LastModified { get; set; }
+    public DateTimeOffset Created { get; set; }
+    public DateTimeOffset? LastModified { get; set; }
     public List<ExerciseLogDTO> ExerciseLogs { get; set; } = new List<ExerciseLogDTO>();
 
     private class Mapping : AutoMapper.Profile

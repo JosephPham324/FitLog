@@ -11,10 +11,16 @@ public class TrainingSurvey : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(CreateTrainingSurvey, "create");
+            .MapPost(CreateTrainingSurvey, "create")
+            .MapPut(UpdateTrainingSurvey, "update/{id}");
     }
 
     public Task<Result> CreateTrainingSurvey(ISender sender, [FromBody] CreateSurveyAnswerCommand command)
+    {
+        return sender.Send(command);
+    }
+
+    public Task<Result> UpdateTrainingSurvey(ISender sender, [FromBody] UpdateTrainingSurveyAnswersCommand command)
     {
         return sender.Send(command);
     }

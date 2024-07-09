@@ -934,6 +934,38 @@
         }
       }
     },
+    "/api/TrainingSurvey/update": {
+      "put": {
+        "tags": [
+          "TrainingSurvey"
+        ],
+        "operationId": "UpdateTrainingSurvey",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTrainingSurveyAnswersCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/WorkoutLog/get-all": {
       "get": {
         "tags": [
@@ -2892,6 +2924,50 @@
           }
         }
       },
+      "UpdateTrainingSurveyAnswersCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "surveyAnswerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "PaginatedListOfWorkoutLogDTO": {
         "type": "object",
         "additionalProperties": false,
@@ -2942,6 +3018,10 @@
             "type": "string",
             "format": "time",
             "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
           },
           "lastModified": {
             "type": "string",
@@ -4209,51 +4289,40 @@
         }
       },
       "WorkoutLog": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "workoutLogId": {
-            "type": "integer",
-            "format": "int32"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
           },
-          "createdBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "note": {
-            "type": "string",
-            "nullable": true
-          },
-          "duration": {
-            "type": "string",
-            "format": "time",
-            "nullable": true
-          },
-          "dateCreated": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "lastModified": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "createdByNavigation": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/AspNetUser"
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "note": {
+                "type": "string",
+                "nullable": true
+              },
+              "duration": {
+                "type": "string",
+                "format": "time",
+                "nullable": true
+              },
+              "createdByNavigation": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/AspNetUser"
+                  }
+                ]
+              },
+              "exerciseLogs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ExerciseLog"
+                }
               }
-            ]
-          },
-          "exerciseLogs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ExerciseLog"
             }
           }
-        }
+        ]
       },
       "WorkoutTemplateExercise": {
         "type": "object",

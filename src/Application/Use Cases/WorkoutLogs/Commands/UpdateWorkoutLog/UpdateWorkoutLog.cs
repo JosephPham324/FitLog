@@ -64,7 +64,7 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
     {
         var workoutLog = await _context.WorkoutLogs
            .Include(wl => wl.ExerciseLogs)
-           .FirstOrDefaultAsync(wl => wl.WorkoutLogId == request.WorkoutLogId, cancellationToken);
+           .FirstOrDefaultAsync(wl => wl.Id == request.WorkoutLogId, cancellationToken);
 
         if (workoutLog == null)
         {
@@ -106,7 +106,7 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
                 {
                     var newExerciseLog = new ExerciseLog
                     {
-                        WorkoutLogId = workoutLog.WorkoutLogId,
+                        WorkoutLogId = workoutLog.Id,
                         ExerciseId = exerciseLog.ExerciseId,
                         DateCreated = DateTime.UtcNow,
                         LastModified = DateTime.UtcNow,

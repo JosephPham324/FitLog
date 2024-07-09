@@ -1191,6 +1191,45 @@ export class TrainingSurveyClient {
         }
         return Promise.resolve<Result>(null as any);
     }
+
+    updateTrainingSurvey(command: UpdateTrainingSurveyAnswersCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/TrainingSurvey/update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateTrainingSurvey(_response);
+        });
+    }
+
+    protected processUpdateTrainingSurvey(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
 }
 
 export class WorkoutLogClient {
@@ -4254,6 +4293,74 @@ export interface ICreateSurveyAnswerCommand {
     lastModified?: Date;
 }
 
+export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurveyAnswersCommand {
+    surveyAnswerId?: number;
+    userId?: string | undefined;
+    goal?: string | undefined;
+    daysPerWeek?: number | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    age?: number | undefined;
+    lastModified?: Date;
+
+    constructor(data?: IUpdateTrainingSurveyAnswersCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.surveyAnswerId = _data["surveyAnswerId"];
+            this.userId = _data["userId"];
+            this.goal = _data["goal"];
+            this.daysPerWeek = _data["daysPerWeek"];
+            this.experienceLevel = _data["experienceLevel"];
+            this.gymType = _data["gymType"];
+            this.musclesPriority = _data["musclesPriority"];
+            this.age = _data["age"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UpdateTrainingSurveyAnswersCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateTrainingSurveyAnswersCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["surveyAnswerId"] = this.surveyAnswerId;
+        data["userId"] = this.userId;
+        data["goal"] = this.goal;
+        data["daysPerWeek"] = this.daysPerWeek;
+        data["experienceLevel"] = this.experienceLevel;
+        data["gymType"] = this.gymType;
+        data["musclesPriority"] = this.musclesPriority;
+        data["age"] = this.age;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IUpdateTrainingSurveyAnswersCommand {
+    surveyAnswerId?: number;
+    userId?: string | undefined;
+    goal?: string | undefined;
+    daysPerWeek?: number | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    age?: number | undefined;
+    lastModified?: Date;
+}
+
 export class PaginatedListOfWorkoutLogDTO implements IPaginatedListOfWorkoutLogDTO {
     items?: WorkoutLogDTO[];
     pageNumber?: number;
@@ -4323,6 +4430,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
     createdBy?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
+    created?: Date;
     lastModified?: Date | undefined;
     exerciseLogs?: ExerciseLogDTO[];
 
@@ -4341,6 +4449,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
             this.createdBy = _data["createdBy"];
             this.note = _data["note"];
             this.duration = _data["duration"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
             if (Array.isArray(_data["exerciseLogs"])) {
                 this.exerciseLogs = [] as any;
@@ -4363,6 +4472,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
         data["createdBy"] = this.createdBy;
         data["note"] = this.note;
         data["duration"] = this.duration;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
         if (Array.isArray(this.exerciseLogs)) {
             data["exerciseLogs"] = [];
@@ -4378,6 +4488,7 @@ export interface IWorkoutLogDTO {
     createdBy?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
+    created?: Date;
     lastModified?: Date | undefined;
     exerciseLogs?: ExerciseLogDTO[];
 }
@@ -6681,33 +6792,21 @@ export interface IExerciseLog {
     workoutLog?: WorkoutLog | undefined;
 }
 
-export class WorkoutLog implements IWorkoutLog {
-    workoutLogId?: number;
-    createdBy?: string | undefined;
+export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
     note?: string | undefined;
     duration?: string | undefined;
-    dateCreated?: Date | undefined;
-    lastModified?: Date | undefined;
     createdByNavigation?: AspNetUser | undefined;
     exerciseLogs?: ExerciseLog[];
 
     constructor(data?: IWorkoutLog) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
     }
 
-    init(_data?: any) {
+    override init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            this.workoutLogId = _data["workoutLogId"];
-            this.createdBy = _data["createdBy"];
             this.note = _data["note"];
             this.duration = _data["duration"];
-            this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
-            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
             this.createdByNavigation = _data["createdByNavigation"] ? AspNetUser.fromJS(_data["createdByNavigation"]) : <any>undefined;
             if (Array.isArray(_data["exerciseLogs"])) {
                 this.exerciseLogs = [] as any;
@@ -6717,38 +6816,31 @@ export class WorkoutLog implements IWorkoutLog {
         }
     }
 
-    static fromJS(data: any): WorkoutLog {
+    static override fromJS(data: any): WorkoutLog {
         data = typeof data === 'object' ? data : {};
         let result = new WorkoutLog();
         result.init(data);
         return result;
     }
 
-    toJSON(data?: any) {
+    override toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["workoutLogId"] = this.workoutLogId;
-        data["createdBy"] = this.createdBy;
         data["note"] = this.note;
         data["duration"] = this.duration;
-        data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
-        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
         data["createdByNavigation"] = this.createdByNavigation ? this.createdByNavigation.toJSON() : <any>undefined;
         if (Array.isArray(this.exerciseLogs)) {
             data["exerciseLogs"] = [];
             for (let item of this.exerciseLogs)
                 data["exerciseLogs"].push(item.toJSON());
         }
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IWorkoutLog {
-    workoutLogId?: number;
-    createdBy?: string | undefined;
+export interface IWorkoutLog extends IBaseAuditableEntity {
     note?: string | undefined;
     duration?: string | undefined;
-    dateCreated?: Date | undefined;
-    lastModified?: Date | undefined;
     createdByNavigation?: AspNetUser | undefined;
     exerciseLogs?: ExerciseLog[];
 }

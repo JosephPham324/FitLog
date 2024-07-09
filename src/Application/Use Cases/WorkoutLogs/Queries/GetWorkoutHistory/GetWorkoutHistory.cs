@@ -35,18 +35,18 @@ public class GetWorkoutHistoryQueryHandler : IRequestHandler<GetWorkoutHistoryQu
     public async Task<object> Handle(GetWorkoutHistoryQuery request, CancellationToken cancellationToken)
     {
         var workoutLogs = await _context.WorkoutLogs
-            .Where(wl => wl.DateCreated >= request.StartDate && wl.DateCreated <= request.EndDate)
+            .Where(wl => wl.Created >= request.StartDate && wl.Created <= request.EndDate)
             .Include(wl => wl.ExerciseLogs)
             .ThenInclude(el => el.Exercise)
             .ToListAsync(cancellationToken);
 
         var result = workoutLogs.Select(wl => new
         {
-            wl.WorkoutLogId,
+            wl.Id,
             wl.CreatedBy,
             wl.Note,
             wl.Duration,
-            wl.DateCreated,
+            wl.Created,
             wl.LastModified,
             ExerciseLogs = wl.ExerciseLogs.Select(el => new
             {
