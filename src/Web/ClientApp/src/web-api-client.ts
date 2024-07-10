@@ -1449,6 +1449,204 @@ export class WorkoutLogClient {
     }
 }
 
+export class WorkoutProgramsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getWorkoutProgramsList(): Promise<WorkoutProgramListDTO[]> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetWorkoutProgramsList(_response);
+        });
+    }
+
+    protected processGetWorkoutProgramsList(response: Response): Promise<WorkoutProgramListDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(WorkoutProgramListDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<WorkoutProgramListDTO[]>(null as any);
+    }
+
+    createWorkoutProgram(command: CreateWorkoutProgramCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateWorkoutProgram(_response);
+        });
+    }
+
+    protected processCreateWorkoutProgram(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    updateWorkoutProgram(id: number, command: UpdateWorkoutProgramCommand): Promise<void> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateWorkoutProgram(_response);
+        });
+    }
+
+    protected processUpdateWorkoutProgram(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    deleteWorkoutProgram(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteWorkoutProgram(_response);
+        });
+    }
+
+    protected processDeleteWorkoutProgram(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    getWorkoutProgramDetails(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/Details/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetWorkoutProgramDetails(_response);
+        });
+    }
+
+    protected processGetWorkoutProgramDetails(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
 export class WorkoutTemplatesClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -4992,13 +5190,22 @@ export interface IDeleteWorkoutLogCommand {
     workoutLogId?: number;
 }
 
-export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCommand {
-    userToken?: string;
-    templateName?: string | undefined;
-    duration?: string | undefined;
-    workoutTemplateExercises?: PersonalTemplateExerciseDto[];
+export class WorkoutProgramListDTO implements IWorkoutProgramListDTO {
+    programId?: number;
+    programName?: string;
+    programThumbnail?: string | undefined;
+    numberOfWeeks?: number | undefined;
+    daysPerWeek?: number | undefined;
+    goal?: string | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    ageGroup?: string | undefined;
+    publicProgram?: boolean | undefined;
+    userId?: string | undefined;
+    userName?: string | undefined;
 
-    constructor(data?: ICreatePersonalTemplateCommand) {
+    constructor(data?: IWorkoutProgramListDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5009,57 +5216,79 @@ export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCom
 
     init(_data?: any) {
         if (_data) {
-            this.userToken = _data["userToken"];
-            this.templateName = _data["templateName"];
-            this.duration = _data["duration"];
-            if (Array.isArray(_data["workoutTemplateExercises"])) {
-                this.workoutTemplateExercises = [] as any;
-                for (let item of _data["workoutTemplateExercises"])
-                    this.workoutTemplateExercises!.push(PersonalTemplateExerciseDto.fromJS(item));
-            }
+            this.programId = _data["programId"];
+            this.programName = _data["programName"];
+            this.programThumbnail = _data["programThumbnail"];
+            this.numberOfWeeks = _data["numberOfWeeks"];
+            this.daysPerWeek = _data["daysPerWeek"];
+            this.goal = _data["goal"];
+            this.experienceLevel = _data["experienceLevel"];
+            this.gymType = _data["gymType"];
+            this.musclesPriority = _data["musclesPriority"];
+            this.ageGroup = _data["ageGroup"];
+            this.publicProgram = _data["publicProgram"];
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
         }
     }
 
-    static fromJS(data: any): CreatePersonalTemplateCommand {
+    static fromJS(data: any): WorkoutProgramListDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new CreatePersonalTemplateCommand();
+        let result = new WorkoutProgramListDTO();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userToken"] = this.userToken;
-        data["templateName"] = this.templateName;
-        data["duration"] = this.duration;
-        if (Array.isArray(this.workoutTemplateExercises)) {
-            data["workoutTemplateExercises"] = [];
-            for (let item of this.workoutTemplateExercises)
-                data["workoutTemplateExercises"].push(item.toJSON());
-        }
+        data["programId"] = this.programId;
+        data["programName"] = this.programName;
+        data["programThumbnail"] = this.programThumbnail;
+        data["numberOfWeeks"] = this.numberOfWeeks;
+        data["daysPerWeek"] = this.daysPerWeek;
+        data["goal"] = this.goal;
+        data["experienceLevel"] = this.experienceLevel;
+        data["gymType"] = this.gymType;
+        data["musclesPriority"] = this.musclesPriority;
+        data["ageGroup"] = this.ageGroup;
+        data["publicProgram"] = this.publicProgram;
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
         return data;
     }
 }
 
-export interface ICreatePersonalTemplateCommand {
-    userToken?: string;
-    templateName?: string | undefined;
-    duration?: string | undefined;
-    workoutTemplateExercises?: PersonalTemplateExerciseDto[];
+export interface IWorkoutProgramListDTO {
+    programId?: number;
+    programName?: string;
+    programThumbnail?: string | undefined;
+    numberOfWeeks?: number | undefined;
+    daysPerWeek?: number | undefined;
+    goal?: string | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    ageGroup?: string | undefined;
+    publicProgram?: boolean | undefined;
+    userId?: string | undefined;
+    userName?: string | undefined;
 }
 
-export class PersonalTemplateExerciseDto implements IPersonalTemplateExerciseDto {
-    exerciseId?: number | undefined;
-    orderInSession?: number | undefined;
-    orderInSuperset?: number | undefined;
-    note?: string | undefined;
-    setsRecommendation?: number | undefined;
-    intensityPercentage?: number | undefined;
-    rpeRecommendation?: number | undefined;
-    weightsUsed?: string | undefined;
-    numbersOfReps?: string | undefined;
+export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand {
+    userId?: string | undefined;
+    programName?: string;
+    programThumbnail?: string | undefined;
+    numberOfWeeks?: number | undefined;
+    daysPerWeek?: number | undefined;
+    goal?: string | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    ageGroup?: string | undefined;
+    publicProgram?: boolean | undefined;
+    programWorkouts?: CreateProgramWorkoutCommand[];
 
-    constructor(data?: IPersonalTemplateExerciseDto) {
+    constructor(data?: ICreateWorkoutProgramCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5070,50 +5299,111 @@ export class PersonalTemplateExerciseDto implements IPersonalTemplateExerciseDto
 
     init(_data?: any) {
         if (_data) {
-            this.exerciseId = _data["exerciseId"];
-            this.orderInSession = _data["orderInSession"];
-            this.orderInSuperset = _data["orderInSuperset"];
-            this.note = _data["note"];
-            this.setsRecommendation = _data["setsRecommendation"];
-            this.intensityPercentage = _data["intensityPercentage"];
-            this.rpeRecommendation = _data["rpeRecommendation"];
-            this.weightsUsed = _data["weightsUsed"];
-            this.numbersOfReps = _data["numbersOfReps"];
+            this.userId = _data["userId"];
+            this.programName = _data["programName"];
+            this.programThumbnail = _data["programThumbnail"];
+            this.numberOfWeeks = _data["numberOfWeeks"];
+            this.daysPerWeek = _data["daysPerWeek"];
+            this.goal = _data["goal"];
+            this.experienceLevel = _data["experienceLevel"];
+            this.gymType = _data["gymType"];
+            this.musclesPriority = _data["musclesPriority"];
+            this.ageGroup = _data["ageGroup"];
+            this.publicProgram = _data["publicProgram"];
+            if (Array.isArray(_data["programWorkouts"])) {
+                this.programWorkouts = [] as any;
+                for (let item of _data["programWorkouts"])
+                    this.programWorkouts!.push(CreateProgramWorkoutCommand.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): PersonalTemplateExerciseDto {
+    static fromJS(data: any): CreateWorkoutProgramCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new PersonalTemplateExerciseDto();
+        let result = new CreateWorkoutProgramCommand();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["exerciseId"] = this.exerciseId;
-        data["orderInSession"] = this.orderInSession;
-        data["orderInSuperset"] = this.orderInSuperset;
-        data["note"] = this.note;
-        data["setsRecommendation"] = this.setsRecommendation;
-        data["intensityPercentage"] = this.intensityPercentage;
-        data["rpeRecommendation"] = this.rpeRecommendation;
-        data["weightsUsed"] = this.weightsUsed;
-        data["numbersOfReps"] = this.numbersOfReps;
+        data["userId"] = this.userId;
+        data["programName"] = this.programName;
+        data["programThumbnail"] = this.programThumbnail;
+        data["numberOfWeeks"] = this.numberOfWeeks;
+        data["daysPerWeek"] = this.daysPerWeek;
+        data["goal"] = this.goal;
+        data["experienceLevel"] = this.experienceLevel;
+        data["gymType"] = this.gymType;
+        data["musclesPriority"] = this.musclesPriority;
+        data["ageGroup"] = this.ageGroup;
+        data["publicProgram"] = this.publicProgram;
+        if (Array.isArray(this.programWorkouts)) {
+            data["programWorkouts"] = [];
+            for (let item of this.programWorkouts)
+                data["programWorkouts"].push(item.toJSON());
+        }
         return data;
     }
 }
 
-export interface IPersonalTemplateExerciseDto {
-    exerciseId?: number | undefined;
-    orderInSession?: number | undefined;
-    orderInSuperset?: number | undefined;
-    note?: string | undefined;
-    setsRecommendation?: number | undefined;
-    intensityPercentage?: number | undefined;
-    rpeRecommendation?: number | undefined;
-    weightsUsed?: string | undefined;
-    numbersOfReps?: string | undefined;
+export interface ICreateWorkoutProgramCommand {
+    userId?: string | undefined;
+    programName?: string;
+    programThumbnail?: string | undefined;
+    numberOfWeeks?: number | undefined;
+    daysPerWeek?: number | undefined;
+    goal?: string | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    ageGroup?: string | undefined;
+    publicProgram?: boolean | undefined;
+    programWorkouts?: CreateProgramWorkoutCommand[];
+}
+
+export class CreateProgramWorkoutCommand implements ICreateProgramWorkoutCommand {
+    weekNumber?: number | undefined;
+    orderInWeek?: number | undefined;
+    workoutTemplate?: CreateWorkoutTemplateCommand | undefined;
+
+    constructor(data?: ICreateProgramWorkoutCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.weekNumber = _data["weekNumber"];
+            this.orderInWeek = _data["orderInWeek"];
+            this.workoutTemplate = _data["workoutTemplate"] ? CreateWorkoutTemplateCommand.fromJS(_data["workoutTemplate"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateProgramWorkoutCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateProgramWorkoutCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["weekNumber"] = this.weekNumber;
+        data["orderInWeek"] = this.orderInWeek;
+        data["workoutTemplate"] = this.workoutTemplate ? this.workoutTemplate.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateProgramWorkoutCommand {
+    weekNumber?: number | undefined;
+    orderInWeek?: number | undefined;
+    workoutTemplate?: CreateWorkoutTemplateCommand | undefined;
 }
 
 export class CreateWorkoutTemplateCommand implements ICreateWorkoutTemplateCommand {
@@ -5229,6 +5519,206 @@ export class WorkoutTemplateExerciseDto implements IWorkoutTemplateExerciseDto {
 }
 
 export interface IWorkoutTemplateExerciseDto {
+    exerciseId?: number | undefined;
+    orderInSession?: number | undefined;
+    orderInSuperset?: number | undefined;
+    note?: string | undefined;
+    setsRecommendation?: number | undefined;
+    intensityPercentage?: number | undefined;
+    rpeRecommendation?: number | undefined;
+    weightsUsed?: string | undefined;
+    numbersOfReps?: string | undefined;
+}
+
+export class UpdateWorkoutProgramCommand implements IUpdateWorkoutProgramCommand {
+    id?: number;
+    programName?: string;
+    programThumbnail?: string | undefined;
+    numberOfWeeks?: number | undefined;
+    daysPerWeek?: number | undefined;
+    goal?: string | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    ageGroup?: string | undefined;
+    publicProgram?: boolean | undefined;
+
+    constructor(data?: IUpdateWorkoutProgramCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.programName = _data["programName"];
+            this.programThumbnail = _data["programThumbnail"];
+            this.numberOfWeeks = _data["numberOfWeeks"];
+            this.daysPerWeek = _data["daysPerWeek"];
+            this.goal = _data["goal"];
+            this.experienceLevel = _data["experienceLevel"];
+            this.gymType = _data["gymType"];
+            this.musclesPriority = _data["musclesPriority"];
+            this.ageGroup = _data["ageGroup"];
+            this.publicProgram = _data["publicProgram"];
+        }
+    }
+
+    static fromJS(data: any): UpdateWorkoutProgramCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateWorkoutProgramCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["programName"] = this.programName;
+        data["programThumbnail"] = this.programThumbnail;
+        data["numberOfWeeks"] = this.numberOfWeeks;
+        data["daysPerWeek"] = this.daysPerWeek;
+        data["goal"] = this.goal;
+        data["experienceLevel"] = this.experienceLevel;
+        data["gymType"] = this.gymType;
+        data["musclesPriority"] = this.musclesPriority;
+        data["ageGroup"] = this.ageGroup;
+        data["publicProgram"] = this.publicProgram;
+        return data;
+    }
+}
+
+export interface IUpdateWorkoutProgramCommand {
+    id?: number;
+    programName?: string;
+    programThumbnail?: string | undefined;
+    numberOfWeeks?: number | undefined;
+    daysPerWeek?: number | undefined;
+    goal?: string | undefined;
+    experienceLevel?: string | undefined;
+    gymType?: string | undefined;
+    musclesPriority?: string | undefined;
+    ageGroup?: string | undefined;
+    publicProgram?: boolean | undefined;
+}
+
+export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCommand {
+    userToken?: string;
+    templateName?: string | undefined;
+    duration?: string | undefined;
+    workoutTemplateExercises?: PersonalTemplateExerciseDto[];
+
+    constructor(data?: ICreatePersonalTemplateCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userToken = _data["userToken"];
+            this.templateName = _data["templateName"];
+            this.duration = _data["duration"];
+            if (Array.isArray(_data["workoutTemplateExercises"])) {
+                this.workoutTemplateExercises = [] as any;
+                for (let item of _data["workoutTemplateExercises"])
+                    this.workoutTemplateExercises!.push(PersonalTemplateExerciseDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreatePersonalTemplateCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePersonalTemplateCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userToken"] = this.userToken;
+        data["templateName"] = this.templateName;
+        data["duration"] = this.duration;
+        if (Array.isArray(this.workoutTemplateExercises)) {
+            data["workoutTemplateExercises"] = [];
+            for (let item of this.workoutTemplateExercises)
+                data["workoutTemplateExercises"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ICreatePersonalTemplateCommand {
+    userToken?: string;
+    templateName?: string | undefined;
+    duration?: string | undefined;
+    workoutTemplateExercises?: PersonalTemplateExerciseDto[];
+}
+
+export class PersonalTemplateExerciseDto implements IPersonalTemplateExerciseDto {
+    exerciseId?: number | undefined;
+    orderInSession?: number | undefined;
+    orderInSuperset?: number | undefined;
+    note?: string | undefined;
+    setsRecommendation?: number | undefined;
+    intensityPercentage?: number | undefined;
+    rpeRecommendation?: number | undefined;
+    weightsUsed?: string | undefined;
+    numbersOfReps?: string | undefined;
+
+    constructor(data?: IPersonalTemplateExerciseDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseId = _data["exerciseId"];
+            this.orderInSession = _data["orderInSession"];
+            this.orderInSuperset = _data["orderInSuperset"];
+            this.note = _data["note"];
+            this.setsRecommendation = _data["setsRecommendation"];
+            this.intensityPercentage = _data["intensityPercentage"];
+            this.rpeRecommendation = _data["rpeRecommendation"];
+            this.weightsUsed = _data["weightsUsed"];
+            this.numbersOfReps = _data["numbersOfReps"];
+        }
+    }
+
+    static fromJS(data: any): PersonalTemplateExerciseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PersonalTemplateExerciseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseId"] = this.exerciseId;
+        data["orderInSession"] = this.orderInSession;
+        data["orderInSuperset"] = this.orderInSuperset;
+        data["note"] = this.note;
+        data["setsRecommendation"] = this.setsRecommendation;
+        data["intensityPercentage"] = this.intensityPercentage;
+        data["rpeRecommendation"] = this.rpeRecommendation;
+        data["weightsUsed"] = this.weightsUsed;
+        data["numbersOfReps"] = this.numbersOfReps;
+        return data;
+    }
+}
+
+export interface IPersonalTemplateExerciseDto {
     exerciseId?: number | undefined;
     orderInSession?: number | undefined;
     orderInSuperset?: number | undefined;

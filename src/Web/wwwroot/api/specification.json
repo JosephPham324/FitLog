@@ -1166,6 +1166,144 @@
         }
       }
     },
+    "/api/WorkoutPrograms": {
+      "get": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "GetWorkoutProgramsList",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkoutProgramListDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "CreateWorkoutProgram",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkoutProgramCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutPrograms/{id}": {
+      "put": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "UpdateWorkoutProgram",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWorkoutProgramCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "DeleteWorkoutProgram",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/WorkoutPrograms/Details/{id}": {
+      "get": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "GetWorkoutProgramDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/WorkoutTemplates/create-personal-template": {
       "post": {
         "tags": [
@@ -3385,13 +3523,150 @@
           }
         }
       },
-      "CreatePersonalTemplateCommand": {
+      "WorkoutProgramListDTO": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "userToken": {
+          "programId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "programName": {
             "type": "string"
           },
+          "programThumbnail": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfWeeks": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "ageGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicProgram": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateWorkoutProgramCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "programName": {
+            "type": "string"
+          },
+          "programThumbnail": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfWeeks": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "ageGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicProgram": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "programWorkouts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateProgramWorkoutCommand"
+            }
+          }
+        }
+      },
+      "CreateProgramWorkoutCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "weekNumber": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "workoutTemplate": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CreateWorkoutTemplateCommand"
+              }
+            ]
+          }
+        }
+      },
+      "CreateWorkoutTemplateCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
           "templateName": {
             "type": "string",
             "nullable": true
@@ -3400,15 +3675,18 @@
             "type": "string",
             "nullable": true
           },
+          "isPublic": {
+            "type": "boolean"
+          },
           "workoutTemplateExercises": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/PersonalTemplateExerciseDto"
+              "$ref": "#/components/schemas/WorkoutTemplateExerciseDto"
             }
           }
         }
       },
-      "PersonalTemplateExerciseDto": {
+      "WorkoutTemplateExerciseDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -3456,10 +3734,64 @@
           }
         }
       },
-      "CreateWorkoutTemplateCommand": {
+      "UpdateWorkoutProgramCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "programName": {
+            "type": "string"
+          },
+          "programThumbnail": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfWeeks": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "ageGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicProgram": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "CreatePersonalTemplateCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userToken": {
+            "type": "string"
+          },
           "templateName": {
             "type": "string",
             "nullable": true
@@ -3468,18 +3800,15 @@
             "type": "string",
             "nullable": true
           },
-          "isPublic": {
-            "type": "boolean"
-          },
           "workoutTemplateExercises": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/WorkoutTemplateExerciseDto"
+              "$ref": "#/components/schemas/PersonalTemplateExerciseDto"
             }
           }
         }
       },
-      "WorkoutTemplateExerciseDto": {
+      "PersonalTemplateExerciseDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
