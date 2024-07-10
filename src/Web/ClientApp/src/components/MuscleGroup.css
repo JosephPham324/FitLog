@@ -1,0 +1,31 @@
+﻿.button-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.update-btn {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.delete-btn {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.details-btn {
+    background-color: #FF9900 !important;
+    border-color: #FF9900 !important;
+}
+
+.table-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.small-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}

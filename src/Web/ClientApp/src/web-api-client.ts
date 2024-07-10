@@ -930,17 +930,17 @@ export class MuscleGroupsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createMuscleGroup(muscleGroupName: string | null | undefined, imageUrl: string | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/MuscleGroups/create?";
-        if (muscleGroupName !== undefined && muscleGroupName !== null)
-            url_ += "MuscleGroupName=" + encodeURIComponent("" + muscleGroupName) + "&";
-        if (imageUrl !== undefined && imageUrl !== null)
-            url_ += "ImageUrl=" + encodeURIComponent("" + imageUrl) + "&";
+    createMuscleGroup(command: CreateMuscleGroupCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/MuscleGroups/create";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1048,20 +1048,20 @@ export class MuscleGroupsClient {
         return Promise.resolve<MuscleGroupDTO2>(null as any);
     }
 
-    updateMuscleGroup(id: number, muscleGroupName: string | null | undefined, imageUrl: string | null | undefined): Promise<UpdateMuscleGroupDTO> {
-        let url_ = this.baseUrl + "/api/MuscleGroups/{id}?";
+    updateMuscleGroup(id: number, command: UpdateMuscleGroupCommand): Promise<UpdateMuscleGroupDTO> {
+        let url_ = this.baseUrl + "/api/MuscleGroups/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (muscleGroupName !== undefined && muscleGroupName !== null)
-            url_ += "MuscleGroupName=" + encodeURIComponent("" + muscleGroupName) + "&";
-        if (imageUrl !== undefined && imageUrl !== null)
-            url_ += "ImageUrl=" + encodeURIComponent("" + imageUrl) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1090,16 +1090,20 @@ export class MuscleGroupsClient {
         return Promise.resolve<UpdateMuscleGroupDTO>(null as any);
     }
 
-    deleteMuscleGroup(id: number): Promise<boolean> {
+    deleteMuscleGroup(id: number, command: DeleteMuscleGroupCommand): Promise<boolean> {
         let url_ = this.baseUrl + "/api/MuscleGroups/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "DELETE",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -2837,6 +2841,46 @@ export interface IExerciseDTO {
     type?: string;
 }
 
+export class CreateMuscleGroupCommand implements ICreateMuscleGroupCommand {
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+
+    constructor(data?: ICreateMuscleGroupCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.muscleGroupName = _data["muscleGroupName"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): CreateMuscleGroupCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMuscleGroupCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["muscleGroupName"] = this.muscleGroupName;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface ICreateMuscleGroupCommand {
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+}
+
 export class PaginatedListOfMuscleGroupDTO implements IPaginatedListOfMuscleGroupDTO {
     items?: MuscleGroupDTO[];
     pageNumber?: number;
@@ -3035,6 +3079,86 @@ export class UpdateMuscleGroupDTO implements IUpdateMuscleGroupDTO {
 export interface IUpdateMuscleGroupDTO {
     success?: boolean;
     errors?: string[];
+}
+
+export class UpdateMuscleGroupCommand implements IUpdateMuscleGroupCommand {
+    id?: number;
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+
+    constructor(data?: IUpdateMuscleGroupCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.muscleGroupName = _data["muscleGroupName"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): UpdateMuscleGroupCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateMuscleGroupCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["muscleGroupName"] = this.muscleGroupName;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface IUpdateMuscleGroupCommand {
+    id?: number;
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+}
+
+export class DeleteMuscleGroupCommand implements IDeleteMuscleGroupCommand {
+    id?: number;
+
+    constructor(data?: IDeleteMuscleGroupCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DeleteMuscleGroupCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteMuscleGroupCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface IDeleteMuscleGroupCommand {
+    id?: number;
 }
 
 export class TrainingSurveyDTO implements ITrainingSurveyDTO {
