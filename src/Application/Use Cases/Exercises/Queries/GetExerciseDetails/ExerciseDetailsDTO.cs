@@ -15,7 +15,7 @@ public class ExerciseDetailsDTO
     public string? CreatedByName { get; set; }
     public string? EquipmentName { get; set; }
 
-    private class Mapping : AutoMapper.Profile
+    public class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {

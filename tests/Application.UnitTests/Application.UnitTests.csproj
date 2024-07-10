@@ -16,11 +16,24 @@
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Moq" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="xunit.runner.visualstudio">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Application\Application.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="TestResults\" />
+      <Folder Include="Use Cases\Chat\Create\" />
+      <Folder Include="Use Cases\Chat\Delete\" />
+      <Folder Include="Use Cases\Chat\Queries\" />
+      <Folder Include="Use Cases\Chat\Update\" />
     </ItemGroup>
 
 </Project>
