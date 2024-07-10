@@ -1645,6 +1645,91 @@ export class WorkoutProgramsClient {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    getEnrollmentsByUser(userId: string | null): Promise<ProgramEnrollmentDTO[]> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments/user?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetEnrollmentsByUser(_response);
+        });
+    }
+
+    protected processGetEnrollmentsByUser(response: Response): Promise<ProgramEnrollmentDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ProgramEnrollmentDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ProgramEnrollmentDTO[]>(null as any);
+    }
+
+    enrollProgram(command: EnrollProgramCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processEnrollProgram(_response);
+        });
+    }
+
+    protected processEnrollProgram(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
 }
 
 export class WorkoutTemplatesClient {
@@ -5604,6 +5689,118 @@ export interface IUpdateWorkoutProgramCommand {
     musclesPriority?: string | undefined;
     ageGroup?: string | undefined;
     publicProgram?: boolean | undefined;
+}
+
+export class ProgramEnrollmentDTO implements IProgramEnrollmentDTO {
+    enrollmentId?: number;
+    userId?: string;
+    programId?: number;
+    enrolledDate?: Date;
+    endDate?: Date | undefined;
+    status?: string;
+    currentWeekNo?: number | undefined;
+    currentWorkoutOrder?: number | undefined;
+    programName?: string;
+    userName?: string;
+
+    constructor(data?: IProgramEnrollmentDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.enrollmentId = _data["enrollmentId"];
+            this.userId = _data["userId"];
+            this.programId = _data["programId"];
+            this.enrolledDate = _data["enrolledDate"] ? new Date(_data["enrolledDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+            this.status = _data["status"];
+            this.currentWeekNo = _data["currentWeekNo"];
+            this.currentWorkoutOrder = _data["currentWorkoutOrder"];
+            this.programName = _data["programName"];
+            this.userName = _data["userName"];
+        }
+    }
+
+    static fromJS(data: any): ProgramEnrollmentDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProgramEnrollmentDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["enrollmentId"] = this.enrollmentId;
+        data["userId"] = this.userId;
+        data["programId"] = this.programId;
+        data["enrolledDate"] = this.enrolledDate ? this.enrolledDate.toISOString() : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+        data["status"] = this.status;
+        data["currentWeekNo"] = this.currentWeekNo;
+        data["currentWorkoutOrder"] = this.currentWorkoutOrder;
+        data["programName"] = this.programName;
+        data["userName"] = this.userName;
+        return data;
+    }
+}
+
+export interface IProgramEnrollmentDTO {
+    enrollmentId?: number;
+    userId?: string;
+    programId?: number;
+    enrolledDate?: Date;
+    endDate?: Date | undefined;
+    status?: string;
+    currentWeekNo?: number | undefined;
+    currentWorkoutOrder?: number | undefined;
+    programName?: string;
+    userName?: string;
+}
+
+export class EnrollProgramCommand implements IEnrollProgramCommand {
+    userId?: string;
+    programId?: number;
+
+    constructor(data?: IEnrollProgramCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.programId = _data["programId"];
+        }
+    }
+
+    static fromJS(data: any): EnrollProgramCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new EnrollProgramCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["programId"] = this.programId;
+        return data;
+    }
+}
+
+export interface IEnrollProgramCommand {
+    userId?: string;
+    programId?: number;
 }
 
 export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCommand {

@@ -1304,6 +1304,73 @@
         }
       }
     },
+    "/api/WorkoutPrograms/enrollments/user": {
+      "get": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "GetEnrollmentsByUser",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProgramEnrollmentDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutPrograms/enrollments": {
+      "post": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "EnrollProgram",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollProgramCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/WorkoutTemplates/create-personal-template": {
       "post": {
         "tags": [
@@ -3782,6 +3849,64 @@
           "publicProgram": {
             "type": "boolean",
             "nullable": true
+          }
+        }
+      },
+      "ProgramEnrollmentDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enrollmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "programId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "enrolledDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "currentWeekNo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "currentWorkoutOrder": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "programName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          }
+        }
+      },
+      "EnrollProgramCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "programId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
