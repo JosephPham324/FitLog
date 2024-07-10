@@ -166,11 +166,11 @@ export function MuscleGroup() {
             placeholder="Search muscle group..."
             value={searchTerm}
             onChange={handleSearch}
-            className="mb-3"
+            className="btn-search"
           />
         </Col>
         <Col md="6" className="text-right">
-          <Button color="primary" onClick={toggleCreateModal} className="mb-3 small-button">Create Muscle Group</Button>
+          <Button color="primary" onClick={toggleCreateModal} className="btn-create">Create Muscle Group</Button>
         </Col>
       </Row>
 
@@ -251,7 +251,9 @@ export function MuscleGroup() {
       </Table>
       <div className="pagination">
         <Button
+          className="pre"
           color="primary"
+          size="sm"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage(currentPage - 1)}
         >
@@ -261,7 +263,9 @@ export function MuscleGroup() {
           Page {currentPage} of {totalPages}
         </span>
         <Button
+          className="next"
           color="primary"
+          size="sm"
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(currentPage + 1)}
         >
