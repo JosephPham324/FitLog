@@ -63,7 +63,7 @@ public class UpdateEquipmentCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeNull();
+        result.Success.Should().BeFalse();
     }
 }
 

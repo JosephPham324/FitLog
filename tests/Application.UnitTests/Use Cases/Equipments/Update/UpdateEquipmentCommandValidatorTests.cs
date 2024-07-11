@@ -57,7 +57,7 @@ public class UpdateEquipmentCommandValidatorTests
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.EquipmentName)
-              .WithErrorMessage("The length of 'EquipmentName' must be 200 characters or fewer. You entered 201 characters.");
+              .WithErrorMessage("The length of 'Equipment Name' must be 200 characters or fewer. You entered 201 characters.");
     }
 
     [Test]

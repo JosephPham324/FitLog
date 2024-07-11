@@ -11,12 +11,12 @@ public class ProgramOverviewDto
     public int ProgramId { get; set; }
     public string CreatorName { get; set; } = string.Empty;
     public string ProgramName { get; set; } = string.Empty;
-    public string? Thumbnail { get; set; }
+    public string? ProgramThumbnail { get; set; }
     public int? NumberOfWeeks { get; set; }
     public int? DaysPerWeek { get; set; }
     public string? ExperienceLevel { get; set; }
     public string? GymType { get; set; }
-    public string? MusclePriority { get; set; }
+    public string? MusclesPriority { get; set; }
 
     private class Mapping : AutoMapper.Profile
     {
