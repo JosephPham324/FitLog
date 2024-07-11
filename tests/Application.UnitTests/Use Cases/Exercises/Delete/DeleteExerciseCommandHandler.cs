@@ -21,7 +21,8 @@ public class DeleteExerciseCommandHandlerTests
     public async Task Setup()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .Options;
+         //.UseInMemoryDatabase(databaseName: "TestDatabase")
+         .Options;
 
         _context = new ApplicationDbContext(options);
 
@@ -35,21 +36,24 @@ public class DeleteExerciseCommandHandlerTests
 
 
         // Thiết lập dữ liệu test cho MuscleGroups và Equipment
-        var muscleGroup = new MuscleGroup { MuscleGroupName = "Test Muscle Group" };
+        var muscleGroup = new MuscleGroup { MuscleGroupName = "Test Muscle Group", ImageUrl = "http://example.com/image.jpg" };
         var equipment = new Equipment { EquipmentName = "Test Equipment", ImageUrl = "http://example.com/image.jpg" };
 
         _context.MuscleGroups.Add(muscleGroup);
+        await _context.SaveChangesAsync();
+
         _context.Equipment.Add(equipment);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         // Lưu thực thể được thêm vào danh sách
         _addedMuscleGroups.Add(muscleGroup);
         _addedEquipments.Add(equipment);
+        var user = _context.AspNetUsers.FirstOrDefault();
 
         // Thêm một Exercise vào cơ sở dữ liệu và lấy ExerciseId
         var command = new CreateExerciseCommand
         {
-            CreatedBy = "48fd07f4-2a6a-46ec-a577-db456fac44ce",
+            CreatedBy = user?.Id,
             MuscleGroupIds = new List<int> { muscleGroup.MuscleGroupId },
             EquipmentId = equipment.EquipmentId,
             ExerciseName = "Test Exercise",
@@ -61,8 +65,27 @@ public class DeleteExerciseCommandHandlerTests
 
         var result = await _handlerCreate.Handle(command!, CancellationToken.None);
         var exercise = await _context.Exercises
+            .Include(e => e.ExerciseMuscleGroups)
             .FirstOrDefaultAsync(e => e.ExerciseName == command.ExerciseName);
-        _addedExercises.Add(exercise!);
+
+        if (exercise != null)
+        {
+            _addedExercises.Add(exercise);
+            // Validate if the MuscleGroupIds and EquipmentId are reflected correctly
+            if (exercise.ExerciseMuscleGroups.Any(mg => mg.MuscleGroupId == muscleGroup.MuscleGroupId) &&
+                exercise.EquipmentId == equipment.EquipmentId)
+            {
+                Console.WriteLine("Setup is correct. MuscleGroupIds and EquipmentId are reflected correctly.");
+            }
+            else
+            {
+                Console.WriteLine("Setup is incorrect. There is a mismatch in MuscleGroupIds or EquipmentId.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Failed to create exercise.");
+        }
     }
 
     [TearDown]
