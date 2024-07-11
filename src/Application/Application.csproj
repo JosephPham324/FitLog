@@ -35,7 +35,6 @@
     <Folder Include="Use Cases\Users\EventHandlers\" />
     <Folder Include="Use Cases\WorkoutTemplates\Commands\" />
     <Folder Include="Use Cases\WorkoutTemplates\EventHandlers\" />
-    <Folder Include="Use Cases\WorkoutTemplates\Queries\" />
   </ItemGroup>
 
 </Project>
