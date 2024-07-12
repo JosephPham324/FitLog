@@ -4,7 +4,7 @@ using FitLog.Domain.Constants;
 
 namespace FitLog.Application.TodoLists.Commands.PurgeTodoLists;
 
-[Authorize(Roles = Roles.Administrator)]
+[Authorize(Roles = Domain.Constants.Roles.Administrator)]
 [Authorize(Policy = Policies.CanPurge)]
 public record PurgeTodoListsCommand : IRequest;
 

@@ -20,12 +20,13 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Folder Include="Common\Queries\" />
     <Folder Include="Use Cases\Equipments\EventHandlers\" />
     <Folder Include="Use Cases\Exercises\EventHandlers\" />
     <Folder Include="Use Cases\MuscleGroups\EventHandlers\" />
+    <Folder Include="Use Cases\Statistics\Statistics_Workout\" />
     <Folder Include="Use Cases\Roles\Commands\" />
     <Folder Include="Use Cases\Roles\EventHandlers\" />
-    <Folder Include="Use Cases\Roles\Queries\" />
     <Folder Include="Use Cases\Users\Commands\UpdateProfile\" />
     <Folder Include="Use Cases\WorkoutLogs\EventHandlers\" />
     <Folder Include="Use Cases\WorkoutPrograms\Commands\" />

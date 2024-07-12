@@ -1143,6 +1143,60 @@ export class MuscleGroupsClient {
     }
 }
 
+export class StatisticsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getWorkoutLogSummary(userId: string | null, timeFrame: string | null): Promise<SummaryWorkoutLogStatsDTO> {
+        let url_ = this.baseUrl + "/api/Statistics/summary?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        if (timeFrame === undefined)
+            throw new Error("The parameter 'timeFrame' must be defined.");
+        else if(timeFrame !== null)
+            url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetWorkoutLogSummary(_response);
+        });
+    }
+
+    protected processGetWorkoutLogSummary(response: Response): Promise<SummaryWorkoutLogStatsDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SummaryWorkoutLogStatsDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SummaryWorkoutLogStatsDTO>(null as any);
+    }
+}
+
 export class TrainingSurveyClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -2162,6 +2216,220 @@ export class AuthenticationClient {
             });
         }
         return Promise.resolve<string>(null as any);
+    }
+}
+
+export class RolesClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getRolesList(): Promise<RoleDto[]> {
+        let url_ = this.baseUrl + "/api/Roles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetRolesList(_response);
+        });
+    }
+
+    protected processGetRolesList(response: Response): Promise<RoleDto[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(RoleDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RoleDto[]>(null as any);
+    }
+
+    createRole(command: AddRoleCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Roles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateRole(_response);
+        });
+    }
+
+    protected processCreateRole(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    getRoleById(id: string): Promise<RoleDto> {
+        let url_ = this.baseUrl + "/api/Roles/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetRoleById(_response);
+        });
+    }
+
+    protected processGetRoleById(response: Response): Promise<RoleDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RoleDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RoleDto>(null as any);
+    }
+
+    updateRole(id: number, command: UpdateRoleCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Roles/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateRole(_response);
+        });
+    }
+
+    protected processUpdateRole(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    deleteRole(id: number, command: DeleteRoleCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Roles/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteRole(_response);
+        });
+    }
+
+    protected processDeleteRole(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
     }
 }
 
@@ -4599,6 +4867,54 @@ export interface IDeleteMuscleGroupCommand {
     id?: number;
 }
 
+export class SummaryWorkoutLogStatsDTO implements ISummaryWorkoutLogStatsDTO {
+    numberOfWorkouts?: number;
+    hoursAtTheGym?: number;
+    weightLifted?: number;
+    weekStreak?: number;
+
+    constructor(data?: ISummaryWorkoutLogStatsDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.numberOfWorkouts = _data["numberOfWorkouts"];
+            this.hoursAtTheGym = _data["hoursAtTheGym"];
+            this.weightLifted = _data["weightLifted"];
+            this.weekStreak = _data["weekStreak"];
+        }
+    }
+
+    static fromJS(data: any): SummaryWorkoutLogStatsDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new SummaryWorkoutLogStatsDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["numberOfWorkouts"] = this.numberOfWorkouts;
+        data["hoursAtTheGym"] = this.hoursAtTheGym;
+        data["weightLifted"] = this.weightLifted;
+        data["weekStreak"] = this.weekStreak;
+        return data;
+    }
+}
+
+export interface ISummaryWorkoutLogStatsDTO {
+    numberOfWorkouts?: number;
+    hoursAtTheGym?: number;
+    weightLifted?: number;
+    weekStreak?: number;
+}
+
 export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
     userId?: string | undefined;
     goal?: string | undefined;
@@ -6323,6 +6639,166 @@ export interface IFacebookLoginRequest {
     email?: string;
 }
 
+export class RoleDto implements IRoleDto {
+    id?: string;
+    name?: string;
+
+    constructor(data?: IRoleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): RoleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IRoleDto {
+    id?: string;
+    name?: string;
+}
+
+export class AddRoleCommand implements IAddRoleCommand {
+    roleName?: string;
+    roleDesc?: string;
+
+    constructor(data?: IAddRoleCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.roleName = _data["roleName"];
+            this.roleDesc = _data["roleDesc"];
+        }
+    }
+
+    static fromJS(data: any): AddRoleCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddRoleCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["roleName"] = this.roleName;
+        data["roleDesc"] = this.roleDesc;
+        return data;
+    }
+}
+
+export interface IAddRoleCommand {
+    roleName?: string;
+    roleDesc?: string;
+}
+
+export class UpdateRoleCommand implements IUpdateRoleCommand {
+    roleId?: number;
+    roleName?: string;
+    roleDescription?: string;
+
+    constructor(data?: IUpdateRoleCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.roleId = _data["roleId"];
+            this.roleName = _data["roleName"];
+            this.roleDescription = _data["roleDescription"];
+        }
+    }
+
+    static fromJS(data: any): UpdateRoleCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateRoleCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["roleId"] = this.roleId;
+        data["roleName"] = this.roleName;
+        data["roleDescription"] = this.roleDescription;
+        return data;
+    }
+}
+
+export interface IUpdateRoleCommand {
+    roleId?: number;
+    roleName?: string;
+    roleDescription?: string;
+}
+
+export class DeleteRoleCommand implements IDeleteRoleCommand {
+    roleId?: number;
+
+    constructor(data?: IDeleteRoleCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.roleId = _data["roleId"];
+        }
+    }
+
+    static fromJS(data: any): DeleteRoleCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteRoleCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["roleId"] = this.roleId;
+        return data;
+    }
+}
+
+export interface IDeleteRoleCommand {
+    roleId?: number;
+}
+
 export class RegisterCommand implements IRegisterCommand {
     email?: string;
     password?: string;
@@ -6728,7 +7204,7 @@ export interface ICertificationDTO {
 }
 
 export class CoachingServiceDTO implements ICoachingServiceDTO {
-    coachingServiceId?: number;
+    id?: number;
     serviceName?: string | undefined;
     description?: string | undefined;
     duration?: number | undefined;
@@ -6747,7 +7223,7 @@ export class CoachingServiceDTO implements ICoachingServiceDTO {
 
     init(_data?: any) {
         if (_data) {
-            this.coachingServiceId = _data["coachingServiceId"];
+            this.id = _data["id"];
             this.serviceName = _data["serviceName"];
             this.description = _data["description"];
             this.duration = _data["duration"];
@@ -6766,7 +7242,7 @@ export class CoachingServiceDTO implements ICoachingServiceDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["coachingServiceId"] = this.coachingServiceId;
+        data["id"] = this.id;
         data["serviceName"] = this.serviceName;
         data["description"] = this.description;
         data["duration"] = this.duration;
@@ -6778,7 +7254,7 @@ export class CoachingServiceDTO implements ICoachingServiceDTO {
 }
 
 export interface ICoachingServiceDTO {
-    coachingServiceId?: number;
+    id?: number;
     serviceName?: string | undefined;
     description?: string | undefined;
     duration?: number | undefined;
