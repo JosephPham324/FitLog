@@ -944,6 +944,46 @@
         }
       }
     },
+    "/api/Statistics/muscles-engagement": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetMusclesEngagement",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "TimeFrame",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TrainingSurvey/create": {
       "post": {
         "tags": [
