@@ -2,12 +2,13 @@ import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import { MuscleGroup } from "./components/MuscleGroup";
-import  ExerciseLog  from "./components/ExerciseLog";
+import ExerciseLog from "./components/ExerciseLog";
 import Login from './components/Login';
 import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
+import { WorkoutHistory } from './components/WorkoutHistory';
 
 const AppRoutes = [
   {
@@ -25,6 +26,10 @@ const AppRoutes = [
   {
     path: '/MuscleGroup',
     element: <MuscleGroup />
+  },
+  {
+    path: '/WorkoutHistory',
+    element: <WorkoutHistory />
   },
   {
     path: '/ExerciseLog',
