@@ -4,6 +4,7 @@ using FitLog.Application.Common.Interfaces;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Domain.Constants;
+using FitLog.Application.Common.ValidationRules;
 
 namespace FitLog.Application.Statistics_Workout.Queries.GetSummaryStats;
 
@@ -28,22 +29,8 @@ public class GetSummaryStatsQueryValidator : AbstractValidator<GetSummaryStatsQu
     {
         RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
         RuleFor(x => x.TimeFrame).NotEmpty().WithMessage("TimeFrame is required.")
-                                  .Must(ValidTimeFrame).WithMessage("Invalid TimeFrame.");
+                                  .Must(ValidationRules.ValidTimeFrame).WithMessage("Invalid TimeFrame.");
 
-    }
-
-    private bool ValidTimeFrame(string timeFrame)
-    {
-        if (string.IsNullOrEmpty(timeFrame))
-        {
-            return false;
-        }
-
-        var normalizedTimeFrame = timeFrame.ToUpper();
-        var result = normalizedTimeFrame.Equals(TimeFrames.Weekly.ToUpper()) ||
-               normalizedTimeFrame.Equals(TimeFrames.Monthly.ToUpper()) ||
-               normalizedTimeFrame.Equals(TimeFrames.Yearly.ToUpper());
-        return result;
     }
 }
 

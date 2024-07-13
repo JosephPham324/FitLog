@@ -1,5 +1,6 @@
 ﻿using FitLog.Application.Common.Extensions;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.ValidationRules;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Domain.Constants;
@@ -19,22 +20,8 @@ public class GetMuscleEngagementQueryValidator : AbstractValidator<GetMuscleEnga
     {
         RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
         RuleFor(x => x.TimeFrame).NotEmpty().WithMessage("TimeFrame is required.")
-                                  .Must(ValidTimeFrame).WithMessage("Invalid TimeFrame.");
+                                  .Must(ValidationRules.ValidTimeFrame).WithMessage("Invalid TimeFrame.");
 
-    }
-
-    private bool ValidTimeFrame(string timeFrame)
-    {
-        if (string.IsNullOrEmpty(timeFrame))
-        {
-            return false;
-        }
-
-        var normalizedTimeFrame = timeFrame.ToUpper();
-        var result = normalizedTimeFrame.Equals(TimeFrames.Weekly.ToUpper()) ||
-               normalizedTimeFrame.Equals(TimeFrames.Monthly.ToUpper()) ||
-               normalizedTimeFrame.Equals(TimeFrames.Yearly.ToUpper());
-        return result;
     }
 }
 
@@ -52,7 +39,8 @@ public class GetMuscleEngagementQueryHandler : IRequestHandler<GetMuscleEngageme
     public async Task<object> Handle(GetMuscleEngagementQuery request, CancellationToken cancellationToken)
     {
         DateTime startDate;
-        DateTime endDate = DateTime.UtcNow;
+        DateTime endDate = DateTime.
+            Now;
 
         switch (request.TimeFrame.ToUpperInvariant())
         {
