@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Statistics_Workout.Queries.GetMuscleEngagement;
+﻿using FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
+using FitLog.Application.Statistics_Workout.Queries.GetMuscleEngagement;
 using FitLog.Application.Statistics_Workout.Queries.GetSummaryStats;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalReps;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalTrainingTonnage;
@@ -15,7 +16,8 @@ public class Statistics : EndpointGroupBase
             .MapGet(GetMusclesEngagement, "muscles-engagement")
             .MapGet(GetRepsStats, "total-training-reps")
             .MapGet(GetTonnageStats, "total-training-tonnage")
-            .MapGet(GetTrainingFrequencies, "total-training-frequency");
+            .MapGet(GetTrainingFrequencies, "training-frequency")
+            .MapGet(GetExerciseLogHistory, "exercise-log-history");
     }
     public async Task<SummaryWorkoutLogStatsDTO> GetWorkoutLogSummary(ISender sender, [AsParameters] GetSummaryStatsQuery query)
     {
@@ -39,6 +41,9 @@ public class Statistics : EndpointGroupBase
     {
         return await sender.Send(query);
     }
-
+    public async Task<object> GetExerciseLogHistory(ISender sender, [AsParameters] GetExerciseLogHistoryQuery query)
+    {
+        return await sender.Send(query);
+    }
 
 }

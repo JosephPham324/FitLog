@@ -17,12 +17,15 @@ public class ExerciseLogDTO
     public string? WeightsUsed { get; set; }
     public string? NumberOfReps { get; set; }
     public string? FootageUrls { get; set; }
+    public string? ExerciseName { get; set; }
 
     private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
-            CreateMap<ExerciseLog, ExerciseLogDTO>();
+            CreateMap<ExerciseLog, ExerciseLogDTO>()
+                     .ForMember(dest => dest.ExerciseName, opt => opt.MapFrom(src => src.Exercise!= null ? src.Exercise.ExerciseName : "Unknown exercise")); // Map ExerciseName from Exercise
+
         }
     }
 }

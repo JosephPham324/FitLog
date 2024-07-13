@@ -1064,7 +1064,7 @@
         }
       }
     },
-    "/api/Statistics/total-training-frequency": {
+    "/api/Statistics/training-frequency": {
       "get": {
         "tags": [
           "Statistics"
@@ -1088,6 +1088,46 @@
             "schema": {
               "type": "string",
               "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Statistics/exercise-log-history": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseLogHistory",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "ExerciseId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             },
             "x-position": 2
           }
@@ -3787,6 +3827,10 @@
             "nullable": true
           },
           "footageUrls": {
+            "type": "string",
+            "nullable": true
+          },
+          "exerciseName": {
             "type": "string",
             "nullable": true
           }

@@ -1329,7 +1329,7 @@ export class StatisticsClient {
     }
 
     getTrainingFrequencies(userId: string | null, timeFrame: string | null): Promise<any> {
-        let url_ = this.baseUrl + "/api/Statistics/total-training-frequency?";
+        let url_ = this.baseUrl + "/api/Statistics/training-frequency?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
         else if(userId !== null)
@@ -1353,6 +1353,50 @@ export class StatisticsClient {
     }
 
     protected processGetTrainingFrequencies(response: Response): Promise<any> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<any>(null as any);
+    }
+
+    getExerciseLogHistory(userId: string | null, exerciseId: number): Promise<any> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise-log-history?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        if (exerciseId === undefined || exerciseId === null)
+            throw new Error("The parameter 'exerciseId' must be defined and cannot be null.");
+        else
+            url_ += "ExerciseId=" + encodeURIComponent("" + exerciseId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExerciseLogHistory(_response);
+        });
+    }
+
+    protected processGetExerciseLogHistory(response: Response): Promise<any> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -5364,6 +5408,7 @@ export class ExerciseLogDTO implements IExerciseLogDTO {
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
+    exerciseName?: string | undefined;
 
     constructor(data?: IExerciseLogDTO) {
         if (data) {
@@ -5388,6 +5433,7 @@ export class ExerciseLogDTO implements IExerciseLogDTO {
             this.weightsUsed = _data["weightsUsed"];
             this.numberOfReps = _data["numberOfReps"];
             this.footageUrls = _data["footageUrls"];
+            this.exerciseName = _data["exerciseName"];
         }
     }
 
@@ -5412,6 +5458,7 @@ export class ExerciseLogDTO implements IExerciseLogDTO {
         data["weightsUsed"] = this.weightsUsed;
         data["numberOfReps"] = this.numberOfReps;
         data["footageUrls"] = this.footageUrls;
+        data["exerciseName"] = this.exerciseName;
         return data;
     }
 }
@@ -5429,6 +5476,7 @@ export interface IExerciseLogDTO {
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
+    exerciseName?: string | undefined;
 }
 
 export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
