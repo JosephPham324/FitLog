@@ -1298,6 +1298,16 @@
         "operationId": "GetWorkoutHistory",
         "parameters": [
           {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
             "name": "StartDate",
             "in": "query",
             "schema": {
@@ -1305,7 +1315,7 @@
               "format": "date-time",
               "nullable": true
             },
-            "x-position": 1
+            "x-position": 2
           },
           {
             "name": "EndDate",
@@ -1315,7 +1325,7 @@
               "format": "date-time",
               "nullable": true
             },
-            "x-position": 2
+            "x-position": 3
           }
         ],
         "responses": {

@@ -65,10 +65,7 @@ public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery,
                 throw new ArgumentException("Invalid TimeFrame", nameof(request.TimeFrame));
         }
 
-        var workoutHistoryQuery = new GetWorkoutHistoryQuery(startDate, endDate)
-        {
-            UserId = request.UserId
-        };
+        var workoutHistoryQuery = new GetWorkoutHistoryQuery(request.UserId,startDate, endDate);
 
         var workoutLogs = await _mediator.Send(workoutHistoryQuery, cancellationToken) as List<WorkoutLogDTO> ?? new List<WorkoutLogDTO>();
         double totalTime = 0;

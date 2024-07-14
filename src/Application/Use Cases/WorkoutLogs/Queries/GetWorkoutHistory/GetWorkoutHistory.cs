@@ -10,8 +10,9 @@ public record GetWorkoutHistoryQuery : IRequest<object>
     public DateTime? StartDate { get; init; }
     public DateTime? EndDate { get; init; }
 
-    public GetWorkoutHistoryQuery(DateTime? startDate, DateTime? endDate)
+    public GetWorkoutHistoryQuery(string userId,DateTime? startDate, DateTime? endDate)
     {
+        UserId = userId;
         StartDate = startDate ?? DateTime.UtcNow.StartOfWeek(DayOfWeek.Monday);
         EndDate = endDate ?? StartDate.Value.AddDays(6);
     }

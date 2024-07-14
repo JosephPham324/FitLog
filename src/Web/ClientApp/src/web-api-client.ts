@@ -1603,8 +1603,12 @@ export class WorkoutLogClient {
         return Promise.resolve<PaginatedListOfWorkoutLogDTO>(null as any);
     }
 
-    getWorkoutHistory(startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<any> {
+    getWorkoutHistory(userId: string | null, startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<any> {
         let url_ = this.baseUrl + "/api/WorkoutLog/history?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
         if (startDate !== undefined && startDate !== null)
             url_ += "StartDate=" + encodeURIComponent(startDate ? "" + startDate.toISOString() : "") + "&";
         if (endDate !== undefined && endDate !== null)

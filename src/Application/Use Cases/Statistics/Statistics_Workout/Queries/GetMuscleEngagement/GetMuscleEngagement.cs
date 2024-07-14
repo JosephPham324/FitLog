@@ -57,10 +57,7 @@ public class GetMuscleEngagementQueryHandler : IRequestHandler<GetMuscleEngageme
                 throw new ArgumentException("Invalid TimeFrame", nameof(request.TimeFrame));
         }
 
-        var workoutHistoryQuery = new GetWorkoutHistoryQuery(startDate, endDate)
-        {
-            UserId = request.UserId
-        };
+        var workoutHistoryQuery = new GetWorkoutHistoryQuery(request.UserId,startDate, endDate);
 
         var workoutHistory = await _mediator.Send(workoutHistoryQuery, cancellationToken);
 

@@ -39,10 +39,7 @@ public class GetTotalTrainingTonnageQueryHandler : IRequestHandler<GetTotalTrain
         DateTimeOffset endDate = DateTimeOffset.Now;
         DateTimeOffset startDate = new DateTimeOffset(new DateTime(1900, 1, 1)); // Fetch all history from January 1, 1900
 
-        var workoutHistoryQuery = new GetWorkoutHistoryQuery(startDate.DateTime, endDate.DateTime)
-        {
-            UserId = request.UserId
-        };
+        var workoutHistoryQuery = new GetWorkoutHistoryQuery(request.UserId,startDate.DateTime, endDate.DateTime);
 
         var workoutLogs = await _mediator.Send(workoutHistoryQuery, cancellationToken) as List<WorkoutLogDTO> ?? new List<WorkoutLogDTO>();
         var totalTonnageByPeriod = new Dictionary<DateTime, double>();
