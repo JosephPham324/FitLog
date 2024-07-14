@@ -32,7 +32,6 @@
     <Folder Include="Use Cases\WorkoutPrograms\Commands\" />
     <Folder Include="Use Cases\WorkoutPrograms\EventHandlers\" />
     <Folder Include="Use Cases\WorkoutPrograms\Queries\" />
-    <Folder Include="Use Cases\TrainingSurveys\Queries\" />
     <Folder Include="Use Cases\Users\EventHandlers\" />
     <Folder Include="Use Cases\WorkoutTemplates\Commands\" />
     <Folder Include="Use Cases\WorkoutTemplates\EventHandlers\" />

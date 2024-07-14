@@ -2,6 +2,7 @@
 using FitLog.Application.Common.Models;
 using FitLog.Application.Use_Cases.WorkoutPrograms.DTOs;
 using FitLog.Application.WorkoutTemplates.Commands.CreateWorkoutTemplate;
+using FitLog.Domain.Constants;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutPrograms.Commands.CreateWorkoutProgram;
@@ -30,8 +31,55 @@ public record CreateProgramWorkoutCommand : IRequest<Result>
 
 public class CreateWorkoutProgramCommandValidator : AbstractValidator<CreateWorkoutProgramCommand>
 {
-    public CreateWorkoutProgramCommandValidator()
+    private readonly IApplicationDbContext _context;
+
+    public CreateWorkoutProgramCommandValidator(IApplicationDbContext context)
     {
+        _context = context;
+
+        RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
+        RuleFor(x => x.ProgramName).NotEmpty().WithMessage("Program name is required.");
+        RuleFor(x => x.NumberOfWeeks).NotEmpty().WithMessage("Number of weeks is required.")
+            .InclusiveBetween(1, 52).WithMessage("Number of weeks must be between 1 and 52.");
+        RuleFor(x => x.DaysPerWeek).NotEmpty().WithMessage("Days per week is required.")
+            .InclusiveBetween(1, 7).WithMessage("Days per week must be between 1 and 7.");
+        RuleFor(x => x.Goal).NotEmpty().WithMessage("Goal is required.")
+            .Must(BeAValidGoal).WithMessage("Invalid goal.");
+        RuleFor(x => x.ExperienceLevel).NotEmpty().WithMessage("Experience level is required.")
+            .Must(BeAValidExperienceLevel).WithMessage("Invalid experience level.");
+        RuleFor(x => x.GymType).NotEmpty().WithMessage("Gym type is required.")
+            .Must(BeAValidGymType).WithMessage("Invalid gym type.");
+        RuleFor(x => x.MusclesPriority).Custom((musclesPriority, context) =>
+        {
+            if (!MusclesPriorityIsValid(musclesPriority ?? ""))
+            {
+                context.AddFailure("Invalid muscles priority.");
+            }
+        });
+        RuleFor(x => x.ProgramWorkouts).NotEmpty().WithMessage("At least one workout is required.");
+    }
+
+    private bool BeAValidGoal(string? goal)
+    {
+        return ProgramAttributes.Goals.Contains(goal ?? "");
+    }
+
+    private bool BeAValidExperienceLevel(string? experienceLevel)
+    {
+        return ProgramAttributes.ExperienceLevels.Contains(experienceLevel ?? "");
+    }
+
+    private bool BeAValidGymType(string? gymType)
+    {
+        return ProgramAttributes.GymTypes.ContainsKey(gymType ?? "");
+    }
+
+    private bool MusclesPriorityIsValid(string musclesPriority)
+    {
+        if (string.IsNullOrEmpty(musclesPriority)) return true; // Allow empty value
+        var muscles = musclesPriority.Split(',');
+        var validMuscles = _context.MuscleGroups.Select(x => x.MuscleGroupName).ToList();
+        return muscles.All(x => validMuscles.Contains(x));
     }
 }
 
