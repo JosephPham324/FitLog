@@ -1144,6 +1144,46 @@
         }
       }
     },
+    "/api/Statistics/estimated1RM": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetEstimated1RM",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "ExerciseId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TrainingSurvey/create": {
       "post": {
         "tags": [

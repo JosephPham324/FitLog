@@ -74,12 +74,7 @@ public class GetTotalRepsQueryHandler : IRequestHandler<GetTotalRepsQuery, Dicti
 
             foreach (var exerciseLog in log.ExerciseLogs)
             {
-                var reps = exerciseLog.NumberOfReps?
-                          .Trim(['[', ']'])?
-                          .Split([',', ';'])?
-                          //.Where(rep => !string.IsNullOrEmpty(rep))
-                          .Select(Int32.Parse)?
-                          .ToList();
+                var reps = exerciseLog.GetNumberOfReps();
                 if (reps!= null) totalRepsByPeriod[periodStart] += reps.Sum();
             }
         }

@@ -72,21 +72,11 @@ public class GetTotalTrainingTonnageQueryHandler : IRequestHandler<GetTotalTrain
 
             foreach (var exerciseLog in log.ExerciseLogs)
             {
-                var weights = exerciseLog.WeightsUsed?
-                                            .Trim(['[', ']'])?
-                                            .Split([',', ';'])?
-                                            //.Where(weight => !string.IsNullOrEmpty(weight))
-                                            .Select(Double.Parse)?
-                                            .ToList() ?? new List<double>();
+                var weights = exerciseLog.GetWeightsUsed();
 
-                var reps = exerciseLog.NumberOfReps?
-                          .Trim(['[', ']'])?
-                          .Split([',', ';'])?
-                          //.Where(rep => !string.IsNullOrEmpty(rep))
-                          .Select(Double.Parse)?
-                          .ToList();
+                var reps = exerciseLog.GetNumberOfReps();
 
-                for (int i = 0; i < weights.Count; i++)
+                for (int i = 0; i < weights?.Count; i++)
                 {
                     totalTonnageByPeriod[periodStart] += weights[i] * (reps?.Count > i ? reps[i] : 0);
                 }

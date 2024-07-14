@@ -82,18 +82,9 @@ public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery,
             // Calculate weight
             foreach (var exerciseLog in exerciseLogs)
             {
-                var weightsUsed = exerciseLog.WeightsUsed?
-                                            .Trim(['[', ']'])?
-                                            .Split([',', ';'])?
-                                            //.Where(weight => !string.IsNullOrEmpty(weight))
-                                            .Select(Double.Parse)?
-                                            .ToList() ?? new List<double>();
-                var reps = exerciseLog.NumberOfReps?
-                          .Trim(['[', ']'])?
-                          .Split([',',';'])?
-                          //.Where(rep => !string.IsNullOrEmpty(rep))
-                          .Select(Double.Parse)?
-                          .ToList();
+                var weightsUsed = exerciseLog.GetWeightsUsed();
+
+                var reps = exerciseLog.GetNumberOfReps();
 
                 for (int i = 0; i < weightsUsed?.Count; i++)
                 {

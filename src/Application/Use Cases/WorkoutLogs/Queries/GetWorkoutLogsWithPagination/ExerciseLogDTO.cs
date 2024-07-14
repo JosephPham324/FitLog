@@ -19,12 +19,32 @@ public class ExerciseLogDTO
     public string? FootageUrls { get; set; }
     public string? ExerciseName { get; set; }
 
+    public List<double>? GetWeightsUsed()
+    {
+        return WeightsUsed?
+            .Trim(['[', ']'])?
+            .Split([',', ';'])?
+                                            //.Where(weight => !string.IsNullOrEmpty(weight))
+            .Select(Double.Parse)?
+            .ToList() ?? new List<double>();
+    }
+
+    public List<int>? GetNumberOfReps()
+    {
+        return NumberOfReps?
+               .Trim(['[', ']'])?
+                .Split([',', ';'])?
+                //.Where(rep => !string.IsNullOrEmpty(rep))
+                .Select(int.Parse)?
+                .ToList();
+    }
+
     private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
             CreateMap<ExerciseLog, ExerciseLogDTO>()
-                     .ForMember(dest => dest.ExerciseName, opt => opt.MapFrom(src => src.Exercise!= null ? src.Exercise.ExerciseName : "Unknown exercise")); // Map ExerciseName from Exercise
+                     .ForMember(dest => dest.ExerciseName, opt => opt.MapFrom(src => src.Exercise != null ? src.Exercise.ExerciseName : "Unknown exercise")); // Map ExerciseName from Exercise
 
         }
     }
