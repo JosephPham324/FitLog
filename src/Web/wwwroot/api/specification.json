@@ -1184,7 +1184,7 @@
         }
       }
     },
-    "/api/TrainingRecommendation/user": {
+    "/api/TrainingRecommendation/programs-recommendation/user": {
       "get": {
         "tags": [
           "TrainingRecommendation"
@@ -1208,6 +1208,41 @@
             "content": {
               "application/json": {
                 "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TrainingRecommendation/workout-recommendation/user": {
+      "post": {
+        "tags": [
+          "TrainingRecommendation"
+        ],
+        "operationId": "GetWorkoutRecommendation",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetWorkoutRecommendationQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExerciseDTO"
+                  }
+                }
               }
             }
           }
@@ -3746,6 +3781,22 @@
           "weekStreak": {
             "type": "number",
             "format": "double"
+          }
+        }
+      },
+      "GetWorkoutRecommendationQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "exerciseIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },

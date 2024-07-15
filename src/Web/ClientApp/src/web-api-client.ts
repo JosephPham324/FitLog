@@ -1472,7 +1472,7 @@ export class TrainingRecommendationClient {
     }
 
     getProgramRecommendations(userId: string | null): Promise<any> {
-        let url_ = this.baseUrl + "/api/TrainingRecommendation/user?";
+        let url_ = this.baseUrl + "/api/TrainingRecommendation/programs-recommendation/user?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
         else if(userId !== null)
@@ -1509,6 +1509,52 @@ export class TrainingRecommendationClient {
             });
         }
         return Promise.resolve<any>(null as any);
+    }
+
+    getWorkoutRecommendation(query: GetWorkoutRecommendationQuery): Promise<ExerciseDTO[]> {
+        let url_ = this.baseUrl + "/api/TrainingRecommendation/workout-recommendation/user";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(query);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetWorkoutRecommendation(_response);
+        });
+    }
+
+    protected processGetWorkoutRecommendation(response: Response): Promise<ExerciseDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ExerciseDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExerciseDTO[]>(null as any);
     }
 }
 
@@ -5274,6 +5320,54 @@ export interface ISummaryWorkoutLogStatsDTO {
     hoursAtTheGym?: number;
     weightLifted?: number;
     weekStreak?: number;
+}
+
+export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQuery {
+    userId?: string;
+    exerciseIds?: number[];
+
+    constructor(data?: IGetWorkoutRecommendationQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            if (Array.isArray(_data["exerciseIds"])) {
+                this.exerciseIds = [] as any;
+                for (let item of _data["exerciseIds"])
+                    this.exerciseIds!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetWorkoutRecommendationQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetWorkoutRecommendationQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        if (Array.isArray(this.exerciseIds)) {
+            data["exerciseIds"] = [];
+            for (let item of this.exerciseIds)
+                data["exerciseIds"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IGetWorkoutRecommendationQuery {
+    userId?: string;
+    exerciseIds?: number[];
 }
 
 export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
