@@ -18,7 +18,7 @@ public class ProgramOverviewDto
     public string? GymType { get; set; }
     public string? MusclePriority { get; set; }
 
-    private class Mapping : AutoMapper.Profile
+    public class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {

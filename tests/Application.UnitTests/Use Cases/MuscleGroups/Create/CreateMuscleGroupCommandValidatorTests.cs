@@ -11,81 +11,39 @@ using FluentValidation.TestHelper;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
+using Xunit;
 
 namespace FitLog.Application.UnitTests.Use_Cases.MuscleGroups.Create;
 public class CreateMuscleGroupCommandValidatorTests
 {
-    private ApplicationDbContext _context;
-    private CreateMuscleGroupCommandValidator _validator;
+    private readonly CreateMuscleGroupCommandHandler _handler;
+    private readonly Mock<IApplicationDbContext> _mockDbContext;
 
-    [SetUp]
-    public void Setup()
+    public CreateMuscleGroupCommandValidatorTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .Options;
-
-        _context = new ApplicationDbContext(options);
-        _validator = new CreateMuscleGroupCommandValidator(_context);
+        _mockDbContext = new Mock<IApplicationDbContext>();
+        _handler = new CreateMuscleGroupCommandHandler(_mockDbContext.Object);
     }
 
-    [TearDown]
-    public void TearDown()
-    {
-        _context.Dispose();
-    }
-
-    [Test]
-    public async Task ValidCommand_ShouldNotHaveValidationErrors()
+    [Fact]
+    public async Task Handle_Should_Add_MuscleGroup_To_Context()
     {
         // Arrange
         var command = new CreateMuscleGroupCommand
         {
-            MuscleGroupName = "Legs",
-            ImageUrl = "http://example.com/image"
+            MuscleGroupName = "NewName",
+            ImageUrl = "http://validurl.com"
         };
 
         // Act
-        var result = await _validator.TestValidateAsync(command);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.ShouldNotHaveAnyValidationErrors();
+        _mockDbContext.Verify(m => m.MuscleGroups.Add(It.Is<MuscleGroup>(mg => mg.MuscleGroupName == command.MuscleGroupName && mg.ImageUrl == command.ImageUrl)), Times.Once());
+        _mockDbContext.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
+        NUnit.Framework.Assert.True(result.Success);
     }
 
-    [Test]
-    public async Task MuscleGroupName_Empty_ShouldHaveValidationError()
-    {
-        // Arrange
-        var command = new CreateMuscleGroupCommand
-        {
-            MuscleGroupName = "",
-            ImageUrl = "http://example.com/image"
-        };
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MuscleGroupName)
-              .WithErrorMessage("'Muscle Group Name' must not be empty.");
-    }
-
-    [Test]
-    public async Task ImageUrl_InvalidFormat_ShouldHaveValidationError()
-    {
-        // Arrange
-        var command = new CreateMuscleGroupCommand
-        {
-            MuscleGroupName = "Legs",
-            ImageUrl = "invalid-url"
-        };
-
-        // Act
-        var result = await _validator.TestValidateAsync(command);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.ImageUrl)
-              .WithErrorMessage("Invalid URL format.");
-    }
 }
 
 

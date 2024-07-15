@@ -14,7 +14,7 @@ public class CoachProfileDetailsDto
     public List<string>? GalleryImageLinks { get; set; }
     public IEnumerable<ProgramOverviewDto>? ProgramsOverview { get; set; }
 
-    private class Mapping : AutoMapper.Profile
+    public class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
