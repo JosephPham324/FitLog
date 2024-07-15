@@ -4,6 +4,7 @@ namespace FitLog.Application.TrainingRecommendation.Queries.GetWorkoutRecommenda
 
 public record GetWorkoutRecommendationQuery : IRequest<object>
 {
+
 }
 
 public class GetWorkoutRecommendationQueryValidator : AbstractValidator<GetWorkoutRecommendationQuery>

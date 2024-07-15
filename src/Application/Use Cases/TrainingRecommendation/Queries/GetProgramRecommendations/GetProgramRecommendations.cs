@@ -1,6 +1,7 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Application.TrainingSurvey.Queries.GetUserTrainingSurvey;
 using FitLog.Application.Use_Cases.CoachProfiles.Queries.GetCoachProfileDetails;
+using FitLog.Domain.Constants;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.TrainingRecommendation.Queries.GetProgramRecommendations;
@@ -34,21 +35,53 @@ public class GetProgramRecommendationsQueryHandler : IRequestHandler<GetProgramR
 
     public async Task<object> Handle(GetProgramRecommendationsQuery request, CancellationToken cancellationToken)
     {
-        //Get survey answers
+        // Get survey answers
         var surveyAnswerQuery = new GetUserTrainingSurveyQuery { UserId = request.UserId };
         var surveyAnswer = (SurveyAnswer)await _mediator.Send(surveyAnswerQuery, cancellationToken);
 
-        var recommendations = await
-            _context.Programs
-                .Include(p => p.User)
-            .Where(p =>
-            p.DaysPerWeek == surveyAnswer.DaysPerWeek
-            && p.Goal == surveyAnswer.Goal
-            && p.ExperienceLevel == surveyAnswer.ExperienceLevel
-            && p.GymType == surveyAnswer.GymType
-            && p.PublicProgram == true)
+        // Retrieve all public programs
+        var allPrograms = await _context.Programs
+            .Include(p => p.User)
+            .Where(p => p.PublicProgram == true)
             .ToListAsync();
 
+        // Filter programs based on survey answers using helper methods
+        var recommendations = allPrograms
+            .Where(p => p.DaysPerWeek <= surveyAnswer.DaysPerWeek
+                        && HasSimilarGoal(p.Goal??"", surveyAnswer.Goal??"")
+                        && HasSimilarExperienceLevel(p.ExperienceLevel ?? "", surveyAnswer.ExperienceLevel ?? "")
+                        && HasSuitableGymType(p.GymType ?? "", surveyAnswer.GymType ?? ""))
+            .ToList();
+
         return _mapper.Map<List<ProgramOverviewDto>>(recommendations);
+    }
+
+    private bool HasSimilarGoal(string ProgramGoal, string UserGoal)
+    {
+        List<string> programGoals = ProgramGoal.Split(',').ToList();
+        List<string> userGoals = UserGoal.Split(',').ToList();
+
+        bool hasSimilarGoal = programGoals.Intersect(userGoals).Any(goal => ProgramAttributes.Goals.Contains(goal));
+
+
+        return hasSimilarGoal;
+    }
+
+    private bool HasSimilarExperienceLevel(string ProgramExperienceLevel, string UserExperienceLevel)
+    {
+        List<string> ProgramSuitability = ProgramExperienceLevel.Split(',')
+        .Select(item => item.Trim().ToUpper())
+        .ToList();
+
+
+        return ProgramSuitability.Contains(UserExperienceLevel.ToUpper());
+    }
+    private bool HasSuitableGymType(string ProgramGymType, string UserGymType)
+    {
+        List<string> ProgramGymTypes = ProgramGymType.Split(',')
+            .Select(item => item.Trim().ToUpper())
+            .ToList();
+
+        return ProgramGymTypes.Contains(UserGymType.ToUpper()) ;
     }
 }
