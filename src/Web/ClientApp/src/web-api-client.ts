@@ -1152,7 +1152,7 @@ export class StatisticsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getWorkoutLogSummary(userId: string | null, timeFrame: string | null): Promise<SummaryWorkoutLogStatsDTO> {
+    getWorkoutLogSummary(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
         let url_ = this.baseUrl + "/api/Statistics/summary?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
@@ -1176,7 +1176,7 @@ export class StatisticsClient {
         });
     }
 
-    protected processGetWorkoutLogSummary(response: Response): Promise<SummaryWorkoutLogStatsDTO> {
+    protected processGetWorkoutLogSummary(response: Response): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1184,7 +1184,16 @@ export class StatisticsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SummaryWorkoutLogStatsDTO.fromJS(resultData200);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] ? SummaryWorkoutLogStatsDTO.fromJS(resultData200[key]) : new SummaryWorkoutLogStatsDTO();
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1192,7 +1201,7 @@ export class StatisticsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SummaryWorkoutLogStatsDTO>(null as any);
+        return Promise.resolve<{ [key: string]: SummaryWorkoutLogStatsDTO; }>(null as any);
     }
 
     getMusclesEngagement(userId: string | null, timeFrame: string | null): Promise<MuscleEngagementDTO[]> {

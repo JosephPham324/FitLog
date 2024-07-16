@@ -22,7 +22,7 @@ public class Statistics : EndpointGroupBase
             .MapGet(GetExerciseLogHistory, "exercise-log-history")
             .MapGet(GetEstimated1RM, "estimated1RM");
     }
-    public async Task<SummaryWorkoutLogStatsDTO> GetWorkoutLogSummary(ISender sender, [AsParameters] GetSummaryStatsQuery query)
+    public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetWorkoutLogSummary(ISender sender, [AsParameters] GetSummaryStatsQuery query)
     {
         return await sender.Send(query);
     }

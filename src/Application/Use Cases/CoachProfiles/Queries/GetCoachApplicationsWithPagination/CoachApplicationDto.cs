@@ -14,7 +14,7 @@ public class CoachApplicationDto
     public string ApplicantName { get; set; } = "";
     public string ApplicantEmail { get; set; } = "";
 
-    public class Mapping : AutoMapper.Profile
+    private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
