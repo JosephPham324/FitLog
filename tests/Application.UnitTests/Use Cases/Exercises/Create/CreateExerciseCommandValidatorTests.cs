@@ -18,6 +18,7 @@ public class CreateExerciseCommandValidatorTests
     private List<MuscleGroup> _addedMuscleGroups;
     private List<Equipment> _addedEquipments;
     private List<Exercise> _addedExercises;
+    private AspNetUser _user;
 
     [SetUp]
     public void Setup()
@@ -45,6 +46,8 @@ public class CreateExerciseCommandValidatorTests
         _addedEquipments.Add(equipment);
 
         _validator = new CreateExerciseCommandValidator(_context);
+
+        _user = _context.AspNetUsers.FirstOrDefault() ?? new AspNetUser();
     }
 
     [TearDown]
@@ -79,12 +82,12 @@ public class CreateExerciseCommandValidatorTests
 
         var command = new CreateExerciseCommand
         {
-            CreatedBy = "48fd07f4-2a6a-46ec-a577-db456fac44ce",
+            CreatedBy = _user.Id,
             MuscleGroupIds = new List<int> { muscleGroup.MuscleGroupId },
             EquipmentId = equipment.EquipmentId,
             ExerciseName = "Test Exercise",
             DemoUrl = "http://example.com/demo",
-            Type = "WeightResistance",
+            Type = "Weight Resistance",
             Description = "Test Description",
             PublicVisibility = true
         };
@@ -132,7 +135,7 @@ public class CreateExerciseCommandValidatorTests
 
         var command = new CreateExerciseCommand
         {
-            CreatedBy = "48fd07f4-2a6a-46ec-a577-db456fac44ce",
+            CreatedBy = _user.Id,
             MuscleGroupIds = new List<int> { muscleGroup.MuscleGroupId },
             EquipmentId = equipment.EquipmentId,
             ExerciseName = "",
@@ -160,7 +163,7 @@ public class CreateExerciseCommandValidatorTests
 
         var command = new CreateExerciseCommand
         {
-            CreatedBy = "48fd07f4-2a6a-46ec-a577-db456fac44ce",
+            CreatedBy = _user.Id,
             MuscleGroupIds = new List<int> { muscleGroup.MuscleGroupId },
             EquipmentId = equipment.EquipmentId,
             ExerciseName = "Test Exercise",
@@ -186,7 +189,7 @@ public class CreateExerciseCommandValidatorTests
 
         var command = new CreateExerciseCommand
         {
-            CreatedBy = "48fd07f4-2a6a-46ec-a577-db456fac44ce",
+            CreatedBy = _user.Id,
             MuscleGroupIds = new List<int> { muscleGroup.MuscleGroupId },
             EquipmentId = equipment.EquipmentId,
             ExerciseName = "Test Exercise",

@@ -95,20 +95,20 @@ public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseComman
         _context = context;
     }
 
-    public async Task<Result> Handle(CreateExerciseCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateExerciseCommand command, CancellationToken cancellationToken)
     {
         var entity = new Exercise
         {
-            CreatedBy = request.CreatedBy,
-            EquipmentId = request.EquipmentId,
-            ExerciseName = request.ExerciseName,
-            DemoUrl = request.DemoUrl,
-            Type = request.Type,
-            Description = request.Description,
-            PublicVisibility = request.PublicVisibility
+            CreatedBy = command.CreatedBy,
+            EquipmentId = command.EquipmentId,
+            ExerciseName = command.ExerciseName,
+            DemoUrl = command.DemoUrl,
+            Type = command.Type,
+            Description = command.Description,
+            PublicVisibility = command.PublicVisibility
         };
 
-        foreach (var muscleGroupId in request.MuscleGroupIds)
+        foreach (var muscleGroupId in command.MuscleGroupIds)
         {
             entity.ExerciseMuscleGroups.Add(new ExerciseMuscleGroup { MuscleGroupId = muscleGroupId });
         }

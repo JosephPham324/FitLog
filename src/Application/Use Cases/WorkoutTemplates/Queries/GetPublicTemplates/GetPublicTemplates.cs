@@ -1,12 +1,14 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Mappings;
 using FitLog.Application.Common.Models;
+using FitLog.Application.Use_Cases.WorkoutTemplates.Queries;
+using FitLog.Application.Users.Queries.GetUsers;
 using FitLog.Application.WorkoutTemplates.Queries.GetPersonalTemplate;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutTemplates.Queries.GetPublicTemplates;
 
-public record GetPublicTemplatesQuery : IRequest<PaginatedList<WorkoutTemplate>>
+public record GetPublicTemplatesQuery : IRequest<PaginatedList<WorkoutTemplateListDto>>
 {
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
@@ -25,20 +27,24 @@ public class GetPublicTemplatesQueryValidator : AbstractValidator<GetPublicTempl
     }
 }
 
-public class GetPublicTemplatesQueryHandler : IRequestHandler<GetPublicTemplatesQuery, PaginatedList<WorkoutTemplate>>
+public class GetPublicTemplatesQueryHandler : IRequestHandler<GetPublicTemplatesQuery, PaginatedList<WorkoutTemplateListDto>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetPublicTemplatesQueryHandler(IApplicationDbContext context)
+    public GetPublicTemplatesQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public async Task<PaginatedList<WorkoutTemplate>> Handle(GetPublicTemplatesQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<WorkoutTemplateListDto>> Handle(GetPublicTemplatesQuery request, CancellationToken cancellationToken)
     {
         return await _context.WorkoutTemplates
+            .Include(wt => wt.CreatedByNavigation)
             .Where(wt =>wt.IsPublic == true)
             .OrderBy(wt => wt.TemplateName)
+            .ProjectTo<WorkoutTemplateListDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

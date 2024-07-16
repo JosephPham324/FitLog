@@ -57,4 +57,17 @@ public static class ValidationRules
 
         return validStatuses.Contains(status);
     }
+
+    public static bool ValidTimeFrame(string timeFrame)
+    {
+        if (string.IsNullOrEmpty(timeFrame))
+        {
+            return false;
+        }
+
+        var normalizedTimeFrame = timeFrame.ToUpperInvariant();
+        return normalizedTimeFrame.Equals(TimeFrames.Weekly.ToUpperInvariant()) ||
+               normalizedTimeFrame.Equals(TimeFrames.Monthly.ToUpperInvariant()) ||
+               normalizedTimeFrame.Equals(TimeFrames.Yearly.ToUpperInvariant());
+    }
 }

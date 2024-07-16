@@ -14,6 +14,7 @@ public class GetEquipmentDetailsQueryValidator : AbstractValidator<GetEquipmentD
 {
     public GetEquipmentDetailsQueryValidator()
     {
+        RuleFor(x => x.EquipmentId).GreaterThan(0).WithMessage("'Equipment Id' must be greater than '0'.");
     }
 }
 
@@ -31,7 +32,6 @@ public class GetEquipmentDetailsQueryHandler : IRequestHandler<GetEquipmentDetai
     public async Task<EquipmentDetailsDTO> Handle(GetEquipmentDetailsQuery request, CancellationToken cancellationToken)
     {
         var entity = await _context.Equipment
-            .ProjectTo<EquipmentDetailsDTO>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(e => e.EquipmentId == request.EquipmentId, cancellationToken);
 
         if (entity == null)
@@ -39,6 +39,6 @@ public class GetEquipmentDetailsQueryHandler : IRequestHandler<GetEquipmentDetai
             throw new NotFoundException(nameof(Equipment), request.EquipmentId + "");
         }
 
-        return entity;
+        return _mapper.Map<EquipmentDetailsDTO>(entity);
     }
 }

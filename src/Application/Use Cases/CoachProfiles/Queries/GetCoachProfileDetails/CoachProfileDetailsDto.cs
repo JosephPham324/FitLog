@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Use_Cases.CoachProfiles.Queries.GetCoachProfileDetails;
+﻿using AutoMapper.Configuration.Annotations;
+using FitLog.Application.Use_Cases.CoachProfiles.Queries.GetCoachProfileDetails;
 using FitLog.Application.Users.Queries.GetUserDetails;
 using FitLog.Domain.Entities;
 
@@ -12,13 +13,16 @@ public class CoachProfileDetailsDto
     public string? ProfilePicture { get; set; }
     public List<string>? MajorAchievements { get; set; }
     public List<string>? GalleryImageLinks { get; set; }
+
+    [Ignore]
     public IEnumerable<ProgramOverviewDto>? ProgramsOverview { get; set; }
 
     public class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
-            CreateMap<Domain.Entities.Profile, CoachProfileDetailsDto>();
+            CreateMap<Domain.Entities.Profile, CoachProfileDetailsDto>()
+                .ForMember(dest => dest.ProgramsOverview, opt => opt.Ignore()); 
         }
     }
 }

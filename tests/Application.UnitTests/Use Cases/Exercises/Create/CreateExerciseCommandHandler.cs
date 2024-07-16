@@ -18,6 +18,7 @@ public class CreateExerciseCommandHandlerTests
     private List<MuscleGroup> _addedMuscleGroups;
     private List<Equipment> _addedEquipments;
     private List<Exercise> _addedExercises;
+    private AspNetUser _user;
 
     [SetUp]
     public void Setup()
@@ -39,12 +40,16 @@ public class CreateExerciseCommandHandlerTests
         var equipment = new Equipment { EquipmentName = "Test Equipment", ImageUrl = "http://example.com/image.jpg" };
 
         _context.MuscleGroups.Add(muscleGroup);
+        _context.SaveChanges();
+
         _context.Equipment.Add(equipment);
         _context.SaveChanges();
 
         // Lưu thực thể được thêm vào danh sách
         _addedMuscleGroups.Add(muscleGroup);
         _addedEquipments.Add(equipment);
+
+        _user = _context.AspNetUsers.FirstOrDefault() ?? new AspNetUser();
     }
 
     [TearDown]
@@ -76,13 +81,14 @@ public class CreateExerciseCommandHandlerTests
         // Arrange
         var muscleGroup = _addedMuscleGroups.First();
         var equipment = _addedEquipments.First();
+        var name = "Exercise " + Guid.NewGuid().ToString();
 
         var command = new CreateExerciseCommand
         {
-            CreatedBy = "48fd07f4-2a6a-46ec-a577-db456fac44ce",
+            CreatedBy = _user.Id,
             MuscleGroupIds = new List<int> { muscleGroup.MuscleGroupId },
             EquipmentId = equipment.EquipmentId,
-            ExerciseName = "Test Exercise",
+            ExerciseName = name,
             DemoUrl = "http://example.com/demo",
             Type = "WeightResistance",
             Description = "Test Description",

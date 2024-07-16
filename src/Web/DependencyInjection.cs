@@ -56,7 +56,6 @@ public static class DependencyInjection
         services.AddOpenApiDocument((configure, sp) =>
         {
             configure.Title = "FitLog API";
-
         });
 
         services.Configure<ExceptionHandlerOptions>(options =>

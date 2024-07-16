@@ -13,7 +13,7 @@ public partial class WorkoutTemplate : BaseAuditableEntity
 
     public virtual AspNetUser LastModifiedByNavigation { get; set; } = null!;
 
-    public virtual ICollection<ProgramWorkout> ProgramWorkouts { get; set; } = new List<ProgramWorkout>();
+    public virtual ICollection<ProgramWorkout>? ProgramWorkouts { get; set; } = new List<ProgramWorkout>();
 
     public virtual ICollection<WorkoutTemplateExercise> WorkoutTemplateExercises { get; set; } = new List<WorkoutTemplateExercise>();
 }
