@@ -1,0 +1,156 @@
+﻿.exercise-log-graphs {
+    padding: 20px;
+    background-color: #1c1c1e;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+:root .tabss {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid #3c3c3e;
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #a1a1a1;
+}
+
+    .tab.active {
+        color: #fff;
+        border-bottom: 2px solid #6a0dad;
+    }
+
+.workout-session {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+    .workout-session h2 {
+        margin-top: 0;
+        color: black;
+    }
+
+    .workout-session p {
+        margin: 5px 0;
+        color: black;
+    }
+
+h1 {
+    text-align: center;
+}
+
+:root .table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+:root th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+:root th {
+    background-color: #2196F3;
+    color: black; /* Add this line to change the color of th elements to black */
+    border: 1px solid;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #2c2c2e;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #1c1c1e;
+}
+
+.tab-content {
+    padding: 20px;
+    background-color: #2c2c2e;
+    border-radius: 10px;
+}
+
+.charts {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.chart-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chart-container {
+    background-color: #2c2c2e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 48%;
+}
+
+.records {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.personal-records {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.record-item {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    color: black;
+}
+
+.view-record-history {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 20px 0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 35px;
+}
+
+    .view-record-history:hover {
+        background-color: #5a0cac;
+    }
+
+.record-history {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .record-history th, .record-history td {
+        padding: 10px;
+        text-align: left;
+        background: white;
+    }
+
+    .record-history th {
+        background-color: #2196F3;
+        color: black; /* Add this line to change the color of th elements to black */
+    }
+
+    .record-history tbody tr:nth-child(even) {
+        background-color: #2c2c2e;
+    }
+
+    .record-history tbody tr:nth-child(odd) {
+        background-color: #1c1c1e;
+    }

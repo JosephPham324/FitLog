@@ -2,7 +2,7 @@ import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import { MuscleGroup } from "./components/MuscleGroup";
-import ExerciseLog from "./components/ExerciseLog";
+import WorkoutOutLog from "./components/WorkoutOutLog";
 import Login from './components/GoogleLogin';
 import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
@@ -11,6 +11,13 @@ import GoogleOAuthProvider from './components/GoogleLogin';
 import ChatPage from "./page/ChatPage";
 import UserListPage from "./page/TestAxios"; 
 import Logout from "./components/Logout";
+import CoachApplicationNotification from "./components/CoachApplicationNotification/CoachApplicationNotification"
+import WorkoutTemplatesListAdmin from "./components/Workout Templates List Admin/WorkoutTemplatesListAdmin";
+import WorkoutLogExport from "./components/WorkoutLogExport/WorkoutLogExport"
+import WorkoutLogGraphs from "./components/WorkoutLogGraphs"
+import ExerciseLogGraphs from "./components/ExerciseLogGraphs/ExerciseLogGraphs"
+import RolesListScreen from "./components/RolesListScreen/RolesListScreen"
+
 
 const AppRoutes = [
   {
@@ -30,8 +37,8 @@ const AppRoutes = [
     element: <MuscleGroup />
   },
   {
-    path: '/ExerciseLog',
-    element: <ExerciseLog />
+    path: '/WorkoutOutLog',
+    element: <WorkoutOutLog />
   },
   {
     path: '/login',
@@ -64,7 +71,31 @@ const AppRoutes = [
   {
     path: '/log-out',
     element: <Logout/>
-  }
+  },
+  {
+    path: '/CoachApplicationNotification',
+    element: <CoachApplicationNotification />
+  },
+  {
+    path: '/WorkoutTemplatesListAdmin',
+    element: <WorkoutTemplatesListAdmin />
+  },
+  {
+    path: '/WorkoutLogExport',
+    element: <WorkoutLogExport />
+  },
+  {
+    path: '/WorkoutLogGraphs',
+    element: <WorkoutLogGraphs />
+  },
+  {
+    path: '/ExerciseLogGraphs',
+    element: <ExerciseLogGraphs />
+  },
+  {
+    path: '/RolesListScreen',
+    element: <RolesListScreen />
+  },
 
 ];
 
