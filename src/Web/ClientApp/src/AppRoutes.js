@@ -8,6 +8,7 @@ import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
+import { WorkoutHistory } from './components/WorkoutHistory';
 import ChatPage from "./page/ChatPage";
 import UserListPage from "./page/TestAxios"; 
 import Logout from "./components/Logout";
@@ -28,6 +29,10 @@ const AppRoutes = [
   {
     path: '/MuscleGroup',
     element: <MuscleGroup />
+  },
+  {
+    path: '/WorkoutHistory',
+    element: <WorkoutHistory />
   },
   {
     path: '/ExerciseLog',

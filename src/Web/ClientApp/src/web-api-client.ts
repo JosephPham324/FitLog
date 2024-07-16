@@ -1067,6 +1067,8 @@ export class MuscleGroupsClient {
 
         const content_ = JSON.stringify(command);
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
             body: content_,
             method: "DELETE",

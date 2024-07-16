@@ -1,355 +1,277 @@
-﻿import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-export class MuscleGroup extends Component {
-  static displayName = MuscleGroup.name;
+﻿import React, { useState, useEffect } from 'react';
+import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import './MuscleGroup.css';
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      muscleGroups: [],
-      searchQuery: '',
-      createMuscleGroupName: '',
-      updateMuscleGroupName: '',
-      updateMuscleGroupID: null,
-      currentPage: 1,
-      itemsPerPage: 5, // Adjust items per page as needed
-      detailMuscleGroup: null,
-    };
-  }
+const apiUrl = 'https://localhost:44447/api/MuscleGroups';
 
-  componentDidMount() {
-    // Fetch initial data here
-    this.fetchMuscleGroups();
-  }
+export function MuscleGroup() {
+  const [muscleGroups, setMuscleGroups] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [newGroupName, setNewGroupName] = useState('');
+  const [newGroupImage, setNewGroupImage] = useState('');
+  const [createModal, setCreateModal] = useState(false);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [editGroupId, setEditGroupId] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const rowsPerPage = 5;
 
-  fetchMuscleGroups = () => {
-    // Replace this with your actual data fetching logic
-    // For example, using fetch or axios to get data from an API
-    const dummyData = [
-      { id: 1, name: 'Biceps' },
-      { id: 2, name: 'Triceps' },
-      { id: 3, name: 'Quadriceps' },
-      { id: 4, name: 'Hamstrings' },
-      { id: 5, name: 'Deltoids' },
-      { id: 6, name: 'Calves' },
-      { id: 7, name: 'Pectorals' },
-      { id: 8, name: 'Abs' },
-      { id: 9, name: 'Obliques' },
-      { id: 10, name: 'Glutes' },
-      // Add more dummy data as needed
-    ];
-    this.setState({ muscleGroups: dummyData });
+  useEffect(() => {
+    fetchMuscleGroups(currentPage, searchTerm);
+  }, [currentPage, searchTerm]);
+
+  const fetchMuscleGroups = async (page, searchTerm) => {
+    try {
+      const response = await fetch(`${apiUrl}/get-list?PageNumber=${page}&PageSize=${rowsPerPage}&searchTerm=${searchTerm}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch muscle groups');
+      }
+      const data = await response.json();
+      setMuscleGroups(data.items);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error('Error fetching muscle groups:', error);
+    }
   };
 
-  handleSearchChange = (event) => {
-    this.setState({ searchQuery: event.target.value });
+  const toggleCreateModal = () => {
+    setCreateModal(!createModal);
+    if (!createModal) {
+      setNewGroupName('');
+      setNewGroupImage('');
+    }
   };
 
-  handleCreateChange = (event) => {
-    this.setState({ createMuscleGroupName: event.target.value });
+  const toggleUpdateModal = () => {
+    setUpdateModal(!updateModal);
   };
 
-  handleUpdateChange = (event) => {
-    this.setState({ updateMuscleGroupName: event.target.value });
+  const createMuscleGroup = async () => {
+    try {
+      if (!newGroupName) {
+        throw new Error('Muscle group name is required');
+      }
+
+      const response = await fetch(`${apiUrl}/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          MuscleGroupName: newGroupName,
+          ImageUrl: newGroupImage
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create muscle group');
+      }
+
+      fetchMuscleGroups(currentPage, searchTerm);
+      toggleCreateModal();
+    } catch (error) {
+      console.error('Error creating muscle group:', error.message);
+      alert('Failed to create muscle group. Please check your input and try again.');
+    }
   };
 
-  handleCreateSubmit = (event) => {
-    event.preventDefault();
-    const newMuscleGroup = {
-      id: this.state.muscleGroups.length + 1,
-      name: this.state.createMuscleGroupName,
-    };
-    this.setState((prevState) => ({
-      muscleGroups: [...prevState.muscleGroups, newMuscleGroup],
-      createMuscleGroupName: '',
-    }));
+  const updateMuscleGroup = async () => {
+    try {
+      if (!newGroupName || !editGroupId) {
+        throw new Error('Muscle group name and ID are required');
+      }
+
+      const response = await fetch(`${apiUrl}/${editGroupId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: editGroupId,
+          MuscleGroupName: newGroupName,
+          ImageUrl: newGroupImage
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update muscle group');
+      }
+
+      fetchMuscleGroups(currentPage, searchTerm);
+      toggleUpdateModal();
+    } catch (error) {
+      console.error('Error updating muscle group:', error.message);
+      alert('Failed to update muscle group. Please check your input and try again.');
+    }
   };
 
-  handleUpdateSubmit = (event) => {
-    event.preventDefault();
-    const { updateMuscleGroupID, updateMuscleGroupName, muscleGroups } = this.state;
-    const updatedMuscleGroups = muscleGroups.map((group) =>
-      group.id === updateMuscleGroupID ? { ...group, name: updateMuscleGroupName } : group
-    );
-    this.setState({
-      muscleGroups: updatedMuscleGroups,
-      updateMuscleGroupName: '',
-      updateMuscleGroupID: null,
-    });
+  const deleteMuscleGroup = async (id) => {
+    try {
+      const response = await fetch(`${apiUrl}/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: id,
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete muscle group');
+      }
+
+      fetchMuscleGroups(currentPage, searchTerm);
+    } catch (error) {
+      console.error('Error deleting muscle group:', error.message);
+      alert('Failed to delete muscle group. Please try again.');
+    }
   };
 
-  handleDelete = (id) => {
-    const updatedMuscleGroups = this.state.muscleGroups.filter((group) => group.id !== id);
-    this.setState({ muscleGroups: updatedMuscleGroups });
+  const handleEdit = (group) => {
+    setNewGroupName(group.muscleGroupName);
+    setNewGroupImage(group.imageUrl);
+    setEditGroupId(group.muscleGroupId);
+    toggleUpdateModal();
   };
 
-  openUpdateModal = (group) => {
-    this.setState({
-      updateMuscleGroupID: group.id,
-      updateMuscleGroupName: group.name,
-    });
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
   };
 
-  openDetailModal = (group) => {
-    this.setState({ detailMuscleGroup: group });
-  };
-
-  closeDetailModal = () => {
-    this.setState({ detailMuscleGroup: null });
-  };
-
-  goToPage = (page) => {
-    this.setState({ currentPage: page });
-  };
-
-  render() {
-    const { muscleGroups, searchQuery, currentPage, itemsPerPage, detailMuscleGroup } = this.state;
-    const filteredMuscleGroups = muscleGroups.filter((group) =>
-      group.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    // Pagination logic
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentMuscleGroups = filteredMuscleGroups.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredMuscleGroups.length / itemsPerPage);
-
-    return (
-      <div className="container mt-5">
-        <div className="d-flex justify-content-between mb-4">
-          <h2>Muscle Groups</h2>
-          <div className="form-inline">
-            <input
-              type="text"
-              id="searchInput"
-              className="form-control mr-2"
-              placeholder="Search Muscle Group..."
-              aria-label="Search Muscle Group"
-              value={searchQuery}
-              onChange={this.handleSearchChange}
-            />
-            <button
-              className="btn btn-primary mt-2"
-              id="createButton"
-              data-bs-toggle="modal"
-              data-bs-target="#createModal"
-            >
-              Create Muscle Group
-            </button>
+  const renderTableRows = () => {
+    return muscleGroups.map(group => (
+      <tr key={group.muscleGroupId}>
+        <td>{group.muscleGroupId}</td>
+        <td>{group.muscleGroupName}</td>
+        <td>{group.imageUrl && <img src={group.imageUrl} alt={group.muscleGroupName} className="table-image" />}</td>
+        <td>
+          <div className="button-group">
+            <Button color="primary" className="mr-2 update-btn" onClick={() => handleEdit(group)}>Update</Button>
+            <Button color="danger" className="mr-2 delete-btn" onClick={() => deleteMuscleGroup(group.muscleGroupId)}>Delete</Button>
           </div>
-        </div>
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Muscle Group ID</th>
-              <th scope="col">Muscle Group Name</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="muscleGroupTableBody">
-            {currentMuscleGroups.map((group) => (
-              <tr key={group.id}>
-                <td>{group.id}</td>
-                <td>{group.name}</td>
-                <td className="d-flex justify-content-around">
-                  <button
-                    className="btn btn-sm btn-warning mr-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#updateModal"
-                    onClick={() => this.openUpdateModal(group)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-sm btn-danger mr-2"
-                    onClick={() => this.handleDelete(group.id)}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="btn btn-sm btn-info"
-                    data-bs-toggle="modal"
-                    data-bs-target="#detailModal"
-                    onClick={() => this.openDetailModal(group)}
-                  >
-                    Details
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <nav>
-          <ul className="pagination justify-content-center">
-            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-              <button
-                className="page-link"
-                onClick={() => this.goToPage(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-            </li>
-            {[...Array(totalPages)].map((_, index) => (
-              <li
-                key={index}
-                className={`page-item ${index + 1 === currentPage ? 'active' : ''}`}
-                onClick={() => this.goToPage(index + 1)}
-              >
-                <button className="page-link">{index + 1}</button>
-              </li>
-            ))}
-            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-              <button
-                className="page-link"
-                onClick={() => this.goToPage(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </button>
-            </li>
-          </ul>
-        </nav>
+        </td>
+      </tr>
+    ));
+  };
 
-        {/* Create Muscle Group Modal */}
-        <div
-          className="modal fade"
-          id="createModal"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="createModalLabel"
-          aria-hidden="true"
+  return (
+    <Container>
+      <h1 className="my-4">Muscle Groups</h1>
+      <Row>
+        <Col md="6">
+          <Input
+            type="text"
+            placeholder="Search muscle group..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="btn-search"
+          />
+        </Col>
+        <Col md="6" className="text-right">
+          <Button color="primary" onClick={toggleCreateModal} className="btn-create">Create Muscle Group</Button>
+        </Col>
+      </Row>
+
+      {/* Create Muscle Group Modal */}
+      <Modal isOpen={createModal} toggle={toggleCreateModal}>
+        <ModalHeader toggle={toggleCreateModal}>Create Muscle Group</ModalHeader>
+        <ModalBody>
+          <Form>
+            <FormGroup>
+              <Label for="newGroupName">Name</Label>
+              <Input
+                type="text"
+                id="newGroupName"
+                value={newGroupName}
+                onChange={(e) => setNewGroupName(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="newGroupImage">Image URL</Label>
+              <Input
+                type="text"
+                id="newGroupImage"
+                value={newGroupImage}
+                onChange={(e) => setNewGroupImage(e.target.value)}
+              />
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={createMuscleGroup}>Create</Button>
+          <Button color="secondary" onClick={toggleCreateModal}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* Update Muscle Group Modal */}
+      <Modal isOpen={updateModal} toggle={toggleUpdateModal}>
+        <ModalHeader toggle={toggleUpdateModal}>Update Muscle Group</ModalHeader>
+        <ModalBody>
+          <Form>
+            <FormGroup>
+              <Label for="newGroupName">Name</Label>
+              <Input
+                type="text"
+                id="newGroupName"
+                value={newGroupName}
+                onChange={(e) => setNewGroupName(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="newGroupImage">Image URL</Label>
+              <Input
+                type="text"
+                id="newGroupImage"
+                value={newGroupImage}
+                onChange={(e) => setNewGroupImage(e.target.value)}
+              />
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={updateMuscleGroup}>Update</Button>
+          <Button color="secondary" onClick={toggleUpdateModal}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
+
+      <Table striped hover>
+        <thead>
+          <tr>
+            <th>Muscle Group ID</th>
+            <th>Muscle Group Name</th>
+            <th>Image</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {renderTableRows()}
+        </tbody>
+      </Table>
+      <div className="pagination">
+        <Button
+          className="pre"
+          color="primary"
+          size="sm"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
         >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="createModalLabel">
-                  Create Muscle Group
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <form id="createForm" onSubmit={this.handleCreateSubmit}>
-                  <div className="form-group mb-3">
-                    <label htmlFor="createMuscleGroupName">Muscle Group Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="createMuscleGroupName"
-                      required
-                      aria-describedby="createHelp"
-                      value={this.state.createMuscleGroupName}
-                      onChange={this.handleCreateChange}
-                    />
-                    <small id="createHelp" className="form-text text-muted">
-                      Enter the name of the muscle group.
-                    </small>
-                  </div>
-                  <button type="submit" className="btn btn-primary">
-                    Create
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Update Muscle Group Modal */}
-        <div
-          className="modal fade"
-          id="updateModal"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="updateModalLabel"
-          aria-hidden="true"
+          Previous
+        </Button>
+        <span className="mx-2">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          className="next"
+          color="primary"
+          size="sm"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
         >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="updateModalLabel">
-                  Update Muscle Group
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <form id="updateForm" onSubmit={this.handleUpdateSubmit}>
-                  <input type="hidden" id="updateMuscleGroupID" value={this.state.updateMuscleGroupID} />
-                  <div className="form-group mb-3">
-                    <label htmlFor="updateMuscleGroupName">Muscle Group Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="updateMuscleGroupName"
-                      required
-                      aria-describedby="updateHelp"
-                      value={this.state.updateMuscleGroupName}
-                      onChange={this.handleUpdateChange}
-                    />
-                    <small id="updateHelp" className="form-text text-muted">
-                      Enter the new name for the muscle group.
-                    </small>
-                  </div>
-                  <button type="submit" className="btn btn-primary">
-                    Update
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Detail Muscle Group Modal */}
-        <div
-          className="modal fade"
-          id="detailModal"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="detailModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="detailModalLabel">
-                  Muscle Group Details
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={this.closeDetailModal}
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                {detailMuscleGroup && (
-                  <div>
-                    <p><strong>ID:</strong> {detailMuscleGroup.id}</p>
-                    <p><strong>Name:</strong> {detailMuscleGroup.name}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+          Next
+        </Button>
       </div>
-    );
-  }
+    </Container>
+  );
 }

@@ -1,0 +1,61 @@
+﻿.workout-history {
+    padding: 20px;
+}
+
+.calendar-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-right: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.has-workout {
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+.workout-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.workout-details h3 {
+    margin-top: 0;
+}
+
+.workout-entry {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+    .workout-entry:last-child {
+        border-bottom: none;
+    }
+
+    .workout-entry span {
+        display: block;
+        width: 30%;
+        text-align: center;
+    }
+
+.workout-list {
+    max-height: 400px; /* Chiều cao cố định của danh sách workout */
+    overflow-y: auto; /* Tạo thanh cuộn khi danh sách quá dài */
+}
+
+.workout-details {
+    margin-bottom: 20px; /* Khoảng cách giữa các workout-details */
+}
+
+.pagination {
+    margin-top: 10px; /* Khoảng cách từ phân trang đến danh sách workout */
+}
+
+    .pagination button {
+        margin-right: 10px; /* Khoảng cách giữa các nút */
+    }
