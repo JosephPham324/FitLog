@@ -39,6 +39,7 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="Moq" Version="4.20.69" />
+    <PackageVersion Include="Moq.EntityFrameworkCore" Version="5.0.0.1" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.0.3" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.0.3" />
     <PackageVersion Include="nunit" Version="3.14.0" />
