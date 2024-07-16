@@ -1,11 +1,12 @@
 ﻿using System.Linq.Expressions;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Application.Common.ValidationRules;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.MuscleGroups.Commands.UpdateMuscleGroup;
 
-public record UpdateMuscleGroupCommand : IRequest<UpdateMuscleGroupDTO>
+public record UpdateMuscleGroupCommand : IRequest<Result>
 {
     public int Id { get; init; }
     public string? MuscleGroupName { get; init; }
@@ -44,7 +45,7 @@ public class UpdateMuscleGroupCommandValidator : AbstractValidator<UpdateMuscleG
 }
 
 
-public class UpdateMuscleGroupCommandHandler : IRequestHandler<UpdateMuscleGroupCommand, UpdateMuscleGroupDTO>
+public class UpdateMuscleGroupCommandHandler : IRequestHandler<UpdateMuscleGroupCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -53,13 +54,13 @@ public class UpdateMuscleGroupCommandHandler : IRequestHandler<UpdateMuscleGroup
         _context = context;
     }
 
-    public async Task<UpdateMuscleGroupDTO> Handle(UpdateMuscleGroupCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateMuscleGroupCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.MuscleGroups.FindAsync(new object[] { request.Id }, cancellationToken);
 
         if (entity == null)
         {
-            return new UpdateMuscleGroupDTO() { Success = false, Errors = new List<string> { "Muscle group not found." } };
+            return Result.Failure(["Muscle group not found"]);
         }
 
         entity.MuscleGroupName = request.MuscleGroupName;
@@ -68,14 +69,14 @@ public class UpdateMuscleGroupCommandHandler : IRequestHandler<UpdateMuscleGroup
         try
         {
             await _context.SaveChangesAsync(cancellationToken);
-            return new UpdateMuscleGroupDTO() { Success = true };
+            return Result.Successful();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Log the exception (optional)
             //_logger.LogError(ex, "Error updating muscle group");
 
-            return new UpdateMuscleGroupDTO() { Success = false, Errors = new List<string> { ex.Message } };
+            return Result.Failure(["Error updating muscle group"]);
         }
     }
 }

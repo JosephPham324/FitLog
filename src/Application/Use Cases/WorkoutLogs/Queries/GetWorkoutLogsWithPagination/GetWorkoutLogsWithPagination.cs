@@ -38,7 +38,7 @@ public class GetWorkoutLogsWithPaginationQueryHandler : IRequestHandler<GetWorko
     public async Task<PaginatedList<WorkoutLogDTO>> Handle(GetWorkoutLogsWithPaginationQuery request, CancellationToken cancellationToken)
     {
         var query = _context.WorkoutLogs
-            .OrderBy(w => w.WorkoutLogId)
+            .OrderBy(w => w.Id)
             .ProjectTo<WorkoutLogDTO>(_mapper.ConfigurationProvider);
 
         return await PaginatedList<WorkoutLogDTO>.CreateAsync(query.AsNoTracking(), request.PageNumber, request.PageSize);

@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Application.ExerciseLogs.Commands.CreateExerciseLogs;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
 
-public record CreateWorkoutLogCommand : IRequest<int>
+public record CreateWorkoutLogCommand : IRequest<Result>
 {
     public string? CreatedBy { get; init; }
     public string? Note { get; init; }
@@ -13,7 +14,7 @@ public record CreateWorkoutLogCommand : IRequest<int>
     public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
 }
 
-public record CreateExerciseLogCommand : IRequest<int>
+public record CreateExerciseLogCommand : IRequest<Result>
 {
     public int? ExerciseId { get; init; }
     public int? OrderInSession { get; init; }
@@ -47,7 +48,7 @@ public class CreateWorkoutLogCommandValidator : AbstractValidator<CreateWorkoutL
     }
 }
 
-public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCommand, int>
+public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -56,15 +57,15 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
         _context = context;
     }
 
-    public async Task<int> Handle(CreateWorkoutLogCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateWorkoutLogCommand request, CancellationToken cancellationToken)
     {
         var workoutLog = new WorkoutLog
         {
             CreatedBy = request.CreatedBy,
             Note = request.Note,
             Duration = request.Duration,
-            DateCreated = DateTime.UtcNow,
-            LastModified = DateTime.UtcNow // Set to current date and time
+            Created = DateTime.Now,
+            LastModified = DateTime.Now // Set to current date and time
         };
 
         _context.WorkoutLogs.Add(workoutLog);
@@ -76,10 +77,10 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
             {
                 var exerciseLogEntity = new ExerciseLog
                 {
-                    WorkoutLogId = workoutLog.WorkoutLogId,
+                    WorkoutLogId = workoutLog.Id,
                     ExerciseId = exerciseLog.ExerciseId,
-                    DateCreated = DateTime.UtcNow, // Set to current date and time
-                    LastModified = DateTime.UtcNow, // Set to current date and time
+                    DateCreated = DateTime.Now, // Set to current date and time
+                    LastModified = DateTime.Now, // Set to current date and time
                     OrderInSession = exerciseLog.OrderInSession,
                     OrderInSuperset = exerciseLog.OrderInSuperset,
                     Note = exerciseLog.Note,
@@ -95,7 +96,7 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return workoutLog.WorkoutLogId;
+        return Result.Successful();
     }
 }
 

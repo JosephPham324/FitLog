@@ -119,15 +119,15 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
         }
 
         // Generate your own JWT token
-        var jwtToken = await GenerateJwtToken(user, userId);
+        var jwtToken = await GenerateJwtTokenWithExternalProvider(user, userId);
         return jwtToken;
     }
 
-    private async Task<string> GenerateJwtToken(AspNetUser user, string subject)
+    private async Task<string> GenerateJwtTokenWithExternalProvider(AspNetUser user, string providerUserId)
     {
         var claims = new List<Claim>
         {
-            new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, subject),
+            new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, providerUserId),
             new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Email, user.Email??""),
             new Claim("Id", user.Id),
             // Add other claims as needed
@@ -147,7 +147,7 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
             issuer: _configuration["Jwt:Issuer"] ?? "",
             audience: _configuration["Jwt:Audience"] ?? "",
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddMinutes(60),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

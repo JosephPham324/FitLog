@@ -1,13 +1,27 @@
 using FitLog.Infrastructure.Data;
+using FitLog.Web.Hubs;
+using Microsoft.AspNetCore.Http.Json;
+using Newtonsoft.Json.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
 // Add services to the container.
 builder.Services.AddKeyVaultIfConfigured(builder.Configuration);
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddWebServices();
+builder.Services.AddWebServices(builder.Configuration);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+        builder.WithOrigins("http://localhost:44447") // Adjust the origin as needed
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials());
+});
 
 var app = builder.Build();
 
@@ -25,6 +39,10 @@ else
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Other middleware configuration
+app.UseCors("CorsPolicy");
+
 
 app.UseSwaggerUi(settings =>
 {
@@ -46,6 +64,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapEndpoints();
+
+app.MapHub<ChatHub>("/api/chathub");
+
 
 app.Run();
 

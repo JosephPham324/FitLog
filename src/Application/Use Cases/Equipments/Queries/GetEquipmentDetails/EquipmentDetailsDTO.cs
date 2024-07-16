@@ -9,7 +9,7 @@ public class EquipmentDetailsDTO
     public string? EquipmentName { get; set; }
     public string? ImageUrl { get; set; }
 
-    private class Mapping : AutoMapper.Profile
+    public class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {

@@ -1,7 +1,10 @@
 ﻿
+using FitLog.Application.CoachProfiles.Commands.UpdateCoachApplicationStatus;
 using FitLog.Application.CoachProfiles.Commands.UpdateCoachProfile;
 using FitLog.Application.CoachProfiles.Queries.CreateCoachApplication;
+using FitLog.Application.CoachProfiles.Queries.GetCoachApplicationsWithPagination;
 using FitLog.Application.CoachProfiles.Queries.GetCoachProfileDetails;
+using FitLog.Application.Common.Models;
 using FitLog.Application.Users.Queries.ExternalLogin;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +17,11 @@ public class CoachProfile : EndpointGroupBase
         app.MapGroup(this)
            .MapGet(GetCoachProfileDetails, "{id}")
            .MapPost(UpdateCoachProfileDetails, "{id}")
-           .MapPost(CreateCoachApplication, "apply-coach");
+           .MapPost(CreateCoachApplication, "apply-coach")
+           .MapPut(UpdateCoachApplication, "update-application")
+           .MapGet(GetApplicationsWithPagination,"paginated-list");
     }
-    public async Task<bool> CreateCoachApplication(ISender sender, [FromBody] CreateCoachApplicationQuery request)
+    public async Task<Result> CreateCoachApplication(ISender sender, [FromBody] CreateCoachApplicationQuery request)
     {
         return await sender.Send(request);
     }
@@ -25,8 +30,17 @@ public class CoachProfile : EndpointGroupBase
         var request = new GetCoachProfileDetailsQuery(id);
         return await sender.Send(request);
     }
-    public async Task<object> UpdateCoachProfileDetails(ISender sender,string id, [FromBody] UpdateCoachProfileCommand request)
+    public async Task<Result> UpdateCoachProfileDetails(ISender sender,string id, [FromBody] UpdateCoachProfileCommand request)
     {
         return await sender.Send(request);
+    }
+    public async Task<Result> UpdateCoachApplication(ISender sender, string id, [FromBody] UpdateCoachApplicationStatusCommand request)
+    {
+        return await sender.Send(request);
+    }
+
+    public async Task<PaginatedList<CoachApplicationDto>> GetApplicationsWithPagination(ISender sender,[AsParameters] GetCoachApplicationsWithPaginationQuery query)
+    {
+        return await sender.Send(query);
     }
 }

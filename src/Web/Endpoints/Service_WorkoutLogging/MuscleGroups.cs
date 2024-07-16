@@ -26,7 +26,7 @@ public class MuscleGroups : EndpointGroupBase
             .MapPut(UpdateMuscleGroup, "{id}")
             .MapDelete(DeleteMuscleGroup, "{id}");
     }
-    public Task<int> CreateMuscleGroup(ISender sender, [FromBody] CreateMuscleGroupCommand command)
+    public Task<Result> CreateMuscleGroup(ISender sender, [FromBody] CreateMuscleGroupCommand command)
     {
         return sender.Send(command);
     }
@@ -43,12 +43,12 @@ public class MuscleGroups : EndpointGroupBase
 
     }
 
-    public Task<UpdateMuscleGroupDTO> UpdateMuscleGroup(ISender sender, int id, [FromBody] UpdateMuscleGroupCommand command)
+    public Task<Result> UpdateMuscleGroup(ISender sender, int id, [FromBody] UpdateMuscleGroupCommand command)
     {
         return sender.Send(command);
     }
 
-    public Task<bool> DeleteMuscleGroup(ISender sender, int id, [FromBody] DeleteMuscleGroupCommand command)
+    public Task<Result> DeleteMuscleGroup(ISender sender, [FromBody] DeleteMuscleGroupCommand command)
     {
         return sender.Send(command);
     }

@@ -1,9 +1,10 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Application.Common.ValidationRules;
 
 namespace FitLog.Application.Equipments.Commands.UpdateEquipment;
 
-public record UpdateEquipmentCommand : IRequest<bool>
+public record UpdateEquipmentCommand : IRequest<Result>
 {
     public int EquipmentId { get; init; }
     public string? EquipmentName { get; init; }
@@ -28,7 +29,7 @@ public class UpdateEquipmentCommandValidator : AbstractValidator<UpdateEquipment
     }
 }
 
-public class UpdateEquipmentCommandHandler : IRequestHandler<UpdateEquipmentCommand, bool>
+public class UpdateEquipmentCommandHandler : IRequestHandler<UpdateEquipmentCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -37,13 +38,13 @@ public class UpdateEquipmentCommandHandler : IRequestHandler<UpdateEquipmentComm
         _context = context;
     }
 
-    public async Task<bool> Handle(UpdateEquipmentCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateEquipmentCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Equipment.FindAsync(new object[] { request.EquipmentId }, cancellationToken);
 
         if (entity == null)
         {
-            return false; // Entity not found
+            return Result.Failure(["Entity not found"]); // Entity not found
         }
 
         entity.EquipmentName = request.EquipmentName;
@@ -52,14 +53,14 @@ public class UpdateEquipmentCommandHandler : IRequestHandler<UpdateEquipmentComm
         try
         {
             await _context.SaveChangesAsync(cancellationToken);
-            return true; // Successfully updated
+            return Result.Successful(); // Successfully updated
         }
         catch (Exception)
         {
             // Log the exception (optional)
             // _logger.LogError(ex, "Error updating equipment");
 
-            return false; // Update failed
+            return Result.Failure(["Error updating equipment"]); // Update failed
         }
     }
 }

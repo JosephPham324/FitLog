@@ -31,4 +31,14 @@ module.exports = function (app) {
   });
 
   app.use(appProxy);
+
+  app.use(
+    '/api/chathub',
+    createProxyMiddleware({
+      target: target, // Your backend URL
+      changeOrigin: true,
+      secure: false, // Disable SSL verification,
+      ws: true
+    })
+  );
 };

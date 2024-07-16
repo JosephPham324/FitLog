@@ -64,7 +64,6 @@ public class MappingTests
     //[TestCase(typeof(LoginResultDTO), typeof(LoginResultDTO))]
     [TestCase(typeof(ExerciseLog), typeof(ExerciseLogDTO))]
     [TestCase(typeof(WorkoutLog), typeof(WorkoutLogDTO))]
-
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);

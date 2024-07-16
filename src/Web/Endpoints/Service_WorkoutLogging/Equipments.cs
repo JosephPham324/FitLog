@@ -26,29 +26,29 @@ public class Equipments : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public async Task<object> GetEquipmentById(ISender sender, int id)
+    public async Task<EquipmentDetailsDTO> GetEquipmentById(ISender sender, int id)
     {
         var query = new GetEquipmentDetailsQuery { EquipmentId = id };
         var result = await sender.Send(query);
         return result;
     }
 
-    public Task<int> CreateEquipment(ISender sender, [AsParameters] CreateEquipmentCommand command)
+    public Task<Result> CreateEquipment(ISender sender, [FromBody] CreateEquipmentCommand command)
     {
         return sender.Send(command);
     }
 
-    public async Task<IResult> UpdateEquipment(ISender sender, int id, [FromBody] UpdateEquipmentCommand command)
+    public async Task<Result> UpdateEquipment(ISender sender, int id, [FromBody] UpdateEquipmentCommand command)
     {
-        if (id != command.EquipmentId) return Results.BadRequest();
-        await sender.Send(command);
-        return Results.NoContent();
+        if (id != command.EquipmentId) return Result.Failure(["Id doesn't match instance"]);
+        var result = await sender.Send(command);
+        return result;
     }
 
-    public async Task<IResult> DeleteEquipment(ISender sender, int id, [FromBody] DeleteEquipmentCommand command)
+    public async Task<Result> DeleteEquipment(ISender sender, int id, [FromBody] DeleteEquipmentCommand command)
     {
-        if (id != command.EquipmentId) return Results.BadRequest();
-        await sender.Send(command);
-        return Results.NoContent();
+        if (id != command.EquipmentId) return Result.Failure(["Id doesn't match instance"]);
+        var result = await sender.Send(command);
+        return result;
     }
 }

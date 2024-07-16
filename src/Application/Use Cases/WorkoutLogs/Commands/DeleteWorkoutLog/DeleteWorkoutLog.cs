@@ -1,9 +1,10 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutLogs.Commands.DeleteWorkoutLog;
 
-public record DeleteWorkoutLogCommand : IRequest<bool>
+public record DeleteWorkoutLogCommand : IRequest<Result>
 {
     public int WorkoutLogId { get; init; }
 
@@ -17,7 +18,7 @@ public class DeleteWorkoutLogCommandValidator : AbstractValidator<DeleteWorkoutL
     }
 }
 
-public class DeleteWorkoutLogCommandHandler : IRequestHandler<DeleteWorkoutLogCommand, bool>
+public class DeleteWorkoutLogCommandHandler : IRequestHandler<DeleteWorkoutLogCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -26,15 +27,15 @@ public class DeleteWorkoutLogCommandHandler : IRequestHandler<DeleteWorkoutLogCo
         _context = context;
     }
 
-    public async Task<bool> Handle(DeleteWorkoutLogCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteWorkoutLogCommand request, CancellationToken cancellationToken)
     {
         var workoutLog = await _context.WorkoutLogs
            .Include(wl => wl.ExerciseLogs)
-           .FirstOrDefaultAsync(wl => wl.WorkoutLogId == request.WorkoutLogId, cancellationToken);
+           .FirstOrDefaultAsync(wl => wl.Id == request.WorkoutLogId, cancellationToken);
 
         if (workoutLog == null)
         {
-            throw new NotFoundException(nameof(WorkoutLog), request.WorkoutLogId.ToString());
+            return Result.Failure(new List<string> { $"Workout log with ID {request.WorkoutLogId} not found." });
         }
 
         // Delete the exercise logs first
@@ -45,6 +46,6 @@ public class DeleteWorkoutLogCommandHandler : IRequestHandler<DeleteWorkoutLogCo
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result.Successful();
     }
 }
