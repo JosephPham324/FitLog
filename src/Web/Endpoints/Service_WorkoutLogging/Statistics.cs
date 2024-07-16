@@ -5,6 +5,7 @@ using FitLog.Application.Statistics_Workout.Queries.GetSummaryStats;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalReps;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalTrainingTonnage;
 using FitLog.Application.Statistics_Workout.Queries.GetTrainingFrequency;
+using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
@@ -26,24 +27,24 @@ public class Statistics : EndpointGroupBase
         return await sender.Send(query);
     }
 
-    public async Task<object> GetMusclesEngagement(ISender sender, [AsParameters] GetMuscleEngagementQuery query)
+    public async Task<List<MuscleEngagementDTO>> GetMusclesEngagement(ISender sender, [AsParameters] GetMuscleEngagementQuery query)
     {
         return await sender.Send(query);
     }
-    public async Task<object> GetRepsStats(ISender sender, [AsParameters] GetTotalRepsQuery query)
+    public async Task<Dictionary<DateTime, int>> GetRepsStats(ISender sender, [AsParameters] GetTotalRepsQuery query)
     {
         return await sender.Send(query);
     }
 
-    public async Task<object> GetTonnageStats(ISender sender, [AsParameters] GetTotalTrainingTonnageQuery query)
+    public async Task<Dictionary<DateTime, double>> GetTonnageStats(ISender sender, [AsParameters] GetTotalTrainingTonnageQuery query)
     {
         return await sender.Send(query);
     }
-    public async Task<object> GetTrainingFrequencies(ISender sender, [AsParameters] GetTrainingFrequencyQuery query)
+    public async Task<Dictionary<DateTime, int>> GetTrainingFrequencies(ISender sender, [AsParameters] GetTrainingFrequencyQuery query)
     {
         return await sender.Send(query);
     }
-    public async Task<object> GetExerciseLogHistory(ISender sender, [AsParameters] GetExerciseLogHistoryQuery query)
+    public async Task<IEnumerable<ExerciseLogDTO>> GetExerciseLogHistory(ISender sender, [AsParameters] GetExerciseLogHistoryQuery query)
     {
         return await sender.Send(query);
     }

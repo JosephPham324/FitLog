@@ -6,7 +6,7 @@ using FitLog.Domain.Entities;
 
 namespace FitLog.Application.TrainingRecommendation.Queries.GetProgramRecommendations;
 
-public record GetProgramRecommendationsQuery : IRequest<object>
+public record GetProgramRecommendationsQuery : IRequest<List<ProgramOverviewDto>>
 {
     public string UserId { get; init; } = string.Empty;
 }
@@ -20,7 +20,7 @@ public class GetProgramRecommendationsQueryValidator : AbstractValidator<GetProg
     }
 }
 
-public class GetProgramRecommendationsQueryHandler : IRequestHandler<GetProgramRecommendationsQuery, object>
+public class GetProgramRecommendationsQueryHandler : IRequestHandler<GetProgramRecommendationsQuery, List<ProgramOverviewDto>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMediator _mediator;
@@ -33,7 +33,7 @@ public class GetProgramRecommendationsQueryHandler : IRequestHandler<GetProgramR
         _mapper = mapper;
     }
 
-    public async Task<object> Handle(GetProgramRecommendationsQuery request, CancellationToken cancellationToken)
+    public async Task<List<ProgramOverviewDto>> Handle(GetProgramRecommendationsQuery request, CancellationToken cancellationToken)
     {
         // Get survey answers
         var surveyAnswerQuery = new GetUserTrainingSurveyQuery { UserId = request.UserId };

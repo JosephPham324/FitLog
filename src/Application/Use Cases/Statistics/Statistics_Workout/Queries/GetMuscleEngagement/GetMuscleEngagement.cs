@@ -7,8 +7,12 @@ using FitLog.Domain.Constants;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Statistics_Workout.Queries.GetMuscleEngagement;
-
-public record GetMuscleEngagementQuery : IRequest<object>
+public class MuscleEngagementDTO
+{
+    public string Muscle { get; set; } = string.Empty;
+    public int Sets { get; set; }
+}
+public record GetMuscleEngagementQuery : IRequest<List<MuscleEngagementDTO>>
 {
     public string UserId { get; set; } = string.Empty;
     public string TimeFrame { get; set; } = string.Empty;
@@ -25,7 +29,7 @@ public class GetMuscleEngagementQueryValidator : AbstractValidator<GetMuscleEnga
     }
 }
 
-public class GetMuscleEngagementQueryHandler : IRequestHandler<GetMuscleEngagementQuery, object>
+public class GetMuscleEngagementQueryHandler : IRequestHandler<GetMuscleEngagementQuery, List<MuscleEngagementDTO>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMediator _mediator;
@@ -36,7 +40,7 @@ public class GetMuscleEngagementQueryHandler : IRequestHandler<GetMuscleEngageme
         _mediator = mediator;
     }
 
-    public async Task<object> Handle(GetMuscleEngagementQuery request, CancellationToken cancellationToken)
+    public async Task<List<MuscleEngagementDTO>> Handle(GetMuscleEngagementQuery request, CancellationToken cancellationToken)
     {
         DateTime startDate;
         DateTime endDate = DateTime.
@@ -63,7 +67,7 @@ public class GetMuscleEngagementQueryHandler : IRequestHandler<GetMuscleEngageme
 
         if (workoutHistory == null)
         {
-            return new List<object>();
+            return new List<MuscleEngagementDTO>();
         }
 
         var muscleEngagement = new Dictionary<string, int>();
@@ -99,6 +103,6 @@ public class GetMuscleEngagementQueryHandler : IRequestHandler<GetMuscleEngageme
             }
         }
 
-        return muscleEngagement.Select(me => new { Muscle = me.Key, Sets = me.Value }).ToList();
+        return muscleEngagement.Select(me => new MuscleEngagementDTO { Muscle = me.Key, Sets = me.Value }).ToList();
     }
 }

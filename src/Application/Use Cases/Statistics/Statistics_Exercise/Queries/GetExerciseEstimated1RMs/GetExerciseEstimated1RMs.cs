@@ -3,8 +3,17 @@ using FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Statistics_Exercise.Queries.GetExerciseEstimated1RMs;
+public record OneRepMaxRecord(
+        double Epley,
+        double Brzycki,
+        double Lander,
+        double Lombardi,
+        double Mayhew,
+        double OConner,
+        double Wathan
+);
 
-public record GetExerciseEstimated1RMsQuery : IRequest<object>
+public record GetExerciseEstimated1RMsQuery : IRequest<Dictionary<DateTime, OneRepMaxRecord>>
 {
     public string UserId { get; init; } = string.Empty;
     public int ExerciseId { get; init; }
@@ -21,7 +30,7 @@ public class GetExerciseEstimated1RMsQueryValidator : AbstractValidator<GetExerc
     }
 }
 
-public class GetExerciseEstimated1RMsQueryHandler : IRequestHandler<GetExerciseEstimated1RMsQuery, object>
+public class GetExerciseEstimated1RMsQueryHandler : IRequestHandler<GetExerciseEstimated1RMsQuery, Dictionary<DateTime, OneRepMaxRecord>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMediator _mediator;
@@ -33,7 +42,7 @@ public class GetExerciseEstimated1RMsQueryHandler : IRequestHandler<GetExerciseE
         _mediator = mediator;
     }
 
-    public async Task<object> Handle(GetExerciseEstimated1RMsQuery request, CancellationToken cancellationToken)
+    public async Task<Dictionary<DateTime, OneRepMaxRecord>> Handle(GetExerciseEstimated1RMsQuery request, CancellationToken cancellationToken)
     {
         //get data
         var logsHistoryQuery = new GetExerciseLogHistoryQuery
@@ -70,16 +79,7 @@ public class GetExerciseEstimated1RMsQueryHandler : IRequestHandler<GetExerciseE
         return estimated1RMByLog;
     }
 
-    public record OneRepMaxRecord(
-        double Epley,
-        double Brzycki,
-        double Lander,
-        double Lombardi,
-        double Mayhew,
-        double OConner,
-        double Wathan
-    );
-
+    
     private OneRepMaxRecord GetHigher1RM(OneRepMaxRecord record1, OneRepMaxRecord record2)
     {
         return new OneRepMaxRecord(

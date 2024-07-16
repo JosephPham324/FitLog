@@ -2,6 +2,7 @@
 using FitLog.Application.TrainingRecommendation.Queries.GetProgramRecommendations;
 using FitLog.Application.TrainingRecommendation.Queries.GetWorkoutRecommendation;
 using FitLog.Application.TrainingSurvey.Queries.GetUserTrainingSurvey;
+using FitLog.Application.Use_Cases.CoachProfiles.Queries.GetCoachProfileDetails;
 using FitLog.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ public class TrainingRecommendation : EndpointGroupBase
            .MapPost(GetWorkoutRecommendation, "/workout-recommendation/user");
     }
 
-    public Task<object> GetProgramRecommendations(ISender sender, [AsParameters] GetProgramRecommendationsQuery query)
+    public Task<List<ProgramOverviewDto>> GetProgramRecommendations(ISender sender, [AsParameters] GetProgramRecommendationsQuery query)
     {
 
         return sender.Send(query);

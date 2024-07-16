@@ -26,7 +26,7 @@ public class Equipments : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public async Task<object> GetEquipmentById(ISender sender, int id)
+    public async Task<EquipmentDetailsDTO> GetEquipmentById(ISender sender, int id)
     {
         var query = new GetEquipmentDetailsQuery { EquipmentId = id };
         var result = await sender.Send(query);
