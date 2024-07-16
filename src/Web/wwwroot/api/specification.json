@@ -385,7 +385,9 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentDetailsDTO"
+                }
               }
             }
           }
@@ -977,7 +979,12 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MuscleEngagementDTO"
+                  }
+                }
               }
             }
           }
@@ -1017,7 +1024,13 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
               }
             }
           }
@@ -1057,7 +1070,13 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
               }
             }
           }
@@ -1097,7 +1116,13 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
               }
             }
           }
@@ -1137,7 +1162,12 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExerciseLogDTO"
+                  }
+                }
               }
             }
           }
@@ -1207,7 +1237,12 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProgramOverviewDto"
+                  }
+                }
               }
             }
           }
@@ -3407,6 +3442,24 @@
           }
         }
       },
+      "EquipmentDetailsDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "equipmentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "Result": {
         "type": "object",
         "additionalProperties": false,
@@ -3781,6 +3834,124 @@
           "weekStreak": {
             "type": "number",
             "format": "double"
+          }
+        }
+      },
+      "MuscleEngagementDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "muscle": {
+            "type": "string"
+          },
+          "sets": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ExerciseLogDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseLogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workoutLogId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfSets": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "footageUrls": {
+            "type": "string",
+            "nullable": true
+          },
+          "exerciseName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ProgramOverviewDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "programId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "creatorName": {
+            "type": "string"
+          },
+          "programName": {
+            "type": "string"
+          },
+          "programThumbnail": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfWeeks": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "daysPerWeek": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gymType": {
+            "type": "string",
+            "nullable": true
+          },
+          "musclesPriority": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -5253,69 +5424,6 @@
             "items": {
               "$ref": "#/components/schemas/ExerciseLogDTO"
             }
-          }
-        }
-      },
-      "ExerciseLogDTO": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "exerciseLogId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "workoutLogId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "exerciseId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "dateCreated": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "lastModified": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "orderInSession": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "orderInSuperset": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "note": {
-            "type": "string",
-            "nullable": true
-          },
-          "numberOfSets": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "weightsUsed": {
-            "type": "string",
-            "nullable": true
-          },
-          "numberOfReps": {
-            "type": "string",
-            "nullable": true
-          },
-          "footageUrls": {
-            "type": "string",
-            "nullable": true
-          },
-          "exerciseName": {
-            "type": "string",
-            "nullable": true
           }
         }
       },
