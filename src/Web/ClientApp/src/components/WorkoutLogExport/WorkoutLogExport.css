@@ -37,7 +37,16 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
+.export-button {
+    background-color: #28a745; /* Green color */
+    color: white; /* White text color */
+    border: none; /* No border */
+    border-radius: 20px; /* Rounded corners */
+    padding: 10px 20px; /* Padding for the button */
+    cursor: pointer; /* Cursor pointer on hover */
+    font-size: 16px; /* Font size */
+}
 
-    button:hover {
-        background-color: #45a049;
+    .export-button:hover {
+        background-color: #218838; /* Darker green on hover */
     }

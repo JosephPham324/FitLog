@@ -40,8 +40,9 @@
         color: black;
     }
 
-h1 {
+.he h1 {
     text-align: center;
+    font-size: 25px;
 }
 
 :root .table {
@@ -52,6 +53,9 @@ h1 {
 :root th, td {
     padding: 10px;
     text-align: left;
+    background: white;
+    border: 1px solid black;
+    color: black;
 }
 
 :root th {

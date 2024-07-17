@@ -12,7 +12,6 @@
     background-color: #28a745;
     color: white;
     border: none;
-   
     cursor: pointer;
     border-radius: 5px;
     margin: 2px;
@@ -22,9 +21,10 @@
     text-align: center;
 }
 
-    .create-btn:hover {
-        background-color: #218838;
-    }
+/* Remove background color on hover */
+.create-btn:hover {
+    background-color: #28a745;
+}
 
 :root .texth1 {
     text-align: center;
@@ -41,13 +41,13 @@ table {
     border-collapse: collapse;
 }
 
- .th, td {
+.th, td {
     padding: 12px 15px;
     border: 1px solid #ddd;
     text-align: left;
 }
 
- .th {
+.th {
     background-color: #f4f4f4;
 }
 
@@ -76,4 +76,3 @@ table {
     .delete-btn:hover {
         background-color: #c82333;
     }
-

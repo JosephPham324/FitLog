@@ -137,9 +137,10 @@
     }
 
     .muscle-sets th, .muscle-sets td {
-        border: 1px solid #ddd;
+        border: 1px solid black;
         padding: 8px;
         text-align: left;
+        background: white;
     }
 
 .dot {

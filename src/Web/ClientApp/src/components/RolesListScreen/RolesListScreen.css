@@ -21,6 +21,8 @@ body {
 
     .header h1 {
         margin: 0;
+        padding: 0px 0px 0px 550px;
+        font-size: 40px;
     }
 
 .add-role-button {
@@ -29,6 +31,8 @@ body {
     color: #fff;
     border: none;
     cursor: pointer;
+    border-radius: 25px;
+    font-size: 16px;
 }
 
 .table {
@@ -52,6 +56,8 @@ body {
     color: #fff;
     border: none;
     cursor: pointer;
+    border-radius: 25px;
+    width: -webkit-fill-available;
 }
 
 .popup {
@@ -97,4 +103,5 @@ body {
         border: none;
         cursor: pointer;
         margin-top: 10px;
+        border-radius: 25px;
     }
