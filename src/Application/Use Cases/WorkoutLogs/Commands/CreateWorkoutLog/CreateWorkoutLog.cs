@@ -64,8 +64,8 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
             CreatedBy = request.CreatedBy,
             Note = request.Note,
             Duration = request.Duration,
-            Created = DateTime.UtcNow,
-            LastModified = DateTime.UtcNow // Set to current date and time
+            Created = DateTime.Now,
+            LastModified = DateTime.Now // Set to current date and time
         };
 
         _context.WorkoutLogs.Add(workoutLog);
@@ -79,8 +79,8 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
                 {
                     WorkoutLogId = workoutLog.Id,
                     ExerciseId = exerciseLog.ExerciseId,
-                    DateCreated = DateTime.UtcNow, // Set to current date and time
-                    LastModified = DateTime.UtcNow, // Set to current date and time
+                    DateCreated = DateTime.Now, // Set to current date and time
+                    LastModified = DateTime.Now, // Set to current date and time
                     OrderInSession = exerciseLog.OrderInSession,
                     OrderInSuperset = exerciseLog.OrderInSuperset,
                     Note = exerciseLog.Note,

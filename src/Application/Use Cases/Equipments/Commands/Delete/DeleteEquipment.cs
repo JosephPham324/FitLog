@@ -12,6 +12,8 @@ public class DeleteEquipmentCommandValidator : AbstractValidator<DeleteEquipment
 {
     public DeleteEquipmentCommandValidator()
     {
+        //Id more than 0
+        RuleFor(x => x.EquipmentId).GreaterThan(0).WithMessage("'Equipment Id' must be greater than '0'.");
     }
 }
 
