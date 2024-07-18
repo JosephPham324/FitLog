@@ -4253,6 +4253,12 @@
                 "items": {
                   "$ref": "#/components/schemas/CoachApplication"
                 }
+              },
+              "chatLines": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChatLine"
+                }
               }
             }
           }
@@ -5302,6 +5308,76 @@
             }
           }
         ]
+      },
+      "ChatLine": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "chatLineId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "chatId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "chatLineText": {
+            "type": "string",
+            "nullable": true
+          },
+          "linkUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "attachmentPath": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "chat": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
+          },
+          "createdByNavigation": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          }
+        }
+      },
+      "Chat": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "chatId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "chatLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatLine"
+            }
+          }
+        }
       },
       "IdentityUserOfString": {
         "type": "object",

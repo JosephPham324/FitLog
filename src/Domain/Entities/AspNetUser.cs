@@ -48,4 +48,6 @@ public partial class AspNetUser : IdentityUser<string>
     //For coaching position application
     public virtual ICollection<CoachApplication> CoachApplications { get; set; } = new List<CoachApplication>();
     public virtual ICollection<CoachApplication> CoachApplicationsUpdated { get; set; } = new List<CoachApplication>();
+    public virtual ICollection<ChatLine> ChatLines { get; set; } = new List<ChatLine>(); // Add this to include the relationship with ChatLine
+
 }

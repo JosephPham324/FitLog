@@ -5974,6 +5974,7 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
     workoutTemplateLastModifiedByNavigations?: WorkoutTemplate[];
     coachApplications?: CoachApplication[];
     coachApplicationsUpdated?: CoachApplication[];
+    chatLines?: ChatLine[];
 
     constructor(data?: IAspNetUser) {
         super(data);
@@ -6074,6 +6075,11 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
                 this.coachApplicationsUpdated = [] as any;
                 for (let item of _data["coachApplicationsUpdated"])
                     this.coachApplicationsUpdated!.push(CoachApplication.fromJS(item));
+            }
+            if (Array.isArray(_data["chatLines"])) {
+                this.chatLines = [] as any;
+                for (let item of _data["chatLines"])
+                    this.chatLines!.push(ChatLine.fromJS(item));
             }
         }
     }
@@ -6180,6 +6186,11 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
             for (let item of this.coachApplicationsUpdated)
                 data["coachApplicationsUpdated"].push(item.toJSON());
         }
+        if (Array.isArray(this.chatLines)) {
+            data["chatLines"] = [];
+            for (let item of this.chatLines)
+                data["chatLines"].push(item.toJSON());
+        }
         super.toJSON(data);
         return data;
     }
@@ -6211,6 +6222,7 @@ export interface IAspNetUser extends IIdentityUserOfString {
     workoutTemplateLastModifiedByNavigations?: WorkoutTemplate[];
     coachApplications?: CoachApplication[];
     coachApplicationsUpdated?: CoachApplication[];
+    chatLines?: ChatLine[];
 }
 
 export class IdentityUserClaimOfString implements IIdentityUserClaimOfString {
@@ -7931,6 +7943,126 @@ export interface ICoachApplication extends IBaseAuditableEntity {
     status?: string;
     statusReason?: string | undefined;
     statusUpdatedBy?: AspNetUser | undefined;
+}
+
+export class ChatLine implements IChatLine {
+    chatLineId?: number;
+    createdBy?: string;
+    chatId?: number | undefined;
+    chatLineText?: string | undefined;
+    linkUrl?: string | undefined;
+    attachmentPath?: string | undefined;
+    createdAt?: Date;
+    chat?: Chat | undefined;
+    createdByNavigation?: AspNetUser | undefined;
+
+    constructor(data?: IChatLine) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.chatLineId = _data["chatLineId"];
+            this.createdBy = _data["createdBy"];
+            this.chatId = _data["chatId"];
+            this.chatLineText = _data["chatLineText"];
+            this.linkUrl = _data["linkUrl"];
+            this.attachmentPath = _data["attachmentPath"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.chat = _data["chat"] ? Chat.fromJS(_data["chat"]) : <any>undefined;
+            this.createdByNavigation = _data["createdByNavigation"] ? AspNetUser.fromJS(_data["createdByNavigation"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ChatLine {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChatLine();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["chatLineId"] = this.chatLineId;
+        data["createdBy"] = this.createdBy;
+        data["chatId"] = this.chatId;
+        data["chatLineText"] = this.chatLineText;
+        data["linkUrl"] = this.linkUrl;
+        data["attachmentPath"] = this.attachmentPath;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["chat"] = this.chat ? this.chat.toJSON() : <any>undefined;
+        data["createdByNavigation"] = this.createdByNavigation ? this.createdByNavigation.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IChatLine {
+    chatLineId?: number;
+    createdBy?: string;
+    chatId?: number | undefined;
+    chatLineText?: string | undefined;
+    linkUrl?: string | undefined;
+    attachmentPath?: string | undefined;
+    createdAt?: Date;
+    chat?: Chat | undefined;
+    createdByNavigation?: AspNetUser | undefined;
+}
+
+export class Chat implements IChat {
+    chatId?: number;
+    createdAt?: Date;
+    chatLines?: ChatLine[];
+
+    constructor(data?: IChat) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.chatId = _data["chatId"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            if (Array.isArray(_data["chatLines"])) {
+                this.chatLines = [] as any;
+                for (let item of _data["chatLines"])
+                    this.chatLines!.push(ChatLine.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Chat {
+        data = typeof data === 'object' ? data : {};
+        let result = new Chat();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["chatId"] = this.chatId;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        if (Array.isArray(this.chatLines)) {
+            data["chatLines"] = [];
+            for (let item of this.chatLines)
+                data["chatLines"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IChat {
+    chatId?: number;
+    createdAt?: Date;
+    chatLines?: ChatLine[];
 }
 
 export class PaginatedListOfWorkoutLogDTO implements IPaginatedListOfWorkoutLogDTO {
