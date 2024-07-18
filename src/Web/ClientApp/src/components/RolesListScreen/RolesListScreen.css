@@ -1,5 +1,4 @@
-﻿/* RolesListScreen.css */
-body {
+﻿body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -80,28 +79,49 @@ body {
     max-width: 80%;
 }
 
-    .popup-inner h2 {
-        margin-top: 0;
-    }
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
 
-    .popup-inner form {
-        display: flex;
-        flex-direction: column;
-    }
+.popup-inner h2 {
+    margin-top: 0;
+}
 
-    .popup-inner input {
-        margin-bottom: 10px;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
+.close-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #000; /* Màu chữ đen */
+}
 
-    .popup-inner button {
-        padding: 10px 20px;
-        background-color: #28a745;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        margin-top: 10px;
-        border-radius: 25px;
-    }
+.popup-inner form {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-inner input {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.popup-inner form button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 25px;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
