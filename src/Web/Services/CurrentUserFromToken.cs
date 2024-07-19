@@ -48,6 +48,11 @@ public class CurrentUserFromToken : IUserTokenService
 
     private string? GetToken()
     {
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext == null)
+        {
+            throw new InvalidOperationException("HttpContext is null.");
+        }
         // Try to get the token from the Authorization header
         var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
         if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))

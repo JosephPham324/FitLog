@@ -3147,6 +3147,73 @@
           }
         }
       }
+    },
+    "/api/Chats/user": {
+      "get": {
+        "tags": [
+          "Chats"
+        ],
+        "operationId": "GetUserChatList",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Chat"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Chats/create": {
+      "post": {
+        "tags": [
+          "Chats"
+        ],
+        "operationId": "CreateChat",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4259,6 +4326,18 @@
                 "items": {
                   "$ref": "#/components/schemas/ChatLine"
                 }
+              },
+              "createdChats": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Chat"
+                }
+              },
+              "invitedChats": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Chat"
+                }
               }
             }
           }
@@ -5366,6 +5445,12 @@
           "chatId": {
             "type": "integer",
             "format": "int32"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "targetUserId": {
+            "type": "string"
           },
           "createdAt": {
             "type": "string",
@@ -6875,6 +6960,18 @@
             "type": "string"
           },
           "applicantEmail": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateChatCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "targetUserId": {
             "type": "string"
           }
         }

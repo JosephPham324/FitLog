@@ -3,6 +3,8 @@ import { HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 import { Button, Form, Input, List } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { getCookie } from '../../utils/cookiesOperations';
+import './Chat.css'; // Ensure to import your CSS file
+
 
 const Chat = () => {
   const [connection, setConnection] = useState(null);
@@ -11,18 +13,18 @@ const Chat = () => {
   const [chatUrls, setChatUrls] = useState([]);
   const [chatMedia, setChatMedia] = useState([]);
 
-  useEffect( () => {
+  useEffect(() => {
     const jwtHeaderPayload = getCookie('jwtHeaderPayload');
     const jwtSignature = getCookie('jwtSignature');
     const token = jwtHeaderPayload && jwtSignature ? `${jwtHeaderPayload}.${jwtSignature}` : null;
     console.log(token);
-    
+
     const newConnection = new HubConnectionBuilder()
       .withUrl('https://localhost:44447/api/chathub', {
         accessTokenFactory: () => token, // Include the token in the headers
-        transport: HttpTransportType.ServerSentEvents // Use Server-Sent Events
+        transport: HttpTransportType.LongPolling // Use LongPolling
       })
-      .withAutomaticReconnect()
+      .withAutomaticReconnect([1000]) // Reconnect intervals: immediate, 2s, 10s, 30s
       .build();
 
     setConnection(newConnection);
@@ -34,18 +36,22 @@ const Chat = () => {
       connection.start()
         .then(result => {
           console.log('Connected!');
+          connection.invoke('GetChatLines', 2);
+
           connection.on('ReceiveMessage', (user, message) => {
             setChat(chat => [...chat, { user, message }]);
           });
 
           connection.on('LoadMessages', (chatLines) => {
             console.log(chatLines);
+
+            setChat([]);
+
             chatLines.forEach(chatLine => {
               console.log(chatLine);
               setChat(prevChat => [...prevChat, { user: chatLine.createdByNavigation.userName, message: chatLine.chatLineText }]);
             });
-
-          })
+          });
         })
         .catch(e => console.log('Connection failed: ', e));
     }
@@ -54,7 +60,7 @@ const Chat = () => {
   const sendMessage = async () => {
     if (message && connection) {
       try {
-        await connection.invoke('SendMessage', 1, message);
+        await connection.invoke('SendMessage', 2, message);
         setMessage('');
       } catch (e) {
         console.error('Sending message failed: ', e);
@@ -102,7 +108,7 @@ const Chat = () => {
         itemLayout="horizontal"
         dataSource={chat}
         renderItem={item => (
-          <List.Item>
+          <List.Item className={item.user === 'Me' ? 'right-align' : ''}>
             <List.Item.Meta
               avatar={<UserOutlined />}
               title={item.user}
@@ -123,9 +129,9 @@ const Chat = () => {
           <Button type="primary" htmlType="submit">Send</Button>
         </Form.Item>
       </Form>
-      <Button onClick={() => loadChatLines(1)}>Load Chat Lines</Button>
-      <Button onClick={() => loadChatUrls(1)}>Load Chat URLs</Button>
-      <Button onClick={() => loadChatMedia(1)}>Load Chat Media</Button>
+      <Button onClick={() => loadChatLines(2)}>Load Chat Lines</Button>
+      <Button onClick={() => loadChatUrls(2)}>Load Chat URLs</Button>
+      <Button onClick={() => loadChatMedia(2)}>Load Chat Media</Button>
       <div>
         <h3>Chat URLs</h3>
         <ul>

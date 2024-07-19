@@ -33,9 +33,30 @@ public class ChatHub : Hub
         _tokenService = tokenService;
     }
 
+    private string? GetToken()
+    {
+        var httpContext = Context.GetHttpContext();
+        var authorizationHeader = httpContext?.Request.Headers["Authorization"].ToString();
+        if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
+        {
+            return authorizationHeader.Substring("Bearer ".Length).Trim();
+        }
+
+        // If not found in the header, try to get it from the query string
+        var token = httpContext?.Request.Query["access_token"].ToString();
+        if (!string.IsNullOrEmpty(token))
+        {
+            return token;
+        }
+
+        return null;
+    }
+
     public async Task SendMessage(int chatId, string message)
     {
-        var userId = _tokenService.GetUserIdFromToken();
+
+        var userId = GetUserId();
+
         if (userId == null)
         {
             //Return unauthorized
@@ -50,13 +71,26 @@ public class ChatHub : Hub
 
         await _sender.Send(command);
 
-        await Clients.All.SendAsync("ReceiveMessage", userId, message);
+        await Clients.All.SendAsync("ReceiveMessage", "Me", message);
+    }
+
+    private string? GetUserId()
+    {
+        return _tokenService.GetUserIdFromGivenToken(GetToken() ?? "");
     }
 
     public async Task GetChatLines(int chatId)
     {
         var query = new GetChatLinesFromAChatQuery { ChatId = chatId };
         List<ChatLineDto> chatLines = new List<ChatLineDto>();
+        foreach(var line in chatLines)
+        {
+            var id = line.CreatedByNavigation.Id ??"";
+            if (id.Equals(GetUserId()??""))
+            {
+                line.CreatedByNavigation.UserName = "Me";
+            }
+        }
         try
         {
             chatLines = await _sender.Send(query);

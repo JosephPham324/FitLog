@@ -7,12 +7,19 @@ namespace FitLog.Application.Chats.Commands.CreateChat;
 
 public record CreateChatCommand : IRequest<Result>
 {
+    public string UserId { get; init; } = null!;
+    public string TargetUserId { get; init; } = null!;
 }
+
 
 public class CreateChatCommandValidator : AbstractValidator<CreateChatCommand>
 {
     public CreateChatCommandValidator()
     {
+        RuleFor(x => x.UserId)
+            .NotEmpty().WithMessage("UserId is required.");
+        RuleFor(x => x.TargetUserId)
+            .NotEmpty().WithMessage("TargetUserId is required.");   
     }
 }
 
@@ -29,6 +36,8 @@ public class CreateChatCommandHandler : IRequestHandler<CreateChatCommand, Resul
     {
         var chat = new Chat
         {
+            CreatedBy = request.UserId,
+            TargetUserId = request.TargetUserId,
             CreatedAt = DateTime.UtcNow
         };
 

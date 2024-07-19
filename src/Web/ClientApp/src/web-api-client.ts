@@ -3793,6 +3793,102 @@ export class CoachProfileClient {
     }
 }
 
+export class ChatsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getUserChatList(userId: string | null): Promise<Chat[]> {
+        let url_ = this.baseUrl + "/api/Chats/user?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserChatList(_response);
+        });
+    }
+
+    protected processGetUserChatList(response: Response): Promise<Chat[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Chat.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Chat[]>(null as any);
+    }
+
+    createChat(command: CreateChatCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Chats/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateChat(_response);
+        });
+    }
+
+    protected processCreateChat(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+}
+
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
     items?: TodoItemBriefDto[];
     pageNumber?: number;
@@ -5975,6 +6071,8 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
     coachApplications?: CoachApplication[];
     coachApplicationsUpdated?: CoachApplication[];
     chatLines?: ChatLine[];
+    createdChats?: Chat[];
+    invitedChats?: Chat[];
 
     constructor(data?: IAspNetUser) {
         super(data);
@@ -6080,6 +6178,16 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
                 this.chatLines = [] as any;
                 for (let item of _data["chatLines"])
                     this.chatLines!.push(ChatLine.fromJS(item));
+            }
+            if (Array.isArray(_data["createdChats"])) {
+                this.createdChats = [] as any;
+                for (let item of _data["createdChats"])
+                    this.createdChats!.push(Chat.fromJS(item));
+            }
+            if (Array.isArray(_data["invitedChats"])) {
+                this.invitedChats = [] as any;
+                for (let item of _data["invitedChats"])
+                    this.invitedChats!.push(Chat.fromJS(item));
             }
         }
     }
@@ -6191,6 +6299,16 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
             for (let item of this.chatLines)
                 data["chatLines"].push(item.toJSON());
         }
+        if (Array.isArray(this.createdChats)) {
+            data["createdChats"] = [];
+            for (let item of this.createdChats)
+                data["createdChats"].push(item.toJSON());
+        }
+        if (Array.isArray(this.invitedChats)) {
+            data["invitedChats"] = [];
+            for (let item of this.invitedChats)
+                data["invitedChats"].push(item.toJSON());
+        }
         super.toJSON(data);
         return data;
     }
@@ -6223,6 +6341,8 @@ export interface IAspNetUser extends IIdentityUserOfString {
     coachApplications?: CoachApplication[];
     coachApplicationsUpdated?: CoachApplication[];
     chatLines?: ChatLine[];
+    createdChats?: Chat[];
+    invitedChats?: Chat[];
 }
 
 export class IdentityUserClaimOfString implements IIdentityUserClaimOfString {
@@ -8015,6 +8135,8 @@ export interface IChatLine {
 
 export class Chat implements IChat {
     chatId?: number;
+    createdBy?: string;
+    targetUserId?: string;
     createdAt?: Date;
     chatLines?: ChatLine[];
 
@@ -8030,6 +8152,8 @@ export class Chat implements IChat {
     init(_data?: any) {
         if (_data) {
             this.chatId = _data["chatId"];
+            this.createdBy = _data["createdBy"];
+            this.targetUserId = _data["targetUserId"];
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
             if (Array.isArray(_data["chatLines"])) {
                 this.chatLines = [] as any;
@@ -8049,6 +8173,8 @@ export class Chat implements IChat {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["chatId"] = this.chatId;
+        data["createdBy"] = this.createdBy;
+        data["targetUserId"] = this.targetUserId;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
         if (Array.isArray(this.chatLines)) {
             data["chatLines"] = [];
@@ -8061,6 +8187,8 @@ export class Chat implements IChat {
 
 export interface IChat {
     chatId?: number;
+    createdBy?: string;
+    targetUserId?: string;
     createdAt?: Date;
     chatLines?: ChatLine[];
 }
@@ -10827,6 +10955,46 @@ export interface ICoachApplicationDto {
     lastModified?: Date;
     applicantName?: string;
     applicantEmail?: string;
+}
+
+export class CreateChatCommand implements ICreateChatCommand {
+    userId?: string;
+    targetUserId?: string;
+
+    constructor(data?: ICreateChatCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.targetUserId = _data["targetUserId"];
+        }
+    }
+
+    static fromJS(data: any): CreateChatCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateChatCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["targetUserId"] = this.targetUserId;
+        return data;
+    }
+}
+
+export interface ICreateChatCommand {
+    userId?: string;
+    targetUserId?: string;
 }
 
 function formatDate(d: Date) {
