@@ -1,13 +1,8 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using FitLog.Application.Common.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using FitLog.Application.Users.Commands.Regiser;
 using FitLog.Application.Users.Commands.Register;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using FitLog.Application.Common.Security;
 using FitLog.Application.Users.Queries.GetUserDetails;
 using FitLog.Application.Users.Queries.Login;
 using FitLog.Application.Users.Queries.GetUsers;
@@ -17,12 +12,13 @@ using FitLog.Application.Users.Queries.GetAccountByUsername;
 using FitLog.Application.Users.Commands.CreateUser;
 using FitLog.Application.Users.Commands.DeleteAccount;
 using FitLog.Application.Users.Commands.RecoverAccount;
+using FitLog.Application.Users.Commands.UpdateUser;
+using FitLog.Application.Users.Queries.GetCoachesListWithPagination;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
 public class Users : EndpointGroupBase
 {
-
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
@@ -30,12 +26,14 @@ public class Users : EndpointGroupBase
             .MapPost(Register, "register")
             .MapGet(GetUserList, "all")
             .MapGet(SearchUsersByEmail, "search-by-email")
-            .MapGet(SearchUsersByLoginProvider,"search-by-provider")
-            .MapGet(SearchUsersByUserName,"search-by-username")
+            .MapGet(SearchUsersByLoginProvider, "search-by-provider")
+            .MapGet(SearchUsersByUserName, "search-by-username")
             .MapGet(GetUserProfile, "profile")
             .MapPost(CreateUser, "create-account")
             .MapDelete(DeleteAccount, "delete-account/{id}")
-            .MapPost(RecoverAccount, "recover-account");
+            .MapPost(RecoverAccount, "recover-account")
+            .MapPut(UpdateUser, "update-account")
+            .MapGet(GetCoachesList, "coaches");
     }
 
     /// <summary>
@@ -66,8 +64,6 @@ public class Users : EndpointGroupBase
     /// <param name="sender">The sender used to send the get users list request.</param>
     /// <param name="request">The request containing pagination parameters for fetching the users list.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the paginated list of users.</returns>
-    //[Authorize(Roles ="Admin")]
-    //public Task<List<UserDTO>>
     public Task<PaginatedList<AspNetUserListDTO>> GetUserList(ISender sender, [AsParameters] GetUsersListWithPaginationRequest request)
     {
         return sender.Send(request);
@@ -85,42 +81,90 @@ public class Users : EndpointGroupBase
     }
 
     /// <summary>
-    /// Gets a paginated list of users based on the provided pagination request parameters.
+    /// Searches for users by email based on the provided request parameters.
     /// </summary>
-    /// <param name="sender">The sender used to send the get users list request.</param>
-    /// <param name="request">The request containing pagination parameters for fetching the users list.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the paginated list of users.</returns>
-    //[Authorize(Roles ="Admin")]
-    //public Task<List<UserDTO>>
+    /// <param name="sender">The sender used to send the search users by email request.</param>
+    /// <param name="request">The request containing the email to search for.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the list of users matching the email.</returns>
     public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByEmail(ISender sender, [AsParameters] GetAccountsByEmailQuery request)
     {
         return sender.Send(request);
     }
 
+    /// <summary>
+    /// Searches for users by login provider based on the provided request parameters.
+    /// </summary>
+    /// <param name="sender">The sender used to send the search users by login provider request.</param>
+    /// <param name="request">The request containing the login provider details to search for.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the list of users matching the login provider.</returns>
     public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByLoginProvider(ISender sender, [AsParameters] GetAccountByExternalProviderQuery request)
     {
         return sender.Send(request);
     }
 
+    /// <summary>
+    /// Searches for users by username based on the provided request parameters.
+    /// </summary>
+    /// <param name="sender">The sender used to send the search users by username request.</param>
+    /// <param name="request">The request containing the username to search for.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the list of users matching the username.</returns>
     public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByUserName(ISender sender, [AsParameters] GetAccountByUsernameQuery request)
     {
         return sender.Send(request);
     }
 
+    /// <summary>
+    /// Creates a new user account using the provided create user command parameters.
+    /// </summary>
+    /// <param name="sender">The sender used to send the create user command.</param>
+    /// <param name="command">The create user command containing the user's information.</param>
+    /// <returns>A task that represents the asynchronous create account operation. The task result contains the result of the creation.</returns>
     public Task<Result> CreateUser(ISender sender, [FromBody] CreateUserCommand command)
     {
         return sender.Send(command);
     }
 
-    //Delete account endpoint
-    public Task<Result> DeleteAccount(ISender sender,string id)
+    /// <summary>
+    /// Deletes a user account based on the provided user ID.
+    /// </summary>
+    /// <param name="sender">The sender used to send the delete account command.</param>
+    /// <param name="id">The ID of the user to delete.</param>
+    /// <returns>A task that represents the asynchronous delete operation. The task result contains the result of the deletion.</returns>
+    public Task<Result> DeleteAccount(ISender sender, string id)
     {
         return sender.Send(new DeleteAccountCommand(id));
     }
 
-    //Recover account endpoint
+    /// <summary>
+    /// Recovers a user account using the provided recover account command parameters.
+    /// </summary>
+    /// <param name="sender">The sender used to send the recover account command.</param>
+    /// <param name="command">The recover account command containing the user's recovery information.</param>
+    /// <returns>A task that represents the asynchronous recover operation. The task result contains the result of the recovery.</returns>
     public Task<Result> RecoverAccount(ISender sender, [FromBody] RecoverAccountCommand command)
     {
         return sender.Send(command);
+    }
+
+    /// <summary>
+    /// Updates a user account using the provided update user command parameters.
+    /// </summary>
+    /// <param name="sender">The sender used to send the update user command.</param>
+    /// <param name="command">The update user command containing the user's updated information.</param>
+    /// <returns>A task that represents the asynchronous update operation. The task result contains the result of the update.</returns>
+    public Task<Result> UpdateUser(ISender sender, [FromBody] UpdateUserCommand command)
+    {
+        return sender.Send(command);
+    }
+
+    /// <summary>
+    /// Gets a paginated list of coaches based on the provided pagination request parameters.
+    /// </summary>
+    /// <param name="sender">The sender used to send the get coaches list request.</param>
+    /// <param name="query">The request containing pagination parameters for fetching the coaches list.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the paginated list of coaches.</returns>
+    public Task<PaginatedList<CoachSummaryDTO>> GetCoachesList(ISender sender, [AsParameters] GetCoachesListWithPaginationQuery query)
+    {
+        return sender.Send(query);
     }
 }
