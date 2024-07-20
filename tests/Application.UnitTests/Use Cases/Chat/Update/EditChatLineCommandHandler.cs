@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using FitLog.Application.Chats.Commands.EditChatLine;
 using FitLog.Application.Common.Interfaces;
 using Moq;
@@ -13,11 +14,16 @@ public class EditChatLineCommandHandlerTests
 {
     private readonly Mock<IApplicationDbContext> _contextMock;
     private readonly EditChatLineCommandHandler _handler;
+    private readonly IMapper _mapper;
 
     public EditChatLineCommandHandlerTests()
     {
         _contextMock = new Mock<IApplicationDbContext>();
-        _handler = new EditChatLineCommandHandler(_contextMock.Object);
+        var config = new MapperConfiguration(cfg =>
+                 {
+                 });
+        _mapper = config.CreateMapper();
+        _handler = new EditChatLineCommandHandler(_contextMock.Object, _mapper);
     }
 
     [Fact]

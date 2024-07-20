@@ -1,9 +1,11 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.Chats.Commands.DeleteChatLine;
 
-public record DeleteChatLineCommand : IRequest<object>
+public record DeleteChatLineCommand : IRequest<Result>
 {
+   public int Id { get; set; }
 }
 
 public class DeleteChatLineCommandValidator : AbstractValidator<DeleteChatLineCommand>
@@ -13,7 +15,7 @@ public class DeleteChatLineCommandValidator : AbstractValidator<DeleteChatLineCo
     }
 }
 
-public class DeleteChatLineCommandHandler : IRequestHandler<DeleteChatLineCommand, object>
+public class DeleteChatLineCommandHandler : IRequestHandler<DeleteChatLineCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,8 +24,15 @@ public class DeleteChatLineCommandHandler : IRequestHandler<DeleteChatLineComman
         _context = context;
     }
 
-    public Task<object> Handle(DeleteChatLineCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteChatLineCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var chatLine = _context.ChatLines.Find(request.Id);
+        if (chatLine == null)
+        {
+            return Result.Failure(["Chat line not found."]);
+        }
+        _context.ChatLines.Remove(chatLine);
+        await _context.SaveChangesAsync(cancellationToken);
+        return Result.Successful();
     }
 }

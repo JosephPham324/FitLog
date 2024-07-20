@@ -1,9 +1,16 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using FitLog.Application.Chats.Queries.GetChatLinesFromAChat;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
+using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Chats.Commands.EditChatLine;
 
-public record EditChatLineCommand : IRequest<Result>
+public record EditChatLineResult
+{
+    public Result Result { get; set; } = null!;
+    public ChatLineDto ChatLine { get; set; } = null!;
+}
+public record EditChatLineCommand : IRequest<EditChatLineResult>
 {
     public int Id { get; set; }
     public string ChatLineText { get; set; } = "";
@@ -20,22 +27,28 @@ public class EditChatLineCommandValidator : AbstractValidator<EditChatLineComman
     }
 }
 
-public class EditChatLineCommandHandler : IRequestHandler<EditChatLineCommand, Result>
+public class EditChatLineCommandHandler : IRequestHandler<EditChatLineCommand, EditChatLineResult>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public EditChatLineCommandHandler(IApplicationDbContext context)
+    public EditChatLineCommandHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public async Task<Result> Handle(EditChatLineCommand request, CancellationToken cancellationToken)
+    public async Task<EditChatLineResult> Handle(EditChatLineCommand request, CancellationToken cancellationToken)
     {
         var chatLine = await _context.ChatLines.FindAsync(new object[] { request.Id }, cancellationToken);
-
+        EditChatLineResult result = new EditChatLineResult()
+        {
+            ChatLine = _mapper.Map<ChatLineDto>(chatLine)
+        };
         if (chatLine == null)
         {
-            return Result.Failure(new string[] { "ChatLine not found." });
+            result.Result = Result.Failure(new string[] { "ChatLine not found." });
+            return result;
         }
 
         chatLine.ChatLineText = request.ChatLineText;
@@ -45,11 +58,12 @@ public class EditChatLineCommandHandler : IRequestHandler<EditChatLineCommand, R
         try
         {
             await _context.SaveChangesAsync(cancellationToken);
-            return Result.Successful();
+            result.Result= Result.Successful();
         }
         catch (Exception ex)
         {
-            return Result.Failure(new string[] { $"An error occurred while updating the chat line: {ex.Message}" });
+            result.Result = Result.Failure(new string[] { $"An error occurred while updating the chat line: {ex.Message}" });
         }
+        return result;
     }
 }

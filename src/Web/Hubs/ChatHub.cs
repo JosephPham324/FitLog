@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using FitLog.Application.Chats.Commands.CreateChatLine;
+using FitLog.Application.Chats.Commands.DeleteChatLine;
+using FitLog.Application.Chats.Commands.EditChatLine;
 using FitLog.Application.Chats.Queries.GetChatLinesFromAChat;
 using FitLog.Application.Chats.Queries.GetChatMedia;
 using FitLog.Application.Chats.Queries.GetChatUrls;
@@ -69,9 +71,9 @@ public class ChatHub : Hub
             ChatLineText = message
         };
 
-        await _sender.Send(command);
+        var result = await _sender.Send(command);
 
-        await Clients.All.SendAsync("ReceiveMessage", "Me", message);
+        await Clients.All.SendAsync("ReceiveMessage",result.ChatLine.ChatLineId, "Me", message);
     }
 
     private string? GetUserId()
@@ -117,4 +119,36 @@ public class ChatHub : Hub
     }
 
 
+    public async Task UpdateChatLine(int chatLineId, string message)
+    {
+        var userId = GetUserId();
+
+        if (userId == null)
+        {
+            //Return unauthorized
+            throw new UnauthorizedAccessException("User is not authenticated yet");
+        }
+        var command = new EditChatLineCommand
+        {
+            Id = chatLineId,
+            ChatLineText = message,
+            AttachmentPath ="",
+            LinkUrl = "",
+        };
+
+        var updateResult = await _sender.Send(command);
+
+        await Clients.All.SendAsync("UpdatedMessage", updateResult);
+
+    }
+    //Delete
+    public async Task DeleteChatLine(int chatLineId)
+    {
+        var command = new DeleteChatLineCommand
+        {
+            Id = chatLineId
+        };
+        var res = await _sender.Send(command);
+        await Clients.All.SendAsync("DeletedMessage", res);
+    }
 }

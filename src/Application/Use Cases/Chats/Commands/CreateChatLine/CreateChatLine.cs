@@ -1,11 +1,16 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using FitLog.Application.Chats.Queries.GetChatLinesFromAChat;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 using Google;
 
 namespace FitLog.Application.Chats.Commands.CreateChatLine;
-
-public record CreateChatLineCommand : IRequest<Result>
+public record CreateChatLineResult 
+{
+    public Result Result { get; set; } = null!;
+    public ChatLineDto ChatLine { get; set; } = null!;
+}
+public record CreateChatLineCommand : IRequest<CreateChatLineResult>
 {
     public int ChatId { get; set; }
     public string UserId { get; set; } = "";
@@ -23,16 +28,18 @@ public class CreateChatLineCommandValidator : AbstractValidator<CreateChatLineCo
     }
 }
 
-public class CreateChatLineCommandHandler : IRequestHandler<CreateChatLineCommand, Result>
+public class CreateChatLineCommandHandler : IRequestHandler<CreateChatLineCommand, CreateChatLineResult>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CreateChatLineCommandHandler(IApplicationDbContext context)
+    public CreateChatLineCommandHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public async Task<Result> Handle(CreateChatLineCommand request, CancellationToken cancellationToken)
+    public async Task<CreateChatLineResult> Handle(CreateChatLineCommand request, CancellationToken cancellationToken)
     {
         var chatLine = new ChatLine
         {
@@ -53,6 +60,6 @@ public class CreateChatLineCommandHandler : IRequestHandler<CreateChatLineComman
         {
             throw new GoogleApiException("Failed to save changes to the database.");
         }
-        return Result.Successful();
+        return new CreateChatLineResult { Result = Result.Successful(), ChatLine = _mapper.Map<ChatLineDto>(chatLine)};
     }
 }

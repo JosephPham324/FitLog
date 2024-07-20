@@ -1,10 +1,9 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
+import { HubConnectionBuilder, HttpTransportType, LogLevel } from '@microsoft/signalr';
 import { Button, Form, Input, List } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { getCookie } from '../../utils/cookiesOperations';
 import './Chat.css'; // Ensure to import your CSS file
-
 
 const Chat = () => {
   const [connection, setConnection] = useState(null);
@@ -12,6 +11,7 @@ const Chat = () => {
   const [message, setMessage] = useState('');
   const [chatUrls, setChatUrls] = useState([]);
   const [chatMedia, setChatMedia] = useState([]);
+  const [editingMessageId, setEditingMessageId] = useState(null);
 
   useEffect(() => {
     const jwtHeaderPayload = getCookie('jwtHeaderPayload');
@@ -22,11 +22,13 @@ const Chat = () => {
     const newConnection = new HubConnectionBuilder()
       .withUrl('https://localhost:44447/api/chathub', {
         accessTokenFactory: () => token, // Include the token in the headers
-        transport: HttpTransportType.LongPolling // Use LongPolling
+        //transport: HttpTransportType.LongPolling // Use LongPolling
+        //skipNegotiation: true,
+        transport: HttpTransportType.LongPolling
       })
-      .withAutomaticReconnect([1000]) // Reconnect intervals: immediate, 2s, 10s, 30s
-      .build();
-
+      .withAutomaticReconnect([500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 10000])
+      .configureLogging(LogLevel.Debug).build()
+    newConnection.serverTimeoutInMilliseconds = 1000 * 60 * 60; // 1 hour
     setConnection(newConnection);
 
   }, []);
@@ -38,19 +40,25 @@ const Chat = () => {
           console.log('Connected!');
           connection.invoke('GetChatLines', 2);
 
-          connection.on('ReceiveMessage', (user, message) => {
-            setChat(chat => [...chat, { user, message }]);
+          connection.on('ReceiveMessage', (chatId, user, message) => {
+            setChat(chat => [...chat, { chatId, user, message }]);
           });
 
           connection.on('LoadMessages', (chatLines) => {
             console.log(chatLines);
-
             setChat([]);
-
             chatLines.forEach(chatLine => {
               console.log(chatLine);
-              setChat(prevChat => [...prevChat, { user: chatLine.createdByNavigation.userName, message: chatLine.chatLineText }]);
+              setChat(prevChat => [...prevChat, { id: chatLine.id, user: chatLine.createdByNavigation.userName, message: chatLine.chatLineText }]);
             });
+          });
+
+          connection.on('UpdatedMessage', (updatedLine) => {
+            setChat(prevChat => prevChat.map(chatLine => chatLine.id === updatedLine.id ? updatedLine : chatLine));
+          });
+
+          connection.on('DeletedMessage', (deletedLine) => {
+            setChat(prevChat => prevChat.filter(chatLine => chatLine.id !== deletedLine.id));
           });
         })
         .catch(e => console.log('Connection failed: ', e));
@@ -60,7 +68,12 @@ const Chat = () => {
   const sendMessage = async () => {
     if (message && connection) {
       try {
-        await connection.invoke('SendMessage', 2, message);
+        if (editingMessageId) {
+          await connection.invoke('UpdateChatLine', editingMessageId, message);
+          setEditingMessageId(null);
+        } else {
+          await connection.invoke('SendMessage', 2, message);
+        }
         setMessage('');
       } catch (e) {
         console.error('Sending message failed: ', e);
@@ -102,6 +115,21 @@ const Chat = () => {
     }
   };
 
+  const editMessage = (id, currentMessage) => {
+    setEditingMessageId(id);
+    setMessage(currentMessage);
+  };
+
+  const deleteMessage = async (id) => {
+    if (connection) {
+      try {
+        await connection.invoke('DeleteChatLine', id);
+      } catch (e) {
+        console.error('Deleting message failed: ', e);
+      }
+    }
+  };
+
   return (
     <div>
       <List
@@ -114,6 +142,10 @@ const Chat = () => {
               title={item.user}
               description={item.message}
             />
+            <div>
+              <Button icon={<EditOutlined />} onClick={() => editMessage(item.id, item.message)} />
+              <Button icon={<DeleteOutlined />} onClick={() => deleteMessage(item.id)} />
+            </div>
           </List.Item>
         )}
       />
@@ -126,7 +158,7 @@ const Chat = () => {
           />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">Send</Button>
+          <Button type="primary" htmlType="submit">{editingMessageId ? 'Update' : 'Send'}</Button>
         </Form.Item>
       </Form>
       <Button onClick={() => loadChatLines(2)}>Load Chat Lines</Button>
