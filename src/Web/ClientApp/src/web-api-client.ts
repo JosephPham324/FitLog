@@ -3317,6 +3317,88 @@ export class UsersClient {
         }
         return Promise.resolve<Result>(null as any);
     }
+
+    updateUser(command: UpdateUserCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/update-account";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateUser(_response);
+        });
+    }
+
+    protected processUpdateUser(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    getCoachesList(pageNumber: number, pageSize: number): Promise<PaginatedListOfCoachSummaryDTO> {
+        let url_ = this.baseUrl + "/api/Users/coaches?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCoachesList(_response);
+        });
+    }
+
+    protected processGetCoachesList(response: Response): Promise<PaginatedListOfCoachSummaryDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfCoachSummaryDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfCoachSummaryDTO>(null as any);
+    }
 }
 
 export class CoachingServicesClient {
@@ -10151,6 +10233,164 @@ export class RecoverAccountCommand implements IRecoverAccountCommand {
 
 export interface IRecoverAccountCommand {
     email?: string;
+}
+
+export class UpdateUserCommand implements IUpdateUserCommand {
+
+    constructor(data?: IUpdateUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): UpdateUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IUpdateUserCommand {
+}
+
+export class PaginatedListOfCoachSummaryDTO implements IPaginatedListOfCoachSummaryDTO {
+    items?: CoachSummaryDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfCoachSummaryDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CoachSummaryDTO.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfCoachSummaryDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfCoachSummaryDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfCoachSummaryDTO {
+    items?: CoachSummaryDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class CoachSummaryDTO implements ICoachSummaryDTO {
+    fullName?: string;
+    profilePicture?: string | undefined;
+    bio?: string | undefined;
+    majorAchievement?: string | undefined;
+    instagramLink?: string | undefined;
+    youTubeLink?: string | undefined;
+    patreonLink?: string | undefined;
+    programsCount?: string | undefined;
+
+    constructor(data?: ICoachSummaryDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fullName = _data["fullName"];
+            this.profilePicture = _data["profilePicture"];
+            this.bio = _data["bio"];
+            this.majorAchievement = _data["majorAchievement"];
+            this.instagramLink = _data["instagramLink"];
+            this.youTubeLink = _data["youTubeLink"];
+            this.patreonLink = _data["patreonLink"];
+            this.programsCount = _data["programsCount"];
+        }
+    }
+
+    static fromJS(data: any): CoachSummaryDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new CoachSummaryDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fullName"] = this.fullName;
+        data["profilePicture"] = this.profilePicture;
+        data["bio"] = this.bio;
+        data["majorAchievement"] = this.majorAchievement;
+        data["instagramLink"] = this.instagramLink;
+        data["youTubeLink"] = this.youTubeLink;
+        data["patreonLink"] = this.patreonLink;
+        data["programsCount"] = this.programsCount;
+        return data;
+    }
+}
+
+export interface ICoachSummaryDTO {
+    fullName?: string;
+    profilePicture?: string | undefined;
+    bio?: string | undefined;
+    majorAchievement?: string | undefined;
+    instagramLink?: string | undefined;
+    youTubeLink?: string | undefined;
+    patreonLink?: string | undefined;
+    programsCount?: string | undefined;
 }
 
 export class CoachingServiceDetailsDto implements ICoachingServiceDetailsDto {
