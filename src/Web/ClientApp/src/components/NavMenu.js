@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { HubConnectionBuilder, LogLevel, HttpTransportType } from '@microsoft/signalr';
@@ -12,7 +12,7 @@ export const NavMenu = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(true);
   const [notifications, setNotifications] = useState([]);
-  const [connection, setConnection] = useState(null);
+  const connectionRef = useRef(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -20,32 +20,40 @@ export const NavMenu = () => {
       const jwtSignature = getCookie('jwtSignature');
       const token = jwtHeaderPayload && jwtSignature ? `${jwtHeaderPayload}.${jwtSignature}` : null;
 
-      const newConnection = new HubConnectionBuilder()
+      if (!token) {
+        console.error('Token not found or invalid');
+        return;
+      }
+
+      const newNotifConnection = new HubConnectionBuilder()
         .withUrl('https://localhost:44447/api/notificationHub', {
-          accessTokenFactory: () => token, // Include the token in the headers
+          accessTokenFactory: () => token,
           transport: HttpTransportType.LongPolling
         })
         .configureLogging(LogLevel.Debug)
         .withAutomaticReconnect()
         .build();
 
-      newConnection.on('ReceiveMessage', (user, message) => {
+      newNotifConnection.on('ReceiveMessage', (user, message) => {
         setNotifications(prevState => [...prevState, { user, message }]);
       });
 
-      newConnection.start()
-        .then(() => console.log('Connected to SignalR hub!'))
-        .catch(err => console.log('Error connecting to SignalR hub:', err));
+      newNotifConnection.start()
+        .then(() => {
+          console.log('Connected to SignalR hub!');
+          connectionRef.current = newNotifConnection;
+        })
+        .catch(err => {
+          console.error('Error connecting to SignalR hub:', err);
+        });
 
-      setConnection(newConnection);
+      return () => {
+        if (connectionRef.current) {
+          connectionRef.current.stop().then(() => console.log('Disconnected from SignalR hub.'));
+        }
+      };
     }
-
-    return () => {
-      if (connection) {
-        connection.stop().then(() => console.log('Disconnected from SignalR hub.'));
-      }
-    };
-  }, [isAuthenticated, connection]);
+  }, [isAuthenticated]);
 
   const toggleNavbar = () => {
     setCollapsed(!collapsed);
