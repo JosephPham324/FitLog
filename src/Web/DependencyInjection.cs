@@ -39,6 +39,7 @@ public static class DependencyInjection
 
 
         services.AddSingleton<IEmailService, SmtpEmailService>();
+        services.AddSingleton<INotificationService, SignalRNotificationService>();
 
         services.AddSignalR();
 

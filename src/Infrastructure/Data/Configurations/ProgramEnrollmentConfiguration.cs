@@ -1,4 +1,5 @@
 ﻿using FitLog.Domain.Entities;
+using FitLog.Infrastructure.Data.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -28,6 +29,10 @@ namespace FitLog.Infrastructure.Data.Configurations
             builder.HasOne(d => d.User).WithMany(p => p.ProgramEnrollments)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__ProgramEn__UserI__49C3F6B7");
+
+            // Apply the value converter for WorkoutsProgress property
+            builder.Property(e => e.WorkoutsProgress)
+                .HasConversion(new WorkoutsProgressConverter());
         }
     }
 }
