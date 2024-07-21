@@ -13,6 +13,8 @@ const Chat = () => {
   const [chatMedia, setChatMedia] = useState([]);
   const [editingMessageId, setEditingMessageId] = useState(null);
 
+  const chatId = 2; // Example chatId, replace with actual chatId as needed
+
   useEffect(() => {
     const jwtHeaderPayload = getCookie('jwtHeaderPayload');
     const jwtSignature = getCookie('jwtSignature');
@@ -22,23 +24,34 @@ const Chat = () => {
     const newConnection = new HubConnectionBuilder()
       .withUrl('https://localhost:44447/api/chathub', {
         accessTokenFactory: () => token, // Include the token in the headers
-        //transport: HttpTransportType.LongPolling // Use LongPolling
-        //skipNegotiation: true,
-        transport: HttpTransportType.LongPolling
+        transport: HttpTransportType.ServerSentEvents // Use Server-Sent Events transport
+
       })
       .withAutomaticReconnect([500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 10000])
-      .configureLogging(LogLevel.Debug).build()
-    newConnection.serverTimeoutInMilliseconds = 1000 * 60 * 60; // 1 hour
+      .configureLogging(LogLevel.Debug).build();
+
+    //newConnection.serverTimeoutInMilliseconds = 1000 * 60 * 60; // 1 hour
+
+    newConnection.onclose(() => {
+      console.log('Connection closed. Reconnecting in 5 seconds...');
+      setTimeout(() => {
+        newConnection.start().then(() => {
+          console.log('Reconnected!');
+          newConnection.invoke('JoinChatGroup', chatId);
+        }).catch(err => console.log('Reconnection failed: ', err));
+      }, 1);
+    });
     setConnection(newConnection);
 
   }, []);
 
   useEffect(() => {
+    
     if (connection) {
       connection.start()
         .then(result => {
           console.log('Connected!');
-          connection.invoke('GetChatLines', 2);
+          connection.invoke('JoinChatGroup', chatId);
 
           connection.on('ReceiveMessage', (chatId, user, message) => {
             setChat(chat => [...chat, { chatId, user, message }]);
@@ -72,7 +85,7 @@ const Chat = () => {
           await connection.invoke('UpdateChatLine', editingMessageId, message);
           setEditingMessageId(null);
         } else {
-          await connection.invoke('SendMessage', 2, message);
+          await connection.invoke('SendMessage', chatId, message);
         }
         setMessage('');
       } catch (e) {
@@ -84,9 +97,7 @@ const Chat = () => {
   const loadChatLines = async (chatId) => {
     if (connection) {
       try {
-        var results = await connection.invoke('GetChatLines', chatId);
-        console.log(results);
-        //setChat(chatLines);
+        await connection.invoke('GetChatLines', chatId);
       } catch (e) {
         console.error('Fetching chat lines failed: ', e);
       }
@@ -161,9 +172,9 @@ const Chat = () => {
           <Button type="primary" htmlType="submit">{editingMessageId ? 'Update' : 'Send'}</Button>
         </Form.Item>
       </Form>
-      <Button onClick={() => loadChatLines(2)}>Load Chat Lines</Button>
-      <Button onClick={() => loadChatUrls(2)}>Load Chat URLs</Button>
-      <Button onClick={() => loadChatMedia(2)}>Load Chat Media</Button>
+      <Button onClick={() => loadChatLines(chatId)}>Load Chat Lines</Button>
+      <Button onClick={() => loadChatUrls(chatId)}>Load Chat URLs</Button>
+      <Button onClick={() => loadChatMedia(chatId)}>Load Chat Media</Button>
       <div>
         <h3>Chat URLs</h3>
         <ul>

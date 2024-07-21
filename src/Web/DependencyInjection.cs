@@ -36,6 +36,7 @@ public static class DependencyInjection
                Credentials = new NetworkCredential(emailSettings["SmtpUser"], emailSettings["SmtpPass"]),
                EnableSsl = true,
            });
+        services.AddSingleton<INotificationService, SignalRNotificationService>();
 
 
         services.AddSingleton<IEmailService, SmtpEmailService>();
