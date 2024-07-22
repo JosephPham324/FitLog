@@ -33,7 +33,7 @@ public class CreateChatCommandHandlerTests
         // Assert
         _contextMock.Verify(m => m.Chats.Add(It.Is<Chat>(c => c.CreatedAt <= DateTime.UtcNow)), Times.Once);
         _contextMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        Assert.Equal(chatId, result);
+        Assert.True(result.Success);
     }
 
 
@@ -51,7 +51,7 @@ public class CreateChatCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal(chatId, result);
+        Assert.True(result.Success);
     }
 
 

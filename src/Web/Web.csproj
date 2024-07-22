@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" />
+    <PackageReference Include="Microsoft.AspnetCore.SignalR.Client" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <!-- The SPA Proxy is only used at development time -->
       <Publish>false</Publish>
@@ -57,6 +58,7 @@
   <!-- Auto-generated Open API specification and Angular TypeScript clients -->
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <UserSecretsId>98a89b21-92e7-4e48-86f1-999a66e18559</UserSecretsId>
   </PropertyGroup>
 
   <Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' And '$(SkipNSwag)' != 'True' ">

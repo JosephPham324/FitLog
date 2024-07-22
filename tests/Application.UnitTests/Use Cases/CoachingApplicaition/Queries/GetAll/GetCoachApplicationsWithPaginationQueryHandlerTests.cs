@@ -30,7 +30,6 @@ public class GetCoachApplicationsWithPaginationQueryHandlerTests : IDisposable
 
         var mapperConfig = new MapperConfiguration(cfg =>
         {
-            cfg.AddProfile(new CoachApplicationDto.Mapping());
         });
         _mapper = mapperConfig.CreateMapper();
     }

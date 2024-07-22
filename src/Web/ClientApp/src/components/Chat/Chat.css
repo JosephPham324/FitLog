@@ -1,0 +1,8 @@
+﻿.right-align {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.right-align .ant-list-item-meta {
+        text-align: right;
+}

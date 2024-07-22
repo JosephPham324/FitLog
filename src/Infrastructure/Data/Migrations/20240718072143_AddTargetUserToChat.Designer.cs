@@ -4,6 +4,7 @@ using FitLog.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitLog.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240718072143_AddTargetUserToChat")]
+    partial class AddTargetUserToChat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -744,10 +747,6 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("UserID");
-
-                    b.Property<string>("WorkoutsProgress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EnrollmentId")
                         .HasName("PK__ProgramE__7F6877FBA65A74F3");
