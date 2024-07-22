@@ -11,5 +11,14 @@ public abstract class EnrollmentStatuses
     public const string Completed = nameof(Completed);
     public const string Dropped = nameof(Dropped);
     public const string InProgress = nameof(InProgress);
-    public const string Paused = nameof(Paused);
+    public const string Archived = nameof(Archived);
+
+    public static IEnumerable<string> All => new[]
+    {
+        Enrolled,
+        Completed,
+        Dropped,
+        InProgress,
+        Archived
+    };
 }

@@ -4,6 +4,7 @@ using FitLog.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitLog.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240721010941_UpdateWorkoutEnrollment")]
+    partial class UpdateWorkoutEnrollment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,22 +212,8 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("CreatedBy");
-
-                    b.Property<string>("TargetUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("ChatId")
                         .HasName("PK__Chat__A9FBE62670E630D1");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("TargetUserId");
 
                     b.ToTable("Chat", (string)null);
                 });
@@ -247,18 +236,12 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasColumnName("ChatID");
 
                     b.Property<string>("ChatLineText")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LinkUrl")
                         .HasMaxLength(255)
@@ -268,8 +251,6 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasName("PK__ChatLine__3EC271E3197D524A");
 
                     b.HasIndex("ChatId");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("ChatLine", (string)null);
                 });
@@ -1257,25 +1238,6 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FitLog.Domain.Entities.Chat", b =>
-                {
-                    b.HasOne("FitLog.Domain.Entities.AspNetUser", "UserNavigation")
-                        .WithMany("CreatedChats")
-                        .HasForeignKey("CreatedBy")
-                        .IsRequired()
-                        .HasConstraintName("FK_Chat_AspNetUser");
-
-                    b.HasOne("FitLog.Domain.Entities.AspNetUser", "TargetUserNavigation")
-                        .WithMany("InvitedChats")
-                        .HasForeignKey("TargetUserId")
-                        .IsRequired()
-                        .HasConstraintName("FK_InvitedChat_AspNetUser");
-
-                    b.Navigation("TargetUserNavigation");
-
-                    b.Navigation("UserNavigation");
-                });
-
             modelBuilder.Entity("FitLog.Domain.Entities.ChatLine", b =>
                 {
                     b.HasOne("FitLog.Domain.Entities.Chat", "Chat")
@@ -1283,16 +1245,7 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasForeignKey("ChatId")
                         .HasConstraintName("FK__ChatLine__ChatID__6754599E");
 
-                    b.HasOne("FitLog.Domain.Entities.AspNetUser", "CreatedByNavigation")
-                        .WithMany("ChatLines")
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__ChatLine__CreatedBy__6754599F");
-
                     b.Navigation("Chat");
-
-                    b.Navigation("CreatedByNavigation");
                 });
 
             modelBuilder.Entity("FitLog.Domain.Entities.CoachApplication", b =>
@@ -1614,8 +1567,6 @@ namespace FitLog.Infrastructure.Data.Migrations
 
                     b.Navigation("Certifications");
 
-                    b.Navigation("ChatLines");
-
                     b.Navigation("CoachApplications");
 
                     b.Navigation("CoachApplicationsUpdated");
@@ -1624,11 +1575,7 @@ namespace FitLog.Infrastructure.Data.Migrations
 
                     b.Navigation("CoachingServices");
 
-                    b.Navigation("CreatedChats");
-
                     b.Navigation("Exercises");
-
-                    b.Navigation("InvitedChats");
 
                     b.Navigation("Profiles");
 
