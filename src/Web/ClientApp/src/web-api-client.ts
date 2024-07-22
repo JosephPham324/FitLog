@@ -7841,6 +7841,7 @@ export class ProgramEnrollment implements IProgramEnrollment {
     currentWorkoutOrder?: number | undefined;
     program?: Program | undefined;
     user?: AspNetUser | undefined;
+    workoutsProgress?: { [key: string]: WorkoutProgress; };
 
     constructor(data?: IProgramEnrollment) {
         if (data) {
@@ -7863,6 +7864,13 @@ export class ProgramEnrollment implements IProgramEnrollment {
             this.currentWorkoutOrder = _data["currentWorkoutOrder"];
             this.program = _data["program"] ? Program.fromJS(_data["program"]) : <any>undefined;
             this.user = _data["user"] ? AspNetUser.fromJS(_data["user"]) : <any>undefined;
+            if (_data["workoutsProgress"]) {
+                this.workoutsProgress = {} as any;
+                for (let key in _data["workoutsProgress"]) {
+                    if (_data["workoutsProgress"].hasOwnProperty(key))
+                        (<any>this.workoutsProgress)![key] = _data["workoutsProgress"][key] ? WorkoutProgress.fromJS(_data["workoutsProgress"][key]) : new WorkoutProgress();
+                }
+            }
         }
     }
 
@@ -7885,6 +7893,13 @@ export class ProgramEnrollment implements IProgramEnrollment {
         data["currentWorkoutOrder"] = this.currentWorkoutOrder;
         data["program"] = this.program ? this.program.toJSON() : <any>undefined;
         data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        if (this.workoutsProgress) {
+            data["workoutsProgress"] = {};
+            for (let key in this.workoutsProgress) {
+                if (this.workoutsProgress.hasOwnProperty(key))
+                    (<any>data["workoutsProgress"])[key] = this.workoutsProgress[key] ? this.workoutsProgress[key].toJSON() : <any>undefined;
+            }
+        }
         return data;
     }
 }
@@ -7900,6 +7915,51 @@ export interface IProgramEnrollment {
     currentWorkoutOrder?: number | undefined;
     program?: Program | undefined;
     user?: AspNetUser | undefined;
+    workoutsProgress?: { [key: string]: WorkoutProgress; };
+}
+
+export class WorkoutProgress implements IWorkoutProgress {
+    dateCompleted?: Date;
+    status?: string;
+    notes?: string;
+
+    constructor(data?: IWorkoutProgress) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.dateCompleted = _data["dateCompleted"] ? new Date(_data["dateCompleted"].toString()) : <any>undefined;
+            this.status = _data["status"];
+            this.notes = _data["notes"];
+        }
+    }
+
+    static fromJS(data: any): WorkoutProgress {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkoutProgress();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["dateCompleted"] = this.dateCompleted ? this.dateCompleted.toISOString() : <any>undefined;
+        data["status"] = this.status;
+        data["notes"] = this.notes;
+        return data;
+    }
+}
+
+export interface IWorkoutProgress {
+    dateCompleted?: Date;
+    status?: string;
+    notes?: string;
 }
 
 export class ExerciseMuscleGroup implements IExerciseMuscleGroup {

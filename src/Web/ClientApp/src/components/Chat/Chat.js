@@ -24,7 +24,7 @@ const Chat = () => {
     const newConnection = new HubConnectionBuilder()
       .withUrl('https://localhost:44447/api/chathub', {
         accessTokenFactory: () => token, // Include the token in the headers
-        transport: HttpTransportType.ServerSentEvents // Use Server-Sent Events transport
+        transport: HttpTransportType.LongPolling // Use Server-Sent Events transport
 
       })
       .withAutomaticReconnect([500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 10000])
