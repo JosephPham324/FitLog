@@ -52,14 +52,7 @@ public class CreateChatLineCommandHandler : IRequestHandler<CreateChatLineComman
         };
 
         _context.ChatLines.Add(chatLine);
-        try
-        {
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-        catch
-        {
-            throw new GoogleApiException("Failed to save changes to the database.");
-        }
+        await _context.SaveChangesAsync(cancellationToken);
         return new CreateChatLineResult { Result = Result.Successful(), ChatLine = _mapper.Map<ChatLineDto>(chatLine)};
     }
 }

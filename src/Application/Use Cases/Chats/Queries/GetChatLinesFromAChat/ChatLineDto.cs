@@ -14,12 +14,11 @@ public class ChatLineDto
     public AspNetUserListDTO CreatedByNavigation { get; set; } = new AspNetUserListDTO();
 
     //Mapping
-    private class Mapping : AutoMapper.Profile
+    public class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
-            CreateMap<ChatLine, ChatLineDto>()
-                ;
+            CreateMap<ChatLine, ChatLineDto>();
         }
     }
 }

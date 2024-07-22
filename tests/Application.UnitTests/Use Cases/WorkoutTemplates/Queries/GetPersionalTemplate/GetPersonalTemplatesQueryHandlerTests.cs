@@ -1,10 +1,12 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Linq.Expressions;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.WorkoutTemplates.Queries.GetPersonalTemplate;
 using FitLog.Domain.Entities;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
+using MockQueryable.Moq;
 
 public class GetPersonalTemplatesQueryHandlerTests
 {
@@ -23,8 +25,8 @@ public class GetPersonalTemplatesQueryHandlerTests
     public async Task Handle_WithValidQuery_ShouldReturnPersonalTemplates()
     {
         // Arrange
-        var userToken = "valid_user_token";
-        var userId = "user_id_from_token";
+        var userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDUxNTY0MjAwODQwMTM2ODkyNzQiLCJlbWFpbCI6InF1YW5ncG5jZTE3MDAzNkBmcHQuZWR1LnZuIiwiSWQiOiIzOTU0MDg4NC01NzRhLTQwMmYtYjMyYy1mNWRlODMzYmI2N2EiLCJleHAiOjE3MjE2Mjg2ODYsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0NDQ3L2FwaSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0NDQ3LyJ9.-vaVzF57j5M9n-GPStxKtW41_WPcSAR-Me4eHN6MNjM";
+        var userId = "39540884-574a-402f-b32c-f5de833bb67a";
 
         _currentUserServiceMock.Setup(m => m.GetUserIdFromGivenToken(userToken))
                                .Returns(userId);
@@ -34,15 +36,9 @@ public class GetPersonalTemplatesQueryHandlerTests
             new WorkoutTemplate { Id = 1, TemplateName = "Template 1", CreatedBy = userId, IsPublic = false },
             new WorkoutTemplate { Id = 2, TemplateName = "Template 2", CreatedBy = userId, IsPublic = false },
             new WorkoutTemplate { Id = 3, TemplateName = "Template 3", CreatedBy = userId, IsPublic = false }
-        };
+        }.AsQueryable().BuildMockDbSet();
 
-        var mockSet = new Mock<DbSet<WorkoutTemplate>>();
-        mockSet.As<IQueryable<WorkoutTemplate>>().Setup(m => m.Provider).Returns(templates.AsQueryable().Provider);
-        mockSet.As<IQueryable<WorkoutTemplate>>().Setup(m => m.Expression).Returns(templates.AsQueryable().Expression);
-        mockSet.As<IQueryable<WorkoutTemplate>>().Setup(m => m.ElementType).Returns(templates.AsQueryable().ElementType);
-        mockSet.As<IQueryable<WorkoutTemplate>>().Setup(m => m.GetEnumerator()).Returns(templates.GetEnumerator());
-
-        _contextMock.Setup(m => m.WorkoutTemplates).Returns(mockSet.Object);
+        _contextMock.Setup(m => m.WorkoutTemplates).Returns(templates.Object);
 
         var query = new GetPersonalTemplatesQuery
         {
@@ -64,21 +60,15 @@ public class GetPersonalTemplatesQueryHandlerTests
     public async Task Handle_WithNoTemplates_ShouldReturnEmptyList()
     {
         // Arrange
-        var userToken = "valid_user_token";
-        var userId = "user_id_from_token";
+        var userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDUxNTY0MjAwODQwMTM2ODkyNzQiLCJlbWFpbCI6InF1YW5ncG5jZTE3MDAzNkBmcHQuZWR1LnZuIiwiSWQiOiIzOTU0MDg4NC01NzRhLTQwMmYtYjMyYy1mNWRlODMzYmI2N2EiLCJleHAiOjE3MjE2Mjg2ODYsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0NDQ3L2FwaSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0NDQ3LyJ9.-vaVzF57j5M9n-GPStxKtW41_WPcSAR-Me4eHN6MNjM";
+        var userId = "39540884-574a-402f-b32c-f5de833bb67a";
 
         _currentUserServiceMock.Setup(m => m.GetUserIdFromGivenToken(userToken))
                                .Returns(userId);
 
-        var templates = new List<WorkoutTemplate>(); // Empty list
+        var templates = new List<WorkoutTemplate>().AsQueryable().BuildMockDbSet(); // Empty list
 
-        var mockSet = new Mock<DbSet<WorkoutTemplate>>();
-        mockSet.As<IQueryable<WorkoutTemplate>>().Setup(m => m.Provider).Returns(templates.AsQueryable().Provider);
-        mockSet.As<IQueryable<WorkoutTemplate>>().Setup(m => m.Expression).Returns(templates.AsQueryable().Expression);
-        mockSet.As<IQueryable<WorkoutTemplate>>().Setup(m => m.ElementType).Returns(templates.AsQueryable().ElementType);
-        mockSet.As<IQueryable<WorkoutTemplate>>().Setup(m => m.GetEnumerator()).Returns(templates.GetEnumerator());
-
-        _contextMock.Setup(m => m.WorkoutTemplates).Returns(mockSet.Object);
+        _contextMock.Setup(m => m.WorkoutTemplates).Returns(templates.Object);
 
         var query = new GetPersonalTemplatesQuery
         {

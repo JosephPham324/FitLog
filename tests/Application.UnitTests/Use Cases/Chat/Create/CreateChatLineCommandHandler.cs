@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using FitLog.Application.Chats.Commands.CreateChatLine;
+using FitLog.Application.Chats.Queries.GetChatLinesFromAChat;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ public class CreateChatLineCommandHandlerTests
         _contextMock = new Mock<IApplicationDbContext>();
         var config = new MapperConfiguration(cfg =>
                 {
+                    cfg.AddProfile(new ChatLineDto.Mapping());
                 });
         _mapper =  config.CreateMapper();
         _contextMock.Setup(c => c.ChatLines).Returns(Mock.Of<DbSet<ChatLine>>());
