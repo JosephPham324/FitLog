@@ -27,7 +27,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         _userManager = userManager;
 
         RuleFor(x => x.UserName)
-            .NotEmpty().WithMessage("User ID is required.")
+            .NotEmpty().WithMessage("Username is required.")
             .MustAsync(BeUniqueUsername).WithMessage("The specified username already exists.");
 
         RuleFor(x => x.Email)
@@ -39,7 +39,9 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .MinimumLength(6).WithMessage("Password must be at least 6 characters long.");
 
         RuleFor(x => x.PhoneNumber)
-                .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Invalid phone number format."); // Add phone number validation
+                .Matches(@"(^\+?[1-9]\d{1,14}$)|(^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6|7|8|9]|8[1-6|8-9]|9[0-9])[0-9]{7}$)")//International format
+                //.Matches(@"^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6|7|8|9]|8[1-6|8-9]|9[0-9])[0-9]{7}$") // Vietnam format
+                .WithMessage("Invalid phone number format."); 
     }
 
     private async Task<bool> BeUniqueUsername(string username, CancellationToken cancellationToken)
