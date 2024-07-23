@@ -14,6 +14,8 @@ using FitLog.Application.Users.Commands.DeleteAccount;
 using FitLog.Application.Users.Commands.RecoverAccount;
 using FitLog.Application.Users.Commands.UpdateUser;
 using FitLog.Application.Users.Queries.GetCoachesListWithPagination;
+using FitLog.Application.Users.Commands.ResetPassword;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
@@ -32,6 +34,7 @@ public class Users : EndpointGroupBase
             .MapPost(CreateUser, "create-account")
             .MapDelete(DeleteAccount, "delete-account/{id}")
             .MapPost(RecoverAccount, "recover-account")
+            .MapPut(ResetPassword, "reset-password")
             .MapPut(UpdateUser, "update-account")
             .MapGet(GetCoachesList, "coaches");
     }
@@ -166,5 +169,10 @@ public class Users : EndpointGroupBase
     public Task<PaginatedList<CoachSummaryDTO>> GetCoachesList(ISender sender, [AsParameters] GetCoachesListWithPaginationQuery query)
     {
         return sender.Send(query);
+    }
+
+    public async Task<Result> ResetPassword(ISender sender, [FromBody] ResetPasswordCommand command)
+    {
+        return await sender.Send(command);
     }
 }

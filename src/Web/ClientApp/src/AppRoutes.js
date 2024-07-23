@@ -17,6 +17,9 @@ import { Profile } from './page/Profile';
 import { ChangePassword } from './page/ChangePassword';
 import TrainingBoard from './page/TrainingBoard';
 import withAuthProtection from './utils/withAuthProtection';
+import RecoverAccount from './components/AccountRecovery/RecoverAccount'
+import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmation'
+import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
 
 const AppRoutes = [
   {
@@ -86,6 +89,18 @@ const AppRoutes = [
   {
     path: '/trainingBoard',
     element: React.createElement(withAuthProtection(TrainingBoard))
+  },
+  {
+    path: '/recover-account/:token/:email',
+    element: <RecoverAccount />
+  },
+  {
+    path: '/recover-account/confirmation',
+    element: <RecoverConfirmation />
+  },
+  {
+    path: '/recover-account',
+    element: <RecoverInitiate />
   }
 ];
 
