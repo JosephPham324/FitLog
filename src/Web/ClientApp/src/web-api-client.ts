@@ -10011,6 +10011,7 @@ export class RegisterCommand implements IRegisterCommand {
     email?: string;
     password?: string;
     userName?: string;
+    phoneNumber?: string;
 
     constructor(data?: IRegisterCommand) {
         if (data) {
@@ -10026,6 +10027,7 @@ export class RegisterCommand implements IRegisterCommand {
             this.email = _data["email"];
             this.password = _data["password"];
             this.userName = _data["userName"];
+            this.phoneNumber = _data["phoneNumber"];
         }
     }
 
@@ -10041,6 +10043,7 @@ export class RegisterCommand implements IRegisterCommand {
         data["email"] = this.email;
         data["password"] = this.password;
         data["userName"] = this.userName;
+        data["phoneNumber"] = this.phoneNumber;
         return data;
     }
 }
@@ -10049,6 +10052,7 @@ export interface IRegisterCommand {
     email?: string;
     password?: string;
     userName?: string;
+    phoneNumber?: string;
 }
 
 export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetUserListDTO {
@@ -10121,10 +10125,6 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
     email?: string | undefined;
     emailConfirmed?: boolean;
     phoneNumber?: string | undefined;
-    phoneNumberConfirmed?: boolean;
-    lockoutEnd?: Date | undefined;
-    lockoutEnabled?: boolean;
-    accessFailedCount?: number;
 
     constructor(data?: IAspNetUserListDTO) {
         if (data) {
@@ -10142,10 +10142,6 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
             this.email = _data["email"];
             this.emailConfirmed = _data["emailConfirmed"];
             this.phoneNumber = _data["phoneNumber"];
-            this.phoneNumberConfirmed = _data["phoneNumberConfirmed"];
-            this.lockoutEnd = _data["lockoutEnd"] ? new Date(_data["lockoutEnd"].toString()) : <any>undefined;
-            this.lockoutEnabled = _data["lockoutEnabled"];
-            this.accessFailedCount = _data["accessFailedCount"];
         }
     }
 
@@ -10163,10 +10159,6 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
         data["email"] = this.email;
         data["emailConfirmed"] = this.emailConfirmed;
         data["phoneNumber"] = this.phoneNumber;
-        data["phoneNumberConfirmed"] = this.phoneNumberConfirmed;
-        data["lockoutEnd"] = this.lockoutEnd ? this.lockoutEnd.toISOString() : <any>undefined;
-        data["lockoutEnabled"] = this.lockoutEnabled;
-        data["accessFailedCount"] = this.accessFailedCount;
         return data;
     }
 }
@@ -10177,10 +10169,6 @@ export interface IAspNetUserListDTO {
     email?: string | undefined;
     emailConfirmed?: boolean;
     phoneNumber?: string | undefined;
-    phoneNumberConfirmed?: boolean;
-    lockoutEnd?: Date | undefined;
-    lockoutEnabled?: boolean;
-    accessFailedCount?: number;
 }
 
 export class UserProfileDTO implements IUserProfileDTO {

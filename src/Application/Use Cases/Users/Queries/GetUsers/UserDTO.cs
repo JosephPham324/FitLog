@@ -21,14 +21,6 @@ public class AspNetUserListDTO
 
     public string? PhoneNumber { get; set; }
 
-    public bool PhoneNumberConfirmed { get; set; }
-
-    public DateTimeOffset? LockoutEnd { get; set; }
-
-    public bool LockoutEnabled { get; set; }
-
-    public int AccessFailedCount { get; set; }
-
     private class Mapping : AutoMapper.Profile
     {
         public Mapping()

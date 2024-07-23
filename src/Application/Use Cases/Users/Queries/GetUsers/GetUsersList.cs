@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Mappings;
 using FitLog.Application.Common.Models;
+using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Users.Queries.GetUsers;
 
@@ -28,7 +29,7 @@ public class GetUsersListWithPaginationQueryHandler : IRequestHandler<GetUsersLi
     public async Task<PaginatedList<AspNetUserListDTO>> Handle(GetUsersListWithPaginationRequest request, CancellationToken cancellationToken)
     {
         return await _context.AspNetUsers
-                    .Where(user=>user.IsDeleted == false)
+                    .Where(user=>user.IsDeleted == null || user.IsDeleted == null && user.IsDeleted == false )
                     .ProjectTo<AspNetUserListDTO>(_mapper.ConfigurationProvider)
                     .PaginatedListAsync(request.PageNumber, request.PageSize);
     }

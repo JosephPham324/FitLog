@@ -6500,6 +6500,9 @@
           },
           "userName": {
             "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
           }
         }
       },
@@ -6558,21 +6561,6 @@
           "phoneNumber": {
             "type": "string",
             "nullable": true
-          },
-          "phoneNumberConfirmed": {
-            "type": "boolean"
-          },
-          "lockoutEnd": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "lockoutEnabled": {
-            "type": "boolean"
-          },
-          "accessFailedCount": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
