@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using FitLog.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using FitLog.Domain.Entities;
@@ -20,6 +21,9 @@ public class AspNetUserListDTO
     public bool EmailConfirmed { get; set; }
 
     public string? PhoneNumber { get; set; }
+
+    [JsonPropertyName("IsRestricted")]
+    public bool? IsDeleted { get; set; }
 
     private class Mapping : AutoMapper.Profile
     {

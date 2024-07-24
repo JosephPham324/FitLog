@@ -10203,6 +10203,7 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
     email?: string | undefined;
     emailConfirmed?: boolean;
     phoneNumber?: string | undefined;
+    isRestricted?: boolean | undefined;
 
     constructor(data?: IAspNetUserListDTO) {
         if (data) {
@@ -10220,6 +10221,7 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
             this.email = _data["email"];
             this.emailConfirmed = _data["emailConfirmed"];
             this.phoneNumber = _data["phoneNumber"];
+            this.isRestricted = _data["IsRestricted"];
         }
     }
 
@@ -10237,6 +10239,7 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
         data["email"] = this.email;
         data["emailConfirmed"] = this.emailConfirmed;
         data["phoneNumber"] = this.phoneNumber;
+        data["IsRestricted"] = this.isRestricted;
         return data;
     }
 }
@@ -10247,6 +10250,7 @@ export interface IAspNetUserListDTO {
     email?: string | undefined;
     emailConfirmed?: boolean;
     phoneNumber?: string | undefined;
+    isRestricted?: boolean | undefined;
 }
 
 export class UserProfileDTO implements IUserProfileDTO {

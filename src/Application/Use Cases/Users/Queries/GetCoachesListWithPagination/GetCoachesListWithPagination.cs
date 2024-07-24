@@ -44,6 +44,7 @@ namespace FitLog.Application.Users.Queries.GetCoachesListWithPagination
         public async Task<PaginatedList<CoachSummaryDTO>> Handle(GetCoachesListWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var coaches = await _context.AspNetUsers
+                .Where(user => user.IsDeleted == null || user.IsDeleted != null && user.IsDeleted == false) //Check  is not deleted
                 .Where(u => u.Roles.Any(r => r.Name == Domain.Constants.Roles.Coach))
                     .Include(u => u.Profiles)
                     .Include(u => u.Programs)

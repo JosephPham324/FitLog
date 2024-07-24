@@ -31,6 +31,7 @@ public class GetAccountsByEmailQueryHandler : IRequestHandler<GetAccountsByEmail
     public async Task<IEnumerable<AspNetUserListDTO>?> Handle(GetAccountsByEmailQuery request, CancellationToken cancellationToken)
     {
         var users = await _userManager.Users
+
                 .Where(u => (u.Email ?? "").Contains(request.Email))
                 .ToListAsync(cancellationToken);
 

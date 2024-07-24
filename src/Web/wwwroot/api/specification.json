@@ -6625,6 +6625,10 @@
           "phoneNumber": {
             "type": "string",
             "nullable": true
+          },
+          "IsRestricted": {
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
