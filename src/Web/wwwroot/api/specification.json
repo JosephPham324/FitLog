@@ -983,9 +983,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MuscleEngagementDTO"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MuscleEngagementDTO"
+                    }
                   }
                 }
               }
@@ -2470,7 +2473,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfAspNetUserListDTO"
+                  "$ref": "#/components/schemas/PaginatedListOfUserListDTO"
                 }
               }
             }
@@ -2507,7 +2510,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -2547,7 +2550,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -2587,7 +2590,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -2705,6 +2708,70 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/RecoverAccountCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/confirm-email": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ConfirmEmail",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/reset-password": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ResetPassword",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordCommand"
               }
             }
           },
@@ -6500,17 +6567,20 @@
           },
           "userName": {
             "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
           }
         }
       },
-      "PaginatedListOfAspNetUserListDTO": {
+      "PaginatedListOfUserListDTO": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AspNetUserListDTO"
+              "$ref": "#/components/schemas/UserListDTO"
             }
           },
           "pageNumber": {
@@ -6533,7 +6603,7 @@
           }
         }
       },
-      "AspNetUserListDTO": {
+      "UserListDTO": {
         "type": "object",
         "additionalProperties": false,
         "required": [
@@ -6559,20 +6629,15 @@
             "type": "string",
             "nullable": true
           },
-          "phoneNumberConfirmed": {
-            "type": "boolean"
-          },
-          "lockoutEnd": {
-            "type": "string",
-            "format": "date-time",
+          "IsRestricted": {
+            "type": "boolean",
             "nullable": true
           },
-          "lockoutEnabled": {
-            "type": "boolean"
-          },
-          "accessFailedCount": {
-            "type": "integer",
-            "format": "int32"
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -6773,6 +6838,43 @@
         "properties": {
           "email": {
             "type": "string"
+          }
+        }
+      },
+      "ConfirmEmailCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ResetPasswordCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "token",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
           }
         }
       },

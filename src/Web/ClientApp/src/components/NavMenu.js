@@ -1,5 +1,8 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap';
+import {
+  Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink,
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { HubConnectionBuilder, LogLevel, HttpTransportType } from '@microsoft/signalr';
 import './NavMenu.css';
@@ -73,30 +76,52 @@ export const NavMenu = () => {
             <NavItem>
               <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
             </NavItem>
-            <NavItem>
+            {/* <NavItem>
               <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
             </NavItem>
             <NavItem>
               <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
-            </NavItem>
+            </NavItem> */}
             {isAuthenticated && (
               <>
-                <NavItem>
+                {/* <NavItem>
                   <a className="nav-link text-dark" href="/Identity/Account/Manage">Account</a>
-                </NavItem>
+                </NavItem> */}
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret className="text-dark">
                     Training
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem tag={Link} to="/MuscleGroup">
-                      Muscle Group
-                    </DropdownItem>
                     <DropdownItem tag={Link} to="/WorkoutHistory">
                       Workout History
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/ExerciseLog">
-                      Exercise Log
+                      Workout Log
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/profile">
+                      Profile
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/changepassword">
+                      Change Password
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/trainingBoard">
+                      Training Board
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret className="text-dark">
+                    Admin
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem tag={Link} to="/MuscleGroup">
+                      Muscle Group
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/admin/management/equipments">
+                      Equipments List
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/users-list">
+                      User List
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>

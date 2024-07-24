@@ -14,6 +14,9 @@ using FitLog.Application.Users.Commands.DeleteAccount;
 using FitLog.Application.Users.Commands.RecoverAccount;
 using FitLog.Application.Users.Commands.UpdateUser;
 using FitLog.Application.Users.Queries.GetCoachesListWithPagination;
+using FitLog.Application.Users.Commands.ResetPassword;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using FitLog.Application.Users.Commands.ConfirmEmail;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
@@ -32,6 +35,8 @@ public class Users : EndpointGroupBase
             .MapPost(CreateUser, "create-account")
             .MapDelete(DeleteAccount, "delete-account/{id}")
             .MapPost(RecoverAccount, "recover-account")
+            .MapPut(ConfirmEmail, "confirm-email")
+            .MapPut(ResetPassword, "reset-password")
             .MapPut(UpdateUser, "update-account")
             .MapGet(GetCoachesList, "coaches");
     }
@@ -64,7 +69,7 @@ public class Users : EndpointGroupBase
     /// <param name="sender">The sender used to send the get users list request.</param>
     /// <param name="request">The request containing pagination parameters for fetching the users list.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the paginated list of users.</returns>
-    public Task<PaginatedList<AspNetUserListDTO>> GetUserList(ISender sender, [AsParameters] GetUsersListWithPaginationRequest request)
+    public Task<PaginatedList<UserListDTO>> GetUserList(ISender sender, [AsParameters] GetUsersListWithPaginationRequest request)
     {
         return sender.Send(request);
     }
@@ -86,7 +91,7 @@ public class Users : EndpointGroupBase
     /// <param name="sender">The sender used to send the search users by email request.</param>
     /// <param name="request">The request containing the email to search for.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the list of users matching the email.</returns>
-    public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByEmail(ISender sender, [AsParameters] GetAccountsByEmailQuery request)
+    public Task<IEnumerable<UserListDTO>?> SearchUsersByEmail(ISender sender, [AsParameters] GetAccountsByEmailQuery request)
     {
         return sender.Send(request);
     }
@@ -97,7 +102,7 @@ public class Users : EndpointGroupBase
     /// <param name="sender">The sender used to send the search users by login provider request.</param>
     /// <param name="request">The request containing the login provider details to search for.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the list of users matching the login provider.</returns>
-    public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByLoginProvider(ISender sender, [AsParameters] GetAccountByExternalProviderQuery request)
+    public Task<IEnumerable<UserListDTO>?> SearchUsersByLoginProvider(ISender sender, [AsParameters] GetAccountByExternalProviderQuery request)
     {
         return sender.Send(request);
     }
@@ -108,7 +113,7 @@ public class Users : EndpointGroupBase
     /// <param name="sender">The sender used to send the search users by username request.</param>
     /// <param name="request">The request containing the username to search for.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the list of users matching the username.</returns>
-    public Task<IEnumerable<AspNetUserListDTO>?> SearchUsersByUserName(ISender sender, [AsParameters] GetAccountByUsernameQuery request)
+    public Task<IEnumerable<UserListDTO>?> SearchUsersByUserName(ISender sender, [AsParameters] GetAccountByUsernameQuery request)
     {
         return sender.Send(request);
     }
@@ -166,5 +171,15 @@ public class Users : EndpointGroupBase
     public Task<PaginatedList<CoachSummaryDTO>> GetCoachesList(ISender sender, [AsParameters] GetCoachesListWithPaginationQuery query)
     {
         return sender.Send(query);
+    }
+
+    public async Task<Result> ResetPassword(ISender sender, [FromBody] ResetPasswordCommand command)
+    {
+        return await sender.Send(command);
+    }
+    
+    public async Task<Result> ConfirmEmail(ISender sender, [FromBody] ConfirmEmailCommand command)
+    {
+        return await sender.Send(command);
     }
 }

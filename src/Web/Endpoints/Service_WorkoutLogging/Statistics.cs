@@ -27,7 +27,7 @@ public class Statistics : EndpointGroupBase
         return await sender.Send(query);
     }
 
-    public async Task<List<MuscleEngagementDTO>> GetMusclesEngagement(ISender sender, [AsParameters] GetMuscleEngagementQuery query)
+    public async Task<Dictionary<DateTime, List<MuscleEngagementDTO>>> GetMusclesEngagement(ISender sender, [AsParameters] GetMuscleEngagementQuery query)
     {
         return await sender.Send(query);
     }

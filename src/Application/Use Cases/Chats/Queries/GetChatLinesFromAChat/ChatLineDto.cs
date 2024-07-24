@@ -11,7 +11,7 @@ public class ChatLineDto
     public string LinkUrl { get; set; } = "";
     public string AttachmentPath { get; set; } = "";
     public DateTime CreatedAt { get; set; }
-    public AspNetUserListDTO CreatedByNavigation { get; set; } = new AspNetUserListDTO();
+    public UserListDTO CreatedByNavigation { get; set; } = new UserListDTO();
 
     //Mapping
     public class Mapping : AutoMapper.Profile

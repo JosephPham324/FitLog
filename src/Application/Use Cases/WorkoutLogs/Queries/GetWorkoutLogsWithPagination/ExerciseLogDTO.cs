@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Users.Queries.GetUsers;
+﻿using System.Globalization;
+using FitLog.Application.Users.Queries.GetUsers;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
@@ -21,22 +22,44 @@ public class ExerciseLogDTO
 
     public List<double>? GetWeightsUsed()
     {
-        return WeightsUsed?
-            .Trim(['[', ']'])?
-            .Split([',', ';'])?
-                                            //.Where(weight => !string.IsNullOrEmpty(weight))
-            .Select(Double.Parse)?
-            .ToList() ?? new List<double>();
+        if (string.IsNullOrEmpty(WeightsUsed))
+        {
+            return new List<double> { 0 };
+        }
+
+        try
+        {
+            return WeightsUsed
+                .Trim('[', ']')
+                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => double.Parse(s.Trim(), CultureInfo.InvariantCulture))
+                .ToList();
+        }
+        catch (FormatException)
+        {
+            return new List<double> { 0 };
+        }
     }
 
     public List<int>? GetNumberOfReps()
     {
-        return NumberOfReps?
-               .Trim(['[', ']'])?
-                .Split([',', ';'])?
-                //.Where(rep => !string.IsNullOrEmpty(rep))
-                .Select(int.Parse)?
+        if (string.IsNullOrEmpty(NumberOfReps))
+        {
+            return new List<int> { 0 };
+        }
+
+        try
+        {
+            return NumberOfReps
+                .Trim('[', ']')
+                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => int.Parse(s.Trim(), CultureInfo.InvariantCulture))
                 .ToList();
+        }
+        catch (FormatException)
+        {
+            return new List<int> { 0 };
+        }
     }
 
     private class Mapping : AutoMapper.Profile

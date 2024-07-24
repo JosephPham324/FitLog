@@ -4,6 +4,7 @@ using FitLog.Application.Common.ValidationRules;
 using FitLog.Domain.Entities;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
@@ -37,12 +38,18 @@ namespace FitLog.Application.CoachProfiles.Commands.UpdateCoachApplicationStatus
         private readonly IApplicationDbContext _context;
         private readonly IEmailService _emailService;
         private readonly INotificationService _notificationService;
+        private readonly UserManager<AspNetUser> _userManager;
 
-        public UpdateCoachApplicationStatusCommandHandler(IApplicationDbContext context, IEmailService emailService, INotificationService notificationService)
+        public UpdateCoachApplicationStatusCommandHandler(
+            IApplicationDbContext context,
+            IEmailService emailService,
+            INotificationService notificationService,
+            UserManager<AspNetUser> userManager)
         {
             _context = context;
             _emailService = emailService;
             _notificationService = notificationService;
+            _userManager = userManager;
         }
 
         public async Task<Result> Handle(UpdateCoachApplicationStatusCommand request, CancellationToken cancellationToken)
@@ -62,6 +69,20 @@ namespace FitLog.Application.CoachProfiles.Commands.UpdateCoachApplicationStatus
             application.LastModifiedBy = request.UpdatedById;
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            // If the application is approved, add the Coach role to the user
+            if (request.Status.Equals("Approved", StringComparison.OrdinalIgnoreCase))
+            {
+                var user = application.Applicant;
+                if (user != null && !await _userManager.IsInRoleAsync(user, "Coach"))
+                {
+                    var roleResult = await _userManager.AddToRoleAsync(user, "Coach");
+                    if (!roleResult.Succeeded)
+                    {
+                        return Result.Failure(roleResult.Errors.Select(e => e.Description));
+                    }
+                }
+            }
 
             // Prepare the notification message
             var notificationMessage = $"Dear {application.Applicant.UserName},\n\n" +

@@ -6,30 +6,53 @@ using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Mappings;
 using FitLog.Application.Common.Models;
+using FitLog.Domain.Entities;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
-namespace FitLog.Application.Users.Queries.GetUsers;
-
-public record GetUsersListWithPaginationRequest : IRequest<PaginatedList<AspNetUserListDTO>>
+namespace FitLog.Application.Users.Queries.GetUsers
 {
-    public int PageNumber { get; init; } = 1;
-    public int PageSize { get; init; } = 10;
-}
-public class GetUsersListWithPaginationQueryHandler : IRequestHandler<GetUsersListWithPaginationRequest, PaginatedList<AspNetUserListDTO>>
-{
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public GetUsersListWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public record GetUsersListWithPaginationRequest : IRequest<PaginatedList<UserListDTO>>
     {
-        _context = context;
-        _mapper = mapper;
+        public int PageNumber { get; init; } = 1;
+        public int PageSize { get; init; } = 10;
     }
 
-    public async Task<PaginatedList<AspNetUserListDTO>> Handle(GetUsersListWithPaginationRequest request, CancellationToken cancellationToken)
+    public class GetUsersListWithPaginationQueryHandler : IRequestHandler<GetUsersListWithPaginationRequest, PaginatedList<UserListDTO>>
     {
-        return await _context.AspNetUsers
-                    .Where(user=>user.IsDeleted == false)
-                    .ProjectTo<AspNetUserListDTO>(_mapper.ConfigurationProvider)
-                    .PaginatedListAsync(request.PageNumber, request.PageSize);
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly UserManager<AspNetUser> _userManager;
+
+        public GetUsersListWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper, UserManager<AspNetUser> userManager)
+        {
+            _context = context;
+            _mapper = mapper;
+            _userManager = userManager;
+        }
+
+        public async Task<PaginatedList<UserListDTO>> Handle(GetUsersListWithPaginationRequest request, CancellationToken cancellationToken)
+        {
+            var usersQuery = _context.AspNetUsers
+                .ProjectTo<UserListDTO>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+
+            var paginatedList = await usersQuery.PaginatedListAsync(request.PageNumber, request.PageSize);
+
+            foreach (var userDto in paginatedList.Items)
+            {
+                var user = await _userManager.FindByIdAsync(userDto.Id ?? "");
+                if (user != null)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    userDto.Roles = roles.ToList();
+                }
+            }
+
+            return paginatedList;
+        }
     }
 }

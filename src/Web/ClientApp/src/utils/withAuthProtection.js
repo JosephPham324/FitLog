@@ -1,19 +1,24 @@
 ﻿import React, { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const withAuthProtection = (WrappedComponent) => {
-    return (props) => {
-        const { isAuthenticated } = useContext(AuthContext);
+  const ProtectedComponent = (props) => {
+    const { isAuthenticated } = useContext(AuthContext);
 
-        if (!isAuthenticated) {
-            return <div>You need to login to access this content.</div>;
-        }
+    if (!isAuthenticated) {
+      return <Navigate to="/login" />;
+    }
 
-        return <WrappedComponent {...props} />;
-    };
+    return <WrappedComponent {...props} />;
+  };
+
+  return ProtectedComponent;
 };
 
 export default withAuthProtection;
+
+
 
 //HOW TO USE
 

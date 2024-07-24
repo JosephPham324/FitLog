@@ -42,7 +42,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
         var user = new AspNetUser
         {
             UserName = request.UserName,
-            Email = request.Email
+            Email = request.Email,
+            IsDeleted = false
         };
 
         var createUserResult = await _userManager.CreateAsync(user, request.Password);
