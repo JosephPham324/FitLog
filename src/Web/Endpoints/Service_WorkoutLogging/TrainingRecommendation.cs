@@ -13,6 +13,7 @@ public class TrainingRecommendation : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+           .RequireAuthorization()
            .MapGet(GetProgramRecommendations, "/programs-recommendation/user")
            .MapPost(GetWorkoutRecommendation, "/workout-recommendation/user");
     }

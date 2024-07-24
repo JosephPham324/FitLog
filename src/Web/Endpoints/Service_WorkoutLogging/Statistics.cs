@@ -14,6 +14,7 @@ public class Statistics : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .RequireAuthorization()
             .MapGet(GetWorkoutLogSummary, "summary")
             .MapGet(GetMusclesEngagement, "muscles-engagement")
             .MapGet(GetRepsStats, "total-training-reps")

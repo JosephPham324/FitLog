@@ -1721,7 +1721,7 @@
         }
       }
     },
-    "/api/WorkoutPrograms/Details/{id}": {
+    "/api/WorkoutPrograms/details/{id}": {
       "get": {
         "tags": [
           "WorkoutPrograms"
@@ -1752,18 +1752,6 @@
           "WorkoutPrograms"
         ],
         "operationId": "GetEnrollmentsByUser",
-        "parameters": [
-          {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
         "responses": {
           "200": {
             "description": "",
@@ -1781,12 +1769,24 @@
         }
       }
     },
-    "/api/WorkoutPrograms/enrollments": {
+    "/api/WorkoutPrograms/enroll/{id}": {
       "post": {
         "tags": [
           "WorkoutPrograms"
         ],
         "operationId": "EnrollProgram",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -1797,7 +1797,7 @@
             }
           },
           "required": true,
-          "x-position": 1
+          "x-position": 2
         },
         "responses": {
           "200": {
@@ -2439,263 +2439,6 @@
         }
       }
     },
-    "/api/Users/all": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "GetUserList",
-        "parameters": [
-          {
-            "name": "PageNumber",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "PageSize",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfUserListDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/search-by-email": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "SearchUsersByEmail",
-        "parameters": [
-          {
-            "name": "Email",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "nullable": true,
-                    "oneOf": [
-                      {
-                        "$ref": "#/components/schemas/UserListDTO"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/search-by-provider": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "SearchUsersByLoginProvider",
-        "parameters": [
-          {
-            "name": "Provider",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "nullable": true,
-                    "oneOf": [
-                      {
-                        "$ref": "#/components/schemas/UserListDTO"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/search-by-username": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "SearchUsersByUserName",
-        "parameters": [
-          {
-            "name": "Username",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "nullable": true,
-                    "oneOf": [
-                      {
-                        "$ref": "#/components/schemas/UserListDTO"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/profile": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "GetUserProfile",
-        "parameters": [
-          {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserProfileDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/create-account": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "CreateUser",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/delete-account/{id}": {
-      "delete": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "DeleteAccount",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Users/recover-account": {
       "post": {
         "tags": [
@@ -2708,38 +2451,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/RecoverAccountCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/confirm-email": {
-      "put": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "ConfirmEmail",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfirmEmailCommand"
               }
             }
           },
@@ -2792,7 +2503,296 @@
         }
       }
     },
-    "/api/Users/update-account": {
+    "/api/Users/users/all": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetUserList",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfUserListDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/users/search-by-email": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SearchUsersByEmail",
+        "parameters": [
+          {
+            "name": "Email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "nullable": true,
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/UserListDTO"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/users/search-by-provider": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SearchUsersByLoginProvider",
+        "parameters": [
+          {
+            "name": "Provider",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "nullable": true,
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/UserListDTO"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/users/search-by-username": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SearchUsersByUserName",
+        "parameters": [
+          {
+            "name": "Username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "nullable": true,
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/UserListDTO"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/users/profile": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetUserProfile",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/users/create-account": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "CreateUser",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/users/delete-account/{id}": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "DeleteAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/users/confirm-email": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ConfirmEmail",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/users/update-account": {
       "put": {
         "tags": [
           "Users"
@@ -2824,7 +2824,7 @@
         }
       }
     },
-    "/api/Users/coaches": {
+    "/api/Users/coaches/coaches/coaches": {
       "get": {
         "tags": [
           "Users"
@@ -6573,6 +6573,40 @@
           }
         }
       },
+      "RecoverAccountCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ResetPasswordCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "token",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
+          }
+        }
+      },
       "PaginatedListOfUserListDTO": {
         "type": "object",
         "additionalProperties": false,
@@ -6832,15 +6866,6 @@
           }
         }
       },
-      "RecoverAccountCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "email": {
-            "type": "string"
-          }
-        }
-      },
       "ConfirmEmailCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -6850,31 +6875,6 @@
           },
           "email": {
             "type": "string"
-          }
-        }
-      },
-      "ResetPasswordCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "token",
-          "email",
-          "password"
-        ],
-        "properties": {
-          "token": {
-            "type": "string",
-            "minLength": 1
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "minLength": 1
-          },
-          "password": {
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 6
           }
         }
       },

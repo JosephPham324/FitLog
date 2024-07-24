@@ -13,6 +13,7 @@ public class Roles : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .RequireAuthorization("AdminOnly")
             .MapGet(GetRolesList)
             .MapGet(GetRoleById, "{id}")
             .MapPost(CreateRole)

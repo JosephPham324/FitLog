@@ -24,21 +24,36 @@ public class Users : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
+        var coachGroup = app.MapGroup(this).MapGroup("/coaches");
+
+        // Standalones
         app.MapGroup(this)
-            .MapPost(Login, "login")
-            .MapPost(Register, "register")
-            .MapGet(GetUserList, "all")
-            .MapGet(SearchUsersByEmail, "search-by-email")
-            .MapGet(SearchUsersByLoginProvider, "search-by-provider")
-            .MapGet(SearchUsersByUserName, "search-by-username")
-            .MapGet(GetUserProfile, "profile")
-            .MapPost(CreateUser, "create-account")
-            .MapDelete(DeleteAccount, "delete-account/{id}")
-            .MapPost(RecoverAccount, "recover-account")
-            .MapPut(ConfirmEmail, "confirm-email")
-            .MapPut(ResetPassword, "reset-password")
-            .MapPut(UpdateUser, "update-account")
-            .MapGet(GetCoachesList, "coaches");
+           .MapPost(Login, "login")
+           .MapPost(Register, "register")
+           .MapPost(RecoverAccount, "recover-account")
+           .MapPut(ResetPassword, "reset-password");
+
+
+        // User management routes
+        app.MapGroup(this)
+           .RequireAuthorization()
+           .MapGroup("/users")
+           .MapGet(GetUserList, "all")
+           .MapGet(SearchUsersByEmail, "search-by-email")
+           .MapGet(SearchUsersByLoginProvider, "search-by-provider")
+           .MapGet(SearchUsersByUserName, "search-by-username")
+           .MapGet(GetUserProfile, "profile")
+           .MapPost(CreateUser, "create-account")
+           .MapDelete(DeleteAccount, "delete-account/{id}")
+           .MapPut(ConfirmEmail, "confirm-email")
+           .MapPut(UpdateUser, "update-account");
+        // Coaches routes
+        app.MapGroup(this)
+            .MapGroup("/coaches")
+           .MapGroup("/coaches")
+           .MapGet(GetCoachesList, "coaches");
+
+       
     }
 
     /// <summary>

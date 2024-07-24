@@ -14,6 +14,7 @@ public class TrainingSurvey : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .RequireAuthorization()
             .MapPost(CreateTrainingSurvey, "create")
             .MapPut(UpdateTrainingSurvey, "update/{id}")
             .MapGet(GetUserTrainingSurveyAnswer, "user");

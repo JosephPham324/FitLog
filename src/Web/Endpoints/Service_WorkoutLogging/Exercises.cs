@@ -55,7 +55,7 @@ public class Exercises : EndpointGroupBase
     {
         return sender.Send(query);
     }
-
+    [Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
     public Task<Result> ImportExercises(ISender sender, [FromBody] ImportExercisesCommand command)
     {
         return sender.Send(command);

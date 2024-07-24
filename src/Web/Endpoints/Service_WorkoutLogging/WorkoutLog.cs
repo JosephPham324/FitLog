@@ -17,6 +17,7 @@ public class WorkoutLog : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .RequireAuthorization()
             .MapGet(GetWorkoutLogsWithPagination, "get-all")
             .MapGet(GetWorkoutHistory, "history")
             .MapPost(CreateExerciseLog)
