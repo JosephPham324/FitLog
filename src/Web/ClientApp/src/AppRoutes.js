@@ -20,6 +20,7 @@ import withAuthProtection from './utils/withAuthProtection';
 import RecoverAccount from './components/AccountRecovery/RecoverAccount'
 import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmation'
 import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
+import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
 
 const AppRoutes = [
   {
@@ -101,6 +102,10 @@ const AppRoutes = [
   {
     path: '/recover-account/initiate',
     element: <RecoverInitiate />
+  },
+  {
+    path: '/confirm-email',
+    element: <ConfirmEmail />
   }
 ];
 
