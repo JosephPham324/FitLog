@@ -26,7 +26,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
         RuleFor(x => x.Role).NotEmpty().Must(Common.ValidationRules.ValidationRules.BeAValidRole).WithMessage("Invalid role specified.");
     }
 
-    
+
 }
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result>
 {
@@ -41,6 +41,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
     {
         var user = new AspNetUser
         {
+            Id = Guid.NewGuid().ToString(),
             UserName = request.UserName,
             Email = request.Email
         };
@@ -48,7 +49,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
         var createUserResult = await _userManager.CreateAsync(user, request.Password);
         if (!createUserResult.Succeeded)
         {
-            return Result.Failure(createUserResult.Errors.Select(e=>e.Description));
+            return Result.Failure(createUserResult.Errors.Select(e => e.Description));
         }
 
         // Adding role to user
