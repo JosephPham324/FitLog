@@ -2473,7 +2473,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfAspNetUserListDTO"
+                  "$ref": "#/components/schemas/PaginatedListOfUserListDTO"
                 }
               }
             }
@@ -2510,7 +2510,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -2550,7 +2550,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -2590,7 +2590,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -6573,14 +6573,14 @@
           }
         }
       },
-      "PaginatedListOfAspNetUserListDTO": {
+      "PaginatedListOfUserListDTO": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AspNetUserListDTO"
+              "$ref": "#/components/schemas/UserListDTO"
             }
           },
           "pageNumber": {
@@ -6603,7 +6603,7 @@
           }
         }
       },
-      "AspNetUserListDTO": {
+      "UserListDTO": {
         "type": "object",
         "additionalProperties": false,
         "required": [
@@ -6632,6 +6632,12 @@
           "IsRestricted": {
             "type": "boolean",
             "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

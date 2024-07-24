@@ -2984,7 +2984,7 @@ export class UsersClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    getUserList(pageNumber: number, pageSize: number): Promise<PaginatedListOfAspNetUserListDTO> {
+    getUserList(pageNumber: number, pageSize: number): Promise<PaginatedListOfUserListDTO> {
         let url_ = this.baseUrl + "/api/Users/all?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
@@ -3008,7 +3008,7 @@ export class UsersClient {
         });
     }
 
-    protected processGetUserList(response: Response): Promise<PaginatedListOfAspNetUserListDTO> {
+    protected processGetUserList(response: Response): Promise<PaginatedListOfUserListDTO> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3016,7 +3016,7 @@ export class UsersClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfAspNetUserListDTO.fromJS(resultData200);
+            result200 = PaginatedListOfUserListDTO.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3024,10 +3024,10 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PaginatedListOfAspNetUserListDTO>(null as any);
+        return Promise.resolve<PaginatedListOfUserListDTO>(null as any);
     }
 
-    searchUsersByEmail(email: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+    searchUsersByEmail(email: string | null): Promise<(UserListDTO | undefined)[]> {
         let url_ = this.baseUrl + "/api/Users/search-by-email?";
         if (email === undefined)
             throw new Error("The parameter 'email' must be defined.");
@@ -3047,7 +3047,7 @@ export class UsersClient {
         });
     }
 
-    protected processSearchUsersByEmail(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+    protected processSearchUsersByEmail(response: Response): Promise<(UserListDTO | undefined)[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3058,7 +3058,7 @@ export class UsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(AspNetUserListDTO.fromJS(item));
+                    result200!.push(UserListDTO.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3070,10 +3070,10 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+        return Promise.resolve<(UserListDTO | undefined)[]>(null as any);
     }
 
-    searchUsersByLoginProvider(provider: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+    searchUsersByLoginProvider(provider: string | null): Promise<(UserListDTO | undefined)[]> {
         let url_ = this.baseUrl + "/api/Users/search-by-provider?";
         if (provider === undefined)
             throw new Error("The parameter 'provider' must be defined.");
@@ -3093,7 +3093,7 @@ export class UsersClient {
         });
     }
 
-    protected processSearchUsersByLoginProvider(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+    protected processSearchUsersByLoginProvider(response: Response): Promise<(UserListDTO | undefined)[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3104,7 +3104,7 @@ export class UsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(AspNetUserListDTO.fromJS(item));
+                    result200!.push(UserListDTO.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3116,10 +3116,10 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+        return Promise.resolve<(UserListDTO | undefined)[]>(null as any);
     }
 
-    searchUsersByUserName(username: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+    searchUsersByUserName(username: string | null): Promise<(UserListDTO | undefined)[]> {
         let url_ = this.baseUrl + "/api/Users/search-by-username?";
         if (username === undefined)
             throw new Error("The parameter 'username' must be defined.");
@@ -3139,7 +3139,7 @@ export class UsersClient {
         });
     }
 
-    protected processSearchUsersByUserName(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+    protected processSearchUsersByUserName(response: Response): Promise<(UserListDTO | undefined)[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3150,7 +3150,7 @@ export class UsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(AspNetUserListDTO.fromJS(item));
+                    result200!.push(UserListDTO.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3162,7 +3162,7 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+        return Promise.resolve<(UserListDTO | undefined)[]>(null as any);
     }
 
     getUserProfile(userId: string | null): Promise<UserProfileDTO> {
@@ -10135,15 +10135,15 @@ export interface IRegisterCommand {
     phoneNumber?: string;
 }
 
-export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetUserListDTO {
-    items?: AspNetUserListDTO[];
+export class PaginatedListOfUserListDTO implements IPaginatedListOfUserListDTO {
+    items?: UserListDTO[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
 
-    constructor(data?: IPaginatedListOfAspNetUserListDTO) {
+    constructor(data?: IPaginatedListOfUserListDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -10157,7 +10157,7 @@ export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetU
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items!.push(AspNetUserListDTO.fromJS(item));
+                    this.items!.push(UserListDTO.fromJS(item));
             }
             this.pageNumber = _data["pageNumber"];
             this.totalPages = _data["totalPages"];
@@ -10167,9 +10167,9 @@ export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetU
         }
     }
 
-    static fromJS(data: any): PaginatedListOfAspNetUserListDTO {
+    static fromJS(data: any): PaginatedListOfUserListDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfAspNetUserListDTO();
+        let result = new PaginatedListOfUserListDTO();
         result.init(data);
         return result;
     }
@@ -10190,8 +10190,8 @@ export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetU
     }
 }
 
-export interface IPaginatedListOfAspNetUserListDTO {
-    items?: AspNetUserListDTO[];
+export interface IPaginatedListOfUserListDTO {
+    items?: UserListDTO[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
@@ -10199,15 +10199,16 @@ export interface IPaginatedListOfAspNetUserListDTO {
     hasNextPage?: boolean;
 }
 
-export class AspNetUserListDTO implements IAspNetUserListDTO {
+export class UserListDTO implements IUserListDTO {
     id!: string;
     userName?: string | undefined;
     email?: string | undefined;
     emailConfirmed?: boolean;
     phoneNumber?: string | undefined;
     isRestricted?: boolean | undefined;
+    roles?: string[];
 
-    constructor(data?: IAspNetUserListDTO) {
+    constructor(data?: IUserListDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -10224,12 +10225,17 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
             this.emailConfirmed = _data["emailConfirmed"];
             this.phoneNumber = _data["phoneNumber"];
             this.isRestricted = _data["IsRestricted"];
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(item);
+            }
         }
     }
 
-    static fromJS(data: any): AspNetUserListDTO {
+    static fromJS(data: any): UserListDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new AspNetUserListDTO();
+        let result = new UserListDTO();
         result.init(data);
         return result;
     }
@@ -10242,17 +10248,23 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
         data["emailConfirmed"] = this.emailConfirmed;
         data["phoneNumber"] = this.phoneNumber;
         data["IsRestricted"] = this.isRestricted;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item);
+        }
         return data;
     }
 }
 
-export interface IAspNetUserListDTO {
+export interface IUserListDTO {
     id: string;
     userName?: string | undefined;
     email?: string | undefined;
     emailConfirmed?: boolean;
     phoneNumber?: string | undefined;
     isRestricted?: boolean | undefined;
+    roles?: string[];
 }
 
 export class UserProfileDTO implements IUserProfileDTO {

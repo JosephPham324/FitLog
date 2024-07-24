@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace FitLog.Application.Users.Queries.GetAccountByExternalProvider;
 
-public record GetAccountByExternalProviderQuery : IRequest<IEnumerable<AspNetUserListDTO>?>
+public record GetAccountByExternalProviderQuery : IRequest<IEnumerable<UserListDTO>?>
 {
     public string Provider { get; set; } = string.Empty; // "Google" or "Facebook"
 }
@@ -30,7 +30,7 @@ public class GetAccountByExternalProviderQueryValidator : AbstractValidator<GetA
     }
 }
 
-public class GetAccountByExternalProviderQueryHandler : IRequestHandler<GetAccountByExternalProviderQuery, IEnumerable<AspNetUserListDTO>?>
+public class GetAccountByExternalProviderQueryHandler : IRequestHandler<GetAccountByExternalProviderQuery, IEnumerable<UserListDTO>?>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -41,7 +41,7 @@ public class GetAccountByExternalProviderQueryHandler : IRequestHandler<GetAccou
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<AspNetUserListDTO>?> Handle(GetAccountByExternalProviderQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserListDTO>?> Handle(GetAccountByExternalProviderQuery request, CancellationToken cancellationToken)
     {
         IQueryable<AspNetUser> query = _context.AspNetUsers;
 
@@ -55,11 +55,11 @@ public class GetAccountByExternalProviderQueryHandler : IRequestHandler<GetAccou
         }
         else
         {
-            return Enumerable.Empty<AspNetUserListDTO>();
+            return Enumerable.Empty<UserListDTO>();
         }
 
         var users = await query.ToListAsync(cancellationToken);
-        var userDtos = _mapper.Map<List<AspNetUserListDTO>>(users);
+        var userDtos = _mapper.Map<List<UserListDTO>>(users);
         return userDtos;
     }
 }
