@@ -30,7 +30,7 @@ const RecoverAccount = () => {
     try {
       const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/Users/reset-password`, { token, email, password });
       if (response.data.success) {
-        navigate('/recover-confirmation');
+        navigate('/recover-account/confirmation');
       } else {
         setError(response.data.errors.join(', '));
       }
