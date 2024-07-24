@@ -48,7 +48,7 @@ namespace FitLog.Application.Users.Commands.RecoverAccount
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var recoveryLink = $"https://localhost:44777/recover?token={token}&email={user.Email}";
+            var recoveryLink = $"https://localhost:44447/recover?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(user.Email)}";
             var emailSubject = "Recover Your Account";
             var emailBody = $"Please click on the link to recover your account: {recoveryLink}";
 

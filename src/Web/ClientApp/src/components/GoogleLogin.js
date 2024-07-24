@@ -138,7 +138,7 @@ const Login = () => {
                 <label className="checkbox-label">
                   <input type="checkbox" /> Remember me
                 </label>
-                <a href="/recover-initiate">Forgot Password?</a> {/* Added recover password link */}
+                <a href="/recover-account/initiate">Forgot Password?</a> {/* Added recover password link */}
               </div>
 
               <button type="submit" className="btn" color="#007bff">

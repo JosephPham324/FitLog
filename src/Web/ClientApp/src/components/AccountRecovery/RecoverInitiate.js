@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import axios from 'axios';
+import { Container, Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 
 const RecoverInitiate = () => {
   const [email, setEmail] = useState('');
@@ -25,23 +26,24 @@ const RecoverInitiate = () => {
   };
 
   return (
-    <div>
-      <h2>Recover Password</h2>
-      {message && <p>{message}</p>}
-      {error && <p>{error}</p>}
-      <form onSubmit={handleFormSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
+    <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+      <Form onSubmit={handleFormSubmit} className="p-4 border rounded shadow" style={{ width: '300px', backgroundColor: 'white' }}>
+        <h2 className="text-center mb-4">Recover Password</h2>
+        {message && <Alert color="success">{message}</Alert>}
+        {error && <Alert color="danger">{error}</Alert>}
+        <FormGroup>
+          <Label for="email">Email:</Label>
+          <Input
             type="email"
+            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </div>
-        <button type="submit">Send Recovery Email</button>
-      </form>
-    </div>
+        </FormGroup>
+        <Button color="primary" type="submit" block>Send Recovery Email</Button>
+      </Form>
+    </Container>
   );
 };
 

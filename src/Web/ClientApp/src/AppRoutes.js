@@ -91,7 +91,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(TrainingBoard))
   },
   {
-    path: '/recover-account/:token/:email',
+    path: '/recover-account',
     element: <RecoverAccount />
   },
   {
@@ -99,7 +99,7 @@ const AppRoutes = [
     element: <RecoverConfirmation />
   },
   {
-    path: '/recover-account',
+    path: '/recover-account/initiate',
     element: <RecoverInitiate />
   }
 ];
