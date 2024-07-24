@@ -12,19 +12,16 @@ const context = [
 ];
 
 const onError = (err, req, resp, target) => {
-    console.error(`${err.message}`);
-}
+  console.error(`Proxy error: ${err.message}`);
+};
 
 module.exports = function (app) {
   const appProxy = createProxyMiddleware(context, {
     proxyTimeout: 10000,
     target: target,
-    // Handle errors to prevent the proxy middleware from crashing when
-    // the ASP NET Core webserver is unavailable
     onError: onError,
     secure: false,
-    // Uncomment this line to add support for proxying websockets
-    //ws: true, 
+    //ws: true, // Enable WebSocket proxying
     headers: {
       Connection: 'Keep-Alive'
     }
@@ -32,13 +29,14 @@ module.exports = function (app) {
 
   app.use(appProxy);
 
-  app.use(
-    '/api/chathub',
-    createProxyMiddleware({
-      target: target, // Your backend URL
-      changeOrigin: true,
-      secure: false, // Disable SSL verification,
-      ws: true
-    })
-  );
+  // Specific route for WebSocket connections
+  //app.use(
+  //  '/api/chathub',
+  //  createProxyMiddleware({
+  //    target: target,
+  //    changeOrigin: true,
+  //    secure: false, // Disable SSL verification
+  //    ws: true // Enable WebSocket proxying
+  //  })
+  //);
 };

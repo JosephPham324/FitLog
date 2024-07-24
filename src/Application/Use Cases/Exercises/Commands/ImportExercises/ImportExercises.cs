@@ -50,7 +50,7 @@ public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesComm
     public async Task<Result> Handle(ImportExercisesCommand request, CancellationToken cancellationToken)
     {
         int importedCount = 0;
-
+        List<Exercise> exercises = new List<Exercise>();
         foreach (var exerciseImport in request.Exercises)
         {
             List<MuscleGroup> muscleGroups = new List<MuscleGroup>();
@@ -77,22 +77,32 @@ public class ImportExercisesCommandHandler : IRequestHandler<ImportExercisesComm
             var exercise = new Exercise
             {
                 EquipmentId = equipment.EquipmentId,
+                Equipment = equipment,
                 ExerciseName = exerciseImport.ExerciseName,
                 DemoUrl = exerciseImport.DemoUrl,
                 Type = exerciseImport.Type,
                 Description = exerciseImport.Description,
                 PublicVisibility = exerciseImport.PublicVisibility
             };
+            List<ExerciseMuscleGroup> exerciseMuscleGroups = new List<ExerciseMuscleGroup>();
 
-            foreach (var muscleGroup in muscleGroups)
+            //foreach (var muscleGroup in muscleGroups)
+            //{
+            //    var exerciseMuscleGroup  = new ExerciseMuscleGroup { MuscleGroupId = muscleGroup.MuscleGroupId};
+            //    exercise.ExerciseMuscleGroups.Add(exerciseMuscleGroup);
+            //}
+            exercise.ExerciseMuscleGroups = muscleGroups.Select(mg => new ExerciseMuscleGroup { MuscleGroupId = mg.MuscleGroupId }).ToList();
+
+            //_context.Exercises.Add(exercise);
+            exercises.Add(exercise);
+            foreach (var muscleGroup in exercise.ExerciseMuscleGroups)
             {
-                exercise.ExerciseMuscleGroups.Add(new ExerciseMuscleGroup { MuscleGroup = muscleGroup });
+                muscleGroup.ExerciseId = exercise.ExerciseId;
             }
-
-            _context.Exercises.Add(exercise);
             importedCount++;
         }
 
+        await _context.Exercises.AddRangeAsync(exercises, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return Result.Successful();
     }

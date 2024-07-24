@@ -9,6 +9,9 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="MockQueryable.EntityFrameworkCore" />
+        <PackageReference Include="MockQueryable.Moq" />
+        <PackageReference Include="Moq.EntityFrameworkCore" />
         <PackageReference Include="nunit" />
         <PackageReference Include="NUnit.Analyzers">
           <PrivateAssets>all</PrivateAssets>
@@ -32,10 +35,10 @@
 
     <ItemGroup>
       <Folder Include="TestResults\" />
-      <Folder Include="Use Cases\Chat\Create\" />
-      <Folder Include="Use Cases\Chat\Delete\" />
-      <Folder Include="Use Cases\Chat\Queries\" />
-      <Folder Include="Use Cases\Chat\Update\" />
+      <Folder Include="Use Cases\CoachingApplicaition\Delete\" />
+      <Folder Include="Use Cases\CoachingService\Queries\Details\" />
+      <Folder Include="Use Cases\CoachingService\Queries\GetAll\" />
+      <Folder Include="Use Cases\CoachingService\Queries\GetAllWithUser\" />
     </ItemGroup>
 
 </Project>

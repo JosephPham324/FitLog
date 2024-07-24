@@ -19,24 +19,20 @@ public class GetChatLinesFromAChatQueryValidator : AbstractValidator<GetChatLine
 public class GetChatLinesFromAChatQueryHandler : IRequestHandler<GetChatLinesFromAChatQuery, List<ChatLineDto>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetChatLinesFromAChatQueryHandler(IApplicationDbContext context)
+    public GetChatLinesFromAChatQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<List<ChatLineDto>> Handle(GetChatLinesFromAChatQuery request, CancellationToken cancellationToken)
     {
         return await _context.ChatLines
             .Where(cl => cl.ChatId == request.ChatId)
-            .Select(cl => new ChatLineDto
-            {
-                ChatLineId = cl.ChatLineId,
-                ChatLineText = cl.ChatLineText ?? "",
-                LinkUrl = cl.LinkUrl ?? "",
-                AttachmentPath = cl.AttachmentPath ?? "",
-                CreatedAt = cl.CreatedAt
-            })
+                .Include(cl => cl.CreatedByNavigation)
+            .ProjectTo<ChatLineDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
     }
 }

@@ -17,7 +17,7 @@ public class SummaryWorkoutLogStatsDTO
     public double WeekStreak { get; set; }
 }
 
-public record GetSummaryStatsQuery : IRequest<SummaryWorkoutLogStatsDTO>
+public record GetSummaryStatsQuery : IRequest<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>>
 {
     public string UserId { get; set; } = string.Empty;
     public string TimeFrame { get; set; } = string.Empty;
@@ -34,7 +34,7 @@ public class GetSummaryStatsQueryValidator : AbstractValidator<GetSummaryStatsQu
     }
 }
 
-public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery, SummaryWorkoutLogStatsDTO>
+public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery, Dictionary<DateTime, SummaryWorkoutLogStatsDTO>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMediator _mediator;
@@ -45,75 +45,86 @@ public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery,
         _mediator = mediator;
     }
 
-    public async Task<SummaryWorkoutLogStatsDTO> Handle(GetSummaryStatsQuery request, CancellationToken cancellationToken)
+    public async Task<Dictionary<DateTime,SummaryWorkoutLogStatsDTO>> Handle(GetSummaryStatsQuery request, CancellationToken cancellationToken)
     {
-        DateTime startDate;
-        DateTime endDate = DateTime.UtcNow;
+        DateTimeOffset endDate = DateTimeOffset.Now;
+        DateTimeOffset startDate = new DateTimeOffset(new DateTime(1900, 1, 1)); // Fetch all history from January 1, 1900
 
-        switch (request.TimeFrame.ToUpperInvariant())
-        {
-            case string weekly when weekly == TimeFrames.Weekly.ToUpperInvariant():
-                startDate = endDate.StartOfWeek(DayOfWeek.Monday);
-                break;
-            case string monthly when monthly == TimeFrames.Monthly.ToUpperInvariant():
-                startDate = new DateTime(endDate.Year, endDate.Month, 1);
-                break;
-            case string yearly when yearly == TimeFrames.Yearly.ToUpperInvariant():
-                startDate = new DateTime(endDate.Year, 1, 1);
-                break;
-            default:
-                throw new ArgumentException("Invalid TimeFrame", nameof(request.TimeFrame));
-        }
-
-        var workoutHistoryQuery = new GetWorkoutHistoryQuery(request.UserId,startDate, endDate);
-
+        var workoutHistoryQuery = new GetWorkoutHistoryQuery(request.UserId, startDate.DateTime, endDate.DateTime);
         var workoutLogs = await _mediator.Send(workoutHistoryQuery, cancellationToken) as List<WorkoutLogDTO> ?? new List<WorkoutLogDTO>();
-        double totalTime = 0;
-        double weightLifted = 0;
 
-        #region Iterate through workout logs and calculate total time and weight lifted
+        var statsByPeriod = new Dictionary<DateTime, SummaryWorkoutLogStatsDTO>();
+
         foreach (var log in workoutLogs)
         {
-            var exerciseLogs = log.ExerciseLogs;
-            //-----------------
-            // Calculate weight
-            foreach (var exerciseLog in exerciseLogs)
+            DateTime periodStart;
+            switch (request.TimeFrame.ToUpperInvariant())
             {
-                var weightsUsed = exerciseLog.GetWeightsUsed();
-
-                var reps = exerciseLog.GetNumberOfReps();
-
-                for (int i = 0; i < weightsUsed?.Count; i++)
-                {
-                    weightLifted += weightsUsed[i] * (reps != null ? reps[i] : 0);
-                }
-            }
-            //-----------------
-            //Calculate time
-            if (log != null)
-            {
-                var duration = log.Duration;
-
-                if (duration == null)
-                {
-                    continue;
-                }
-                totalTime += (double)duration.Value.Hour;
-                totalTime += (double)duration.Value.Minute / 60;
+                case string weekly when weekly == TimeFrames.Weekly.ToUpperInvariant():
+                    periodStart = log.Created.UtcDateTime.StartOfWeek(DayOfWeek.Monday);
+                    break;
+                case string monthly when monthly == TimeFrames.Monthly.ToUpperInvariant():
+                    periodStart = new DateTime(log.Created.Year, log.Created.Month, 1);
+                    break;
+                case string yearly when yearly == TimeFrames.Yearly.ToUpperInvariant():
+                    periodStart = new DateTime(log.Created.Year, 1, 1);
+                    break;
+                default:
+                    throw new ArgumentException("Invalid TimeFrame", nameof(request.TimeFrame));
             }
 
+            if (!statsByPeriod.ContainsKey(periodStart))
+            {
+                statsByPeriod[periodStart] = new SummaryWorkoutLogStatsDTO
+                {
+                    NumberOfWorkouts = 0,
+                    HoursAtTheGym = 0,
+                    WeightLifted = 0,
+                    WeekStreak = 0
+                };
+            }
+
+            var stats = statsByPeriod[periodStart];
+            stats.NumberOfWorkouts++;
+            stats.HoursAtTheGym += GetTotalTimeFromWorkoutLog(log.Duration);
+            stats.WeightLifted += GetWeightFromExerciseLogs(log.ExerciseLogs);
+
+            // Calculate week streak for the specific period
+            stats.WeekStreak = GetWeekStreak(workoutLogs.Where(w => w.Created.UtcDateTime >= periodStart && w.Created.UtcDateTime < periodStart.AddTimeFrame(request.TimeFrame)).ToList());
         }
-        #endregion
 
-        var summaryStats = new SummaryWorkoutLogStatsDTO
+        return statsByPeriod;
+    }
+
+
+    private static double GetTotalTimeFromWorkoutLog(TimeOnly? duration)
+    {
+        if (duration == null) return 0;
+
+        double totalTime = 0.0;
+        
+        totalTime += (double)duration.Value.Hour;
+        totalTime += (double)duration.Value.Minute / 60;
+        
+        return totalTime;
+    }
+
+    private static double GetWeightFromExerciseLogs(List<ExerciseLogDTO> exerciseLogs)
+    {
+        double weightLifted = 0;
+        foreach (var exerciseLog in exerciseLogs)
         {
-            NumberOfWorkouts = workoutLogs.Count,
-            HoursAtTheGym = totalTime,
-            WeightLifted = weightLifted,
-            WeekStreak = GetWeekStreak(workoutLogs)
-        };
+            var weightsUsed = exerciseLog.GetWeightsUsed();
 
-        return summaryStats;
+            var reps = exerciseLog.GetNumberOfReps();
+
+            for (int i = 0; i < weightsUsed?.Count; i++)
+            {
+                weightLifted += weightsUsed[i] * (reps != null ? reps[i] : 0);
+            }
+        }
+
+        return weightLifted;
     }
 
     private double GetWeekStreak(List<WorkoutLogDTO>? workoutLogs)

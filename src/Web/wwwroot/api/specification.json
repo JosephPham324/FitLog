@@ -938,7 +938,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummaryWorkoutLogStatsDTO"
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/SummaryWorkoutLogStatsDTO"
+                  }
                 }
               }
             }
@@ -980,9 +983,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MuscleEngagementDTO"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MuscleEngagementDTO"
+                    }
                   }
                 }
               }
@@ -2467,7 +2473,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfAspNetUserListDTO"
+                  "$ref": "#/components/schemas/PaginatedListOfUserListDTO"
                 }
               }
             }
@@ -2504,7 +2510,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -2544,7 +2550,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -2584,7 +2590,7 @@
                     "nullable": true,
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/AspNetUserListDTO"
+                        "$ref": "#/components/schemas/UserListDTO"
                       }
                     ]
                   }
@@ -2715,6 +2721,144 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/confirm-email": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ConfirmEmail",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/reset-password": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ResetPassword",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/update-account": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "UpdateUser",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/coaches": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetCoachesList",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfCoachSummaryDTO"
                 }
               }
             }
@@ -3138,6 +3282,73 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedListOfCoachApplicationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Chats/user": {
+      "get": {
+        "tags": [
+          "Chats"
+        ],
+        "operationId": "GetUserChatList",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Chat"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Chats/create": {
+      "post": {
+        "tags": [
+          "Chats"
+        ],
+        "operationId": "CreateChat",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -4250,6 +4461,24 @@
                 "items": {
                   "$ref": "#/components/schemas/CoachApplication"
                 }
+              },
+              "chatLines": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChatLine"
+                }
+              },
+              "createdChats": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Chat"
+                }
+              },
+              "invitedChats": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Chat"
+                }
               }
             }
           }
@@ -5160,6 +5389,28 @@
                 "$ref": "#/components/schemas/AspNetUser"
               }
             ]
+          },
+          "workoutsProgress": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/WorkoutProgress"
+            }
+          }
+        }
+      },
+      "WorkoutProgress": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "dateCompleted": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
           }
         }
       },
@@ -5299,6 +5550,82 @@
             }
           }
         ]
+      },
+      "ChatLine": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "chatLineId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "chatId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "chatLineText": {
+            "type": "string",
+            "nullable": true
+          },
+          "linkUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "attachmentPath": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "chat": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
+          },
+          "createdByNavigation": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AspNetUser"
+              }
+            ]
+          }
+        }
+      },
+      "Chat": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "chatId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "targetUserId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "chatLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatLine"
+            }
+          }
+        }
       },
       "IdentityUserOfString": {
         "type": "object",
@@ -6240,17 +6567,20 @@
           },
           "userName": {
             "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
           }
         }
       },
-      "PaginatedListOfAspNetUserListDTO": {
+      "PaginatedListOfUserListDTO": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AspNetUserListDTO"
+              "$ref": "#/components/schemas/UserListDTO"
             }
           },
           "pageNumber": {
@@ -6273,7 +6603,7 @@
           }
         }
       },
-      "AspNetUserListDTO": {
+      "UserListDTO": {
         "type": "object",
         "additionalProperties": false,
         "required": [
@@ -6299,20 +6629,15 @@
             "type": "string",
             "nullable": true
           },
-          "phoneNumberConfirmed": {
-            "type": "boolean"
-          },
-          "lockoutEnd": {
-            "type": "string",
-            "format": "date-time",
+          "IsRestricted": {
+            "type": "boolean",
             "nullable": true
           },
-          "lockoutEnabled": {
-            "type": "boolean"
-          },
-          "accessFailedCount": {
-            "type": "integer",
-            "format": "int32"
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -6513,6 +6838,114 @@
         "properties": {
           "email": {
             "type": "string"
+          }
+        }
+      },
+      "ConfirmEmailCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ResetPasswordCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "token",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
+          }
+        }
+      },
+      "UpdateUserCommand": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "PaginatedListOfCoachSummaryDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoachSummaryDTO"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CoachSummaryDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fullName": {
+            "type": "string"
+          },
+          "profilePicture": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "majorAchievement": {
+            "type": "string",
+            "nullable": true
+          },
+          "instagramLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "youTubeLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "patreonLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "programsCount": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -6796,6 +7229,18 @@
             "type": "string"
           },
           "applicantEmail": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateChatCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "targetUserId": {
             "type": "string"
           }
         }

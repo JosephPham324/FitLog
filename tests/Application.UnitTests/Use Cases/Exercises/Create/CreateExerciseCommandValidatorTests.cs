@@ -23,10 +23,9 @@ public class CreateExerciseCommandValidatorTests
     [SetUp]
     public void Setup()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .Options;
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-        _context = new ApplicationDbContext(options);
+        _context = new ApplicationDbContext();
 
         _addedMuscleGroups = new List<MuscleGroup>();
         _addedEquipments = new List<Equipment>();

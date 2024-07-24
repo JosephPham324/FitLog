@@ -84,6 +84,12 @@ public class LoginHandler : IRequestHandler<LoginQuery, LoginResultDTO>
     public async Task<LoginResultDTO> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByNameAsync(request.Username);
+        
+        if (user?.IsDeleted == true)
+        {
+            throw new UnauthorizedAccessException("User account is disabled");
+        }
+
         if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
         {
             var token = await GenerateJwtToken(request.Username, user, _configuration);

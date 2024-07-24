@@ -24,4 +24,12 @@ public partial class ProgramEnrollment
     public virtual Program? Program { get; set; }
 
     public virtual AspNetUser? User { get; set; }
+    public Dictionary<int, WorkoutProgress> WorkoutsProgress { get; set; } = new Dictionary<int, WorkoutProgress>();
+
+    public record WorkoutProgress
+    {
+        public DateTime DateCompleted { get; set; }
+        public string Status { get; set; } = null!;
+        public string Notes { get; set; } = null!;
+    }
 }
