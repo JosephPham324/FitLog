@@ -98,7 +98,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(ChangePassword))
   },
   {
-    path: '/trainingBoard',
+    path: '/training-board',
     element: React.createElement(withAuthProtection(TrainingBoard))
   },
   {

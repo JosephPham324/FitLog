@@ -12,6 +12,7 @@ public class Chats : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .RequireAuthorization()
             .MapGet(GetUserChatList, "user")
             .MapPost(CreateChat, "create");
         //throw new NotImplementedException();

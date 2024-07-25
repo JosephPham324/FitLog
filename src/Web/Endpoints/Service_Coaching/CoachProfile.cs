@@ -4,14 +4,24 @@ using FitLog.Application.CoachProfiles.Commands.UpdateCoachProfile;
 using FitLog.Application.CoachProfiles.Queries.CreateCoachApplication;
 using FitLog.Application.CoachProfiles.Queries.GetCoachApplicationsWithPagination;
 using FitLog.Application.CoachProfiles.Queries.GetCoachProfileDetails;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
 using FitLog.Application.Users.Queries.ExternalLogin;
+using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitLog.Web.Endpoints.Service_Coaching;
 
 public class CoachProfile : EndpointGroupBase
 {
+    private readonly IUserTokenService _tokenService;
+    private readonly IUser _identityService;
+
+    public CoachProfile()
+    {
+        _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
+        _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
+    }
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)

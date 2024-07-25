@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
 using FitLog.Domain.Constants;
 using FitLog.Domain.Entities;
@@ -7,7 +8,8 @@ namespace FitLog.Application.WorkoutPrograms.Commands.EnrollProgram;
 
 public record EnrollProgramCommand : IRequest<Result>
 {
-    public string UserId { get; init; } = "";
+    [JsonIgnore]
+    public string UserId { get; set; } = "";
     public int ProgramId { get; init; }
 }
 
