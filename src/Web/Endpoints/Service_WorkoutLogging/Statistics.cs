@@ -8,6 +8,8 @@ using FitLog.Application.Statistics_Workout.Queries.GetTotalTrainingTonnage;
 using FitLog.Application.Statistics_Workout.Queries.GetTrainingFrequency;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Web.Services;
+using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
@@ -25,46 +27,90 @@ public class Statistics : EndpointGroupBase
 
     public override void Map(WebApplication app)
     {
+        var statsGroup =
         app.MapGroup(this)
-            .RequireAuthorization()
+            .RequireAuthorization();
+
+        statsGroup
+            .MapGroup("overview")
             .MapGet(GetWorkoutLogSummary, "summary")
             .MapGet(GetMusclesEngagement, "muscles-engagement")
             .MapGet(GetRepsStats, "total-training-reps")
             .MapGet(GetTonnageStats, "total-training-tonnage")
-            .MapGet(GetTrainingFrequencies, "training-frequency")
+            .MapGet(GetTrainingFrequencies, "training-frequency");
+
+        statsGroup
+            .MapGroup("exercise")
             .MapGet(GetExerciseLogHistory, "exercise-log-history")
             .MapGet(GetEstimated1RM, "estimated1RM");
     }
-    public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetWorkoutLogSummary(ISender sender, [AsParameters] GetSummaryStatsQuery query)
+    public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetWorkoutLogSummary(ISender sender, [FromQuery] string TimeFrame)
     {
+        var UserId = _identityService.Id ?? "";
+        var query = new GetSummaryStatsQuery
+        {
+            UserId = UserId,
+            TimeFrame = TimeFrame
+        };
         return await sender.Send(query);
     }
 
-    public async Task<Dictionary<DateTime, List<MuscleEngagementDTO>>> GetMusclesEngagement(ISender sender, [AsParameters] GetMuscleEngagementQuery query)
+    public async Task<Dictionary<DateTime, List<MuscleEngagementDTO>>> GetMusclesEngagement(ISender sender, [FromQuery] string TimeFrame)
     {
-        return await sender.Send(query);
-    }
-    public async Task<Dictionary<DateTime, int>> GetRepsStats(ISender sender, [AsParameters] GetTotalRepsQuery query)
-    {
+        var UserId = _identityService.Id ?? "";
+        var query = new GetMuscleEngagementQuery
+        {
+            UserId = UserId,
+            TimeFrame = TimeFrame
+        };
         return await sender.Send(query);
     }
 
-    public async Task<Dictionary<DateTime, double>> GetTonnageStats(ISender sender, [AsParameters] GetTotalTrainingTonnageQuery query)
+    public async Task<Dictionary<DateTime, int>> GetRepsStats(ISender sender, [FromQuery] string TimeFrame)
     {
+        var UserId = _identityService.Id ?? "";
+        var query = new GetTotalRepsQuery()
+        {
+            UserId = UserId,
+            TimeFrame = TimeFrame
+        };
         return await sender.Send(query);
     }
-    public async Task<Dictionary<DateTime, int>> GetTrainingFrequencies(ISender sender, [AsParameters] GetTrainingFrequencyQuery query)
+
+    public async Task<Dictionary<DateTime, double>> GetTonnageStats(ISender sender, [FromQuery] string TimeFrame)
     {
+        var UserId = _identityService.Id ?? "";
+        var query = new GetTotalTrainingTonnageQuery
+        {
+            UserId = UserId,
+            TimeFrame = TimeFrame
+        };
         return await sender.Send(query);
     }
+
+    public async Task<Dictionary<DateTime, int>> GetTrainingFrequencies(ISender sender, [FromQuery] string TimeFrame)
+    {
+        var UserId = _identityService.Id ?? "";
+        var query = new GetTrainingFrequencyQuery
+        {
+            UserId = UserId,
+            TimeFrame = TimeFrame
+        };
+        return await sender.Send(query);
+    }
+
     public async Task<IEnumerable<ExerciseLogDTO>> GetExerciseLogHistory(ISender sender, [AsParameters] GetExerciseLogHistoryQuery query)
     {
+        query.UserId = _identityService.Id ?? "";
+
         return await sender.Send(query);
     }
 
 
     public async Task<object> GetEstimated1RM(ISender sender, [AsParameters] GetExerciseEstimated1RMsQuery query)
     {
+        query.UserId = _identityService.Id ?? "";
+
         return await sender.Send(query);
     }
 

@@ -5,6 +5,7 @@ using FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Domain.Constants;
 using FitLog.Application.Common.ValidationRules;
+using System.Text.Json.Serialization;
 
 namespace FitLog.Application.Statistics_Workout.Queries.GetSummaryStats;
 
@@ -19,6 +20,7 @@ public class SummaryWorkoutLogStatsDTO
 
 public record GetSummaryStatsQuery : IRequest<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>>
 {
+    [JsonIgnore]
     public string UserId { get; set; } = string.Empty;
     public string TimeFrame { get; set; } = string.Empty;
 }

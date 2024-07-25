@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Common.Extensions;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Extensions;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.ValidationRules;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
@@ -9,6 +10,7 @@ namespace FitLog.Application.Statistics_Workout.Queries.GetTotalReps;
 
 public record GetTotalRepsQuery : IRequest<Dictionary<DateTime, int>>
 {
+    [JsonIgnore]
     public string UserId { get; set; } = string.Empty;
     public string TimeFrame { get; set; } = string.Empty;
 }
