@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export class CoachServiceBooking extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ export class CoachServiceBooking extends Component {
       clientPhone: '',
       bookingDate: '',
       selectedServiceId: null,
+      successMessage: '', // Thêm trạng thái cho thông báo thành công
     };
     this.searchServices = this.searchServices.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -22,7 +24,7 @@ export class CoachServiceBooking extends Component {
     this.fetchServices();
   }
 
-  async fetchServices(pageNumber = 1, pageSize = 3) {
+  async fetchServices(pageNumber = 1, pageSize = 5) {
     try {
       const response = await axios.get(`https://localhost:44447/api/CoachingServices?PageNumber=${pageNumber}&PageSize=${pageSize}`);
       this.setState({ services: response.data.items });
@@ -32,7 +34,7 @@ export class CoachServiceBooking extends Component {
   }
 
   searchServices(event) {
-    const query = event.target.value;
+    const query = event.target.value.toLowerCase();
     this.setState({ searchQuery: query });
   }
 
@@ -43,27 +45,48 @@ export class CoachServiceBooking extends Component {
     });
   }
 
-  handleBookingSubmit(event) {
+  async handleBookingSubmit(event) {
     event.preventDefault();
     const { clientName, clientEmail, clientPhone, bookingDate, selectedServiceId } = this.state;
-    // Add booking logic here, for example, sending data to the backend
-    console.log('Booking details:', { clientName, clientEmail, clientPhone, bookingDate, selectedServiceId });
+
+    try {
+      const response = await axios.post('https://localhost:44447/api/Bookings', {
+        clientName,
+        clientEmail,
+        clientPhone,
+        bookingDate,
+        serviceId: selectedServiceId,
+      });
+      this.setState({ successMessage: 'Booking successful!' }); // Cập nhật thông báo thành công
+      console.log('Booking details:', response.data);
+    } catch (error) {
+      console.error('Booking error:', error.response?.data || error.message);
+    }
   }
 
   render() {
-    const { services, searchQuery, clientName, clientEmail, clientPhone, bookingDate } = this.state;
-    const filteredServices = services.filter(service =>
-      service.name && service.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const { services, searchQuery, clientName, clientEmail, clientPhone, bookingDate, successMessage } = this.state;
+    const filteredServices = services.filter(service => {
+      const { id, serviceName, description, duration, price } = service;
+      const query = searchQuery.toLowerCase();
+      return (
+        id.toString().includes(query) ||
+        serviceName.toLowerCase().includes(query) ||
+        description.toLowerCase().includes(query) ||
+        duration.toString().includes(query) ||
+        price.toString().includes(query)
+      );
+    });
 
     return (
       <div className="container mt-5">
-        <h1 className="text-center">Coach Service Booking</h1>
+        <h1 className="text-center" style={{ fontSize: '40px' }}><strong>Coach Service Booking</strong> </h1>
         <div className="input-group mb-3">
           <input
             type="text"
             id="searchService"
             className="form-control"
+            style={{ height: '50px', marginTop: '30px' }}
             placeholder="Search Services"
             value={searchQuery}
             onChange={this.searchServices}
@@ -71,11 +94,13 @@ export class CoachServiceBooking extends Component {
         </div>
         <ul className="list-group" id="serviceList">
           {filteredServices.map(service => (
-            <li key={service.id} className="list-group-item">
-              <h5>{service.name}</h5>
-              <p>{service.description}</p>
+            <li key={service.id} className="list-group-item d-flex justify-content-between align-items-center" style={{ height: '110px' }}>
+              <div>
+                <strong> Service: {service.id}</strong> - {service.serviceName} - {service.description} (Duration: {service.duration} mins, Price: ${service.price})
+              </div>
               <button
                 className="btn btn-primary"
+                style={{ width: '140px' }}
                 data-toggle="modal"
                 data-target="#bookingModal"
                 onClick={() => this.setState({ selectedServiceId: service.id })}
@@ -85,6 +110,12 @@ export class CoachServiceBooking extends Component {
             </li>
           ))}
         </ul>
+
+        {successMessage && (
+          <div className="alert alert-success mt-3">
+            {successMessage}
+          </div>
+        )}
 
         {/* Booking Modal */}
         <div className="modal fade" id="bookingModal" tabIndex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
@@ -147,7 +178,7 @@ export class CoachServiceBooking extends Component {
                     />
                   </div>
                   <input type="hidden" id="selectedServiceId" value={this.state.selectedServiceId} />
-                  <button type="submit" className="btn btn-primary">Book Now</button>
+                  <button type="submit" className="btn btn-primary" style={{ width: '140px' }}>Book Now</button>
                 </form>
               </div>
               <div className="modal-footer">
@@ -160,3 +191,5 @@ export class CoachServiceBooking extends Component {
     );
   }
 }
+
+export default CoachServiceBooking;

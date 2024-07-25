@@ -97,6 +97,9 @@ export const NavMenu = () => {
                     <DropdownItem tag={Link} to="/trainingBoard">
                       <b> Training Board</b>
                     </DropdownItem>
+                    <DropdownItem tag={Link} to="/CoachServiceBooking">
+                      <b> Coach Service Booking</b>
+                    </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
                 <UncontrolledDropdown nav inNavbar>
@@ -112,6 +115,9 @@ export const NavMenu = () => {
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/users-list">
                       <b>  User List</b>
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/ManageAccount">
+                      <b>  Manage Account</b>
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>

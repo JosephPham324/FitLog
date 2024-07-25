@@ -263,7 +263,7 @@ const Register = () => {
               <FaFacebookF className="icon" /> Facebook
             </Button>
           </div>
-          <a href="#" className="signin-link">Sign In</a>
+          <a href="https://localhost:44447/login" className="signin-link">Sign In</a>
         </div>
       </div>
     </Container>
