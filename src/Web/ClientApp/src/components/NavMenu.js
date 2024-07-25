@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import { HubConnectionBuilder, LogLevel, HttpTransportType } from '@microsoft/signalr';
 import './NavMenu.css';
 import logoImage from '../assets/Logo.png';
-import LogoutButton from './LogoutButton';
 import { AuthContext } from '../context/AuthContext';
 import { getCookie } from '../utils/cookiesOperations';
 
@@ -64,84 +63,75 @@ export const NavMenu = () => {
 
   return (
     <header>
-      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
-        <NavbarBrand tag={Link} to="/">
+      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow" light>
+        <NavbarBrand tag={Link} to="/" className="text-white">
           <img src={logoImage} alt="FitLog Logo" className="logo-nav" /> {/* Logo image */}
           FitLog.Web
         </NavbarBrand>
 
         <NavbarToggler onClick={toggleNavbar} className="mr-2" />
-        <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!collapsed} navbar>
-          <ul className="navbar-nav flex-grow">
+        <Collapse className="navbar-collapse" isOpen={!collapsed} navbar>
+          <ul className="navbar-nav">
             <NavItem>
-              <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+              <NavLink tag={Link} className="text-white" to="/"><b>Home</b></NavLink>
             </NavItem>
-            {/* <NavItem>
-              <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
-            </NavItem> */}
             {isAuthenticated && (
               <>
-                {/* <NavItem>
-                  <a className="nav-link text-dark" href="/Identity/Account/Manage">Account</a>
-                </NavItem> */}
                 <UncontrolledDropdown nav inNavbar>
-                  <DropdownToggle nav caret className="text-dark">
-                    Training
+                  <DropdownToggle nav caret className="text-white">
+                    <b>Training</b>
                   </DropdownToggle>
                   <DropdownMenu right>
                     <DropdownItem tag={Link} to="/WorkoutHistory">
-                      Workout History
+                      <b>Workout History</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/ExerciseLog">
-                      Workout Log
+                      <b> Workout Log</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/profile">
-                      Profile
+                      <b> Profile</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/changepassword">
-                      Change Password
+                      <b>Change Password</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/trainingBoard">
-                      Training Board
+                      <b> Training Board</b>
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
                 <UncontrolledDropdown nav inNavbar>
-                  <DropdownToggle nav caret className="text-dark">
-                    Admin
+                  <DropdownToggle nav caret className="text-white">
+                    <b> Admin</b>
                   </DropdownToggle>
                   <DropdownMenu right>
                     <DropdownItem tag={Link} to="/MuscleGroup">
-                      Muscle Group
+                      <b> Muscle Group</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/admin/management/equipments">
-                      Equipments List
+                      <b> Equipments List</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/users-list">
-                      User List
+                      <b>  User List</b>
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
                 <NavItem>
-                  <NavLink className="text-dark" href="#">
-                    Notifications <Badge color="secondary">{notifications.length}</Badge>
+                  <NavLink className="text-white-noti" href="#">
+                    <b> Notifications</b> <Badge color="secondary">{notifications.length}</Badge>
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <button className="btn btn-link nav-link text-dark" onClick={logout}>Logout</button>
+                  <button className="btn btn-link nav-link text-white" onClick={logout}><b>Logout</b></button>
                 </NavItem>
               </>
             )}
             {!isAuthenticated && (
               <>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
+                  <NavLink tag={Link} className="text-white" to="/login"><b>Login</b></NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/register">Register</NavLink>
+                  <NavLink tag={Link} className="text-white" to="/register"><b>Register</b></NavLink>
                 </NavItem>
               </>
             )}

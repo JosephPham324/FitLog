@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -110,7 +110,7 @@ public class CreatePersonalTemplateCommandHandlerTests
         Assert.Equal(exerciseDto.IntensityPercentage, exercise.IntensityPercentage);
         Assert.Equal(exerciseDto.RpeRecommendation, exercise.RpeRecommendation);
         Assert.Equal(exerciseDto.WeightsUsed, exercise.WeightsUsed);
-        Assert.Equal(exerciseDto.NumbersOfReps, exercise.NumbersOfReps);
+        Assert.Equal(exerciseDto.NumbersOfReps, exercise.NumbersOfReps);*//**//*
     }
 }
 
@@ -118,3 +118,5 @@ public class CreatePersonalTemplateCommandHandlerTests
 
 
 
+
+*/

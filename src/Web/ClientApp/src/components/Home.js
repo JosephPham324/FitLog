@@ -15,7 +15,7 @@ export class Home extends Component {
   static displayName = Home.name;
 
   state = {
-    showFooter: false,
+    showFooter: true,
   };
 
   componentDidMount() {
@@ -27,21 +27,27 @@ export class Home extends Component {
   }
 
   handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight
-    ) {
+    const { innerHeight } = window;
+    const { scrollTop, offsetHeight } = document.documentElement;
+
+    if (innerHeight + scrollTop >= offsetHeight - 5) {
       this.setState({ showFooter: true });
     } else {
-      this.setState({ showFooter: false });
+      this.setState({ showFooter: true });
     }
   };
 
   render() {
-    const customStyle = {
+    const containerStyle = {
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    };
+
+    const sectionStyle = {
       width: '100%',
-      height: '700px',
-      backgroundColor: '#777777',
+      minHeight: '700px',
       padding: '20px',
     };
 
@@ -51,12 +57,15 @@ export class Home extends Component {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#AAAAAA',
+      backgroundColor: '#fff',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      border: 'none',
     };
 
     const imageStyle = {
       height: '350px',
       objectFit: 'cover',
+      width: '100%',
     };
 
     const aboutImageStyle = {
@@ -70,22 +79,43 @@ export class Home extends Component {
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
-      color: 'white',
+      color: '#333',
     };
 
     const footerStyle = {
-      backgroundColor: '#333',
+      backgroundColor: '#343a40',
       color: 'white',
       padding: '20px',
       textAlign: 'center',
       width: '100%',
-      position: 'static', // Change this to static
-      marginTop: '20px', // Add this line for spacing
+      marginTop: '20px',
+    };
+
+    const headingStyle = {
+      color: '#6c757d',
+      fontSize: '3rem',
+      fontWeight: 'bold',
+    };
+
+    const subheadingStyle = {
+      color: '#6c757d',
+      fontSize: '1.5rem',
+      fontWeight: 'normal',
+      marginBottom: '20px',
+    };
+
+    const listStyle = {
+      color: '#6c757d',
+    };
+
+    const carouselStyle = {
+      maxHeight: '100vh',
+      overflow: 'hidden',
     };
 
     return (
-      <div>
-        <div id="carouselExampleIndicators" className="carousel slide" data-bs-ride="carousel">
+      <div style={containerStyle}>
+        <div id="carouselExampleIndicators" className="carousel slide" data-bs-ride="carousel" style={carouselStyle}>
           <ol className="carousel-indicators">
             <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" className="active"></li>
             <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
@@ -112,19 +142,18 @@ export class Home extends Component {
           </a>
         </div>
 
-        <div className="container-fluid mt-5 d-flex justify-content-center">
+        <div className="container-fluid mt-5 d-flex justify-content-center" style={sectionStyle}>
           <div className="row align-items-center w-100">
             <div className="col-md-4">
               <div>
-                <h1>About FitLog</h1>
+                <h1 style={headingStyle}>About FitLog</h1>
               </div>
               <div>
-                <b>Welcome to FitLog - Fitness Training Management and Tracking System, where we provide the perfect solution for managing and tracking your fitness progress.</b>
-              </div>
-              <div>At FitLog - Fitness Training Management and Tracking System, we are committed to providing you with the tools and resources you need to achieve your fitness goals in the most effective and reliable way. With an advanced technology platform and a team of experienced experts, we bring you:
-              </div>
-              <div>
-                <ul>
+                <p style={subheadingStyle}>
+                  <b>Welcome to FitLog - Fitness Training Management and Tracking System, where we provide the perfect solution for managing and tracking your fitness progress.</b>
+                </p>
+                <p style={listStyle}>At FitLog - Fitness Training Management and Tracking System, we are committed to providing you with the tools and resources you need to achieve your fitness goals in the most effective and reliable way. With an advanced technology platform and a team of experienced experts, we bring you:</p>
+                <ul style={listStyle}>
                   <li>Convenient Management</li>
                   <li>Personalization Options</li>
                   <li>Progress Tracking and Reporting</li>
@@ -141,13 +170,13 @@ export class Home extends Component {
           </div>
         </div>
 
-        <div className="container-fluid mt-5">
-          <div className="d-flex justify-content-center align-items-center flex-column" style={customStyle}>
+        <div className="container-fluid mt-5" style={sectionStyle}>
+          <div className="d-flex justify-content-center align-items-center flex-column">
             <div className="mb-4">
-              <h1 style={{ color: '#FF99FF', fontSize: '5rem' }}><b>WEIGHT TRAINING</b></h1>
+              <h1 style={headingStyle}><b>WEIGHT TRAINING</b></h1>
             </div>
             <div className="row justify-content-center w-100">
-              <div className="col-md-3">
+              <div className="col-md-3 mb-4">
                 <div className="card" style={cardStyle}>
                   <img className="card-img-top" src={num6Image} alt="Card 1" style={imageStyle} />
                   <div className="card-body" style={cardTextStyle}>
@@ -157,7 +186,7 @@ export class Home extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-md-3">
+              <div className="col-md-3 mb-4">
                 <div className="card" style={cardStyle}>
                   <img className="card-img-top" src={num7Image} alt="Card 2" style={imageStyle} />
                   <div className="card-body" style={cardTextStyle}>
@@ -167,7 +196,7 @@ export class Home extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-md-3">
+              <div className="col-md-3 mb-4">
                 <div className="card" style={cardStyle}>
                   <img className="card-img-top" src={num8Image} alt="Card 3" style={imageStyle} />
                   <div className="card-body" style={cardTextStyle}>
@@ -177,7 +206,7 @@ export class Home extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-md-3">
+              <div className="col-md-3 mb-4">
                 <div className="card" style={cardStyle}>
                   <img className="card-img-top" src={num9Image} alt="Card 4" style={imageStyle} />
                   <div className="card-body" style={cardTextStyle}>
