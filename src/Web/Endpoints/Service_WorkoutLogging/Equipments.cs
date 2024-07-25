@@ -6,11 +6,21 @@ using FitLog.Application.Equipments.Queries.GetEquipmentsList;
 using FitLog.Application.Equipments.Queries.GetEquipmentDetails;
 using FitLog.Application.TodoItems.Commands.UpdateTodoItemDetail;
 using Microsoft.AspNetCore.Mvc;
+using FitLog.Application.Common.Interfaces;
+using FitLog.Web.Services;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
 public class Equipments : EndpointGroupBase
 {
+    private readonly IUserTokenService _tokenService;
+    private readonly IUser _identityService;
+
+    public Equipments()
+    {
+        _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
+        _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
+    }
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)

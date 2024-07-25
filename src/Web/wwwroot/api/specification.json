@@ -6003,10 +6003,6 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "userId": {
-            "type": "string",
-            "nullable": true
-          },
           "programName": {
             "type": "string"
           },
@@ -6251,9 +6247,6 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "userId": {
-            "type": "string"
-          },
           "programId": {
             "type": "integer",
             "format": "int32"
@@ -6264,9 +6257,6 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "userToken": {
-            "type": "string"
-          },
           "templateName": {
             "type": "string",
             "nullable": true

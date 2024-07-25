@@ -20,10 +20,12 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 public class WorkoutPrograms : EndpointGroupBase
 {
     private readonly IUserTokenService? _tokenService;
+    private readonly IUser _identityService;
 
     public WorkoutPrograms()
     {
         _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
+        _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
     }
 
     public override void Map(WebApplication app)
@@ -46,6 +48,7 @@ public class WorkoutPrograms : EndpointGroupBase
 
     public Task<Result> CreateWorkoutProgram(ISender sender, CreateWorkoutProgramCommand command)
     {
+        command.UserId = _identityService.Id;
         return sender.Send(command);
     }
 
@@ -68,6 +71,8 @@ public class WorkoutPrograms : EndpointGroupBase
     }
     public async Task<Result> EnrollProgram(ISender sender, int id, [FromBody] EnrollProgramCommand command)
     {
+
+        command.UserId = _identityService.Id ?? "";
         if (id != command.ProgramId)
         {
             throw new BadHttpRequestException("Program id in the route does not match the program id in the request body");
@@ -77,6 +82,7 @@ public class WorkoutPrograms : EndpointGroupBase
     public async Task<List<ProgramEnrollmentDTO>> GetEnrollmentsByUser(ISender sender)
     {
         var userId = _tokenService?.GetUserIdFromToken();
+        
         if (userId == null)  {
             throw new UnauthorizedAccessException("User is not authenticated");
         }

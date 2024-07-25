@@ -1,15 +1,25 @@
-﻿using FitLog.Application.Common.Models;
+﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Application.Roles.Commands.AddRole;
 using FitLog.Application.Roles.Commands.DeleteRole;
 using FitLog.Application.Roles.Commands.UpdateRole;
 using FitLog.Application.Roles.Queries.GetAllRoles;
 using FitLog.Application.Roles.Queries.GetRoleById;
+using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
 public class Roles : EndpointGroupBase
 {
+    private readonly IUserTokenService _tokenService;
+    private readonly IUser _identityService;
+
+    public Roles()
+    {
+        _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
+        _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
+    }
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)

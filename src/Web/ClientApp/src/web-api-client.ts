@@ -8959,7 +8959,6 @@ export interface IWorkoutProgramListDTO {
 }
 
 export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand {
-    userId?: string | undefined;
     programName?: string;
     programThumbnail?: string | undefined;
     numberOfWeeks?: number | undefined;
@@ -8983,7 +8982,6 @@ export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             this.programName = _data["programName"];
             this.programThumbnail = _data["programThumbnail"];
             this.numberOfWeeks = _data["numberOfWeeks"];
@@ -9011,7 +9009,6 @@ export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         data["programName"] = this.programName;
         data["programThumbnail"] = this.programThumbnail;
         data["numberOfWeeks"] = this.numberOfWeeks;
@@ -9032,7 +9029,6 @@ export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand
 }
 
 export interface ICreateWorkoutProgramCommand {
-    userId?: string | undefined;
     programName?: string;
     programThumbnail?: string | undefined;
     numberOfWeeks?: number | undefined;
@@ -9363,7 +9359,6 @@ export interface IProgramEnrollmentDTO {
 }
 
 export class EnrollProgramCommand implements IEnrollProgramCommand {
-    userId?: string;
     programId?: number;
 
     constructor(data?: IEnrollProgramCommand) {
@@ -9377,7 +9372,6 @@ export class EnrollProgramCommand implements IEnrollProgramCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             this.programId = _data["programId"];
         }
     }
@@ -9391,19 +9385,16 @@ export class EnrollProgramCommand implements IEnrollProgramCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         data["programId"] = this.programId;
         return data;
     }
 }
 
 export interface IEnrollProgramCommand {
-    userId?: string;
     programId?: number;
 }
 
 export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCommand {
-    userToken?: string;
     templateName?: string | undefined;
     duration?: string | undefined;
     workoutTemplateExercises?: PersonalTemplateExerciseDto[];
@@ -9419,7 +9410,6 @@ export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCom
 
     init(_data?: any) {
         if (_data) {
-            this.userToken = _data["userToken"];
             this.templateName = _data["templateName"];
             this.duration = _data["duration"];
             if (Array.isArray(_data["workoutTemplateExercises"])) {
@@ -9439,7 +9429,6 @@ export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCom
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userToken"] = this.userToken;
         data["templateName"] = this.templateName;
         data["duration"] = this.duration;
         if (Array.isArray(this.workoutTemplateExercises)) {
@@ -9452,7 +9441,6 @@ export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCom
 }
 
 export interface ICreatePersonalTemplateCommand {
-    userToken?: string;
     templateName?: string | undefined;
     duration?: string | undefined;
     workoutTemplateExercises?: PersonalTemplateExerciseDto[];
