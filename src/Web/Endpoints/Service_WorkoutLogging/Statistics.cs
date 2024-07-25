@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Statistics_Exercise.Queries.GetExerciseEstimated1RMs;
+﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Statistics_Exercise.Queries.GetExerciseEstimated1RMs;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
 using FitLog.Application.Statistics_Workout.Queries.GetMuscleEngagement;
 using FitLog.Application.Statistics_Workout.Queries.GetSummaryStats;
@@ -6,14 +7,26 @@ using FitLog.Application.Statistics_Workout.Queries.GetTotalReps;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalTrainingTonnage;
 using FitLog.Application.Statistics_Workout.Queries.GetTrainingFrequency;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
+using FitLog.Web.Services;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
 public class Statistics : EndpointGroupBase
 {
+    private readonly IUserTokenService _tokenService;
+    private readonly IUser _identityService;
+
+    public Statistics()
+    {
+        _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
+        _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
+    }
+
+
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .RequireAuthorization()
             .MapGet(GetWorkoutLogSummary, "summary")
             .MapGet(GetMusclesEngagement, "muscles-engagement")
             .MapGet(GetRepsStats, "total-training-reps")

@@ -7,11 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 using FitLog.Application.Users.Queries.ExternalLoginCallback;
 using System;
 using MediatR;
+using FitLog.Application.Common.Interfaces;
+using FitLog.Web.Services;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
 public class Authentication : EndpointGroupBase
 {
+    private readonly IUserTokenService _tokenService;
+    private readonly IUser _identityService;
+
+    public Authentication()
+    {
+        _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
+        _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
+    }
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)

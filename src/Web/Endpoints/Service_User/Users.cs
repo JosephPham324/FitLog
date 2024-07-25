@@ -17,28 +17,54 @@ using FitLog.Application.Users.Queries.GetCoachesListWithPagination;
 using FitLog.Application.Users.Commands.ResetPassword;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using FitLog.Application.Users.Commands.ConfirmEmail;
+using FitLog.Application.Common.Interfaces;
+using FitLog.Web.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
 public class Users : EndpointGroupBase
 {
+    private readonly IUserTokenService _tokenService;
+    private readonly IUser _identityService;
+
+    public Users()
+    {
+        _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
+        _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
+    }
     public override void Map(WebApplication app)
     {
+        var coachGroup = app.MapGroup(this).MapGroup("/coaches");
+
+        // Standalones
         app.MapGroup(this)
-            .MapPost(Login, "login")
-            .MapPost(Register, "register")
-            .MapGet(GetUserList, "all")
-            .MapGet(SearchUsersByEmail, "search-by-email")
-            .MapGet(SearchUsersByLoginProvider, "search-by-provider")
-            .MapGet(SearchUsersByUserName, "search-by-username")
-            .MapGet(GetUserProfile, "profile")
-            .MapPost(CreateUser, "create-account")
-            .MapDelete(DeleteAccount, "delete-account/{id}")
-            .MapPost(RecoverAccount, "recover-account")
-            .MapPut(ConfirmEmail, "confirm-email")
-            .MapPut(ResetPassword, "reset-password")
-            .MapPut(UpdateUser, "update-account")
-            .MapGet(GetCoachesList, "coaches");
+           .MapPost(Login, "login")
+           .MapPost(Register, "register")
+           .MapPost(RecoverAccount, "recover-account")
+           .MapPut(ResetPassword, "reset-password");
+
+
+        // User management routes
+        app.MapGroup(this)
+           .RequireAuthorization()
+           .MapGroup("/users")
+           .MapGet(GetUserList, "all")
+           .MapGet(SearchUsersByEmail, "search-by-email")
+           .MapGet(SearchUsersByLoginProvider, "search-by-provider")
+           .MapGet(SearchUsersByUserName, "search-by-username")
+           .MapGet(GetUserProfile, "profile")
+           .MapPost(CreateUser, "create-account")
+           .MapDelete(DeleteAccount, "delete-account/{id}")
+           .MapPut(ConfirmEmail, "confirm-email")
+           .MapPut(UpdateUser, "update-account");
+        // Coaches routes
+        app.MapGroup(this)
+            .MapGroup("/coaches")
+           .MapGroup("/coaches")
+           .MapGet(GetCoachesList, "coaches");
+
+       
     }
 
     /// <summary>
@@ -82,6 +108,8 @@ public class Users : EndpointGroupBase
     /// <returns>A task that represents the asynchronous operation. The task result contains the user profile DTO.</returns>
     public Task<UserProfileDTO> GetUserProfile(ISender sender, [AsParameters] GetProfileDetailsRequest request)
     {
+        request.UserId = _identityService.Id ?? "";
+
         return sender.Send(request);
     }
 

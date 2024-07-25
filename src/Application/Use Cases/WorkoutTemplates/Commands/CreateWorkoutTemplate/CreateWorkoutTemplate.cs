@@ -1,10 +1,13 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutTemplates.Commands.CreateWorkoutTemplate;
 
 public record CreateWorkoutTemplateCommand : IRequest<int>
 {
+    [JsonIgnore]
+    public string? UserId { get; set; } = "";//Temp user token
     public string? TemplateName { get; set; }
     public string? Duration { get; set; }
     public bool IsPublic { get; set; }
@@ -62,7 +65,9 @@ public class CreateWorkoutTemplateCommandHandler : IRequestHandler<CreateWorkout
             TemplateName = request.TemplateName,
             Duration = request.Duration,
             IsPublic = request.IsPublic,
-            Created = DateTimeOffset.UtcNow,
+            Created = DateTimeOffset.Now,
+            CreatedBy  = request.UserId,
+            LastModified = DateTimeOffset.Now,
             // Assume CreatedBy and LastModifiedBy are set from the current user context
         };
 

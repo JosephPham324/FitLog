@@ -1,11 +1,13 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutTemplates.Commands.CreatePersonalTemplate;
 
 public record CreatePersonalTemplateCommand : IRequest<int>
 {
-    public string UserToken { get; set; } = "";//Temp user token
+    [JsonIgnore]
+    public string UserId { get; set; } = "";//Temp user token
     public string? TemplateName { get; set; }
     public string? Duration { get; set; }
     public ICollection<PersonalTemplateExerciseDto> WorkoutTemplateExercises { get; init; } = new List<PersonalTemplateExerciseDto>();
@@ -61,14 +63,14 @@ public class CreatePersonalTemplateCommandHandler : IRequestHandler<CreatePerson
 
     public async Task<int> Handle(CreatePersonalTemplateCommand request, CancellationToken cancellationToken)
     {
-        var userId = request.UserToken;
+        //var userId = request.UserToken;
 
         var personalTemplate = new WorkoutTemplate
         {
             TemplateName = request.TemplateName,
             Duration = request.Duration,
             IsPublic = false, // Personal templates are not public
-            CreatedBy = userId,
+            CreatedBy = request.UserId,
             Created = DateTimeOffset.UtcNow,
         };
 
