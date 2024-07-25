@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Exercises.Queries.GetExercises;
 using FitLog.Application.TrainingSurvey.Queries.GetUserTrainingSurvey;
 using FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
@@ -9,6 +10,7 @@ namespace FitLog.Application.TrainingRecommendation.Queries.GetWorkoutRecommenda
 
 public record GetWorkoutRecommendationQuery : IRequest<List<ExerciseDTO>>
 {
+    [JsonIgnore]
     public string UserId { get; init; } = string.Empty;
     public List<int> ExerciseIds { get; init; } = new List<int>();
 }

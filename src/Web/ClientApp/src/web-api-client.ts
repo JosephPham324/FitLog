@@ -1152,15 +1152,11 @@ export class StatisticsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getWorkoutLogSummary(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
-        let url_ = this.baseUrl + "/api/Statistics/summary?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getWorkoutLogSummary(timeFrame: string): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/summary?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1204,15 +1200,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: SummaryWorkoutLogStatsDTO; }>(null as any);
     }
 
-    getMusclesEngagement(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: MuscleEngagementDTO[]; }> {
-        let url_ = this.baseUrl + "/api/Statistics/muscles-engagement?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getMusclesEngagement(timeFrame: string): Promise<{ [key: string]: MuscleEngagementDTO[]; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/muscles-engagement?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1256,15 +1248,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: MuscleEngagementDTO[]; }>(null as any);
     }
 
-    getRepsStats(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/total-training-reps?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getRepsStats(timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/total-training-reps?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1308,15 +1296,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: number; }>(null as any);
     }
 
-    getTonnageStats(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/total-training-tonnage?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getTonnageStats(timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/total-training-tonnage?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1360,15 +1344,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: number; }>(null as any);
     }
 
-    getTrainingFrequencies(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/training-frequency?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getTrainingFrequencies(timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/training-frequency?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1413,7 +1393,7 @@ export class StatisticsClient {
     }
 
     getExerciseLogHistory(userId: string | null, exerciseId: number): Promise<ExerciseLogDTO[]> {
-        let url_ = this.baseUrl + "/api/Statistics/exercise-log-history?";
+        let url_ = this.baseUrl + "/api/Statistics/exercise/exercise-log-history?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
         else if(userId !== null)
@@ -1463,7 +1443,7 @@ export class StatisticsClient {
     }
 
     getEstimated1RM(userId: string | null, exerciseId: number): Promise<any> {
-        let url_ = this.baseUrl + "/api/Statistics/estimated1RM?";
+        let url_ = this.baseUrl + "/api/Statistics/exercise/estimated1RM?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
         else if(userId !== null)
@@ -5058,7 +5038,6 @@ export interface IExerciseDTO {
 }
 
 export class CreateExerciseCommand implements ICreateExerciseCommand {
-    createdBy?: string | undefined;
     muscleGroupIds?: number[];
     equipmentId?: number | undefined;
     exerciseName?: string | undefined;
@@ -5078,7 +5057,6 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.createdBy = _data["createdBy"];
             if (Array.isArray(_data["muscleGroupIds"])) {
                 this.muscleGroupIds = [] as any;
                 for (let item of _data["muscleGroupIds"])
@@ -5102,7 +5080,6 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["createdBy"] = this.createdBy;
         if (Array.isArray(this.muscleGroupIds)) {
             data["muscleGroupIds"] = [];
             for (let item of this.muscleGroupIds)
@@ -5119,7 +5096,6 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 }
 
 export interface ICreateExerciseCommand {
-    createdBy?: string | undefined;
     muscleGroupIds?: number[];
     equipmentId?: number | undefined;
     exerciseName?: string | undefined;
@@ -5866,7 +5842,6 @@ export interface IProgramOverviewDto {
 }
 
 export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQuery {
-    userId?: string;
     exerciseIds?: number[];
 
     constructor(data?: IGetWorkoutRecommendationQuery) {
@@ -5880,7 +5855,6 @@ export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQ
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             if (Array.isArray(_data["exerciseIds"])) {
                 this.exerciseIds = [] as any;
                 for (let item of _data["exerciseIds"])
@@ -5898,7 +5872,6 @@ export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQ
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         if (Array.isArray(this.exerciseIds)) {
             data["exerciseIds"] = [];
             for (let item of this.exerciseIds)
@@ -5909,7 +5882,6 @@ export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQ
 }
 
 export interface IGetWorkoutRecommendationQuery {
-    userId?: string;
     exerciseIds?: number[];
 }
 

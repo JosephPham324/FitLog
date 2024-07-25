@@ -904,7 +904,7 @@
         }
       }
     },
-    "/api/Statistics/summary": {
+    "/api/Statistics/overview/summary": {
       "get": {
         "tags": [
           "Statistics"
@@ -912,24 +912,13 @@
         "operationId": "GetWorkoutLogSummary",
         "parameters": [
           {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
             "name": "TimeFrame",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             },
-            "x-position": 2
+            "x-position": 1
           }
         ],
         "responses": {
@@ -949,7 +938,7 @@
         }
       }
     },
-    "/api/Statistics/muscles-engagement": {
+    "/api/Statistics/overview/muscles-engagement": {
       "get": {
         "tags": [
           "Statistics"
@@ -957,24 +946,13 @@
         "operationId": "GetMusclesEngagement",
         "parameters": [
           {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
             "name": "TimeFrame",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             },
-            "x-position": 2
+            "x-position": 1
           }
         ],
         "responses": {
@@ -997,7 +975,7 @@
         }
       }
     },
-    "/api/Statistics/total-training-reps": {
+    "/api/Statistics/overview/total-training-reps": {
       "get": {
         "tags": [
           "Statistics"
@@ -1005,24 +983,13 @@
         "operationId": "GetRepsStats",
         "parameters": [
           {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
             "name": "TimeFrame",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             },
-            "x-position": 2
+            "x-position": 1
           }
         ],
         "responses": {
@@ -1043,7 +1010,7 @@
         }
       }
     },
-    "/api/Statistics/total-training-tonnage": {
+    "/api/Statistics/overview/total-training-tonnage": {
       "get": {
         "tags": [
           "Statistics"
@@ -1051,24 +1018,13 @@
         "operationId": "GetTonnageStats",
         "parameters": [
           {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
             "name": "TimeFrame",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             },
-            "x-position": 2
+            "x-position": 1
           }
         ],
         "responses": {
@@ -1089,7 +1045,7 @@
         }
       }
     },
-    "/api/Statistics/training-frequency": {
+    "/api/Statistics/overview/training-frequency": {
       "get": {
         "tags": [
           "Statistics"
@@ -1097,24 +1053,13 @@
         "operationId": "GetTrainingFrequencies",
         "parameters": [
           {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
             "name": "TimeFrame",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             },
-            "x-position": 2
+            "x-position": 1
           }
         ],
         "responses": {
@@ -1135,7 +1080,7 @@
         }
       }
     },
-    "/api/Statistics/exercise-log-history": {
+    "/api/Statistics/exercise/exercise-log-history": {
       "get": {
         "tags": [
           "Statistics"
@@ -1180,7 +1125,7 @@
         }
       }
     },
-    "/api/Statistics/estimated1RM": {
+    "/api/Statistics/exercise/estimated1RM": {
       "get": {
         "tags": [
           "Statistics"
@@ -3779,10 +3724,6 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "createdBy": {
-            "type": "string",
-            "nullable": true
-          },
           "muscleGroupIds": {
             "type": "array",
             "items": {
@@ -4170,9 +4111,6 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "userId": {
-            "type": "string"
-          },
           "exerciseIds": {
             "type": "array",
             "items": {
