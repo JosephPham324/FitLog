@@ -1,11 +1,12 @@
 ﻿import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Grid, InputAdornment, FormControlLabel, Checkbox } from '@mui/material';
+import { Container, TextField, Button, Typography, Grid, InputAdornment, FormControlLabel, Checkbox, Alert } from '@mui/material';
 import { Email, Lock, Phone, AccountCircle } from '@mui/icons-material';
 import { FcGoogle } from 'react-icons/fc';
 import './register.css';
 import logo from '../assets/Logo.png';
 import image23 from '../assets/image23.png';
 import { FaFacebookF } from 'react-icons/fa';
+import axios from 'axios'; // Ensure axios is imported
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -25,6 +26,8 @@ const Register = () => {
     phoneNumber: '',
     termsAccepted: '',
   });
+
+  const [successMessage, setSuccessMessage] = useState(''); // State for success message
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -49,7 +52,7 @@ const Register = () => {
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let valid = true;
     const newErrors = {
@@ -102,7 +105,16 @@ const Register = () => {
 
     if (valid) {
       console.log('Form Data:', formData);
-      // Submit form data
+
+      try {
+        const response = await axios.post('https://localhost:44447/api/Users/register', formData);
+        console.log('Registration successful:', response.data);
+        setSuccessMessage('Registration successful!'); // Update success message
+        // Handle successful registration (e.g., redirect or show success message)
+      } catch (error) {
+        console.error('Registration error:', error.response?.data || error.message);
+        // Handle registration error (e.g., show error message)
+      }
     }
   };
 
@@ -121,11 +133,12 @@ const Register = () => {
           </Typography>
         </div>
         <div className="register-right">
+
           <form className="register-form" onSubmit={handleSubmit}>
             <div className="register-text">
               <span className="gradient-text"> REGISTER</span>
             </div>
-            <Typography variant="body2">User Name (*)</Typography>
+            <Typography variant="body2" className="typography-black">User Name (*)</Typography>
             <TextField
               name="userName"
               variant="outlined"
@@ -144,7 +157,7 @@ const Register = () => {
               }}
             />
 
-            <Typography variant="body2">Email (*)</Typography>
+            <Typography variant="body2" className="typography-black">Email (*)</Typography>
             <TextField
               name="email"
               variant="outlined"
@@ -163,7 +176,7 @@ const Register = () => {
               }}
             />
 
-            <Typography variant="body2">Password (*)</Typography>
+            <Typography variant="body2" className="typography-black">Password (*)</Typography>
             <TextField
               name="password"
               type="password"
@@ -183,7 +196,7 @@ const Register = () => {
               }}
             />
 
-            <Typography variant="body2">Confirm Password (*)</Typography>
+            <Typography variant="body2" className="typography-black">Confirm Password (*)</Typography>
             <TextField
               name="confirmPassword"
               type="password"
@@ -203,7 +216,7 @@ const Register = () => {
               }}
             />
 
-            <Typography variant="body2">Phone Number (*)</Typography>
+            <Typography variant="body2" className="typography-black">Phone Number (*)</Typography>
             <TextField
               name="phoneNumber"
               variant="outlined"
@@ -226,12 +239,15 @@ const Register = () => {
               <FormControlLabel
                 control={<Checkbox name="termsAccepted" checked={formData.termsAccepted} onChange={handleChange} />}
                 label={
-                  <Typography variant="body2">
+                  <Typography variant="body2" className="typography-black">
                     I agree to FittLog's <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>. (*)
                   </Typography>
                 }
               />
             </Grid>
+            {successMessage && (
+              <Alert severity="success">{successMessage}</Alert>
+            )}
             {errors.termsAccepted && <Typography color="error">{errors.termsAccepted}</Typography>}
 
             <Button type="submit" variant="contained" color="primary" fullWidth className="btn">
@@ -239,19 +255,14 @@ const Register = () => {
             </Button>
           </form>
           <Typography variant="body1" className="or-text">Or</Typography>
-          <Grid container spacing={2} justify="center">
-            <Grid item>
-              <Button type="button" variant="contained" className="btn google">
-                <FcGoogle className="icon" /> Google
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button type="button" variant="contained" className="btn facebook">
-                <FaFacebookF className="icon" /> Facebook
-              </Button>
-            </Grid>
-
-          </Grid>
+          <div className="social-buttons">
+            <Button type="button" variant="contained" className="btn google">
+              <FcGoogle className="icon" /> Google
+            </Button>
+            <Button type="button" variant="contained" className="btn facebook">
+              <FaFacebookF className="icon" /> Facebook
+            </Button>
+          </div>
           <a href="#" className="signin-link">Sign In</a>
         </div>
       </div>
