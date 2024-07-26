@@ -904,7 +904,7 @@
         }
       }
     },
-    "/api/Statistics/overview/summary": {
+    "/api/Statistics/overall/summary": {
       "get": {
         "tags": [
           "Statistics"
@@ -938,7 +938,7 @@
         }
       }
     },
-    "/api/Statistics/overview/muscles-engagement": {
+    "/api/Statistics/overall/muscles-engagement": {
       "get": {
         "tags": [
           "Statistics"
@@ -975,7 +975,7 @@
         }
       }
     },
-    "/api/Statistics/overview/total-training-reps": {
+    "/api/Statistics/overall/total-training-reps": {
       "get": {
         "tags": [
           "Statistics"
@@ -1010,7 +1010,7 @@
         }
       }
     },
-    "/api/Statistics/overview/total-training-tonnage": {
+    "/api/Statistics/overall/total-training-tonnage": {
       "get": {
         "tags": [
           "Statistics"
@@ -1045,7 +1045,7 @@
         }
       }
     },
-    "/api/Statistics/overview/training-frequency": {
+    "/api/Statistics/overall/training-frequency": {
       "get": {
         "tags": [
           "Statistics"
@@ -1159,6 +1159,29 @@
             "content": {
               "application/json": {
                 "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Statistics/exercise/logged-exercises": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExercisesWithHistory",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExerciseHistoryEntry"
+                  }
+                }
               }
             }
           }
@@ -1599,7 +1622,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/WorkoutPrograms/create-program": {
       "post": {
         "tags": [
           "WorkoutPrograms"
@@ -1631,7 +1656,7 @@
         }
       }
     },
-    "/api/WorkoutPrograms/{id}": {
+    "/api/WorkoutPrograms/update/{id}": {
       "put": {
         "tags": [
           "WorkoutPrograms"
@@ -1666,7 +1691,9 @@
             "description": ""
           }
         }
-      },
+      }
+    },
+    "/api/WorkoutPrograms/delete/{id}": {
       "delete": {
         "tags": [
           "WorkoutPrograms"
@@ -1691,7 +1718,7 @@
         }
       }
     },
-    "/api/WorkoutPrograms/enrollments/user": {
+    "/api/WorkoutPrograms/enrollments": {
       "get": {
         "tags": [
           "WorkoutPrograms"
@@ -1714,7 +1741,7 @@
         }
       }
     },
-    "/api/WorkoutPrograms/enroll/{id}": {
+    "/api/WorkoutPrograms/{id}/enroll": {
       "post": {
         "tags": [
           "WorkoutPrograms"
@@ -4065,6 +4092,37 @@
           }
         }
       },
+      "ExerciseHistoryEntry": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseKey": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ExerciseHistoryKey"
+              }
+            ]
+          },
+          "logCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ExerciseHistoryKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "exerciseName": {
+            "type": "string"
+          }
+        }
+      },
       "ProgramOverviewDto": {
         "type": "object",
         "additionalProperties": false,
@@ -4124,10 +4182,6 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "userId": {
-            "type": "string",
-            "nullable": true
-          },
           "goal": {
             "type": "string",
             "nullable": true
@@ -4167,10 +4221,6 @@
           "surveyAnswerId": {
             "type": "integer",
             "format": "int32"
-          },
-          "userId": {
-            "type": "string",
-            "nullable": true
           },
           "goal": {
             "type": "string",
@@ -5696,10 +5746,6 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "createdBy": {
-            "type": "string",
-            "nullable": true
-          },
           "note": {
             "type": "string",
             "nullable": true

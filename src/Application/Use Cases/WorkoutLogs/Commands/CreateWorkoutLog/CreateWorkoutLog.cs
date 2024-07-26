@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
 using FitLog.Application.ExerciseLogs.Commands.CreateExerciseLogs;
@@ -8,7 +9,8 @@ namespace FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
 
 public record CreateWorkoutLogCommand : IRequest<Result>
 {
-    public string? CreatedBy { get; init; }
+    [JsonIgnore]
+    public string? CreatedBy { get; set; }
     public string? Note { get; init; }
     public TimeOnly? Duration { get; init; }
     public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
