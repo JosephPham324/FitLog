@@ -47,8 +47,8 @@ const Login = () => {
                 <a href="#">Forgot Password?</a>
               </div>
 
-              <button type="submit" className="btn" color="#007bff">
-                <span className="gradient-text">LOGIN</span>
+              <button type="submit" className="btn">
+                <span className="text-login">LOGIN</span>
               </button>
 
               <div className="social-login">
@@ -64,7 +64,7 @@ const Login = () => {
                       onClick={renderProps.onClick}
                       disabled={renderProps.disabled}
                     >
-                      <FcGoogle className="icon" /> Google
+                      <FcGoogle className="icon" /> Đăng nhập bằng Google
                     </button>
                   )}
                 />

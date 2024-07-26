@@ -41,6 +41,7 @@ public class Users : EndpointGroupBase
         app.MapGroup(this)
            .MapPost(Login, "login")
            .MapPost(Register, "register")
+           .MapPut(ConfirmEmail, "confirm-email")
            .MapPost(RecoverAccount, "recover-account")
            .MapPut(ResetPassword, "reset-password");
 
@@ -48,7 +49,6 @@ public class Users : EndpointGroupBase
         // User management routes
         app.MapGroup(this)
            .RequireAuthorization()
-           .MapGroup("/users")
            .MapGet(GetUserList, "all")
            .MapGet(SearchUsersByEmail, "search-by-email")
            .MapGet(SearchUsersByLoginProvider, "search-by-provider")
@@ -56,11 +56,9 @@ public class Users : EndpointGroupBase
            .MapGet(GetUserProfile, "profile")
            .MapPost(CreateUser, "create-account")
            .MapDelete(DeleteAccount, "delete-account/{id}")
-           .MapPut(ConfirmEmail, "confirm-email")
            .MapPut(UpdateUser, "update-account");
         // Coaches routes
         app.MapGroup(this)
-            .MapGroup("/coaches")
            .MapGroup("/coaches")
            .MapGet(GetCoachesList, "coaches");
 

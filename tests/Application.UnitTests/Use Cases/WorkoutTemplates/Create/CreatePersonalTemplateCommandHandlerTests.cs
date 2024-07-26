@@ -113,8 +113,3 @@
 ////        Assert.Equal(exerciseDto.NumbersOfReps, exercise.NumbersOfReps);
 ////    }
 ////}
-
-
-
-
-

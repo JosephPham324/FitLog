@@ -2384,6 +2384,38 @@
         }
       }
     },
+    "/api/Users/confirm-email": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ConfirmEmail",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Users/recover-account": {
       "post": {
         "tags": [
@@ -2448,7 +2480,7 @@
         }
       }
     },
-    "/api/Users/users/all": {
+    "/api/Users/all": {
       "get": {
         "tags": [
           "Users"
@@ -2490,7 +2522,7 @@
         }
       }
     },
-    "/api/Users/users/search-by-email": {
+    "/api/Users/search-by-email": {
       "get": {
         "tags": [
           "Users"
@@ -2530,7 +2562,7 @@
         }
       }
     },
-    "/api/Users/users/search-by-provider": {
+    "/api/Users/search-by-provider": {
       "get": {
         "tags": [
           "Users"
@@ -2570,7 +2602,7 @@
         }
       }
     },
-    "/api/Users/users/search-by-username": {
+    "/api/Users/search-by-username": {
       "get": {
         "tags": [
           "Users"
@@ -2610,7 +2642,7 @@
         }
       }
     },
-    "/api/Users/users/profile": {
+    "/api/Users/profile": {
       "get": {
         "tags": [
           "Users"
@@ -2642,7 +2674,7 @@
         }
       }
     },
-    "/api/Users/users/create-account": {
+    "/api/Users/create-account": {
       "post": {
         "tags": [
           "Users"
@@ -2674,7 +2706,7 @@
         }
       }
     },
-    "/api/Users/users/delete-account/{id}": {
+    "/api/Users/delete-account/{id}": {
       "delete": {
         "tags": [
           "Users"
@@ -2705,39 +2737,7 @@
         }
       }
     },
-    "/api/Users/users/confirm-email": {
-      "put": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "ConfirmEmail",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfirmEmailCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/users/update-account": {
+    "/api/Users/update-account": {
       "put": {
         "tags": [
           "Users"
@@ -2769,7 +2769,7 @@
         }
       }
     },
-    "/api/Users/coaches/coaches/coaches": {
+    "/api/Users/coaches/coaches": {
       "get": {
         "tags": [
           "Users"
@@ -6501,6 +6501,18 @@
           }
         }
       },
+      "ConfirmEmailCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
       "RecoverAccountCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -6790,18 +6802,6 @@
             "type": "string"
           },
           "role": {
-            "type": "string"
-          }
-        }
-      },
-      "ConfirmEmailCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "token": {
-            "type": "string"
-          },
-          "email": {
             "type": "string"
           }
         }

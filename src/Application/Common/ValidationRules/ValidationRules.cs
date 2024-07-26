@@ -39,7 +39,7 @@ public static class ValidationRules
 
     public static bool BeAValidRole(string role)
     {
-        var type = typeof(CoachApplicationStatus);
+        var type = typeof(Domain.Constants.Roles);
         var validRoles = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                    .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
                    .Select(fi => fi?.GetRawConstantValue()?.ToString())
