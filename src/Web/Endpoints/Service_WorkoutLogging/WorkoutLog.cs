@@ -48,6 +48,8 @@ public class WorkoutLog : EndpointGroupBase
 
     public Task<Result> CreateExerciseLog(ISender sender, [FromBody] CreateWorkoutLogCommand command)
     {
+        command.CreatedBy = _identityService.Id ?? "";
+
         return sender.Send(command);
     }
 

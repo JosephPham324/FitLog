@@ -31,14 +31,16 @@ public class WorkoutPrograms : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization()
-            .MapGet(GetWorkoutProgramsList)
-            .MapPost(CreateWorkoutProgram)
-            .MapPut(UpdateWorkoutProgram, "{id}")
-            .MapDelete(DeleteWorkoutProgram, "{id}")
             .MapGet(GetWorkoutProgramDetails, "details/{id}")
-            .MapGet(GetEnrollmentsByUser, "enrollments/user/")
-            .MapPost(EnrollProgram,"enroll/{id}");
+            .MapGet(GetWorkoutProgramsList);
+
+        app.MapGroup(this)
+            .RequireAuthorization()
+            .MapPost(CreateWorkoutProgram, "create-program")
+            .MapPut(UpdateWorkoutProgram, "update/{id}")
+            .MapDelete(DeleteWorkoutProgram, "delete/{id}")
+            .MapGet(GetEnrollmentsByUser, "enrollments")
+            .MapPost(EnrollProgram,"{id}/enroll");
     }
 
     public Task<List<WorkoutProgramListDTO>> GetWorkoutProgramsList(ISender sender, [AsParameters] GetWorkoutProgramsListQuery query)

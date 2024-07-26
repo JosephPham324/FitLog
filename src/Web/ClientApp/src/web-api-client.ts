@@ -1153,7 +1153,7 @@ export class StatisticsClient {
     }
 
     getWorkoutLogSummary(timeFrame: string): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/summary?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/summary?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1201,7 +1201,7 @@ export class StatisticsClient {
     }
 
     getMusclesEngagement(timeFrame: string): Promise<{ [key: string]: MuscleEngagementDTO[]; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/muscles-engagement?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/muscles-engagement?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1249,7 +1249,7 @@ export class StatisticsClient {
     }
 
     getRepsStats(timeFrame: string): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/total-training-reps?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/total-training-reps?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1297,7 +1297,7 @@ export class StatisticsClient {
     }
 
     getTonnageStats(timeFrame: string): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/total-training-tonnage?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/total-training-tonnage?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1345,7 +1345,7 @@ export class StatisticsClient {
     }
 
     getTrainingFrequencies(timeFrame: string): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/training-frequency?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/training-frequency?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1484,6 +1484,48 @@ export class StatisticsClient {
             });
         }
         return Promise.resolve<any>(null as any);
+    }
+
+    getExercisesWithHistory(): Promise<ExerciseHistoryEntry[]> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise/logged-exercises";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExercisesWithHistory(_response);
+        });
+    }
+
+    protected processGetExercisesWithHistory(response: Response): Promise<ExerciseHistoryEntry[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ExerciseHistoryEntry.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExerciseHistoryEntry[]>(null as any);
     }
 }
 
@@ -1952,6 +1994,40 @@ export class WorkoutProgramsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
+    getWorkoutProgramDetails(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/details/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetWorkoutProgramDetails(_response);
+        });
+    }
+
+    protected processGetWorkoutProgramDetails(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     getWorkoutProgramsList(): Promise<WorkoutProgramListDTO[]> {
         let url_ = this.baseUrl + "/api/WorkoutPrograms";
         url_ = url_.replace(/[?&]$/, "");
@@ -1995,7 +2071,7 @@ export class WorkoutProgramsClient {
     }
 
     createWorkoutProgram(command: CreateWorkoutProgramCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/create-program";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -2034,7 +2110,7 @@ export class WorkoutProgramsClient {
     }
 
     updateWorkoutProgram(id: number, command: UpdateWorkoutProgramCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/update/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2072,7 +2148,7 @@ export class WorkoutProgramsClient {
     }
 
     deleteWorkoutProgram(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/delete/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2105,42 +2181,8 @@ export class WorkoutProgramsClient {
         return Promise.resolve<void>(null as any);
     }
 
-    getWorkoutProgramDetails(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/details/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetWorkoutProgramDetails(_response);
-        });
-    }
-
-    protected processGetWorkoutProgramDetails(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
     getEnrollmentsByUser(): Promise<ProgramEnrollmentDTO[]> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments/user";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2182,7 +2224,7 @@ export class WorkoutProgramsClient {
     }
 
     enrollProgram(id: number, command: EnrollProgramCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/enroll/{id}";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}/enroll";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -5773,6 +5815,86 @@ export interface IExerciseLogDTO {
     exerciseName?: string | undefined;
 }
 
+export class ExerciseHistoryEntry implements IExerciseHistoryEntry {
+    exerciseKey?: ExerciseHistoryKey | undefined;
+    logCount?: number;
+
+    constructor(data?: IExerciseHistoryEntry) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseKey = _data["exerciseKey"] ? ExerciseHistoryKey.fromJS(_data["exerciseKey"]) : <any>undefined;
+            this.logCount = _data["logCount"];
+        }
+    }
+
+    static fromJS(data: any): ExerciseHistoryEntry {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExerciseHistoryEntry();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseKey"] = this.exerciseKey ? this.exerciseKey.toJSON() : <any>undefined;
+        data["logCount"] = this.logCount;
+        return data;
+    }
+}
+
+export interface IExerciseHistoryEntry {
+    exerciseKey?: ExerciseHistoryKey | undefined;
+    logCount?: number;
+}
+
+export class ExerciseHistoryKey implements IExerciseHistoryKey {
+    exerciseId?: number;
+    exerciseName?: string;
+
+    constructor(data?: IExerciseHistoryKey) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseId = _data["exerciseId"];
+            this.exerciseName = _data["exerciseName"];
+        }
+    }
+
+    static fromJS(data: any): ExerciseHistoryKey {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExerciseHistoryKey();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseId"] = this.exerciseId;
+        data["exerciseName"] = this.exerciseName;
+        return data;
+    }
+}
+
+export interface IExerciseHistoryKey {
+    exerciseId?: number;
+    exerciseName?: string;
+}
+
 export class ProgramOverviewDto implements IProgramOverviewDto {
     programId?: number;
     creatorName?: string;
@@ -5886,7 +6008,6 @@ export interface IGetWorkoutRecommendationQuery {
 }
 
 export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
-    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -5905,7 +6026,6 @@ export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             this.goal = _data["goal"];
             this.daysPerWeek = _data["daysPerWeek"];
             this.experienceLevel = _data["experienceLevel"];
@@ -5924,7 +6044,6 @@ export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         data["goal"] = this.goal;
         data["daysPerWeek"] = this.daysPerWeek;
         data["experienceLevel"] = this.experienceLevel;
@@ -5936,7 +6055,6 @@ export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
 }
 
 export interface ICreateSurveyAnswerCommand {
-    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -5947,7 +6065,6 @@ export interface ICreateSurveyAnswerCommand {
 
 export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurveyAnswersCommand {
     surveyAnswerId?: number;
-    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -5968,7 +6085,6 @@ export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurvey
     init(_data?: any) {
         if (_data) {
             this.surveyAnswerId = _data["surveyAnswerId"];
-            this.userId = _data["userId"];
             this.goal = _data["goal"];
             this.daysPerWeek = _data["daysPerWeek"];
             this.experienceLevel = _data["experienceLevel"];
@@ -5989,7 +6105,6 @@ export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurvey
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["surveyAnswerId"] = this.surveyAnswerId;
-        data["userId"] = this.userId;
         data["goal"] = this.goal;
         data["daysPerWeek"] = this.daysPerWeek;
         data["experienceLevel"] = this.experienceLevel;
@@ -6003,7 +6118,6 @@ export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurvey
 
 export interface IUpdateTrainingSurveyAnswersCommand {
     surveyAnswerId?: number;
-    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -8515,7 +8629,6 @@ export interface IWorkoutLogDTO {
 }
 
 export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
-    createdBy?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
     exerciseLogs?: CreateExerciseLogCommand[] | undefined;
@@ -8531,7 +8644,6 @@ export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.createdBy = _data["createdBy"];
             this.note = _data["note"];
             this.duration = _data["duration"];
             if (Array.isArray(_data["exerciseLogs"])) {
@@ -8551,7 +8663,6 @@ export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["createdBy"] = this.createdBy;
         data["note"] = this.note;
         data["duration"] = this.duration;
         if (Array.isArray(this.exerciseLogs)) {
@@ -8564,7 +8675,6 @@ export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
 }
 
 export interface ICreateWorkoutLogCommand {
-    createdBy?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
     exerciseLogs?: CreateExerciseLogCommand[] | undefined;

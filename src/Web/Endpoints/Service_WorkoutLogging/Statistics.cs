@@ -1,6 +1,7 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseEstimated1RMs;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
+using FitLog.Application.Statistics_Exercise.Queries.GetExercisesWithHistory;
 using FitLog.Application.Statistics_Workout.Queries.GetMuscleEngagement;
 using FitLog.Application.Statistics_Workout.Queries.GetSummaryStats;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalReps;
@@ -9,6 +10,7 @@ using FitLog.Application.Statistics_Workout.Queries.GetTrainingFrequency;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
@@ -32,7 +34,7 @@ public class Statistics : EndpointGroupBase
             .RequireAuthorization();
 
         statsGroup
-            .MapGroup("overview")
+            .MapGroup("overall")
             .MapGet(GetWorkoutLogSummary, "summary")
             .MapGet(GetMusclesEngagement, "muscles-engagement")
             .MapGet(GetRepsStats, "total-training-reps")
@@ -42,7 +44,8 @@ public class Statistics : EndpointGroupBase
         statsGroup
             .MapGroup("exercise")
             .MapGet(GetExerciseLogHistory, "exercise-log-history")
-            .MapGet(GetEstimated1RM, "estimated1RM");
+            .MapGet(GetEstimated1RM, "estimated1RM")
+            .MapGet(GetExercisesWithHistory, "logged-exercises");
     }
     public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetWorkoutLogSummary(ISender sender, [FromQuery] string TimeFrame)
     {
@@ -114,4 +117,11 @@ public class Statistics : EndpointGroupBase
         return await sender.Send(query);
     }
 
+    public async Task<List<ExerciseHistoryEntry>> GetExercisesWithHistory(ISender sender)
+    {
+        var UserId = _identityService.Id ?? "";
+        var query = new GetExercisesWithHistoryQuery(UserId);
+
+        return await sender.Send(query);
+    }
 }
