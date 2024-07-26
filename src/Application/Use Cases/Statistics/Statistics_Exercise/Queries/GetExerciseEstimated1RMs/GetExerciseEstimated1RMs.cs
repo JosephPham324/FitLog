@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
 using FitLog.Domain.Entities;
 
@@ -15,7 +16,8 @@ public record OneRepMaxRecord(
 
 public record GetExerciseEstimated1RMsQuery : IRequest<Dictionary<DateTime, OneRepMaxRecord>>
 {
-    public string UserId { get; init; } = string.Empty;
+    [JsonIgnore]
+    public string UserId { get; set; } = string.Empty;
     public int ExerciseId { get; init; }
 }
 

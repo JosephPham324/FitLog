@@ -4,12 +4,14 @@ using FitLog.Domain.Entities;
 using FitLog.Domain.Constants;
 using Microsoft.Extensions.Logging;
 using FitLog.Application.Common.Models;
+using System.Text.Json.Serialization;
 
 namespace FitLog.Application.Exercises.Commands.CreateExercise;
 
 public record CreateExerciseCommand : IRequest<Result>
 {
-    public string? CreatedBy { get; init; }
+    [JsonIgnore]
+    public string? CreatedBy { get; set; }
     public List<int> MuscleGroupIds { get; init; } = new List<int>();
     public int? EquipmentId { get; init; }
     public string? ExerciseName { get; init; }

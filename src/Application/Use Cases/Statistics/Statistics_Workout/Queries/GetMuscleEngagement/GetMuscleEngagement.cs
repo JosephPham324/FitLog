@@ -9,6 +9,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace FitLog.Application.Statistics_Workout.Queries.GetMuscleEngagement
 {
@@ -20,6 +21,7 @@ namespace FitLog.Application.Statistics_Workout.Queries.GetMuscleEngagement
 
     public record GetMuscleEngagementQuery : IRequest<Dictionary<DateTime, List<MuscleEngagementDTO>>>
     {
+        [JsonIgnore]
         public string UserId { get; set; } = string.Empty;
         public string TimeFrame { get; set; } = string.Empty;
     }
