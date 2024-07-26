@@ -31,14 +31,16 @@ public class WorkoutPrograms : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+           .MapGet(GetWorkoutProgramDetails, "details/{id}")
+           .MapGet(GetWorkoutProgramsList);
+
+        app.MapGroup(this)
             .RequireAuthorization()
-            .MapGet(GetWorkoutProgramsList)
             .MapPost(CreateWorkoutProgram)
             .MapPut(UpdateWorkoutProgram, "{id}")
             .MapDelete(DeleteWorkoutProgram, "{id}")
-            .MapGet(GetWorkoutProgramDetails, "details/{id}")
             .MapGet(GetEnrollmentsByUser, "enrollments/user/")
-            .MapPost(EnrollProgram,"enroll/{id}");
+            .MapPost(EnrollProgram, "enroll/{id}");
     }
 
     public Task<List<WorkoutProgramListDTO>> GetWorkoutProgramsList(ISender sender, [AsParameters] GetWorkoutProgramsListQuery query)
@@ -82,8 +84,9 @@ public class WorkoutPrograms : EndpointGroupBase
     public async Task<List<ProgramEnrollmentDTO>> GetEnrollmentsByUser(ISender sender)
     {
         var userId = _tokenService?.GetUserIdFromToken();
-        
-        if (userId == null)  {
+
+        if (userId == null)
+        {
             throw new UnauthorizedAccessException("User is not authenticated");
         }
         var query = new GetEnrollmentsByUserQuery { UserId = userId };
