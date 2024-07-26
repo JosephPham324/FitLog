@@ -49,7 +49,7 @@ const Register = () => {
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let valid = true;
     const newErrors = {
@@ -101,8 +101,28 @@ const Register = () => {
     setErrors(newErrors);
 
     if (valid) {
-      console.log('Form Data:', formData);
-      // Submit form data
+      console.log(JSON.stringify(formData));
+      try {
+        const response = await fetch('https://localhost:44447/api/Users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          console.log('Registration successful!');
+          window.location.href = '/google-login'; // Chuyển hướng tới trang Login sau khi đăng ký thành công
+        } else {
+          const data = await response.json();
+          console.error('Registration failed:', data);
+          // Xử lý thông báo lỗi từ API
+        }
+      } catch (error) {
+        console.error('Error registering:', error);
+        // Xử lý lỗi mạng hoặc các ngoại lệ khác
+      }
     }
   };
 
@@ -250,7 +270,6 @@ const Register = () => {
                 <FaFacebookF className="icon" /> Facebook
               </Button>
             </Grid>
-
           </Grid>
           <a href="#" className="signin-link">Sign In</a>
         </div>

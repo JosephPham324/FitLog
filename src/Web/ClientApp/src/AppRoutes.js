@@ -2,7 +2,8 @@ import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import { MuscleGroup } from "./components/MuscleGroup";
-import WorkoutOutLog from "./components/WorkoutOutLog";
+import WorkoutOutLog from "./components/WorkoutOutLog/WorkoutOutLog";
+import CreateWorkoutLog from "./components/WorkoutOutLog/CreateWorkoutLog";
 import Login from './components/GoogleLogin';
 import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
@@ -14,10 +15,12 @@ import UserListPage from "./page/TestAxios";
 import Logout from "./components/Logout";
 import CoachApplicationNotification from "./components/CoachApplicationNotification/CoachApplicationNotification"
 import WorkoutTemplatesListAdmin from "./components/Workout Templates List Admin/WorkoutTemplatesListAdmin";
-import WorkoutLogExport from "./components/WorkoutLogExport/WorkoutLogExport"
-import WorkoutLogGraphs from "./components/WorkoutLogGraphs"
-import ExerciseLogGraphs from "./components/ExerciseLogGraphs/ExerciseLogGraphs"
-import RolesListScreen from "./components/RolesListScreen/RolesListScreen"
+import WorkoutLogExport from "./components/WorkoutLogExport/WorkoutLogExport";
+import WorkoutLogGraphs from "./components/WorkoutLogGraphs/WorkoutLogGraphs";
+import ExerciseLogGraphs from "./components/ExerciseLogGraphs/ExerciseLogGraphs";
+import RolesListScreen from "./components/RolesListScreen/RolesListScreen";
+import ExerciseListScreen from "./components/ExerciseListScreen/ExerciseListScreen";
+
 
 
 const AppRoutes = [
@@ -58,11 +61,11 @@ const AppRoutes = [
     element: <Register />
   },
   {
-    path: '/survey',
+    path: '/TrainingSurvey',
     element: <TrainingSurvey />
   },
   {
-    path: '/admin/management/equipments',
+    path: '/EquipmentsList',
     element: <EquipmentsList />
   },
   {
@@ -101,6 +104,16 @@ const AppRoutes = [
     path: '/RolesListScreen',
     element: <RolesListScreen />
   },
+  {
+    path: '/ExerciseListScreen',
+    element: <ExerciseListScreen />
+  },
+  {
+    path: '/CreateWorkoutLog',
+    element: <CreateWorkoutLog />
+  },
+ 
+
 
 ];
 

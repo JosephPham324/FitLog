@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './WorkoutLogGraphs.css';
-import MuscleGroupsExercises from '../assets/MuscleGroupsExercises.png';
+import MuscleGroupsExercises from '../../assets/MuscleGroupsExercises.png';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [

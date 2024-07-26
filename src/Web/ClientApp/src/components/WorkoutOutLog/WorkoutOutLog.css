@@ -1,0 +1,73 @@
+﻿/* Tooltip */
+.tooltip {
+    font-size: 1.25em;
+}
+
+/* Icon buttons */
+.edit-icon:hover {
+    transform: scale(1.1);
+}
+
+.delete-icon:hover {
+    transform: scale(1.1);
+}
+
+.duplicate-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Delete dialog */
+:root .delete-dialog-title {
+    font-size: 30px;
+    font-family: Helixa;
+    text-align: center;
+    font-weight: bold;
+}
+
+:root .delete-dialog-content {
+    font-size: 28px;
+    text-align: center;
+}
+
+:root .cancel-button {
+    border: 1px solid;
+    color: #6200ea;
+    border-radius: 80px;
+    height: 40px;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 900;
+    width: 138px;
+    align-items: center;
+    margin-right: 90px;
+}
+
+:root .delete-button {
+    background-color: #ffcc00;
+    color: black;
+    border-radius: 80px;
+    height: 40px;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 900;
+    width: 138px;
+    align-items: center;
+    margin-right: 90px;
+}
+
+/* Snackbar */
+:root .snackbar {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+}
+
+:root .snackbar-alert {
+    font-size: 1.25em;
+    text-align: center;
+    padding-top: 10px;
+    margin-top: 20px;
+    background: white;
+    color: black;
+}
