@@ -1,7 +1,9 @@
 ﻿using FitLog.Domain.Entities;
 using FitLog.Infrastructure.Data.Converters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static FitLog.Domain.Entities.ProgramEnrollment;
 
 namespace FitLog.Infrastructure.Data.Configurations
 {
@@ -30,9 +32,16 @@ namespace FitLog.Infrastructure.Data.Configurations
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__ProgramEn__UserI__49C3F6B7");
 
-            // Apply the value converter for WorkoutsProgress property
+            // Apply the value converter and value comparer for WorkoutsProgress property
+            var workoutsProgressConverter = new WorkoutsProgressConverter();
+            var workoutsProgressComparer = new ValueComparer<Dictionary<int, WorkoutProgress>>(
+               (c1, c2) => (c1 ?? new Dictionary<int, WorkoutProgress>()).SequenceEqual(c2 ?? new Dictionary<int, WorkoutProgress>()),
+               c => c == null ? 0 : c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+               c => c == null ? new Dictionary<int, WorkoutProgress>() : c.ToDictionary(entry => entry.Key, entry => entry.Value));
+
             builder.Property(e => e.WorkoutsProgress)
-                .HasConversion(new WorkoutsProgressConverter());
+                .HasConversion(workoutsProgressConverter)
+                .Metadata.SetValueComparer(workoutsProgressComparer);
         }
     }
 }

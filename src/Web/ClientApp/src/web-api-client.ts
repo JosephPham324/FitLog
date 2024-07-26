@@ -2983,6 +2983,45 @@ export class UsersClient {
         return Promise.resolve<Result>(null as any);
     }
 
+    confirmEmail(command: ConfirmEmailCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/confirm-email";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processConfirmEmail(_response);
+        });
+    }
+
+    protected processConfirmEmail(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
     recoverAccount(command: RecoverAccountCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Users/recover-account";
         url_ = url_.replace(/[?&]$/, "");
@@ -3062,7 +3101,7 @@ export class UsersClient {
     }
 
     getUserList(pageNumber: number, pageSize: number): Promise<PaginatedListOfUserListDTO> {
-        let url_ = this.baseUrl + "/api/Users/users/all?";
+        let url_ = this.baseUrl + "/api/Users/all?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
         else
@@ -3105,7 +3144,7 @@ export class UsersClient {
     }
 
     searchUsersByEmail(email: string | null): Promise<(UserListDTO | undefined)[]> {
-        let url_ = this.baseUrl + "/api/Users/users/search-by-email?";
+        let url_ = this.baseUrl + "/api/Users/search-by-email?";
         if (email === undefined)
             throw new Error("The parameter 'email' must be defined.");
         else if(email !== null)
@@ -3151,7 +3190,7 @@ export class UsersClient {
     }
 
     searchUsersByLoginProvider(provider: string | null): Promise<(UserListDTO | undefined)[]> {
-        let url_ = this.baseUrl + "/api/Users/users/search-by-provider?";
+        let url_ = this.baseUrl + "/api/Users/search-by-provider?";
         if (provider === undefined)
             throw new Error("The parameter 'provider' must be defined.");
         else if(provider !== null)
@@ -3197,7 +3236,7 @@ export class UsersClient {
     }
 
     searchUsersByUserName(username: string | null): Promise<(UserListDTO | undefined)[]> {
-        let url_ = this.baseUrl + "/api/Users/users/search-by-username?";
+        let url_ = this.baseUrl + "/api/Users/search-by-username?";
         if (username === undefined)
             throw new Error("The parameter 'username' must be defined.");
         else if(username !== null)
@@ -3243,7 +3282,7 @@ export class UsersClient {
     }
 
     getUserProfile(userId: string | null): Promise<UserProfileDTO> {
-        let url_ = this.baseUrl + "/api/Users/users/profile?";
+        let url_ = this.baseUrl + "/api/Users/profile?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
         else if(userId !== null)
@@ -3282,7 +3321,7 @@ export class UsersClient {
     }
 
     createUser(command: CreateUserCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/Users/users/create-account";
+        let url_ = this.baseUrl + "/api/Users/create-account";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -3321,7 +3360,7 @@ export class UsersClient {
     }
 
     deleteAccount(id: string): Promise<Result> {
-        let url_ = this.baseUrl + "/api/Users/users/delete-account/{id}";
+        let url_ = this.baseUrl + "/api/Users/delete-account/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -3358,47 +3397,8 @@ export class UsersClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    confirmEmail(command: ConfirmEmailCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/Users/users/confirm-email";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processConfirmEmail(_response);
-        });
-    }
-
-    protected processConfirmEmail(response: Response): Promise<Result> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
     updateUser(command: UpdateUserCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/Users/users/update-account";
+        let url_ = this.baseUrl + "/api/Users/update-account";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -3437,7 +3437,7 @@ export class UsersClient {
     }
 
     getCoachesList(pageNumber: number, pageSize: number): Promise<PaginatedListOfCoachSummaryDTO> {
-        let url_ = this.baseUrl + "/api/Users/coaches/coaches/coaches?";
+        let url_ = this.baseUrl + "/api/Users/coaches/coaches?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
         else
@@ -10122,6 +10122,46 @@ export interface IRegisterCommand {
     phoneNumber?: string;
 }
 
+export class ConfirmEmailCommand implements IConfirmEmailCommand {
+    token?: string;
+    email?: string;
+
+    constructor(data?: IConfirmEmailCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.token = _data["token"];
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): ConfirmEmailCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConfirmEmailCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["token"] = this.token;
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface IConfirmEmailCommand {
+    token?: string;
+    email?: string;
+}
+
 export class RecoverAccountCommand implements IRecoverAccountCommand {
     email?: string;
 
@@ -10668,46 +10708,6 @@ export interface ICreateUserCommand {
     password?: string;
     userName?: string;
     role?: string;
-}
-
-export class ConfirmEmailCommand implements IConfirmEmailCommand {
-    token?: string;
-    email?: string;
-
-    constructor(data?: IConfirmEmailCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.token = _data["token"];
-            this.email = _data["email"];
-        }
-    }
-
-    static fromJS(data: any): ConfirmEmailCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new ConfirmEmailCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["token"] = this.token;
-        data["email"] = this.email;
-        return data;
-    }
-}
-
-export interface IConfirmEmailCommand {
-    token?: string;
-    email?: string;
 }
 
 export class UpdateUserCommand implements IUpdateUserCommand {
