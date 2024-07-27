@@ -37,7 +37,7 @@ public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand,
 
         _context.AspNetUsers.Update(user);
         await _context.SaveChangesAsync(cancellationToken);
-
+        
         return Result.Successful();
     }
 }

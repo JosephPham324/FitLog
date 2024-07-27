@@ -4,18 +4,27 @@ using FitLog.Application.CoachingServices.Commands.UpdateCoachingService;
 using FitLog.Application.CoachingServices.Queries.GetCoachingServiceDetails;
 using FitLog.Application.CoachingServices.Queries.GetPaginatedCoachingServiceList;
 using FitLog.Application.CoachingServices.Queries.GetPaginatedCoachingServiceListOfUser;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
 using FitLog.Application.Users.Queries.GetUserDetails;
+using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitLog.Web.Endpoints.Service_Coaching;
 
 public class CoachingServices : EndpointGroupBase
 {
+    private readonly IUserTokenService _tokenService;
+    private readonly IUser _identityService;
+
+    public CoachingServices()
+    {
+        _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
+        _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
+    }
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            //.RequireAuthorization()
             .MapGet(GetCoachingServiceDetails, "{id}")
             .MapGet(GetPaginatedCoachingServices)
             .MapGet(GetPaginatedCoachingServicesOfUser, "user/{userId}")
@@ -40,11 +49,14 @@ public class CoachingServices : EndpointGroupBase
         return sender.Send(query);
     }
 
+
+    [Microsoft.AspNetCore.Authorization.Authorize("CoachOnly")]
     public Task<Result> CreateCoachingService(ISender sender, [FromBody] CreateCoachingServiceCommand command)
     {
         return sender.Send(command);
     }
 
+    [Microsoft.AspNetCore.Authorization.Authorize("CoachOnly")]
     public async Task<Result> UpdateCoachingService(ISender sender, int id, [FromBody] UpdateCoachingServiceCommand command)
     {
         if (id != command.Id) return Result.Failure(["Id doesn't match instance"]);
@@ -52,6 +64,7 @@ public class CoachingServices : EndpointGroupBase
         return result;
     }
 
+    [Microsoft.AspNetCore.Authorization.Authorize("CoachOnly")]
     public async Task<Result> DeleteCoachingService(ISender sender, int id)
     {
         var result = await sender.Send(new DeleteCoachingServiceCommand { Id = id });

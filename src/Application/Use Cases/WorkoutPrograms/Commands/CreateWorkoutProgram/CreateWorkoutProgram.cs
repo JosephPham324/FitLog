@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
 using FitLog.Application.Use_Cases.WorkoutPrograms.DTOs;
 using FitLog.Application.WorkoutTemplates.Commands.CreateWorkoutTemplate;
@@ -9,6 +10,7 @@ namespace FitLog.Application.WorkoutPrograms.Commands.CreateWorkoutProgram;
 
 public record CreateWorkoutProgramCommand : IRequest<Result>
 {
+    [JsonIgnore]
     public string? UserId { get; set; }
     public string ProgramName { get; set; } = "";
     public string? ProgramThumbnail { get; set; }

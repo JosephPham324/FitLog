@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using FitLog.Application.Chats.Queries.GetChatLinesFromAChat;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
@@ -20,7 +21,10 @@ public class GetChatLinesFromAChatQueryHandlerTests
     public GetChatLinesFromAChatQueryHandlerTests()
     {
         _contextMock = new Mock<IApplicationDbContext>();
-        _handler = new GetChatLinesFromAChatQueryHandler(_contextMock.Object);
+        var config = new MapperConfiguration(cfg =>
+                {
+                });
+        _handler = new GetChatLinesFromAChatQueryHandler(_contextMock.Object, config.CreateMapper());
     }
 
     [Fact]

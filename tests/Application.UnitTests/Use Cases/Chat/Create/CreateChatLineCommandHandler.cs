@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using FitLog.Application.Chats.Commands.CreateChatLine;
+using FitLog.Application.Chats.Queries.GetChatLinesFromAChat;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +17,18 @@ public class CreateChatLineCommandHandlerTests
 {
     private readonly Mock<IApplicationDbContext> _contextMock;
     private readonly CreateChatLineCommandHandler _handler;
+    private readonly IMapper _mapper;
 
     public CreateChatLineCommandHandlerTests()
     {
         _contextMock = new Mock<IApplicationDbContext>();
+        var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.AddProfile(new ChatLineDto.Mapping());
+                });
+        _mapper =  config.CreateMapper();
         _contextMock.Setup(c => c.ChatLines).Returns(Mock.Of<DbSet<ChatLine>>());
-        _handler = new CreateChatLineCommandHandler(_contextMock.Object);
+        _handler = new CreateChatLineCommandHandler(_contextMock.Object,_mapper );
     }
 
     [Fact]
@@ -33,7 +41,6 @@ public class CreateChatLineCommandHandlerTests
             ChatLineText = "Test Chat Line",
             LinkUrl = "http://example.com",
             AttachmentPath = "/path/to/attachment",
-            CreatedAt = DateTime.UtcNow
         };
 
         var chatLineId = 1;
@@ -45,9 +52,9 @@ public class CreateChatLineCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _contextMock.Verify(m => m.ChatLines.Add(It.Is<ChatLine>(c => c.ChatId == command.ChatId && c.ChatLineText == command.ChatLineText && c.LinkUrl == command.LinkUrl && c.AttachmentPath == command.AttachmentPath && c.CreatedAt == command.CreatedAt)), Times.Once);
+        _contextMock.Verify(m => m.ChatLines.Add(It.Is<ChatLine>(c => c.ChatId == command.ChatId && c.ChatLineText == command.ChatLineText && c.LinkUrl == command.LinkUrl && c.AttachmentPath == command.AttachmentPath)), Times.Once);
         _contextMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        Assert.Equal(chatLineId, result);
+        Assert.True(result.Result.Success);
     }
 
     [Fact]
@@ -60,7 +67,6 @@ public class CreateChatLineCommandHandlerTests
             ChatLineText = "Test Chat Line",
             LinkUrl = "http://example.com",
             AttachmentPath = "/path/to/attachment",
-            CreatedAt = DateTime.UtcNow
         };
 
         var chatLineId = 1;
@@ -72,7 +78,7 @@ public class CreateChatLineCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal(chatLineId, result);
+        Assert.True(result.Result.Success);
     }
 
     [Fact]
@@ -85,7 +91,6 @@ public class CreateChatLineCommandHandlerTests
             ChatLineText = "Test Chat Line",
             LinkUrl = "http://example.com",
             AttachmentPath = "/path/to/attachment",
-            CreatedAt = DateTime.UtcNow
         };
 
         _contextMock.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))

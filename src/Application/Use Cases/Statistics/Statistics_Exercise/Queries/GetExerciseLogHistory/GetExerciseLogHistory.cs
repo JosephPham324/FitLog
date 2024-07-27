@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Domain.Entities;
 
@@ -6,7 +7,8 @@ namespace FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
 
 public record GetExerciseLogHistoryQuery : IRequest<IEnumerable<ExerciseLogDTO>>
 {
-    public string UserId { get; init; } = string.Empty;
+    [JsonIgnore]
+    public string UserId { get; set; } = string.Empty;
     public int ExerciseId { get; init; }
 }
 

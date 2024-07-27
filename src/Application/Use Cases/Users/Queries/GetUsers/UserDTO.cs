@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using FitLog.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.Users.Queries.GetUsers;
-public class AspNetUserListDTO
+public class UserListDTO
 {
     [Required]
     public string? Id { get; set; }
@@ -21,19 +22,17 @@ public class AspNetUserListDTO
 
     public string? PhoneNumber { get; set; }
 
-    public bool PhoneNumberConfirmed { get; set; }
+    [JsonPropertyName("IsRestricted")]
+    public bool? IsDeleted { get; set; }
+    public List<string> Roles { get; set; } = new List<string>();
 
-    public DateTimeOffset? LockoutEnd { get; set; }
-
-    public bool LockoutEnabled { get; set; }
-
-    public int AccessFailedCount { get; set; }
 
     private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
-            CreateMap<AspNetUser, AspNetUserListDTO>();
+            CreateMap<AspNetUser, UserListDTO>()
+                    .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.Select(r => r.Name).ToList()));
         }
     }
 }

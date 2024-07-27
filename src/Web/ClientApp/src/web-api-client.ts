@@ -1152,15 +1152,11 @@ export class StatisticsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getWorkoutLogSummary(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
-        let url_ = this.baseUrl + "/api/Statistics/summary?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getWorkoutLogSummary(timeFrame: string): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/summary?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1204,15 +1200,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: SummaryWorkoutLogStatsDTO; }>(null as any);
     }
 
-    getMusclesEngagement(userId: string | null, timeFrame: string | null): Promise<MuscleEngagementDTO[]> {
-        let url_ = this.baseUrl + "/api/Statistics/muscles-engagement?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getMusclesEngagement(timeFrame: string): Promise<{ [key: string]: MuscleEngagementDTO[]; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/muscles-engagement?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1228,7 +1220,7 @@ export class StatisticsClient {
         });
     }
 
-    protected processGetMusclesEngagement(response: Response): Promise<MuscleEngagementDTO[]> {
+    protected processGetMusclesEngagement(response: Response): Promise<{ [key: string]: MuscleEngagementDTO[]; }> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1236,10 +1228,12 @@ export class StatisticsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(MuscleEngagementDTO.fromJS(item));
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] ? resultData200[key].map((i: any) => MuscleEngagementDTO.fromJS(i)) : [];
+                }
             }
             else {
                 result200 = <any>null;
@@ -1251,18 +1245,14 @@ export class StatisticsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MuscleEngagementDTO[]>(null as any);
+        return Promise.resolve<{ [key: string]: MuscleEngagementDTO[]; }>(null as any);
     }
 
-    getRepsStats(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/total-training-reps?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getRepsStats(timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/total-training-reps?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1306,15 +1296,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: number; }>(null as any);
     }
 
-    getTonnageStats(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/total-training-tonnage?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getTonnageStats(timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/total-training-tonnage?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1358,15 +1344,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: number; }>(null as any);
     }
 
-    getTrainingFrequencies(userId: string | null, timeFrame: string | null): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/training-frequency?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (timeFrame === undefined)
-            throw new Error("The parameter 'timeFrame' must be defined.");
-        else if(timeFrame !== null)
+    getTrainingFrequencies(timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/overview/training-frequency?";
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
             url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1411,7 +1393,7 @@ export class StatisticsClient {
     }
 
     getExerciseLogHistory(userId: string | null, exerciseId: number): Promise<ExerciseLogDTO[]> {
-        let url_ = this.baseUrl + "/api/Statistics/exercise-log-history?";
+        let url_ = this.baseUrl + "/api/Statistics/exercise/exercise-log-history?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
         else if(userId !== null)
@@ -1461,7 +1443,7 @@ export class StatisticsClient {
     }
 
     getEstimated1RM(userId: string | null, exerciseId: number): Promise<any> {
-        let url_ = this.baseUrl + "/api/Statistics/estimated1RM?";
+        let url_ = this.baseUrl + "/api/Statistics/exercise/estimated1RM?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
         else if(userId !== null)
@@ -2124,7 +2106,7 @@ export class WorkoutProgramsClient {
     }
 
     getWorkoutProgramDetails(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/Details/{id}";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/details/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2157,12 +2139,8 @@ export class WorkoutProgramsClient {
         return Promise.resolve<void>(null as any);
     }
 
-    getEnrollmentsByUser(userId: string | null): Promise<ProgramEnrollmentDTO[]> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments/user?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+    getEnrollmentsByUser(): Promise<ProgramEnrollmentDTO[]> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments/user";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2203,8 +2181,11 @@ export class WorkoutProgramsClient {
         return Promise.resolve<ProgramEnrollmentDTO[]>(null as any);
     }
 
-    enrollProgram(command: EnrollProgramCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments";
+    enrollProgram(id: number, command: EnrollProgramCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/enroll/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -2982,7 +2963,124 @@ export class UsersClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    getUserList(pageNumber: number, pageSize: number): Promise<PaginatedListOfAspNetUserListDTO> {
+    confirmEmail(command: ConfirmEmailCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/confirm-email";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processConfirmEmail(_response);
+        });
+    }
+
+    protected processConfirmEmail(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    recoverAccount(command: RecoverAccountCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/recover-account";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRecoverAccount(_response);
+        });
+    }
+
+    protected processRecoverAccount(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    resetPassword(command: ResetPasswordCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/reset-password";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processResetPassword(_response);
+        });
+    }
+
+    protected processResetPassword(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    getUserList(pageNumber: number, pageSize: number): Promise<PaginatedListOfUserListDTO> {
         let url_ = this.baseUrl + "/api/Users/all?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
@@ -3006,7 +3104,7 @@ export class UsersClient {
         });
     }
 
-    protected processGetUserList(response: Response): Promise<PaginatedListOfAspNetUserListDTO> {
+    protected processGetUserList(response: Response): Promise<PaginatedListOfUserListDTO> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3014,7 +3112,7 @@ export class UsersClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfAspNetUserListDTO.fromJS(resultData200);
+            result200 = PaginatedListOfUserListDTO.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3022,10 +3120,10 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PaginatedListOfAspNetUserListDTO>(null as any);
+        return Promise.resolve<PaginatedListOfUserListDTO>(null as any);
     }
 
-    searchUsersByEmail(email: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+    searchUsersByEmail(email: string | null): Promise<(UserListDTO | undefined)[]> {
         let url_ = this.baseUrl + "/api/Users/search-by-email?";
         if (email === undefined)
             throw new Error("The parameter 'email' must be defined.");
@@ -3045,7 +3143,7 @@ export class UsersClient {
         });
     }
 
-    protected processSearchUsersByEmail(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+    protected processSearchUsersByEmail(response: Response): Promise<(UserListDTO | undefined)[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3056,7 +3154,7 @@ export class UsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(AspNetUserListDTO.fromJS(item));
+                    result200!.push(UserListDTO.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3068,10 +3166,10 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+        return Promise.resolve<(UserListDTO | undefined)[]>(null as any);
     }
 
-    searchUsersByLoginProvider(provider: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+    searchUsersByLoginProvider(provider: string | null): Promise<(UserListDTO | undefined)[]> {
         let url_ = this.baseUrl + "/api/Users/search-by-provider?";
         if (provider === undefined)
             throw new Error("The parameter 'provider' must be defined.");
@@ -3091,7 +3189,7 @@ export class UsersClient {
         });
     }
 
-    protected processSearchUsersByLoginProvider(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+    protected processSearchUsersByLoginProvider(response: Response): Promise<(UserListDTO | undefined)[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3102,7 +3200,7 @@ export class UsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(AspNetUserListDTO.fromJS(item));
+                    result200!.push(UserListDTO.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3114,10 +3212,10 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+        return Promise.resolve<(UserListDTO | undefined)[]>(null as any);
     }
 
-    searchUsersByUserName(username: string | null): Promise<(AspNetUserListDTO | undefined)[]> {
+    searchUsersByUserName(username: string | null): Promise<(UserListDTO | undefined)[]> {
         let url_ = this.baseUrl + "/api/Users/search-by-username?";
         if (username === undefined)
             throw new Error("The parameter 'username' must be defined.");
@@ -3137,7 +3235,7 @@ export class UsersClient {
         });
     }
 
-    protected processSearchUsersByUserName(response: Response): Promise<(AspNetUserListDTO | undefined)[]> {
+    protected processSearchUsersByUserName(response: Response): Promise<(UserListDTO | undefined)[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3148,7 +3246,7 @@ export class UsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(AspNetUserListDTO.fromJS(item));
+                    result200!.push(UserListDTO.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3160,7 +3258,7 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<(AspNetUserListDTO | undefined)[]>(null as any);
+        return Promise.resolve<(UserListDTO | undefined)[]>(null as any);
     }
 
     getUserProfile(userId: string | null): Promise<UserProfileDTO> {
@@ -3279,15 +3377,15 @@ export class UsersClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    recoverAccount(command: RecoverAccountCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/Users/recover-account";
+    updateUser(command: UpdateUserCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/update-account";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -3295,11 +3393,11 @@ export class UsersClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRecoverAccount(_response);
+            return this.processUpdateUser(_response);
         });
     }
 
-    protected processRecoverAccount(response: Response): Promise<Result> {
+    protected processUpdateUser(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3316,6 +3414,49 @@ export class UsersClient {
             });
         }
         return Promise.resolve<Result>(null as any);
+    }
+
+    getCoachesList(pageNumber: number, pageSize: number): Promise<PaginatedListOfCoachSummaryDTO> {
+        let url_ = this.baseUrl + "/api/Users/coaches/coaches?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCoachesList(_response);
+        });
+    }
+
+    protected processGetCoachesList(response: Response): Promise<PaginatedListOfCoachSummaryDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfCoachSummaryDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfCoachSummaryDTO>(null as any);
     }
 }
 
@@ -3790,6 +3931,102 @@ export class CoachProfileClient {
             });
         }
         return Promise.resolve<PaginatedListOfCoachApplicationDto>(null as any);
+    }
+}
+
+export class ChatsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getUserChatList(userId: string | null): Promise<Chat[]> {
+        let url_ = this.baseUrl + "/api/Chats/user?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserChatList(_response);
+        });
+    }
+
+    protected processGetUserChatList(response: Response): Promise<Chat[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Chat.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Chat[]>(null as any);
+    }
+
+    createChat(command: CreateChatCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Chats/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateChat(_response);
+        });
+    }
+
+    protected processCreateChat(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
     }
 }
 
@@ -4801,7 +5038,6 @@ export interface IExerciseDTO {
 }
 
 export class CreateExerciseCommand implements ICreateExerciseCommand {
-    createdBy?: string | undefined;
     muscleGroupIds?: number[];
     equipmentId?: number | undefined;
     exerciseName?: string | undefined;
@@ -4821,7 +5057,6 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.createdBy = _data["createdBy"];
             if (Array.isArray(_data["muscleGroupIds"])) {
                 this.muscleGroupIds = [] as any;
                 for (let item of _data["muscleGroupIds"])
@@ -4845,7 +5080,6 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["createdBy"] = this.createdBy;
         if (Array.isArray(this.muscleGroupIds)) {
             data["muscleGroupIds"] = [];
             for (let item of this.muscleGroupIds)
@@ -4862,7 +5096,6 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 }
 
 export interface ICreateExerciseCommand {
-    createdBy?: string | undefined;
     muscleGroupIds?: number[];
     equipmentId?: number | undefined;
     exerciseName?: string | undefined;
@@ -5609,7 +5842,6 @@ export interface IProgramOverviewDto {
 }
 
 export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQuery {
-    userId?: string;
     exerciseIds?: number[];
 
     constructor(data?: IGetWorkoutRecommendationQuery) {
@@ -5623,7 +5855,6 @@ export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQ
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             if (Array.isArray(_data["exerciseIds"])) {
                 this.exerciseIds = [] as any;
                 for (let item of _data["exerciseIds"])
@@ -5641,7 +5872,6 @@ export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQ
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         if (Array.isArray(this.exerciseIds)) {
             data["exerciseIds"] = [];
             for (let item of this.exerciseIds)
@@ -5652,7 +5882,6 @@ export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQ
 }
 
 export interface IGetWorkoutRecommendationQuery {
-    userId?: string;
     exerciseIds?: number[];
 }
 
@@ -5974,6 +6203,9 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
     workoutTemplateLastModifiedByNavigations?: WorkoutTemplate[];
     coachApplications?: CoachApplication[];
     coachApplicationsUpdated?: CoachApplication[];
+    chatLines?: ChatLine[];
+    createdChats?: Chat[];
+    invitedChats?: Chat[];
 
     constructor(data?: IAspNetUser) {
         super(data);
@@ -6074,6 +6306,21 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
                 this.coachApplicationsUpdated = [] as any;
                 for (let item of _data["coachApplicationsUpdated"])
                     this.coachApplicationsUpdated!.push(CoachApplication.fromJS(item));
+            }
+            if (Array.isArray(_data["chatLines"])) {
+                this.chatLines = [] as any;
+                for (let item of _data["chatLines"])
+                    this.chatLines!.push(ChatLine.fromJS(item));
+            }
+            if (Array.isArray(_data["createdChats"])) {
+                this.createdChats = [] as any;
+                for (let item of _data["createdChats"])
+                    this.createdChats!.push(Chat.fromJS(item));
+            }
+            if (Array.isArray(_data["invitedChats"])) {
+                this.invitedChats = [] as any;
+                for (let item of _data["invitedChats"])
+                    this.invitedChats!.push(Chat.fromJS(item));
             }
         }
     }
@@ -6180,6 +6427,21 @@ export class AspNetUser extends IdentityUserOfString implements IAspNetUser {
             for (let item of this.coachApplicationsUpdated)
                 data["coachApplicationsUpdated"].push(item.toJSON());
         }
+        if (Array.isArray(this.chatLines)) {
+            data["chatLines"] = [];
+            for (let item of this.chatLines)
+                data["chatLines"].push(item.toJSON());
+        }
+        if (Array.isArray(this.createdChats)) {
+            data["createdChats"] = [];
+            for (let item of this.createdChats)
+                data["createdChats"].push(item.toJSON());
+        }
+        if (Array.isArray(this.invitedChats)) {
+            data["invitedChats"] = [];
+            for (let item of this.invitedChats)
+                data["invitedChats"].push(item.toJSON());
+        }
         super.toJSON(data);
         return data;
     }
@@ -6211,6 +6473,9 @@ export interface IAspNetUser extends IIdentityUserOfString {
     workoutTemplateLastModifiedByNavigations?: WorkoutTemplate[];
     coachApplications?: CoachApplication[];
     coachApplicationsUpdated?: CoachApplication[];
+    chatLines?: ChatLine[];
+    createdChats?: Chat[];
+    invitedChats?: Chat[];
 }
 
 export class IdentityUserClaimOfString implements IIdentityUserClaimOfString {
@@ -7627,6 +7892,7 @@ export class ProgramEnrollment implements IProgramEnrollment {
     currentWorkoutOrder?: number | undefined;
     program?: Program | undefined;
     user?: AspNetUser | undefined;
+    workoutsProgress?: { [key: string]: WorkoutProgress; };
 
     constructor(data?: IProgramEnrollment) {
         if (data) {
@@ -7649,6 +7915,13 @@ export class ProgramEnrollment implements IProgramEnrollment {
             this.currentWorkoutOrder = _data["currentWorkoutOrder"];
             this.program = _data["program"] ? Program.fromJS(_data["program"]) : <any>undefined;
             this.user = _data["user"] ? AspNetUser.fromJS(_data["user"]) : <any>undefined;
+            if (_data["workoutsProgress"]) {
+                this.workoutsProgress = {} as any;
+                for (let key in _data["workoutsProgress"]) {
+                    if (_data["workoutsProgress"].hasOwnProperty(key))
+                        (<any>this.workoutsProgress)![key] = _data["workoutsProgress"][key] ? WorkoutProgress.fromJS(_data["workoutsProgress"][key]) : new WorkoutProgress();
+                }
+            }
         }
     }
 
@@ -7671,6 +7944,13 @@ export class ProgramEnrollment implements IProgramEnrollment {
         data["currentWorkoutOrder"] = this.currentWorkoutOrder;
         data["program"] = this.program ? this.program.toJSON() : <any>undefined;
         data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        if (this.workoutsProgress) {
+            data["workoutsProgress"] = {};
+            for (let key in this.workoutsProgress) {
+                if (this.workoutsProgress.hasOwnProperty(key))
+                    (<any>data["workoutsProgress"])[key] = this.workoutsProgress[key] ? this.workoutsProgress[key].toJSON() : <any>undefined;
+            }
+        }
         return data;
     }
 }
@@ -7686,6 +7966,51 @@ export interface IProgramEnrollment {
     currentWorkoutOrder?: number | undefined;
     program?: Program | undefined;
     user?: AspNetUser | undefined;
+    workoutsProgress?: { [key: string]: WorkoutProgress; };
+}
+
+export class WorkoutProgress implements IWorkoutProgress {
+    dateCompleted?: Date;
+    status?: string;
+    notes?: string;
+
+    constructor(data?: IWorkoutProgress) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.dateCompleted = _data["dateCompleted"] ? new Date(_data["dateCompleted"].toString()) : <any>undefined;
+            this.status = _data["status"];
+            this.notes = _data["notes"];
+        }
+    }
+
+    static fromJS(data: any): WorkoutProgress {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkoutProgress();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["dateCompleted"] = this.dateCompleted ? this.dateCompleted.toISOString() : <any>undefined;
+        data["status"] = this.status;
+        data["notes"] = this.notes;
+        return data;
+    }
+}
+
+export interface IWorkoutProgress {
+    dateCompleted?: Date;
+    status?: string;
+    notes?: string;
 }
 
 export class ExerciseMuscleGroup implements IExerciseMuscleGroup {
@@ -7931,6 +8256,134 @@ export interface ICoachApplication extends IBaseAuditableEntity {
     status?: string;
     statusReason?: string | undefined;
     statusUpdatedBy?: AspNetUser | undefined;
+}
+
+export class ChatLine implements IChatLine {
+    chatLineId?: number;
+    createdBy?: string;
+    chatId?: number | undefined;
+    chatLineText?: string | undefined;
+    linkUrl?: string | undefined;
+    attachmentPath?: string | undefined;
+    createdAt?: Date;
+    chat?: Chat | undefined;
+    createdByNavigation?: AspNetUser | undefined;
+
+    constructor(data?: IChatLine) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.chatLineId = _data["chatLineId"];
+            this.createdBy = _data["createdBy"];
+            this.chatId = _data["chatId"];
+            this.chatLineText = _data["chatLineText"];
+            this.linkUrl = _data["linkUrl"];
+            this.attachmentPath = _data["attachmentPath"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.chat = _data["chat"] ? Chat.fromJS(_data["chat"]) : <any>undefined;
+            this.createdByNavigation = _data["createdByNavigation"] ? AspNetUser.fromJS(_data["createdByNavigation"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ChatLine {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChatLine();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["chatLineId"] = this.chatLineId;
+        data["createdBy"] = this.createdBy;
+        data["chatId"] = this.chatId;
+        data["chatLineText"] = this.chatLineText;
+        data["linkUrl"] = this.linkUrl;
+        data["attachmentPath"] = this.attachmentPath;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["chat"] = this.chat ? this.chat.toJSON() : <any>undefined;
+        data["createdByNavigation"] = this.createdByNavigation ? this.createdByNavigation.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IChatLine {
+    chatLineId?: number;
+    createdBy?: string;
+    chatId?: number | undefined;
+    chatLineText?: string | undefined;
+    linkUrl?: string | undefined;
+    attachmentPath?: string | undefined;
+    createdAt?: Date;
+    chat?: Chat | undefined;
+    createdByNavigation?: AspNetUser | undefined;
+}
+
+export class Chat implements IChat {
+    chatId?: number;
+    createdBy?: string;
+    targetUserId?: string;
+    createdAt?: Date;
+    chatLines?: ChatLine[];
+
+    constructor(data?: IChat) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.chatId = _data["chatId"];
+            this.createdBy = _data["createdBy"];
+            this.targetUserId = _data["targetUserId"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            if (Array.isArray(_data["chatLines"])) {
+                this.chatLines = [] as any;
+                for (let item of _data["chatLines"])
+                    this.chatLines!.push(ChatLine.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Chat {
+        data = typeof data === 'object' ? data : {};
+        let result = new Chat();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["chatId"] = this.chatId;
+        data["createdBy"] = this.createdBy;
+        data["targetUserId"] = this.targetUserId;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        if (Array.isArray(this.chatLines)) {
+            data["chatLines"] = [];
+            for (let item of this.chatLines)
+                data["chatLines"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IChat {
+    chatId?: number;
+    createdBy?: string;
+    targetUserId?: string;
+    createdAt?: Date;
+    chatLines?: ChatLine[];
 }
 
 export class PaginatedListOfWorkoutLogDTO implements IPaginatedListOfWorkoutLogDTO {
@@ -8478,7 +8931,6 @@ export interface IWorkoutProgramListDTO {
 }
 
 export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand {
-    userId?: string | undefined;
     programName?: string;
     programThumbnail?: string | undefined;
     numberOfWeeks?: number | undefined;
@@ -8502,7 +8954,6 @@ export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             this.programName = _data["programName"];
             this.programThumbnail = _data["programThumbnail"];
             this.numberOfWeeks = _data["numberOfWeeks"];
@@ -8530,7 +8981,6 @@ export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         data["programName"] = this.programName;
         data["programThumbnail"] = this.programThumbnail;
         data["numberOfWeeks"] = this.numberOfWeeks;
@@ -8551,7 +9001,6 @@ export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand
 }
 
 export interface ICreateWorkoutProgramCommand {
-    userId?: string | undefined;
     programName?: string;
     programThumbnail?: string | undefined;
     numberOfWeeks?: number | undefined;
@@ -8882,7 +9331,6 @@ export interface IProgramEnrollmentDTO {
 }
 
 export class EnrollProgramCommand implements IEnrollProgramCommand {
-    userId?: string;
     programId?: number;
 
     constructor(data?: IEnrollProgramCommand) {
@@ -8896,7 +9344,6 @@ export class EnrollProgramCommand implements IEnrollProgramCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             this.programId = _data["programId"];
         }
     }
@@ -8910,19 +9357,16 @@ export class EnrollProgramCommand implements IEnrollProgramCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         data["programId"] = this.programId;
         return data;
     }
 }
 
 export interface IEnrollProgramCommand {
-    userId?: string;
     programId?: number;
 }
 
 export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCommand {
-    userToken?: string;
     templateName?: string | undefined;
     duration?: string | undefined;
     workoutTemplateExercises?: PersonalTemplateExerciseDto[];
@@ -8938,7 +9382,6 @@ export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCom
 
     init(_data?: any) {
         if (_data) {
-            this.userToken = _data["userToken"];
             this.templateName = _data["templateName"];
             this.duration = _data["duration"];
             if (Array.isArray(_data["workoutTemplateExercises"])) {
@@ -8958,7 +9401,6 @@ export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCom
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userToken"] = this.userToken;
         data["templateName"] = this.templateName;
         data["duration"] = this.duration;
         if (Array.isArray(this.workoutTemplateExercises)) {
@@ -8971,7 +9413,6 @@ export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCom
 }
 
 export interface ICreatePersonalTemplateCommand {
-    userToken?: string;
     templateName?: string | undefined;
     duration?: string | undefined;
     workoutTemplateExercises?: PersonalTemplateExerciseDto[];
@@ -9609,6 +10050,7 @@ export class RegisterCommand implements IRegisterCommand {
     email?: string;
     password?: string;
     userName?: string;
+    phoneNumber?: string;
 
     constructor(data?: IRegisterCommand) {
         if (data) {
@@ -9624,6 +10066,7 @@ export class RegisterCommand implements IRegisterCommand {
             this.email = _data["email"];
             this.password = _data["password"];
             this.userName = _data["userName"];
+            this.phoneNumber = _data["phoneNumber"];
         }
     }
 
@@ -9639,6 +10082,7 @@ export class RegisterCommand implements IRegisterCommand {
         data["email"] = this.email;
         data["password"] = this.password;
         data["userName"] = this.userName;
+        data["phoneNumber"] = this.phoneNumber;
         return data;
     }
 }
@@ -9647,17 +10091,138 @@ export interface IRegisterCommand {
     email?: string;
     password?: string;
     userName?: string;
+    phoneNumber?: string;
 }
 
-export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetUserListDTO {
-    items?: AspNetUserListDTO[];
+export class ConfirmEmailCommand implements IConfirmEmailCommand {
+    token?: string;
+    email?: string;
+
+    constructor(data?: IConfirmEmailCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.token = _data["token"];
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): ConfirmEmailCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConfirmEmailCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["token"] = this.token;
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface IConfirmEmailCommand {
+    token?: string;
+    email?: string;
+}
+
+export class RecoverAccountCommand implements IRecoverAccountCommand {
+    email?: string;
+
+    constructor(data?: IRecoverAccountCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): RecoverAccountCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecoverAccountCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface IRecoverAccountCommand {
+    email?: string;
+}
+
+export class ResetPasswordCommand implements IResetPasswordCommand {
+    token!: string;
+    email!: string;
+    password!: string;
+
+    constructor(data?: IResetPasswordCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.token = _data["token"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): ResetPasswordCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResetPasswordCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["token"] = this.token;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface IResetPasswordCommand {
+    token: string;
+    email: string;
+    password: string;
+}
+
+export class PaginatedListOfUserListDTO implements IPaginatedListOfUserListDTO {
+    items?: UserListDTO[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
 
-    constructor(data?: IPaginatedListOfAspNetUserListDTO) {
+    constructor(data?: IPaginatedListOfUserListDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -9671,7 +10236,7 @@ export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetU
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items!.push(AspNetUserListDTO.fromJS(item));
+                    this.items!.push(UserListDTO.fromJS(item));
             }
             this.pageNumber = _data["pageNumber"];
             this.totalPages = _data["totalPages"];
@@ -9681,9 +10246,9 @@ export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetU
         }
     }
 
-    static fromJS(data: any): PaginatedListOfAspNetUserListDTO {
+    static fromJS(data: any): PaginatedListOfUserListDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfAspNetUserListDTO();
+        let result = new PaginatedListOfUserListDTO();
         result.init(data);
         return result;
     }
@@ -9704,8 +10269,8 @@ export class PaginatedListOfAspNetUserListDTO implements IPaginatedListOfAspNetU
     }
 }
 
-export interface IPaginatedListOfAspNetUserListDTO {
-    items?: AspNetUserListDTO[];
+export interface IPaginatedListOfUserListDTO {
+    items?: UserListDTO[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
@@ -9713,18 +10278,16 @@ export interface IPaginatedListOfAspNetUserListDTO {
     hasNextPage?: boolean;
 }
 
-export class AspNetUserListDTO implements IAspNetUserListDTO {
+export class UserListDTO implements IUserListDTO {
     id!: string;
     userName?: string | undefined;
     email?: string | undefined;
     emailConfirmed?: boolean;
     phoneNumber?: string | undefined;
-    phoneNumberConfirmed?: boolean;
-    lockoutEnd?: Date | undefined;
-    lockoutEnabled?: boolean;
-    accessFailedCount?: number;
+    isRestricted?: boolean | undefined;
+    roles?: string[];
 
-    constructor(data?: IAspNetUserListDTO) {
+    constructor(data?: IUserListDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -9740,16 +10303,18 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
             this.email = _data["email"];
             this.emailConfirmed = _data["emailConfirmed"];
             this.phoneNumber = _data["phoneNumber"];
-            this.phoneNumberConfirmed = _data["phoneNumberConfirmed"];
-            this.lockoutEnd = _data["lockoutEnd"] ? new Date(_data["lockoutEnd"].toString()) : <any>undefined;
-            this.lockoutEnabled = _data["lockoutEnabled"];
-            this.accessFailedCount = _data["accessFailedCount"];
+            this.isRestricted = _data["IsRestricted"];
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(item);
+            }
         }
     }
 
-    static fromJS(data: any): AspNetUserListDTO {
+    static fromJS(data: any): UserListDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new AspNetUserListDTO();
+        let result = new UserListDTO();
         result.init(data);
         return result;
     }
@@ -9761,24 +10326,24 @@ export class AspNetUserListDTO implements IAspNetUserListDTO {
         data["email"] = this.email;
         data["emailConfirmed"] = this.emailConfirmed;
         data["phoneNumber"] = this.phoneNumber;
-        data["phoneNumberConfirmed"] = this.phoneNumberConfirmed;
-        data["lockoutEnd"] = this.lockoutEnd ? this.lockoutEnd.toISOString() : <any>undefined;
-        data["lockoutEnabled"] = this.lockoutEnabled;
-        data["accessFailedCount"] = this.accessFailedCount;
+        data["IsRestricted"] = this.isRestricted;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item);
+        }
         return data;
     }
 }
 
-export interface IAspNetUserListDTO {
+export interface IUserListDTO {
     id: string;
     userName?: string | undefined;
     email?: string | undefined;
     emailConfirmed?: boolean;
     phoneNumber?: string | undefined;
-    phoneNumberConfirmed?: boolean;
-    lockoutEnd?: Date | undefined;
-    lockoutEnabled?: boolean;
-    accessFailedCount?: number;
+    isRestricted?: boolean | undefined;
+    roles?: string[];
 }
 
 export class UserProfileDTO implements IUserProfileDTO {
@@ -10117,10 +10682,45 @@ export interface ICreateUserCommand {
     role?: string;
 }
 
-export class RecoverAccountCommand implements IRecoverAccountCommand {
-    email?: string;
+export class UpdateUserCommand implements IUpdateUserCommand {
 
-    constructor(data?: IRecoverAccountCommand) {
+    constructor(data?: IUpdateUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): UpdateUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IUpdateUserCommand {
+}
+
+export class PaginatedListOfCoachSummaryDTO implements IPaginatedListOfCoachSummaryDTO {
+    items?: CoachSummaryDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfCoachSummaryDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -10131,26 +10731,113 @@ export class RecoverAccountCommand implements IRecoverAccountCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.email = _data["email"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CoachSummaryDTO.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
         }
     }
 
-    static fromJS(data: any): RecoverAccountCommand {
+    static fromJS(data: any): PaginatedListOfCoachSummaryDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new RecoverAccountCommand();
+        let result = new PaginatedListOfCoachSummaryDTO();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["email"] = this.email;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
         return data;
     }
 }
 
-export interface IRecoverAccountCommand {
-    email?: string;
+export interface IPaginatedListOfCoachSummaryDTO {
+    items?: CoachSummaryDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class CoachSummaryDTO implements ICoachSummaryDTO {
+    fullName?: string;
+    profilePicture?: string | undefined;
+    bio?: string | undefined;
+    majorAchievement?: string | undefined;
+    instagramLink?: string | undefined;
+    youTubeLink?: string | undefined;
+    patreonLink?: string | undefined;
+    programsCount?: string | undefined;
+
+    constructor(data?: ICoachSummaryDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fullName = _data["fullName"];
+            this.profilePicture = _data["profilePicture"];
+            this.bio = _data["bio"];
+            this.majorAchievement = _data["majorAchievement"];
+            this.instagramLink = _data["instagramLink"];
+            this.youTubeLink = _data["youTubeLink"];
+            this.patreonLink = _data["patreonLink"];
+            this.programsCount = _data["programsCount"];
+        }
+    }
+
+    static fromJS(data: any): CoachSummaryDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new CoachSummaryDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fullName"] = this.fullName;
+        data["profilePicture"] = this.profilePicture;
+        data["bio"] = this.bio;
+        data["majorAchievement"] = this.majorAchievement;
+        data["instagramLink"] = this.instagramLink;
+        data["youTubeLink"] = this.youTubeLink;
+        data["patreonLink"] = this.patreonLink;
+        data["programsCount"] = this.programsCount;
+        return data;
+    }
+}
+
+export interface ICoachSummaryDTO {
+    fullName?: string;
+    profilePicture?: string | undefined;
+    bio?: string | undefined;
+    majorAchievement?: string | undefined;
+    instagramLink?: string | undefined;
+    youTubeLink?: string | undefined;
+    patreonLink?: string | undefined;
+    programsCount?: string | undefined;
 }
 
 export class CoachingServiceDetailsDto implements ICoachingServiceDetailsDto {
@@ -10695,6 +11382,46 @@ export interface ICoachApplicationDto {
     lastModified?: Date;
     applicantName?: string;
     applicantEmail?: string;
+}
+
+export class CreateChatCommand implements ICreateChatCommand {
+    userId?: string;
+    targetUserId?: string;
+
+    constructor(data?: ICreateChatCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.targetUserId = _data["targetUserId"];
+        }
+    }
+
+    static fromJS(data: any): CreateChatCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateChatCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["targetUserId"] = this.targetUserId;
+        return data;
+    }
+}
+
+export interface ICreateChatCommand {
+    userId?: string;
+    targetUserId?: string;
 }
 
 function formatDate(d: Date) {

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FitLog.Application.Users.Queries.GetAccountByEmail;
 
-public record GetAccountsByEmailQuery : IRequest<IEnumerable<AspNetUserListDTO>?>
+public record GetAccountsByEmailQuery : IRequest<IEnumerable<UserListDTO>?>
 {
     public string Email { get; set; } = string.Empty;
 }
@@ -17,7 +17,7 @@ public class GetAccountsByEmailQueryValidator : AbstractValidator<GetAccountsByE
     }
 }
 
-public class GetAccountsByEmailQueryHandler : IRequestHandler<GetAccountsByEmailQuery, IEnumerable<AspNetUserListDTO>?>
+public class GetAccountsByEmailQueryHandler : IRequestHandler<GetAccountsByEmailQuery, IEnumerable<UserListDTO>?>
 {
     private readonly UserManager<AspNetUser> _userManager;
     private readonly IMapper _mapper;
@@ -28,9 +28,10 @@ public class GetAccountsByEmailQueryHandler : IRequestHandler<GetAccountsByEmail
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<AspNetUserListDTO>?> Handle(GetAccountsByEmailQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserListDTO>?> Handle(GetAccountsByEmailQuery request, CancellationToken cancellationToken)
     {
         var users = await _userManager.Users
+
                 .Where(u => (u.Email ?? "").Contains(request.Email))
                 .ToListAsync(cancellationToken);
 
@@ -39,7 +40,7 @@ public class GetAccountsByEmailQueryHandler : IRequestHandler<GetAccountsByEmail
             return null;
         }
 
-        var userDtos = _mapper.Map<List<AspNetUserListDTO>>(users);
+        var userDtos = _mapper.Map<List<UserListDTO>>(users);
         return userDtos;
     }
 }

@@ -136,3 +136,16 @@
     text-align: center;
     font-size: 50px;
 }
+
+
+.typography-black {
+    color: black;
+}
+
+.signin-link {
+    text-align: center;
+}
+
+.container {
+    margin-top: 30px;
+}

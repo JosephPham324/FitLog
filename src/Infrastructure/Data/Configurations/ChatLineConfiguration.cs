@@ -19,10 +19,18 @@ namespace FitLog.Infrastructure.Data.Configurations
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             builder.Property(e => e.LinkUrl).HasMaxLength(255);
+            builder.Property(e => e.ChatLineText).HasMaxLength(1000);
+            builder.Property(e => e.CreatedBy).IsRequired().HasMaxLength(450);
 
-            builder.HasOne(d => d.Chat).WithMany(p => p.ChatLines)
+            builder.HasOne(d => d.Chat)
+                .WithMany(p => p.ChatLines)
                 .HasForeignKey(d => d.ChatId)
                 .HasConstraintName("FK__ChatLine__ChatID__6754599E");
+
+            builder.HasOne(d => d.CreatedByNavigation)
+                .WithMany(p => p.ChatLines)
+                .HasForeignKey(d => d.CreatedBy)
+                .HasConstraintName("FK__ChatLine__CreatedBy__6754599F");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Application.TrainingSurvey.Queries.GetUserTrainingSurvey;
 using FitLog.Application.Use_Cases.CoachProfiles.Queries.GetCoachProfileDetails;
 using FitLog.Domain.Constants;
@@ -8,6 +9,7 @@ namespace FitLog.Application.TrainingRecommendation.Queries.GetProgramRecommenda
 
 public record GetProgramRecommendationsQuery : IRequest<List<ProgramOverviewDto>>
 {
+    [JsonIgnore]
     public string UserId { get; init; } = string.Empty;
 }
 
