@@ -29,7 +29,11 @@ public class Exercises : EndpointGroupBase
         app.MapGroup(this)
             .MapGet(GetExercisesWithPagination, "paginated-all")
             .MapGet(GetExerciseTypes, "exercise-types")
-            .MapGet(GetExerciseById, "{id}")
+            .MapGet(GetExerciseById, "{id}");
+
+        app.MapGroup(this)
+            .RequireAuthorization("AdminOnly")
+            .RequireAuthorization("CoachOnly")
             .MapPost(CreateExercise)
             .MapPost(ImportExercises, "import-exercises")
             .MapPut(UpdateExercise, "{id}")

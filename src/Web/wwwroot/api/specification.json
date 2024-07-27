@@ -736,38 +736,6 @@
         }
       }
     },
-    "/api/MuscleGroups/create": {
-      "post": {
-        "tags": [
-          "MuscleGroups"
-        ],
-        "operationId": "CreateMuscleGroup",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMuscleGroupCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/MuscleGroups/get-list": {
       "get": {
         "tags": [
@@ -840,6 +808,38 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/DeleteMuscleGroupCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MuscleGroups/create": {
+      "post": {
+        "tags": [
+          "MuscleGroups"
+        ],
+        "operationId": "CreateMuscleGroup",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMuscleGroupCommand"
               }
             }
           },
@@ -1451,7 +1451,12 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkoutLogDTO"
+                  }
+                }
               }
             }
           }
@@ -1463,7 +1468,7 @@
         "tags": [
           "WorkoutLog"
         ],
-        "operationId": "CreateExerciseLog",
+        "operationId": "CreateWorkoutLog",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -1576,6 +1581,58 @@
         }
       }
     },
+    "/api/WorkoutLog/export": {
+      "get": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "ExportWorkotuData",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/WorkoutPrograms/details/{id}": {
       "get": {
         "tags": [
@@ -1622,9 +1679,7 @@
             }
           }
         }
-      }
-    },
-    "/api/WorkoutPrograms/create-program": {
+      },
       "post": {
         "tags": [
           "WorkoutPrograms"
@@ -1656,7 +1711,7 @@
         }
       }
     },
-    "/api/WorkoutPrograms/update/{id}": {
+    "/api/WorkoutPrograms/{id}": {
       "put": {
         "tags": [
           "WorkoutPrograms"
@@ -1691,9 +1746,7 @@
             "description": ""
           }
         }
-      }
-    },
-    "/api/WorkoutPrograms/delete/{id}": {
+      },
       "delete": {
         "tags": [
           "WorkoutPrograms"
@@ -1718,7 +1771,7 @@
         }
       }
     },
-    "/api/WorkoutPrograms/enrollments": {
+    "/api/WorkoutPrograms/enrollments/user": {
       "get": {
         "tags": [
           "WorkoutPrograms"
@@ -1741,7 +1794,7 @@
         }
       }
     },
-    "/api/WorkoutPrograms/{id}/enroll": {
+    "/api/WorkoutPrograms/enroll/{id}": {
       "post": {
         "tags": [
           "WorkoutPrograms"
@@ -3886,20 +3939,6 @@
           }
         }
       },
-      "CreateMuscleGroupCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "muscleGroupName": {
-            "type": "string",
-            "nullable": true
-          },
-          "imageUrl": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
       "PaginatedListOfMuscleGroupDTO": {
         "type": "object",
         "additionalProperties": false,
@@ -3956,6 +3995,20 @@
             "type": "integer",
             "format": "int32"
           },
+          "muscleGroupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateMuscleGroupCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
           "muscleGroupName": {
             "type": "string",
             "nullable": true

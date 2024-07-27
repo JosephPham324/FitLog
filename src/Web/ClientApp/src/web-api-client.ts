@@ -943,45 +943,6 @@ export class MuscleGroupsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createMuscleGroup(command: CreateMuscleGroupCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/MuscleGroups/create";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateMuscleGroup(_response);
-        });
-    }
-
-    protected processCreateMuscleGroup(response: Response): Promise<Result> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
     getMuscleGroupsList(pageNumber: number, pageSize: number): Promise<PaginatedListOfMuscleGroupDTO> {
         let url_ = this.baseUrl + "/api/MuscleGroups/get-list?";
         if (pageNumber === undefined || pageNumber === null)
@@ -1081,6 +1042,45 @@ export class MuscleGroupsClient {
     }
 
     protected processDeleteMuscleGroup(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    createMuscleGroup(command: CreateMuscleGroupCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/MuscleGroups/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateMuscleGroup(_response);
+        });
+    }
+
+    protected processCreateMuscleGroup(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1816,7 +1816,7 @@ export class WorkoutLogClient {
         return Promise.resolve<PaginatedListOfWorkoutLogDTO>(null as any);
     }
 
-    getWorkoutHistory(userId: string | null, startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<any> {
+    getWorkoutHistory(userId: string | null, startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<WorkoutLogDTO[]> {
         let url_ = this.baseUrl + "/api/WorkoutLog/history?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
@@ -1840,7 +1840,7 @@ export class WorkoutLogClient {
         });
     }
 
-    protected processGetWorkoutHistory(response: Response): Promise<any> {
+    protected processGetWorkoutHistory(response: Response): Promise<WorkoutLogDTO[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1848,8 +1848,14 @@ export class WorkoutLogClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(WorkoutLogDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1857,10 +1863,10 @@ export class WorkoutLogClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<WorkoutLogDTO[]>(null as any);
     }
 
-    createExerciseLog(command: CreateWorkoutLogCommand): Promise<Result> {
+    createWorkoutLog(command: CreateWorkoutLogCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutLog";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1876,11 +1882,11 @@ export class WorkoutLogClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateExerciseLog(_response);
+            return this.processCreateWorkoutLog(_response);
         });
     }
 
-    protected processCreateExerciseLog(response: Response): Promise<Result> {
+    protected processCreateWorkoutLog(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1982,6 +1988,50 @@ export class WorkoutLogClient {
         }
         return Promise.resolve<Result>(null as any);
     }
+
+    exportWorkotuData(userId: string | null, startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/WorkoutLog/export?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        if (startDate !== undefined && startDate !== null)
+            url_ += "StartDate=" + encodeURIComponent(startDate ? "" + startDate.toISOString() : "") + "&";
+        if (endDate !== undefined && endDate !== null)
+            url_ += "EndDate=" + encodeURIComponent(endDate ? "" + endDate.toISOString() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processExportWorkotuData(_response);
+        });
+    }
+
+    protected processExportWorkotuData(response: Response): Promise<string> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
 }
 
 export class WorkoutProgramsClient {
@@ -2071,7 +2121,7 @@ export class WorkoutProgramsClient {
     }
 
     createWorkoutProgram(command: CreateWorkoutProgramCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/create-program";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -2110,7 +2160,7 @@ export class WorkoutProgramsClient {
     }
 
     updateWorkoutProgram(id: number, command: UpdateWorkoutProgramCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/update/{id}";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2148,7 +2198,7 @@ export class WorkoutProgramsClient {
     }
 
     deleteWorkoutProgram(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/delete/{id}";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2182,7 +2232,7 @@ export class WorkoutProgramsClient {
     }
 
     getEnrollmentsByUser(): Promise<ProgramEnrollmentDTO[]> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments/user";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2224,7 +2274,7 @@ export class WorkoutProgramsClient {
     }
 
     enrollProgram(id: number, command: EnrollProgramCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}/enroll";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/enroll/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -5371,46 +5421,6 @@ export interface IDeleteExerciseCommand {
     exerciseId?: number;
 }
 
-export class CreateMuscleGroupCommand implements ICreateMuscleGroupCommand {
-    muscleGroupName?: string | undefined;
-    imageUrl?: string | undefined;
-
-    constructor(data?: ICreateMuscleGroupCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.muscleGroupName = _data["muscleGroupName"];
-            this.imageUrl = _data["imageUrl"];
-        }
-    }
-
-    static fromJS(data: any): CreateMuscleGroupCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateMuscleGroupCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["muscleGroupName"] = this.muscleGroupName;
-        data["imageUrl"] = this.imageUrl;
-        return data;
-    }
-}
-
-export interface ICreateMuscleGroupCommand {
-    muscleGroupName?: string | undefined;
-    imageUrl?: string | undefined;
-}
-
 export class PaginatedListOfMuscleGroupDTO implements IPaginatedListOfMuscleGroupDTO {
     items?: MuscleGroupDTO[];
     pageNumber?: number;
@@ -5559,6 +5569,46 @@ export class MuscleGroupDTO2 implements IMuscleGroupDTO2 {
 
 export interface IMuscleGroupDTO2 {
     muscleGroupId?: number;
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+}
+
+export class CreateMuscleGroupCommand implements ICreateMuscleGroupCommand {
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+
+    constructor(data?: ICreateMuscleGroupCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.muscleGroupName = _data["muscleGroupName"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): CreateMuscleGroupCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMuscleGroupCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["muscleGroupName"] = this.muscleGroupName;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface ICreateMuscleGroupCommand {
     muscleGroupName?: string | undefined;
     imageUrl?: string | undefined;
 }
