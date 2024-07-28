@@ -132,7 +132,13 @@ export const NavMenu = () => {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <button className="btn btn-link nav-link text-white" onClick={logout}><b>Logout</b></button>
+                  <button
+                    className="btn btn-link nav-link text-white"
+                    style={{ backgroundColor: '#3971a1' }}
+                    onClick={logout}
+                  >
+                    <b>Logout</b>
+                  </button>
                 </NavItem>
               </>
             )}

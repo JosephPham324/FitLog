@@ -1,5 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
 import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import './WorkoutProgramsPage.css';
 
 export const WorkoutProgramsPage = () => {
@@ -40,7 +41,7 @@ export const WorkoutProgramsPage = () => {
       <h1 className="title"><strong>Workout Programs</strong></h1>
       <div className="programs-grid">
         {programs.map((program) => (
-          <div key={program.programId} className="program-card">
+          <Link to={`/program-details/${program.programId}`} key={program.programId} className="program-card">
             <img src={program.programThumbnail} alt={program.programName} className="program-image" />
             <div className="program-details">
               <h2 className="program-name">{program.programName}</h2>
@@ -52,7 +53,7 @@ export const WorkoutProgramsPage = () => {
               <p className="program-public"><strong>Public Program:</strong> {program.publicProgram ? 'Yes' : 'No'}</p>
               <p className="program-creator"><strong>Created by:</strong> {program.userName}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

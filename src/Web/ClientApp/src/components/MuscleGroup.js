@@ -1,8 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap';
+import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
 import './MuscleGroup.css';
 
-const apiUrl = 'https://localhost:44447/api/MuscleGroups';
+const apiUrl = '/MuscleGroups';
 
 export function MuscleGroup() {
   const [muscleGroups, setMuscleGroups] = useState([]);
@@ -14,6 +15,8 @@ export function MuscleGroup() {
   const [editGroupId, setEditGroupId] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
+  const [imageErrorMessage, setImageErrorMessage] = useState('');
   const rowsPerPage = 5;
 
   useEffect(() => {
@@ -22,13 +25,15 @@ export function MuscleGroup() {
 
   const fetchMuscleGroups = async (page, searchTerm) => {
     try {
-      const response = await fetch(`${apiUrl}/get-list?PageNumber=${page}&PageSize=${rowsPerPage}&searchTerm=${searchTerm}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch muscle groups');
-      }
-      const data = await response.json();
-      setMuscleGroups(data.items);
-      setTotalPages(data.totalPages);
+      const response = await axiosInstance.get(`${apiUrl}/get-list`, {
+        params: {
+          PageNumber: page,
+          PageSize: rowsPerPage,
+          searchTerm: searchTerm
+        }
+      });
+      setMuscleGroups(response.data.items);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Error fetching muscle groups:', error);
     }
@@ -39,33 +44,46 @@ export function MuscleGroup() {
     if (!createModal) {
       setNewGroupName('');
       setNewGroupImage('');
+      setNameErrorMessage('');
+      setImageErrorMessage('');
     }
   };
 
   const toggleUpdateModal = () => {
     setUpdateModal(!updateModal);
+    if (!updateModal) {
+      setNameErrorMessage('');
+      setImageErrorMessage('');
+    }
+  };
+
+  const validateInput = () => {
+    let valid = true;
+    if (!newGroupName) {
+      setNameErrorMessage('Muscle group name is required');
+      valid = false;
+    } else {
+      setNameErrorMessage('');
+    }
+    if (!newGroupImage) {
+      setImageErrorMessage('Muscle group image URL is required');
+      valid = false;
+    } else {
+      setImageErrorMessage('');
+    }
+    return valid;
   };
 
   const createMuscleGroup = async () => {
+    if (!validateInput()) {
+      return;
+    }
+
     try {
-      if (!newGroupName) {
-        throw new Error('Muscle group name is required');
-      }
-
-      const response = await fetch(`${apiUrl}/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          MuscleGroupName: newGroupName,
-          ImageUrl: newGroupImage
-        })
+      await axiosInstance.post(`${apiUrl}/create`, {
+        MuscleGroupName: newGroupName,
+        ImageUrl: newGroupImage
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to create muscle group');
-      }
 
       fetchMuscleGroups(currentPage, searchTerm);
       toggleCreateModal();
@@ -76,26 +94,20 @@ export function MuscleGroup() {
   };
 
   const updateMuscleGroup = async () => {
+    if (!window.confirm('Are you sure you want to update this muscle group?')) {
+      return;
+    }
+
+    if (!validateInput() || !editGroupId) {
+      return;
+    }
+
     try {
-      if (!newGroupName || !editGroupId) {
-        throw new Error('Muscle group name and ID are required');
-      }
-
-      const response = await fetch(`${apiUrl}/${editGroupId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: editGroupId,
-          MuscleGroupName: newGroupName,
-          ImageUrl: newGroupImage
-        })
+      await axiosInstance.put(`${apiUrl}/${editGroupId}`, {
+        id: editGroupId,
+        MuscleGroupName: newGroupName,
+        ImageUrl: newGroupImage
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update muscle group');
-      }
 
       fetchMuscleGroups(currentPage, searchTerm);
       toggleUpdateModal();
@@ -106,20 +118,16 @@ export function MuscleGroup() {
   };
 
   const deleteMuscleGroup = async (id) => {
-    try {
-      const response = await fetch(`${apiUrl}/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: id,
-        })
-      });
+    if (!window.confirm('Are you sure you want to delete this muscle group?')) {
+      return;
+    }
 
-      if (!response.ok) {
-        throw new Error('Failed to delete muscle group');
-      }
+    try {
+      await axiosInstance.delete(`${apiUrl}/${id}`, {
+        data: {
+          "id": id,
+        },
+      });
 
       fetchMuscleGroups(currentPage, searchTerm);
     } catch (error) {
@@ -187,6 +195,7 @@ export function MuscleGroup() {
                 value={newGroupName}
                 onChange={(e) => setNewGroupName(e.target.value)}
               />
+              {nameErrorMessage && <Alert color="danger">{nameErrorMessage}</Alert>}
             </FormGroup>
             <FormGroup>
               <Label for="newGroupImage">Image URL</Label>
@@ -196,6 +205,7 @@ export function MuscleGroup() {
                 value={newGroupImage}
                 onChange={(e) => setNewGroupImage(e.target.value)}
               />
+              {imageErrorMessage && <Alert color="danger">{imageErrorMessage}</Alert>}
             </FormGroup>
           </Form>
         </ModalBody>
@@ -218,6 +228,7 @@ export function MuscleGroup() {
                 value={newGroupName}
                 onChange={(e) => setNewGroupName(e.target.value)}
               />
+              {nameErrorMessage && <Alert color="danger">{nameErrorMessage}</Alert>}
             </FormGroup>
             <FormGroup>
               <Label for="newGroupImage">Image URL</Label>
@@ -227,6 +238,7 @@ export function MuscleGroup() {
                 value={newGroupImage}
                 onChange={(e) => setNewGroupImage(e.target.value)}
               />
+              {imageErrorMessage && <Alert color="danger">{imageErrorMessage}</Alert>}
             </FormGroup>
           </Form>
         </ModalBody>
