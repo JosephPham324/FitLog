@@ -33,10 +33,12 @@ public class MuscleGroups : EndpointGroupBase
     {
         //Get data
         app.MapGroup(this)
+            //All users can view data
             .MapGet(GetMuscleGroupsList, "get-list")
             .MapGet(GetMuscleGroupsById, "{id}");
         //Changes data
         app.MapGroup(this)
+            //Only admin can change data
             .RequireAuthorization("AdminOnly")
             .MapPost(CreateMuscleGroup, "create")
             .MapPut(UpdateMuscleGroup, "{id}")

@@ -49,9 +49,9 @@ public class WorkoutLog : EndpointGroupBase
         return result;
     }
 
-    public Task<Result> CreateWorkoutLog(ISender sender, [FromBody] CreateWorkoutLogCommand command)
+    public Task<Result> CreateWorkoutLog(ISender sender, [FromBody] CreateWorkoutLogCommandDTO commandDTO)
     {
-        command.CreatedBy = _identityService.Id ?? "";
+        CreateWorkoutLogCommand command = new CreateWorkoutLogCommand(_identityService.Id ?? "", commandDTO); ;
 
         return sender.Send(command);
     }

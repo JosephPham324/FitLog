@@ -6,6 +6,12 @@ using FitLog.Application.ExerciseLogs.Commands.CreateExerciseLogs;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
+public record CreateWorkoutLogCommandDTO
+{
+    public string? Note { get; init; }
+    public TimeOnly? Duration { get; init; }
+    public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
+}
 
 public record CreateWorkoutLogCommand : IRequest<Result>
 {
@@ -14,6 +20,14 @@ public record CreateWorkoutLogCommand : IRequest<Result>
     public string? Note { get; init; }
     public TimeOnly? Duration { get; init; }
     public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
+
+    public CreateWorkoutLogCommand(string createdBy, CreateWorkoutLogCommandDTO dto)
+    {
+        CreatedBy = createdBy;
+        Note = dto.Note;
+        Duration = dto.Duration;
+        ExerciseLogs = dto.ExerciseLogs;
+    }
 }
 
 public record CreateExerciseLogCommand : IRequest<Result>
@@ -23,7 +37,9 @@ public record CreateExerciseLogCommand : IRequest<Result>
     public int? OrderInSuperset { get; init; }
     public string? Note { get; init; }
     public int? NumberOfSets { get; init; }
+    [JsonIgnore]
     public List<int>? WeightsUsedValue { get; set; }
+    [JsonIgnore]
     public List<int>? NumberOfRepsValue { get; set; }
 
     public string? WeightsUsed

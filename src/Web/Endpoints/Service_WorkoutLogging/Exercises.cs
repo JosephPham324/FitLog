@@ -27,13 +27,14 @@ public class Exercises : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            //All users can get exercise information
             .MapGet(GetExercisesWithPagination, "paginated-all")
             .MapGet(GetExerciseTypes, "exercise-types")
             .MapGet(GetExerciseById, "{id}");
 
         app.MapGroup(this)
-            .RequireAuthorization("AdminOnly")
-            .RequireAuthorization("CoachOnly")
+            .RequireAuthorization("AdminOrCoach")
+            //Admin and coach add, update, delete exercises
             .MapPost(CreateExercise)
             .MapPost(ImportExercises, "import-exercises")
             .MapPut(UpdateExercise, "{id}")

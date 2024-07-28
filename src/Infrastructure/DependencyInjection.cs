@@ -89,8 +89,12 @@ public static class DependencyInjection
         {
             options.DefaultPolicy = new AuthorizationPolicyBuilder()
                .RequireAuthenticatedUser()
-               .RequireRole("Member")
                .Build();
+
+            options.AddPolicy("MemberOnly", policy =>
+            {
+                policy.RequireRole(Roles.Administrator);
+            });
 
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
 

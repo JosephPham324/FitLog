@@ -49,31 +49,6 @@ public class ExportWorkoutDataQueryHandler : IRequestHandler<ExportWorkoutDataQu
             .ThenInclude(el => el.Exercise)
             .ToListAsync(cancellationToken);
 
-        var result = new StringBuilder();
-
-        foreach (var log in workoutLogs)
-        {
-            result.AppendLine($"{log.Created:yyyy/MM/dd}");
-            result.AppendLine($"Note: {log.Note}");
-            result.AppendLine("Exercise\tSets\tWeight\tReps\tNote");
-
-            foreach (var exerciseLog in log.ExerciseLogs)
-            {
-                if (exerciseLog is null) continue;
-                var exerciseName = exerciseLog.Exercise?.ExerciseName;
-                var note = exerciseLog.Note;
-                var order = exerciseLog.OrderInSession;
-
-                var sets = exerciseLog.NumberOfSets;
-                var weights = string.Join("/", exerciseLog.WeightsUsed?.Trim('[', ']').Split(',').Select(w => $"{w}kg") ?? Array.Empty<string>());
-                var reps = string.Join("/", exerciseLog.NumberOfReps?.Trim('[', ']').Split(',') ?? Array.Empty<string>());
-
-                result.AppendLine($"{exerciseName}\t{order}\t{sets}\t{weights}\t{reps}\t{note}");
-            }
-
-            result.AppendLine();
-        }
-
         return FormatWorkoutLogs(workoutLogs);
     }
 
@@ -85,18 +60,43 @@ public class ExportWorkoutDataQueryHandler : IRequestHandler<ExportWorkoutDataQu
 
         foreach (var log in workoutLogs)
         {
-            foreach (var exerciseGroup in log.ExerciseLogs.GroupBy(el => el.ExerciseId))
+            foreach (var exerciseLog in log.ExerciseLogs)
             {
-                var firstExerciseLog = exerciseGroup.First();
-                var exerciseName = firstExerciseLog.Exercise?.ExerciseName;
-                var note = firstExerciseLog.Note;
-                var order = firstExerciseLog.OrderInSession;
+                var exerciseName = exerciseLog.Exercise?.ExerciseName;
+                var note = exerciseLog.Note;
+                var order = exerciseLog.OrderInSession;
 
-                var sets = exerciseGroup.Sum(el => el.NumberOfSets);
-                var weights = string.Join("/", exerciseGroup.SelectMany(el => el.WeightsUsed?.Trim('[', ']').Split(',').Select(w => $"{w}kg") ?? Array.Empty<string>()));
-                var reps = string.Join("/", exerciseGroup.SelectMany(el => el.NumberOfReps?.Trim('[', ']').Split(',') ?? Array.Empty<string>()));
+                var sets = exerciseLog.NumberOfSets;
 
-                result.AppendLine($"{log.Created:yyyy-MM-dd},{log.Note},{exerciseName},{order},{sets},{weights},{reps},{note}");
+                List<string> setLog = new List<string>();
+                for (int i = 0; i < sets; i++)
+                {
+                    string weight;
+                    string reps;
+                    if (exerciseLog.WeightsUsedValue == null || i < exerciseLog.WeightsUsedValue.Count == false)
+                    {
+                        weight = "No weight";
+                    } else
+                    {
+                        weight = exerciseLog.WeightsUsedValue[i] + "kg";
+                    }
+
+                    if (exerciseLog.NumberOfRepsValue == null || i < exerciseLog.NumberOfRepsValue.Count == false)
+                    {
+                        reps = "No reps";
+                    }
+                    else
+                    {
+                        reps = exerciseLog.NumberOfRepsValue[i] + "";
+                    }
+
+                    setLog.Add($"{weight}x{reps}");
+                }
+
+                //var weights = string.Join("/", exerciseLog.SelectMany(el => el.WeightsUsed?.Trim('[', ']').Split(',').Select(w => $"{w}kg") ?? Array.Empty<string>()));
+                //var reps = string.Join("/", exerciseLog.SelectMany(el => el.NumberOfReps?.Trim('[', ']').Split(',') ?? Array.Empty<string>()));
+
+                result.AppendLine($"{log.Created:yyyy-MM-dd},{log.Note},{exerciseName},{order},{sets},{string.Join(" / ", setLog)},{note}");
             }
         }
 
