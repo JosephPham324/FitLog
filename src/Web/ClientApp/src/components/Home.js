@@ -11,6 +11,17 @@ import num7Image from '../Images/photo7.jpg';
 import num8Image from '../Images/photo8.jpg';
 import num9Image from '../Images/photo9.jpg';
 
+import program1 from '../Images/program1.jpg'; // Add program images
+import program2 from '../Images/program2.jpg';
+import program3 from '../Images/program3.jpg';
+import program4 from '../Images/program4.jpg';
+import program5 from '../Images/program5.jpg';
+
+import trainer1 from '../Images/hlv1.jpg'; // Add trainer images
+import trainer2 from '../Images/hlv2.jpg';
+import trainer3 from '../Images/hlv3.jpg';
+import trainer4 from '../Images/hlv4.jpg';
+
 export class Home extends Component {
   static displayName = Home.name;
 
@@ -60,12 +71,30 @@ export class Home extends Component {
       backgroundColor: '#fff',
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
       border: 'none',
+      marginBottom: '30px', // Increased margin to prevent overlap
     };
 
     const imageStyle = {
       height: '350px',
       objectFit: 'cover',
       width: '100%',
+    };
+
+    const programCardStyle = {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#fff',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      border: 'none',
+      marginBottom: '20px',
+    };
+
+    const programImageStyle = {
+      width: '100%',
+      height: '200px', // Fixed height to ensure uniformity
+      objectFit: 'cover',
     };
 
     const aboutImageStyle = {
@@ -75,11 +104,29 @@ export class Home extends Component {
     };
 
     const cardTextStyle = {
-      display: 'flex',
+      display: 'inline',
       justifyContent: 'center',
       alignItems: 'center',
-      height: '100%',
+      height: '40%',
       color: '#333',
+    };
+
+    const trainerCardStyle = {
+      height: '450px', // Similar height to weight training cards
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#fff',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      border: 'none',
+      marginBottom: '30px',
+    };
+
+    const trainerImageStyle = {
+      height: '100%', // Similar height to weight training images
+      width: '100%',  // Full width
+      objectFit: 'cover',
     };
 
     const footerStyle = {
@@ -173,6 +220,71 @@ export class Home extends Component {
         <div className="container-fluid mt-5" style={sectionStyle}>
           <div className="d-flex justify-content-center align-items-center flex-column">
             <div className="mb-4">
+              <h1 style={headingStyle}><b>PROGRAMS</b></h1>
+            </div>
+            <div className="row justify-content-center w-100">
+              <div className="col-md-4 mb-4">
+                <div className="card" style={programCardStyle}>
+                  <img className="card-img-top" src={program1} alt="Program 1" style={programImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>Program 1</b>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 mb-4">
+                <div className="card" style={programCardStyle}>
+                  <img className="card-img-top" src={program2} alt="Program 2" style={programImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>Program 2</b>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 mb-4">
+                <div className="card" style={programCardStyle}>
+                  <img className="card-img-top" src={program3} alt="Program 3" style={programImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>Program 3</b>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 mb-4">
+                <div className="card" style={programCardStyle}>
+                  <img className="card-img-top" src={program4} alt="Program 4" style={programImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>Program 4</b>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 mb-4">
+                <div className="card" style={programCardStyle}>
+                  <img className="card-img-top" src={program5} alt="Program 5" style={programImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>Program 5</b>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="font-bold mb-5">
+              <a href="https://localhost:44447/WorkoutProgramsPage" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                See all program
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="container-fluid mt-5" style={sectionStyle}>
+          <div className="d-flex justify-content-center align-items-center flex-column">
+            <div className="mb-4">
               <h1 style={headingStyle}><b>WEIGHT TRAINING</b></h1>
             </div>
             <div className="row justify-content-center w-100">
@@ -213,6 +325,60 @@ export class Home extends Component {
                     <p className="card-text text-center">
                       <b>EXPERT GUIDANCE</b>
                     </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="container-fluid mt-5" style={sectionStyle}>
+          <div className="d-flex justify-content-center align-items-center flex-column">
+            <div className="mb-4">
+              <h1 style={headingStyle}><b>OUR TRAINERS</b></h1>
+            </div>
+            <div className="row justify-content-center w-100">
+              <div className="col-md-3 mb-4">
+                <div className="card" style={trainerCardStyle}>
+                  <img className="card-img-top" src={trainer1} alt="Trainer 1" style={trainerImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>John Doe</b>
+                    </p>
+                    <p>Training Body</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-4">
+                <div className="card" style={trainerCardStyle}>
+                  <img className="card-img-top" src={trainer2} alt="Trainer 2" style={trainerImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>Jane Smith</b>
+                    </p>
+                    <p>Training Body</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-4">
+                <div className="card" style={trainerCardStyle}>
+                  <img className="card-img-top" src={trainer3} alt="Trainer 3" style={trainerImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>Robert Brown</b>
+                    </p>
+                    <p>Training Body</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-4">
+                <div className="card" style={trainerCardStyle}>
+                  <img className="card-img-top" src={trainer4} alt="Trainer 4" style={trainerImageStyle} />
+                  <div className="card-body" style={cardTextStyle}>
+                    <p className="card-text text-center">
+                      <b>Emily Davis</b>
+                    </p>
+                    <p>Training Body</p>
                   </div>
                 </div>
               </div>
