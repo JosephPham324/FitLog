@@ -1,10 +1,12 @@
-﻿using FitLog.Application.Common.Interfaces;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Interfaces;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.TrainingSurvey.Queries.GetUserTrainingSurvey;
 
 public record GetUserTrainingSurveyQuery : IRequest<SurveyAnswer>
 {
+    [JsonIgnore]
     public string UserId { get; init; } = string.Empty;
 }
 

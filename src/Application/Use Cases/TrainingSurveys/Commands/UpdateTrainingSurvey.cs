@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
@@ -11,6 +12,7 @@ namespace FitLog.Application.TrainingSurveys.Commands;
 public record UpdateTrainingSurveyAnswersCommand : IRequest<Result>
 {
     public int SurveyAnswerId { get; set; }
+    [JsonIgnore]
     public string? UserId { get; set; }
     public string? Goal { get; set; }
     public int? DaysPerWeek { get; set; }

@@ -31,10 +31,16 @@ public class MuscleGroups : EndpointGroupBase
     }
     public override void Map(WebApplication app)
     {
+        //Get data
         app.MapGroup(this)
-            .MapPost(CreateMuscleGroup, "create")
+            //All users can view data
             .MapGet(GetMuscleGroupsList, "get-list")
-            .MapGet(GetMuscleGroupsById, "{id}")
+            .MapGet(GetMuscleGroupsById, "{id}");
+        //Changes data
+        app.MapGroup(this)
+            //Only admin can change data
+            .RequireAuthorization("AdminOnly")
+            .MapPost(CreateMuscleGroup, "create")
             .MapPut(UpdateMuscleGroup, "{id}")
             .MapDelete(DeleteMuscleGroup, "{id}");
     }

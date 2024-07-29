@@ -6,6 +6,7 @@ using FitLog.Infrastructure.Data;
 using FitLog.Infrastructure.Data.Interceptors;
 using FitLog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -87,7 +88,17 @@ public static class DependencyInjection
 
         services.AddAuthorization(options =>
         {
+            options.DefaultPolicy = new AuthorizationPolicyBuilder()
+               .RequireAuthenticatedUser()
+               .Build();
+
+            options.AddPolicy("MemberOnly", policy =>
+            {
+                policy.RequireRole(Roles.Administrator);
+            });
+
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
+
             options.AddPolicy("AdminOnly", policy =>
             {
                 policy.RequireRole(Roles.Administrator);
@@ -95,6 +106,13 @@ public static class DependencyInjection
             options.AddPolicy("CoachOnly", policy =>
             {
                 policy.RequireRole(Roles.Coach);
+
+            });
+
+            options.AddPolicy("AdminOrCoach", policy =>
+            {
+                policy.RequireAssertion(context =>
+                   context.User.IsInRole(Roles.Administrator) || context.User.IsInRole(Roles.Coach));
             });
         }
         );
