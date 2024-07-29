@@ -85,6 +85,13 @@ namespace FitLog.Application.Users.Commands.Register
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
+                // Add the user to the default role
+                var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+                if (!roleResult.Succeeded)
+                {
+                    return Result.Failure(roleResult.Errors.Select(e => e.Description));
+                }
+
                 // Generate email confirmation token
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -104,4 +111,5 @@ namespace FitLog.Application.Users.Commands.Register
             }
         }
     }
+
 }
