@@ -439,7 +439,7 @@ export class EquipmentsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getEquipmentsWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfEquipmentDTO> {
+    getEquipmentsWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfEquipmentDetailsDTO> {
         let url_ = this.baseUrl + "/api/Equipments/get-all?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
@@ -463,7 +463,7 @@ export class EquipmentsClient {
         });
     }
 
-    protected processGetEquipmentsWithPagination(response: Response): Promise<PaginatedListOfEquipmentDTO> {
+    protected processGetEquipmentsWithPagination(response: Response): Promise<PaginatedListOfEquipmentDetailsDTO> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -471,7 +471,7 @@ export class EquipmentsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfEquipmentDTO.fromJS(resultData200);
+            result200 = PaginatedListOfEquipmentDetailsDTO.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -479,7 +479,7 @@ export class EquipmentsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PaginatedListOfEquipmentDTO>(null as any);
+        return Promise.resolve<PaginatedListOfEquipmentDetailsDTO>(null as any);
     }
 
     getEquipmentById(id: number): Promise<EquipmentDetailsDTO> {
@@ -4613,15 +4613,15 @@ export interface IWeatherForecast {
     summary?: string | undefined;
 }
 
-export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO {
-    items?: EquipmentDTO[];
+export class PaginatedListOfEquipmentDetailsDTO implements IPaginatedListOfEquipmentDetailsDTO {
+    items?: EquipmentDetailsDTO[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
 
-    constructor(data?: IPaginatedListOfEquipmentDTO) {
+    constructor(data?: IPaginatedListOfEquipmentDetailsDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4635,7 +4635,7 @@ export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items!.push(EquipmentDTO.fromJS(item));
+                    this.items!.push(EquipmentDetailsDTO.fromJS(item));
             }
             this.pageNumber = _data["pageNumber"];
             this.totalPages = _data["totalPages"];
@@ -4645,9 +4645,9 @@ export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO
         }
     }
 
-    static fromJS(data: any): PaginatedListOfEquipmentDTO {
+    static fromJS(data: any): PaginatedListOfEquipmentDetailsDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfEquipmentDTO();
+        let result = new PaginatedListOfEquipmentDetailsDTO();
         result.init(data);
         return result;
     }
@@ -4668,53 +4668,13 @@ export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO
     }
 }
 
-export interface IPaginatedListOfEquipmentDTO {
-    items?: EquipmentDTO[];
+export interface IPaginatedListOfEquipmentDetailsDTO {
+    items?: EquipmentDetailsDTO[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
-}
-
-export class EquipmentDTO implements IEquipmentDTO {
-    equipmentId?: number;
-    equipmentName?: string | undefined;
-
-    constructor(data?: IEquipmentDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.equipmentId = _data["equipmentId"];
-            this.equipmentName = _data["equipmentName"];
-        }
-    }
-
-    static fromJS(data: any): EquipmentDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new EquipmentDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["equipmentId"] = this.equipmentId;
-        data["equipmentName"] = this.equipmentName;
-        return data;
-    }
-}
-
-export interface IEquipmentDTO {
-    equipmentId?: number;
-    equipmentName?: string | undefined;
 }
 
 export class EquipmentDetailsDTO implements IEquipmentDetailsDTO {

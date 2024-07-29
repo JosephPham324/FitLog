@@ -17,7 +17,7 @@ axiosInstance.interceptors.request.use(
 
         console.log(`Bearer ${jwtHeaderPayload}.${jwtSignature}`);
         if (jwtHeaderPayload && jwtSignature) {
-            config.headers.Authorization = `Bearer ${jwtHeaderPayload.split('=')[1]}.${jwtSignature.split('=')[1]}`;
+          config.headers.Authorization = `Bearer ${jwtHeaderPayload}.${jwtSignature}`;
         }
         return config;
     },

@@ -22,7 +22,7 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import './WorkoutOutLog.css';
+import './CreateWorkoutLog.css';
 
 const ExerciseRow = ({ exercise, index, onClick }) => (
   <TableRow key={index} onClick={onClick}>

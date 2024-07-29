@@ -8,6 +8,7 @@ const RolesListScreen = () => {
   const [editingRole, setEditingRole] = useState(null);
   const [newRole, setNewRole] = useState({ id: '', name: '', des: '' });
   const [error, setError] = useState('');
+  const [hoveredRole, setHoveredRole] = useState(null);
 
   useEffect(() => {
     fetchRoles();
@@ -43,7 +44,7 @@ const RolesListScreen = () => {
         await axios.put(`https://localhost:44447/api/Roles/${newRole.id}`, newRole);
         setRoles(roles.map(role => (role.id === editingRole.id ? newRole : role)));
       } else {
-        const response = await axios.post('https://localhost:44447/api/Roles', newRole);
+        const response = await axios.post('https://localhost:44447/api/Exercises', newRole);
         setRoles([...roles, response.data]);
       }
       setShowPopup(false);
@@ -69,16 +70,23 @@ const RolesListScreen = () => {
     setError('');
   };
 
+  const handleMouseEnter = (role) => {
+    setHoveredRole(role);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredRole(null);
+  };
+
   return (
     <div className="container">
       <div className="header">
         <h1>Roles List</h1>
-        <button className="add-role-button" onClick={handleAddRole}>Add Role</button>
+        <button className="add-role-button" onClick={handleAddRole}>Create Exercise</button>
       </div>
       <table className="table">
         <thead>
           <tr>
-            {/*<th>Id</th>*/}
             <th>Name</th>
             <th>Des</th>
             <th>Action</th>
@@ -87,9 +95,22 @@ const RolesListScreen = () => {
         <tbody>
           {roles.map(role => (
             <tr key={role.id}>
-              {/*<td>{role.id}</td>*/}
               <td>{role.name}</td>
-              <td>{role.des}</td>
+              <td>
+                {role.des}
+                <span
+                  className="info-icon"
+                  onMouseEnter={() => handleMouseEnter(role)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  &#x26A0;
+                </span>
+                {hoveredRole === role && (
+                  <div className="tooltip">
+                    <p>{role.des}</p>
+                  </div>
+                )}
+              </td>
               <td>
                 <button className="action-button" onClick={() => handleEditRole(role)}>Edit</button>
               </td>
@@ -101,7 +122,7 @@ const RolesListScreen = () => {
         <div className="popup">
           <div className="popup-inner">
             <div className="popup-header">
-              <h2>{editingRole ? 'Edit Role' : 'Add Role'}</h2>
+              <h2>{editingRole ? 'Edit Exercise' : 'Create Exercise'}</h2>
               <button className="close-button" onClick={handleClosePopup}>X</button>
             </div>
             <form>

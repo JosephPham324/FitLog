@@ -354,7 +354,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfEquipmentDTO"
+                  "$ref": "#/components/schemas/PaginatedListOfEquipmentDetailsDTO"
                 }
               }
             }
@@ -3554,14 +3554,14 @@
           }
         }
       },
-      "PaginatedListOfEquipmentDTO": {
+      "PaginatedListOfEquipmentDetailsDTO": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/EquipmentDTO"
+              "$ref": "#/components/schemas/EquipmentDetailsDTO"
             }
           },
           "pageNumber": {
@@ -3581,20 +3581,6 @@
           },
           "hasNextPage": {
             "type": "boolean"
-          }
-        }
-      },
-      "EquipmentDTO": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "equipmentId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "equipmentName": {
-            "type": "string",
-            "nullable": true
           }
         }
       },

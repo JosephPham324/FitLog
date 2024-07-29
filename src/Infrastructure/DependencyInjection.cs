@@ -89,11 +89,11 @@ public static class DependencyInjection
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
             options.AddPolicy("AdminOnly", policy =>
             {
-                policy.RequireRole("Admin");
+                policy.RequireRole("Administrator");
             });
             options.AddPolicy("CoachOnly", policy =>
             {
-                policy.RequireRole("Coach");
+                policy.RequireRole(Roles.Coach);
             });
         }
         );

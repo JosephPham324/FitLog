@@ -17,7 +17,7 @@ builder.Services.AddWebServices(builder.Configuration);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
-        builder.WithOrigins("http://localhost:44447") // Adjust the origin as needed
+        builder.WithOrigins("http://localhost:44447", "https://api.cloudinary.com") // Adjust the origin as needed
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials());

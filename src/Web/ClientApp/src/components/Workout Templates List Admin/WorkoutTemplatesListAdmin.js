@@ -184,7 +184,7 @@ const WorkoutTemplatesListAdmin = () => {
         <table>
           <thead>
             <tr>
-              <th>Id</th>
+              <th>#</th>
               <th>Template Name</th>
               <th>Duration</th>
               <th>Creator Name</th>
@@ -192,9 +192,9 @@ const WorkoutTemplatesListAdmin = () => {
             </tr>
           </thead>
           <tbody>
-            {templates.map(template => (
+            {templates.map((template, index) => (
               <tr key={template.id}>
-                <td>{template.id}</td>
+                <td>{index + 1}</td>
                 <td>{template.templateName}</td>
                 <td>{template.duration}</td>
                 <td>{template.creatorName}</td>
@@ -249,8 +249,8 @@ const WorkoutTemplatesListAdmin = () => {
                   <FormControl sx={{ mt: 1, minWidth: 120 }}>
                     <InputLabel>Reps</InputLabel>
                     <Select
-                      value={set.repsType}   
-                        onChange={(e) => {
+                      value={set.repsType}
+                      onChange={(e) => {
                         const updatedSets = newExercise.sets.map((s, i) =>
                           i === setIndex ? { ...s, repsType: e.target.value } : s
                         );
