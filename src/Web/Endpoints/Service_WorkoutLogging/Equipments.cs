@@ -24,9 +24,11 @@ public class Equipments : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-
             .MapGet(GetEquipmentsWithPagination, "get-all")
-            .MapGet(GetEquipmentById, "{id}")
+            .MapGet(GetEquipmentById, "{id}");
+
+        app.MapGroup(this)
+            .RequireAuthorization("AdminOnly")
             .MapPost(CreateEquipment)
             .MapPut(UpdateEquipment, "{id}")
             .MapDelete(DeleteEquipment, "{id}");

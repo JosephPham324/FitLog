@@ -1,11 +1,13 @@
-﻿using FitLog.Application.Common.Extensions;
+﻿using System.Text.Json.Serialization;
+using FitLog.Application.Common.Extensions;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 
 namespace FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
 
-public record GetWorkoutHistoryQuery : IRequest<object>
+public record GetWorkoutHistoryQuery : IRequest<List<WorkoutLogDTO>>
 {
+    [JsonIgnore]
     public string UserId { get; init; } = string.Empty;
     public DateTime? StartDate { get; init; }
     public DateTime? EndDate { get; init; }
@@ -27,7 +29,7 @@ public class GetWorkoutHistoryQueryValidator : AbstractValidator<GetWorkoutHisto
     }
 }
 
-public class GetWorkoutHistoryQueryHandler : IRequestHandler<GetWorkoutHistoryQuery, object>
+public class GetWorkoutHistoryQueryHandler : IRequestHandler<GetWorkoutHistoryQuery, List<WorkoutLogDTO>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -38,7 +40,7 @@ public class GetWorkoutHistoryQueryHandler : IRequestHandler<GetWorkoutHistoryQu
         _mapper = mapper;
     }
 
-    public async Task<object> Handle(GetWorkoutHistoryQuery request, CancellationToken cancellationToken)
+    public async Task<List<WorkoutLogDTO>> Handle(GetWorkoutHistoryQuery request, CancellationToken cancellationToken)
     {
         var workoutLogs = await _context.WorkoutLogs
             .Where(wl=> wl.CreatedBy != null ? wl.CreatedBy.Equals(request.UserId) : false)

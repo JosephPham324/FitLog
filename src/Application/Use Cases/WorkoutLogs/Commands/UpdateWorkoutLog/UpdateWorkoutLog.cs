@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
@@ -21,7 +22,9 @@ public record UpdateExerciseLogCommand : IRequest<Result>
     public int? OrderInSuperset { get; init; }
     public string? Note { get; init; }
     public int? NumberOfSets { get; init; }
+    [JsonIgnore]
     public List<int>? WeightsUsedValue { get; set; }
+    [JsonIgnore]
     public List<int>? NumberOfRepsValue { get; set; }
 
     public string? WeightsUsed

@@ -143,7 +143,19 @@
 }
 
 .signin-link {
+    height: 50px;
     text-align: center;
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff; /* Màu chữ */
+    background-color: green; /* Màu nền */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none; /* Bỏ gạch chân của link */
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
 .container {

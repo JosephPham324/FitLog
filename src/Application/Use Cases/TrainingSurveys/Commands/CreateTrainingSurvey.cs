@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
@@ -13,6 +14,7 @@ using FitLog.Domain.Entities;
 namespace FitLog.Application.TrainingSurveys.Commands;
 public record CreateSurveyAnswerCommand : IRequest<Result>
 {
+    [JsonIgnore]
     public string? UserId { get; set; }
     public string? Goal { get; set; }
 

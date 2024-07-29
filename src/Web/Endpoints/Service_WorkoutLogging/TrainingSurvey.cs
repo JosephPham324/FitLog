@@ -32,11 +32,15 @@ public class TrainingSurvey : EndpointGroupBase
 
     public Task<Result> CreateTrainingSurvey(ISender sender, [FromBody] CreateSurveyAnswerCommand command)
     {
+        command.UserId = _identityService.Id ?? "";
+
         return sender.Send(command);
     }
 
     public Task<Result> UpdateTrainingSurvey(ISender sender,int id, [FromBody] UpdateTrainingSurveyAnswersCommand command)
     {
+        command.UserId = _identityService.Id ?? "";
+
         if (id != command.SurveyAnswerId)
         {
             return Task.FromResult(Result.Failure(["Id mismatch"]));

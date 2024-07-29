@@ -523,8 +523,8 @@ const Register = () => {
               REGISTER
             </Button>
           </form>
-          <Typography variant="body1" className="or-text">Or</Typography>         
-          <a href="https://localhost:44447/login" className="signin-link">Sign In</a>
+          <Typography variant="body1" className="or-text">Or</Typography>
+          <a href="https://localhost:44447/login" className="signin-link button">Sign In</a>
         </div>
       </div>
     </Container>

@@ -943,45 +943,6 @@ export class MuscleGroupsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createMuscleGroup(command: CreateMuscleGroupCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/MuscleGroups/create";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateMuscleGroup(_response);
-        });
-    }
-
-    protected processCreateMuscleGroup(response: Response): Promise<Result> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
     getMuscleGroupsList(pageNumber: number, pageSize: number): Promise<PaginatedListOfMuscleGroupDTO> {
         let url_ = this.baseUrl + "/api/MuscleGroups/get-list?";
         if (pageNumber === undefined || pageNumber === null)
@@ -1099,6 +1060,45 @@ export class MuscleGroupsClient {
         return Promise.resolve<Result>(null as any);
     }
 
+    createMuscleGroup(command: CreateMuscleGroupCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/MuscleGroups/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateMuscleGroup(_response);
+        });
+    }
+
+    protected processCreateMuscleGroup(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
     updateMuscleGroup(id: number, command: UpdateMuscleGroupCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/MuscleGroups/{id}";
         if (id === undefined || id === null)
@@ -1153,7 +1153,7 @@ export class StatisticsClient {
     }
 
     getWorkoutLogSummary(timeFrame: string): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/summary?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/summary?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1201,7 +1201,7 @@ export class StatisticsClient {
     }
 
     getMusclesEngagement(timeFrame: string): Promise<{ [key: string]: MuscleEngagementDTO[]; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/muscles-engagement?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/muscles-engagement?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1249,7 +1249,7 @@ export class StatisticsClient {
     }
 
     getRepsStats(timeFrame: string): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/total-training-reps?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/total-training-reps?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1297,7 +1297,7 @@ export class StatisticsClient {
     }
 
     getTonnageStats(timeFrame: string): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/total-training-tonnage?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/total-training-tonnage?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1345,7 +1345,7 @@ export class StatisticsClient {
     }
 
     getTrainingFrequencies(timeFrame: string): Promise<{ [key: string]: number; }> {
-        let url_ = this.baseUrl + "/api/Statistics/overview/training-frequency?";
+        let url_ = this.baseUrl + "/api/Statistics/overall/training-frequency?";
         if (timeFrame === undefined || timeFrame === null)
             throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
         else
@@ -1484,6 +1484,448 @@ export class StatisticsClient {
             });
         }
         return Promise.resolve<any>(null as any);
+    }
+
+    getExercisesWithHistory(): Promise<ExerciseHistoryEntry[]> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise/logged-exercises";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExercisesWithHistory(_response);
+        });
+    }
+
+    protected processGetExercisesWithHistory(response: Response): Promise<ExerciseHistoryEntry[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ExerciseHistoryEntry.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExerciseHistoryEntry[]>(null as any);
+    }
+
+    getUserWorkoutLogSummary(id: string, timeFrame: string): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
+        let url_ = this.baseUrl + "/api/Statistics/user/{id}/overall/summary?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
+            url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserWorkoutLogSummary(_response);
+        });
+    }
+
+    protected processGetUserWorkoutLogSummary(response: Response): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] ? SummaryWorkoutLogStatsDTO.fromJS(resultData200[key]) : new SummaryWorkoutLogStatsDTO();
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: SummaryWorkoutLogStatsDTO; }>(null as any);
+    }
+
+    getUserMusclesEngagement(id: string, timeFrame: string): Promise<{ [key: string]: MuscleEngagementDTO[]; }> {
+        let url_ = this.baseUrl + "/api/Statistics/user/{id}/overall/muscles-engagement?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
+            url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserMusclesEngagement(_response);
+        });
+    }
+
+    protected processGetUserMusclesEngagement(response: Response): Promise<{ [key: string]: MuscleEngagementDTO[]; }> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] ? resultData200[key].map((i: any) => MuscleEngagementDTO.fromJS(i)) : [];
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: MuscleEngagementDTO[]; }>(null as any);
+    }
+
+    getUserRepsStats(id: string, timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/user/{id}/overall/total-training-reps?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
+            url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserRepsStats(_response);
+        });
+    }
+
+    protected processGetUserRepsStats(response: Response): Promise<{ [key: string]: number; }> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: number; }>(null as any);
+    }
+
+    getUserTonnageStats(id: string, timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/user/{id}/overall/total-training-tonnage?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
+            url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserTonnageStats(_response);
+        });
+    }
+
+    protected processGetUserTonnageStats(response: Response): Promise<{ [key: string]: number; }> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: number; }>(null as any);
+    }
+
+    getUserTrainingFrequencies(id: string, timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/user/{id}/overall/training-frequency?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
+            url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserTrainingFrequencies(_response);
+        });
+    }
+
+    protected processGetUserTrainingFrequencies(response: Response): Promise<{ [key: string]: number; }> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: number; }>(null as any);
+    }
+
+    getUserExerciseLogHistory(id: string, userId: string | null, exerciseId: number): Promise<ExerciseLogDTO[]> {
+        let url_ = this.baseUrl + "/api/Statistics/user/{id}/exercise/exercise-log-history?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        if (exerciseId === undefined || exerciseId === null)
+            throw new Error("The parameter 'exerciseId' must be defined and cannot be null.");
+        else
+            url_ += "ExerciseId=" + encodeURIComponent("" + exerciseId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserExerciseLogHistory(_response);
+        });
+    }
+
+    protected processGetUserExerciseLogHistory(response: Response): Promise<ExerciseLogDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ExerciseLogDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExerciseLogDTO[]>(null as any);
+    }
+
+    getUserEstimated1RM(id: string, userId: string | null, exerciseId: number): Promise<any> {
+        let url_ = this.baseUrl + "/api/Statistics/user/{id}/exercise/estimated1RM?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        if (exerciseId === undefined || exerciseId === null)
+            throw new Error("The parameter 'exerciseId' must be defined and cannot be null.");
+        else
+            url_ += "ExerciseId=" + encodeURIComponent("" + exerciseId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserEstimated1RM(_response);
+        });
+    }
+
+    protected processGetUserEstimated1RM(response: Response): Promise<any> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<any>(null as any);
+    }
+
+    getUserExercisesWithHistory(id: string): Promise<ExerciseHistoryEntry[]> {
+        let url_ = this.baseUrl + "/api/Statistics/user/{id}/exercise/logged-exercises";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserExercisesWithHistory(_response);
+        });
+    }
+
+    protected processGetUserExercisesWithHistory(response: Response): Promise<ExerciseHistoryEntry[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ExerciseHistoryEntry.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExerciseHistoryEntry[]>(null as any);
     }
 }
 
@@ -1774,7 +2216,7 @@ export class WorkoutLogClient {
         return Promise.resolve<PaginatedListOfWorkoutLogDTO>(null as any);
     }
 
-    getWorkoutHistory(userId: string | null, startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<any> {
+    getWorkoutHistory(userId: string | null, startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<WorkoutLogDTO[]> {
         let url_ = this.baseUrl + "/api/WorkoutLog/history?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
@@ -1798,7 +2240,7 @@ export class WorkoutLogClient {
         });
     }
 
-    protected processGetWorkoutHistory(response: Response): Promise<any> {
+    protected processGetWorkoutHistory(response: Response): Promise<WorkoutLogDTO[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1806,8 +2248,14 @@ export class WorkoutLogClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(WorkoutLogDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1815,14 +2263,14 @@ export class WorkoutLogClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<WorkoutLogDTO[]>(null as any);
     }
 
-    createExerciseLog(command: CreateWorkoutLogCommand): Promise<Result> {
+    createWorkoutLog(commandDTO: CreateWorkoutLogCommandDTO): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutLog";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(command);
+        const content_ = JSON.stringify(commandDTO);
 
         let options_: RequestInit = {
             body: content_,
@@ -1834,11 +2282,11 @@ export class WorkoutLogClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateExerciseLog(_response);
+            return this.processCreateWorkoutLog(_response);
         });
     }
 
-    protected processCreateExerciseLog(response: Response): Promise<Result> {
+    protected processCreateWorkoutLog(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1940,6 +2388,50 @@ export class WorkoutLogClient {
         }
         return Promise.resolve<Result>(null as any);
     }
+
+    exportWorkotuData(userId: string | null, startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/WorkoutLog/export?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        if (startDate !== undefined && startDate !== null)
+            url_ += "StartDate=" + encodeURIComponent(startDate ? "" + startDate.toISOString() : "") + "&";
+        if (endDate !== undefined && endDate !== null)
+            url_ += "EndDate=" + encodeURIComponent(endDate ? "" + endDate.toISOString() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processExportWorkotuData(_response);
+        });
+    }
+
+    protected processExportWorkotuData(response: Response): Promise<string> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
 }
 
 export class WorkoutProgramsClient {
@@ -1950,6 +2442,40 @@ export class WorkoutProgramsClient {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getWorkoutProgramDetails(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/details/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetWorkoutProgramDetails(_response);
+        });
+    }
+
+    protected processGetWorkoutProgramDetails(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     getWorkoutProgramsList(): Promise<WorkoutProgramListDTO[]> {
@@ -2090,40 +2616,6 @@ export class WorkoutProgramsClient {
     }
 
     protected processDeleteWorkoutProgram(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    getWorkoutProgramDetails(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/details/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetWorkoutProgramDetails(_response);
-        });
-    }
-
-    protected processGetWorkoutProgramDetails(response: Response): Promise<void> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3080,6 +3572,84 @@ export class UsersClient {
         return Promise.resolve<Result>(null as any);
     }
 
+    getUserProfile(userId: string | null): Promise<UserProfileDTO> {
+        let url_ = this.baseUrl + "/api/Users/profile?";
+        if (userId === undefined)
+            throw new Error("The parameter 'userId' must be defined.");
+        else if(userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserProfile(_response);
+        });
+    }
+
+    protected processGetUserProfile(response: Response): Promise<UserProfileDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserProfileDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserProfileDTO>(null as any);
+    }
+
+    authenticatedResetPassword(command: AuthenticatedResetPasswordCommandDto): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/authenticated-reset-password";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAuthenticatedResetPassword(_response);
+        });
+    }
+
+    protected processAuthenticatedResetPassword(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
     getUserList(pageNumber: number, pageSize: number): Promise<PaginatedListOfUserListDTO> {
         let url_ = this.baseUrl + "/api/Users/all?";
         if (pageNumber === undefined || pageNumber === null)
@@ -3259,45 +3829,6 @@ export class UsersClient {
             });
         }
         return Promise.resolve<(UserListDTO | undefined)[]>(null as any);
-    }
-
-    getUserProfile(userId: string | null): Promise<UserProfileDTO> {
-        let url_ = this.baseUrl + "/api/Users/profile?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetUserProfile(_response);
-        });
-    }
-
-    protected processGetUserProfile(response: Response): Promise<UserProfileDTO> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserProfileDTO.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<UserProfileDTO>(null as any);
     }
 
     createUser(command: CreateUserCommand): Promise<Result> {
@@ -5289,46 +5820,6 @@ export interface IDeleteExerciseCommand {
     exerciseId?: number;
 }
 
-export class CreateMuscleGroupCommand implements ICreateMuscleGroupCommand {
-    muscleGroupName?: string | undefined;
-    imageUrl?: string | undefined;
-
-    constructor(data?: ICreateMuscleGroupCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.muscleGroupName = _data["muscleGroupName"];
-            this.imageUrl = _data["imageUrl"];
-        }
-    }
-
-    static fromJS(data: any): CreateMuscleGroupCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateMuscleGroupCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["muscleGroupName"] = this.muscleGroupName;
-        data["imageUrl"] = this.imageUrl;
-        return data;
-    }
-}
-
-export interface ICreateMuscleGroupCommand {
-    muscleGroupName?: string | undefined;
-    imageUrl?: string | undefined;
-}
-
 export class PaginatedListOfMuscleGroupDTO implements IPaginatedListOfMuscleGroupDTO {
     items?: MuscleGroupDTO[];
     pageNumber?: number;
@@ -5477,6 +5968,46 @@ export class MuscleGroupDTO2 implements IMuscleGroupDTO2 {
 
 export interface IMuscleGroupDTO2 {
     muscleGroupId?: number;
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+}
+
+export class CreateMuscleGroupCommand implements ICreateMuscleGroupCommand {
+    muscleGroupName?: string | undefined;
+    imageUrl?: string | undefined;
+
+    constructor(data?: ICreateMuscleGroupCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.muscleGroupName = _data["muscleGroupName"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): CreateMuscleGroupCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMuscleGroupCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["muscleGroupName"] = this.muscleGroupName;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface ICreateMuscleGroupCommand {
     muscleGroupName?: string | undefined;
     imageUrl?: string | undefined;
 }
@@ -5733,6 +6264,86 @@ export interface IExerciseLogDTO {
     exerciseName?: string | undefined;
 }
 
+export class ExerciseHistoryEntry implements IExerciseHistoryEntry {
+    exerciseKey?: ExerciseHistoryKey | undefined;
+    logCount?: number;
+
+    constructor(data?: IExerciseHistoryEntry) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseKey = _data["exerciseKey"] ? ExerciseHistoryKey.fromJS(_data["exerciseKey"]) : <any>undefined;
+            this.logCount = _data["logCount"];
+        }
+    }
+
+    static fromJS(data: any): ExerciseHistoryEntry {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExerciseHistoryEntry();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseKey"] = this.exerciseKey ? this.exerciseKey.toJSON() : <any>undefined;
+        data["logCount"] = this.logCount;
+        return data;
+    }
+}
+
+export interface IExerciseHistoryEntry {
+    exerciseKey?: ExerciseHistoryKey | undefined;
+    logCount?: number;
+}
+
+export class ExerciseHistoryKey implements IExerciseHistoryKey {
+    exerciseId?: number;
+    exerciseName?: string;
+
+    constructor(data?: IExerciseHistoryKey) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.exerciseId = _data["exerciseId"];
+            this.exerciseName = _data["exerciseName"];
+        }
+    }
+
+    static fromJS(data: any): ExerciseHistoryKey {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExerciseHistoryKey();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["exerciseId"] = this.exerciseId;
+        data["exerciseName"] = this.exerciseName;
+        return data;
+    }
+}
+
+export interface IExerciseHistoryKey {
+    exerciseId?: number;
+    exerciseName?: string;
+}
+
 export class ProgramOverviewDto implements IProgramOverviewDto {
     programId?: number;
     creatorName?: string;
@@ -5846,7 +6457,6 @@ export interface IGetWorkoutRecommendationQuery {
 }
 
 export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
-    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -5865,7 +6475,6 @@ export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             this.goal = _data["goal"];
             this.daysPerWeek = _data["daysPerWeek"];
             this.experienceLevel = _data["experienceLevel"];
@@ -5884,7 +6493,6 @@ export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         data["goal"] = this.goal;
         data["daysPerWeek"] = this.daysPerWeek;
         data["experienceLevel"] = this.experienceLevel;
@@ -5896,7 +6504,6 @@ export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {
 }
 
 export interface ICreateSurveyAnswerCommand {
-    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -5907,7 +6514,6 @@ export interface ICreateSurveyAnswerCommand {
 
 export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurveyAnswersCommand {
     surveyAnswerId?: number;
-    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -5928,7 +6534,6 @@ export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurvey
     init(_data?: any) {
         if (_data) {
             this.surveyAnswerId = _data["surveyAnswerId"];
-            this.userId = _data["userId"];
             this.goal = _data["goal"];
             this.daysPerWeek = _data["daysPerWeek"];
             this.experienceLevel = _data["experienceLevel"];
@@ -5949,7 +6554,6 @@ export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurvey
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["surveyAnswerId"] = this.surveyAnswerId;
-        data["userId"] = this.userId;
         data["goal"] = this.goal;
         data["daysPerWeek"] = this.daysPerWeek;
         data["experienceLevel"] = this.experienceLevel;
@@ -5963,7 +6567,6 @@ export class UpdateTrainingSurveyAnswersCommand implements IUpdateTrainingSurvey
 
 export interface IUpdateTrainingSurveyAnswersCommand {
     surveyAnswerId?: number;
-    userId?: string | undefined;
     goal?: string | undefined;
     daysPerWeek?: number | undefined;
     experienceLevel?: string | undefined;
@@ -8474,13 +9077,12 @@ export interface IWorkoutLogDTO {
     exerciseLogs?: ExerciseLogDTO[];
 }
 
-export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
-    createdBy?: string | undefined;
+export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
     note?: string | undefined;
     duration?: string | undefined;
     exerciseLogs?: CreateExerciseLogCommand[] | undefined;
 
-    constructor(data?: ICreateWorkoutLogCommand) {
+    constructor(data?: ICreateWorkoutLogCommandDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -8491,7 +9093,6 @@ export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.createdBy = _data["createdBy"];
             this.note = _data["note"];
             this.duration = _data["duration"];
             if (Array.isArray(_data["exerciseLogs"])) {
@@ -8502,16 +9103,15 @@ export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
         }
     }
 
-    static fromJS(data: any): CreateWorkoutLogCommand {
+    static fromJS(data: any): CreateWorkoutLogCommandDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new CreateWorkoutLogCommand();
+        let result = new CreateWorkoutLogCommandDTO();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["createdBy"] = this.createdBy;
         data["note"] = this.note;
         data["duration"] = this.duration;
         if (Array.isArray(this.exerciseLogs)) {
@@ -8523,8 +9123,7 @@ export class CreateWorkoutLogCommand implements ICreateWorkoutLogCommand {
     }
 }
 
-export interface ICreateWorkoutLogCommand {
-    createdBy?: string | undefined;
+export interface ICreateWorkoutLogCommandDTO {
     note?: string | undefined;
     duration?: string | undefined;
     exerciseLogs?: CreateExerciseLogCommand[] | undefined;
@@ -8536,8 +9135,6 @@ export class CreateExerciseLogCommand implements ICreateExerciseLogCommand {
     orderInSuperset?: number | undefined;
     note?: string | undefined;
     numberOfSets?: number | undefined;
-    weightsUsedValue?: number[] | undefined;
-    numberOfRepsValue?: number[] | undefined;
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
@@ -8558,16 +9155,6 @@ export class CreateExerciseLogCommand implements ICreateExerciseLogCommand {
             this.orderInSuperset = _data["orderInSuperset"];
             this.note = _data["note"];
             this.numberOfSets = _data["numberOfSets"];
-            if (Array.isArray(_data["weightsUsedValue"])) {
-                this.weightsUsedValue = [] as any;
-                for (let item of _data["weightsUsedValue"])
-                    this.weightsUsedValue!.push(item);
-            }
-            if (Array.isArray(_data["numberOfRepsValue"])) {
-                this.numberOfRepsValue = [] as any;
-                for (let item of _data["numberOfRepsValue"])
-                    this.numberOfRepsValue!.push(item);
-            }
             this.weightsUsed = _data["weightsUsed"];
             this.numberOfReps = _data["numberOfReps"];
             this.footageUrls = _data["footageUrls"];
@@ -8588,16 +9175,6 @@ export class CreateExerciseLogCommand implements ICreateExerciseLogCommand {
         data["orderInSuperset"] = this.orderInSuperset;
         data["note"] = this.note;
         data["numberOfSets"] = this.numberOfSets;
-        if (Array.isArray(this.weightsUsedValue)) {
-            data["weightsUsedValue"] = [];
-            for (let item of this.weightsUsedValue)
-                data["weightsUsedValue"].push(item);
-        }
-        if (Array.isArray(this.numberOfRepsValue)) {
-            data["numberOfRepsValue"] = [];
-            for (let item of this.numberOfRepsValue)
-                data["numberOfRepsValue"].push(item);
-        }
         data["weightsUsed"] = this.weightsUsed;
         data["numberOfReps"] = this.numberOfReps;
         data["footageUrls"] = this.footageUrls;
@@ -8611,8 +9188,6 @@ export interface ICreateExerciseLogCommand {
     orderInSuperset?: number | undefined;
     note?: string | undefined;
     numberOfSets?: number | undefined;
-    weightsUsedValue?: number[] | undefined;
-    numberOfRepsValue?: number[] | undefined;
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
@@ -8681,8 +9256,6 @@ export class UpdateExerciseLogCommand implements IUpdateExerciseLogCommand {
     orderInSuperset?: number | undefined;
     note?: string | undefined;
     numberOfSets?: number | undefined;
-    weightsUsedValue?: number[] | undefined;
-    numberOfRepsValue?: number[] | undefined;
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
@@ -8705,16 +9278,6 @@ export class UpdateExerciseLogCommand implements IUpdateExerciseLogCommand {
             this.orderInSuperset = _data["orderInSuperset"];
             this.note = _data["note"];
             this.numberOfSets = _data["numberOfSets"];
-            if (Array.isArray(_data["weightsUsedValue"])) {
-                this.weightsUsedValue = [] as any;
-                for (let item of _data["weightsUsedValue"])
-                    this.weightsUsedValue!.push(item);
-            }
-            if (Array.isArray(_data["numberOfRepsValue"])) {
-                this.numberOfRepsValue = [] as any;
-                for (let item of _data["numberOfRepsValue"])
-                    this.numberOfRepsValue!.push(item);
-            }
             this.weightsUsed = _data["weightsUsed"];
             this.numberOfReps = _data["numberOfReps"];
             this.footageUrls = _data["footageUrls"];
@@ -8737,16 +9300,6 @@ export class UpdateExerciseLogCommand implements IUpdateExerciseLogCommand {
         data["orderInSuperset"] = this.orderInSuperset;
         data["note"] = this.note;
         data["numberOfSets"] = this.numberOfSets;
-        if (Array.isArray(this.weightsUsedValue)) {
-            data["weightsUsedValue"] = [];
-            for (let item of this.weightsUsedValue)
-                data["weightsUsedValue"].push(item);
-        }
-        if (Array.isArray(this.numberOfRepsValue)) {
-            data["numberOfRepsValue"] = [];
-            for (let item of this.numberOfRepsValue)
-                data["numberOfRepsValue"].push(item);
-        }
         data["weightsUsed"] = this.weightsUsed;
         data["numberOfReps"] = this.numberOfReps;
         data["footageUrls"] = this.footageUrls;
@@ -8762,8 +9315,6 @@ export interface IUpdateExerciseLogCommand {
     orderInSuperset?: number | undefined;
     note?: string | undefined;
     numberOfSets?: number | undefined;
-    weightsUsedValue?: number[] | undefined;
-    numberOfRepsValue?: number[] | undefined;
     weightsUsed?: string | undefined;
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
@@ -10174,138 +10725,6 @@ export interface IResetPasswordCommand {
     password: string;
 }
 
-export class PaginatedListOfUserListDTO implements IPaginatedListOfUserListDTO {
-    items?: UserListDTO[];
-    pageNumber?: number;
-    totalPages?: number;
-    totalCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-
-    constructor(data?: IPaginatedListOfUserListDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(UserListDTO.fromJS(item));
-            }
-            this.pageNumber = _data["pageNumber"];
-            this.totalPages = _data["totalPages"];
-            this.totalCount = _data["totalCount"];
-            this.hasPreviousPage = _data["hasPreviousPage"];
-            this.hasNextPage = _data["hasNextPage"];
-        }
-    }
-
-    static fromJS(data: any): PaginatedListOfUserListDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfUserListDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["pageNumber"] = this.pageNumber;
-        data["totalPages"] = this.totalPages;
-        data["totalCount"] = this.totalCount;
-        data["hasPreviousPage"] = this.hasPreviousPage;
-        data["hasNextPage"] = this.hasNextPage;
-        return data;
-    }
-}
-
-export interface IPaginatedListOfUserListDTO {
-    items?: UserListDTO[];
-    pageNumber?: number;
-    totalPages?: number;
-    totalCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-}
-
-export class UserListDTO implements IUserListDTO {
-    id!: string;
-    userName?: string | undefined;
-    email?: string | undefined;
-    emailConfirmed?: boolean;
-    phoneNumber?: string | undefined;
-    isRestricted?: boolean | undefined;
-    roles?: string[];
-
-    constructor(data?: IUserListDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.userName = _data["userName"];
-            this.email = _data["email"];
-            this.emailConfirmed = _data["emailConfirmed"];
-            this.phoneNumber = _data["phoneNumber"];
-            this.isRestricted = _data["IsRestricted"];
-            if (Array.isArray(_data["roles"])) {
-                this.roles = [] as any;
-                for (let item of _data["roles"])
-                    this.roles!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): UserListDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserListDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["userName"] = this.userName;
-        data["email"] = this.email;
-        data["emailConfirmed"] = this.emailConfirmed;
-        data["phoneNumber"] = this.phoneNumber;
-        data["IsRestricted"] = this.isRestricted;
-        if (Array.isArray(this.roles)) {
-            data["roles"] = [];
-            for (let item of this.roles)
-                data["roles"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IUserListDTO {
-    id: string;
-    userName?: string | undefined;
-    email?: string | undefined;
-    emailConfirmed?: boolean;
-    phoneNumber?: string | undefined;
-    isRestricted?: boolean | undefined;
-    roles?: string[];
-}
-
 export class UserProfileDTO implements IUserProfileDTO {
     id?: string | undefined;
     userName?: string | undefined;
@@ -10592,6 +11011,178 @@ export interface ICoachingServiceDTO {
     price?: number | undefined;
     serviceAvailability?: boolean | undefined;
     availabilityAnnouncement?: string | undefined;
+}
+
+export class AuthenticatedResetPasswordCommandDto implements IAuthenticatedResetPasswordCommandDto {
+    oldPassword?: string;
+    newPassword?: string;
+
+    constructor(data?: IAuthenticatedResetPasswordCommandDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.oldPassword = _data["oldPassword"];
+            this.newPassword = _data["newPassword"];
+        }
+    }
+
+    static fromJS(data: any): AuthenticatedResetPasswordCommandDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthenticatedResetPasswordCommandDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["oldPassword"] = this.oldPassword;
+        data["newPassword"] = this.newPassword;
+        return data;
+    }
+}
+
+export interface IAuthenticatedResetPasswordCommandDto {
+    oldPassword?: string;
+    newPassword?: string;
+}
+
+export class PaginatedListOfUserListDTO implements IPaginatedListOfUserListDTO {
+    items?: UserListDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfUserListDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(UserListDTO.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfUserListDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfUserListDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfUserListDTO {
+    items?: UserListDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class UserListDTO implements IUserListDTO {
+    id!: string;
+    userName?: string | undefined;
+    email?: string | undefined;
+    emailConfirmed?: boolean;
+    phoneNumber?: string | undefined;
+    isRestricted?: boolean | undefined;
+    roles?: string[];
+
+    constructor(data?: IUserListDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.userName = _data["userName"];
+            this.email = _data["email"];
+            this.emailConfirmed = _data["emailConfirmed"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.isRestricted = _data["IsRestricted"];
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): UserListDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserListDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["userName"] = this.userName;
+        data["email"] = this.email;
+        data["emailConfirmed"] = this.emailConfirmed;
+        data["phoneNumber"] = this.phoneNumber;
+        data["IsRestricted"] = this.isRestricted;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IUserListDTO {
+    id: string;
+    userName?: string | undefined;
+    email?: string | undefined;
+    emailConfirmed?: boolean;
+    phoneNumber?: string | undefined;
+    isRestricted?: boolean | undefined;
+    roles?: string[];
 }
 
 export class CreateUserCommand implements ICreateUserCommand {

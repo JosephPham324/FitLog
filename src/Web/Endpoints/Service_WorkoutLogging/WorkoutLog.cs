@@ -6,6 +6,7 @@ using FitLog.Application.Equipments.Queries.GetEquipmentsList;
 using FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
 using FitLog.Application.WorkoutLogs.Commands.DeleteWorkoutLog;
 using FitLog.Application.WorkoutLogs.Commands.UpdateWorkoutLog;
+using FitLog.Application.WorkoutLogs.Queries.ExportWorkoutData;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Web.Services;
@@ -30,9 +31,11 @@ public class WorkoutLog : EndpointGroupBase
             .RequireAuthorization()
             .MapGet(GetWorkoutLogsWithPagination, "get-all")
             .MapGet(GetWorkoutHistory, "history")
-            .MapPost(CreateExerciseLog)
+            .MapPost(CreateWorkoutLog)
             .MapPut(UpdateWorkoutLog, "{id}")
             .MapDelete(DeleteWorkoutLog, "{id}");
+        app.MapGroup(this)
+            .MapGet(ExportWorkotuData, "export");
     }
 
     public Task<PaginatedList<WorkoutLogDTO>> GetWorkoutLogsWithPagination(ISender sender, [AsParameters] GetWorkoutLogsWithPaginationQuery query)
@@ -46,8 +49,10 @@ public class WorkoutLog : EndpointGroupBase
         return result;
     }
 
-    public Task<Result> CreateExerciseLog(ISender sender, [FromBody] CreateWorkoutLogCommand command)
+    public Task<Result> CreateWorkoutLog(ISender sender, [FromBody] CreateWorkoutLogCommandDTO commandDTO)
     {
+        CreateWorkoutLogCommand command = new CreateWorkoutLogCommand(_identityService.Id ?? "", commandDTO); ;
+
         return sender.Send(command);
     }
 
@@ -61,7 +66,12 @@ public class WorkoutLog : EndpointGroupBase
         return sender.Send(command);
     }
 
-    public Task<object> GetWorkoutHistory(ISender sender, [AsParameters] GetWorkoutHistoryQuery query)
+    public Task<List<WorkoutLogDTO>> GetWorkoutHistory(ISender sender, [AsParameters] GetWorkoutHistoryQuery query)
+    {
+        return sender.Send(query);
+    }
+
+    public Task<string> ExportWorkotuData(ISender sender, [AsParameters] ExportWorkoutDataQuery query)
     {
         return sender.Send(query);
     }

@@ -1,7 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
 
-const apiUrl = 'https://localhost:44447/api/Users';
+const apiUrl = process.env.REACT_APP_BACKEND_URL + '/Users';
 
 export function ManageAccount() {
   const [users, setUsers] = useState([]);
@@ -23,13 +24,14 @@ export function ManageAccount() {
 
   const fetchUsers = async (page, searchTerm) => {
     try {
-      const response = await fetch(`${apiUrl}/all?PageNumber=${page}&PageSize=${rowsPerPage}&searchTerm=${searchTerm}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-      const data = await response.json();
-      setUsers(data.items);
-      setTotalPages(data.totalPages);
+      const response = await axiosInstance.get(`${apiUrl}/all`, {
+        params: {
+          PageNumber: page,
+          PageSize: rowsPerPage,
+        }
+      });
+      setUsers(response.data.items);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -55,22 +57,12 @@ export function ManageAccount() {
         throw new Error('All fields are required');
       }
 
-      const response = await fetch(`${apiUrl}/create-account`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: newEmail,
-          password: newPassword,
-          userName: newUsername,
-          role: newRole,
-        }),
+      await axiosInstance.post(`${apiUrl}/create-account`, {
+        email: newEmail,
+        password: newPassword,
+        userName: newUsername,
+        role: newRole,
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to create user');
-      }
 
       fetchUsers(currentPage, searchTerm);
       toggleCreateModal();
@@ -86,22 +78,12 @@ export function ManageAccount() {
         throw new Error('Username and User ID are required');
       }
 
-      const response = await fetch(`${apiUrl}/${editUserId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: editUserId,
-          username: newUsername,
-          email: newEmail,
-          role: newRole,
-        }),
+      await axiosInstance.put(`${apiUrl}/${editUserId}`, {
+        id: editUserId,
+        username: newUsername,
+        email: newEmail,
+        role: newRole,
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update user');
-      }
 
       fetchUsers(currentPage, searchTerm);
       toggleUpdateModal();
@@ -113,19 +95,11 @@ export function ManageAccount() {
 
   const deleteUser = async (id) => {
     try {
-      const response = await fetch(`${apiUrl}/delete-account/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      await axiosInstance.delete(`${apiUrl}/delete-account/${id}`, {
+        data: {
           id: id,
-        })
+        }
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete user');
-      }
 
       fetchUsers(currentPage, searchTerm);
     } catch (error) {
@@ -163,7 +137,7 @@ export function ManageAccount() {
             >
               Update
             </Button>
-            <Button color="danger" className="mr-2 delete-btn" onClick={() => deleteUser(user.muscleGroupId)}>Delete</Button>
+            <Button color="danger" className="mr-2 delete-btn" onClick={() => deleteUser(user.id)}>Delete</Button>
           </div>
         </td>
       </tr>

@@ -73,6 +73,18 @@ const AppRoutes = [
     element: <ManageAccount />
   },
   {
+    path: '/WorkoutProgramsPage',
+    element: <WorkoutProgramsPage />
+  },
+  {
+    path: '/program-details/:id',
+    element: <WorkoutProgramsDetail />
+  },
+  {
+    path: '/ExerciseLog',
+    element: React.createElement(withAuthProtection(ExerciseLog))
+  },
+  {
     path: '/login',
     element: <Login />
   },

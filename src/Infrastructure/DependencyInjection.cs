@@ -6,6 +6,7 @@ using FitLog.Infrastructure.Data;
 using FitLog.Infrastructure.Data.Interceptors;
 using FitLog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -37,8 +38,9 @@ public static class DependencyInjection
         services.AddScoped<ApplicationDbContextInitialiser>();
 
         services
-            .AddIdentity<AspNetUser,AspNetRole>(
-            options => {
+            .AddIdentity<AspNetUser, AspNetRole>(
+            options =>
+            {
                 // Configure strong password policies, etc here
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -61,7 +63,7 @@ public static class DependencyInjection
                 ValidIssuer = configuration["Jwt:Issuer"],
                 ValidAudience = configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey
-                (Encoding.UTF8.GetBytes(configuration["Jwt:Key"]??"")),
+                (Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? "")),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = false,
@@ -77,8 +79,8 @@ public static class DependencyInjection
          .AddCookie()
          .AddFacebook(facebookOptions =>
             {
-                facebookOptions.AppId = configuration["Authentication:Facebook:AppId"] ??"";
-                facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"] ??"";
+                facebookOptions.AppId = configuration["Authentication:Facebook:AppId"] ?? "";
+                facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"] ?? "";
             });
 
         services.AddSingleton(TimeProvider.System);
@@ -86,14 +88,31 @@ public static class DependencyInjection
 
         services.AddAuthorization(options =>
         {
+            options.DefaultPolicy = new AuthorizationPolicyBuilder()
+               .RequireAuthenticatedUser()
+               .Build();
+
+            options.AddPolicy("MemberOnly", policy =>
+            {
+                policy.RequireRole(Roles.Administrator);
+            });
+
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
+
             options.AddPolicy("AdminOnly", policy =>
             {
-                policy.RequireRole("Administrator");
+                policy.RequireRole(Roles.Administrator);
             });
             options.AddPolicy("CoachOnly", policy =>
             {
                 policy.RequireRole(Roles.Coach);
+
+            });
+
+            options.AddPolicy("AdminOrCoach", policy =>
+            {
+                policy.RequireAssertion(context =>
+                   context.User.IsInRole(Roles.Administrator) || context.User.IsInRole(Roles.Coach));
             });
         }
         );
