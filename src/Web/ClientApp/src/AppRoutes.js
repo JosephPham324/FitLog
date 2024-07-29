@@ -31,6 +31,11 @@ import RecoverAccount from './components/AccountRecovery/RecoverAccount'
 import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmation'
 import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
+import WorkoutProgramsPage from './components/WorkoutProgramsPage'
+import WorkoutProgramsDetail from './components/WorkoutProgramsDetail'
+
+
+
 const AppRoutes = [
   {
     index: true,
@@ -79,10 +84,6 @@ const AppRoutes = [
   {
     path: '/program-details/:id',
     element: <WorkoutProgramsDetail />
-  },
-  {
-    path: '/ExerciseLog',
-    element: React.createElement(withAuthProtection(ExerciseLog))
   },
   {
     path: '/login',
