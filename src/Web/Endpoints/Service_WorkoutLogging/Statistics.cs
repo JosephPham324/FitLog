@@ -7,6 +7,7 @@ using FitLog.Application.Statistics_Workout.Queries.GetSummaryStats;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalReps;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalTrainingTonnage;
 using FitLog.Application.Statistics_Workout.Queries.GetTrainingFrequency;
+using FitLog.Application.Users.Queries.UserWithCoachServiceQuery;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +49,7 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
 
             // User statistics
             var userStats = app.MapGroup(this)
-               //.RequireAuthorization("CoachOnly")
+               .RequireAuthorization("CoachOnly")
                ;
 
             userStats
@@ -145,8 +146,22 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
         }
 
         // User statistics methods
-        public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetUserWorkoutLogSummary(ISender sender, string id, [FromQuery] string TimeFrame)
+        public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetUserWorkoutLogSummary(ISender sender, [FromRoute] string id, [FromQuery] string TimeFrame)
         {
+            var currentUserId = _identityService.Id ?? "";
+
+            var isUserCoachedQuery = new UserWithCoachServiceQueryQuery
+            {
+                UserId = id,
+                CoachId = currentUserId
+            };
+            bool isUserCoached = await sender.Send(isUserCoachedQuery);
+
+            if (!isUserCoached)
+            {
+                throw new UnauthorizedAccessException("User is not coached by the current user");
+            }
+
             var query = new GetSummaryStatsQuery
             {
                 UserId = id,
@@ -155,8 +170,22 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             return await sender.Send(query);
         }
 
-        public async Task<Dictionary<DateTime, List<MuscleEngagementDTO>>> GetUserMusclesEngagement(ISender sender, string id, [FromQuery] string TimeFrame)
+        public async Task<Dictionary<DateTime, List<MuscleEngagementDTO>>> GetUserMusclesEngagement(ISender sender, [FromRoute] string id, [FromQuery] string TimeFrame)
         {
+            var currentUserId = _identityService.Id ?? "";
+
+            var isUserCoachedQuery = new UserWithCoachServiceQueryQuery
+            {
+                UserId = id,
+                CoachId = currentUserId
+            };
+            bool isUserCoached = await sender.Send(isUserCoachedQuery);
+
+            if (!isUserCoached)
+            {
+                throw new UnauthorizedAccessException("User is not coached by the current user");
+            }
+
             var query = new GetMuscleEngagementQuery
             {
                 UserId = id,
@@ -165,8 +194,23 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             return await sender.Send(query);
         }
 
-        public async Task<Dictionary<DateTime, int>> GetUserRepsStats(ISender sender, string id, [FromQuery] string TimeFrame)
+        public async Task<Dictionary<DateTime, int>> GetUserRepsStats(ISender sender, [FromRoute] string id, [FromQuery] string TimeFrame)
         {
+            var currentUserId = _identityService.Id ?? "";
+
+            var isUserCoachedQuery = new UserWithCoachServiceQueryQuery
+            {
+                UserId = id,
+                CoachId = currentUserId
+            };
+            bool isUserCoached = await sender.Send(isUserCoachedQuery);
+
+            if (!isUserCoached)
+            {
+                throw new UnauthorizedAccessException("User is not coached by the current user");
+            }
+
+
             var query = new GetTotalRepsQuery()
             {
                 UserId = id,
@@ -175,8 +219,22 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             return await sender.Send(query);
         }
 
-        public async Task<Dictionary<DateTime, double>> GetUserTonnageStats(ISender sender, string id, [FromQuery] string TimeFrame)
+        public async Task<Dictionary<DateTime, double>> GetUserTonnageStats(ISender sender, [FromRoute] string id, [FromQuery] string TimeFrame)
         {
+            var currentUserId = _identityService.Id ?? "";
+
+            var isUserCoachedQuery = new UserWithCoachServiceQueryQuery
+            {
+                UserId = id,
+                CoachId = currentUserId
+            };
+            bool isUserCoached = await sender.Send(isUserCoachedQuery);
+
+            if (!isUserCoached)
+            {
+                throw new UnauthorizedAccessException("User is not coached by the current user");
+            }
+
             var query = new GetTotalTrainingTonnageQuery
             {
                 UserId = id,
@@ -185,8 +243,23 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             return await sender.Send(query);
         }
 
-        public async Task<Dictionary<DateTime, int>> GetUserTrainingFrequencies(ISender sender, string id, [FromQuery] string TimeFrame)
+        public async Task<Dictionary<DateTime, int>> GetUserTrainingFrequencies(ISender sender, [FromRoute] string id, [FromQuery] string TimeFrame)
         {
+            var currentUserId = _identityService.Id ?? "";
+
+            var isUserCoachedQuery = new UserWithCoachServiceQueryQuery
+            {
+                UserId = id,
+                CoachId = currentUserId
+            };
+            bool isUserCoached = await sender.Send(isUserCoachedQuery);
+
+            if (!isUserCoached)
+            {
+                throw new UnauthorizedAccessException("User is not coached by the current user");
+            }
+
+
             var query = new GetTrainingFrequencyQuery
             {
                 UserId = id,
@@ -195,22 +268,64 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             return await sender.Send(query);
         }
 
-        public async Task<IEnumerable<ExerciseLogDTO>> GetUserExerciseLogHistory(ISender sender, string id, [AsParameters] GetExerciseLogHistoryQuery query)
+        public async Task<IEnumerable<ExerciseLogDTO>> GetUserExerciseLogHistory(ISender sender, [FromRoute] string id, [AsParameters] GetExerciseLogHistoryQuery query)
         {
+            var currentUserId = _identityService.Id ?? "";
+
+            var isUserCoachedQuery = new UserWithCoachServiceQueryQuery
+            {
+                UserId = id,
+                CoachId = currentUserId
+            };
+            bool isUserCoached = await sender.Send(isUserCoachedQuery);
+
+            if (!isUserCoached)
+            {
+                throw new UnauthorizedAccessException("User is not coached by the current user");
+            }
+
             query.UserId = id;
 
             return await sender.Send(query);
         }
 
-        public async Task<object> GetUserEstimated1RM(ISender sender, string id, [AsParameters] GetExerciseEstimated1RMsQuery query)
+        public async Task<object> GetUserEstimated1RM(ISender sender, [FromRoute] string id, [AsParameters] GetExerciseEstimated1RMsQuery query)
         {
+            var currentUserId = _identityService.Id ?? "";
+
+            var isUserCoachedQuery = new UserWithCoachServiceQueryQuery
+            {
+                UserId = id,
+                CoachId = currentUserId
+            };
+            bool isUserCoached = await sender.Send(isUserCoachedQuery);
+
+            if (!isUserCoached)
+            {
+                throw new UnauthorizedAccessException("User is not coached by the current user");
+            }
+
             query.UserId = id;
 
             return await sender.Send(query);
         }
 
-        public async Task<List<ExerciseHistoryEntry>> GetUserExercisesWithHistory(ISender sender, string id)
+        public async Task<List<ExerciseHistoryEntry>> GetUserExercisesWithHistory(ISender sender, [FromRoute] string id)
         {
+            var currentUserId = _identityService.Id ?? "";
+
+            var isUserCoachedQuery = new UserWithCoachServiceQueryQuery
+            {
+                UserId = id,
+                CoachId = currentUserId
+            };
+            bool isUserCoached = await sender.Send(isUserCoachedQuery);
+
+            if (!isUserCoached)
+            {
+                throw new UnauthorizedAccessException("User is not coached by the current user");
+            }
+
             var query = new GetExercisesWithHistoryQuery(id);
 
             return await sender.Send(query);

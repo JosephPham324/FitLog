@@ -3144,6 +3144,41 @@
         }
       }
     },
+    "/api/Users/get-by-roles": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetUsersByRole",
+        "parameters": [
+          {
+            "name": "Roles",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserListDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Users/create-account": {
       "post": {
         "tags": [
