@@ -45,15 +45,19 @@ public class Users : EndpointGroupBase
            .MapPost(RecoverAccount, "recover-account")
            .MapPut(ResetPassword, "reset-password");
 
+        app.MapGroup(this)
+           .RequireAuthorization()
+           .MapGet(GetUserProfile, "profile")
+           .MapPut(AuthenticatedResetPassword,"authenticated-reset-password");
+
 
         // User management routes
         app.MapGroup(this)
-           .RequireAuthorization()
+           .RequireAuthorization("AdminOnly")
            .MapGet(GetUserList, "all")
            .MapGet(SearchUsersByEmail, "search-by-email")
            .MapGet(SearchUsersByLoginProvider, "search-by-provider")
            .MapGet(SearchUsersByUserName, "search-by-username")
-           .MapGet(GetUserProfile, "profile")
            .MapPost(CreateUser, "create-account")
            .MapDelete(DeleteAccount, "delete-account/{id}")
            .MapPut(UpdateUser, "update-account");
@@ -207,5 +211,16 @@ public class Users : EndpointGroupBase
     public async Task<Result> ConfirmEmail(ISender sender, [FromBody] ConfirmEmailCommand command)
     {
         return await sender.Send(command);
+    }
+
+    public async Task<Result> AuthenticatedResetPassword(ISender sender, [FromBody] AuthenticatedResetPasswordCommandDto command)
+    {
+        AuthenticatedResetPasswordCommand resetCommand = new AuthenticatedResetPasswordCommand
+        {
+            UserId = _identityService.Id ?? "",
+            OldPassword = command.OldPassword,
+            NewPassword = command.NewPassword
+        };
+        return await sender.Send(resetCommand);
     }
 }
