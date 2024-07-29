@@ -3,6 +3,7 @@ using FitLog.Domain.Constants;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,14 +36,18 @@ namespace FitLog.Application.Users.Queries.UserWithCoachServiceQuery
 
         public async Task<bool> Handle(UserWithCoachServiceQueryQuery request, CancellationToken cancellationToken)
         {
-            var isApproved = await _context.CoachingBookings
+            var bookings = await _context.CoachingBookings
                     .Include(cb => cb.CoachingService)
-                .Where(cb => cb.UserId == request.UserId
-                             && (cb.CoachingService != null && cb.CoachingService.CreatedBy == request.CoachId)
-                             && cb.Status == ServiceBookingStatus.Confirmed)
-                .AnyAsync(cancellationToken);
+                .Where(cb => cb.UserId == request.UserId)
+                .ToListAsync();
+            if (bookings.IsNullOrEmpty()) return false;
 
-            return isApproved;
+            bool res = bookings
+                .Where(cb => cb.CoachingService != null && cb.CoachingService.CreatedBy == request.CoachId
+                             && cb.Status == ServiceBookingStatus.Confirmed)
+                .Any();
+
+            return res;
         }
     }
 }
