@@ -122,12 +122,6 @@
     font-size: 32px;
 }
 
-.gradient-text {
-    background: linear-gradient(90deg, #33CCFF, #33CC33, #FF99FF, #FFCC00, #FF6699, #9933FF, #FF6600);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 .terms-policy-register {
     text-align: center;
 }

@@ -1,1 +1,53 @@
-﻿
+﻿.program-detail-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.program-detail-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.program-detail-image {
+    width: 100%;
+    height: auto;
+    max-width: 600px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.program-detail-info {
+    width: 100%;
+    text-align: left;
+}
+
+    .program-detail-info p {
+        margin: 5px 0;
+    }
+
+.program-description, .program-overview {
+    margin-bottom: 20px;
+}
+
+    .program-description h2, .program-overview h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .program-overview ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+        .program-overview ul li {
+            margin: 5px 0;
+        }

@@ -54,6 +54,30 @@ export const WorkoutProgramsDetail = () => {
               <p><strong>Created by:</strong> {programDetail.userName}</p>
             </div>
           </div>
+          <div className="program-overview">
+            <h2>Program Workouts</h2>
+            {programDetail.programWorkouts.map((workout) => (
+              <div key={workout.programWorkoutId} className="workout-card">
+                <h3>Week {workout.weekNumber}, Day {workout.orderInWeek}</h3>
+                <p><strong>Workout:</strong> {workout.workoutTemplate.templateName}</p>
+                <p><strong>Duration:</strong> {workout.workoutTemplate.duration}</p>
+                <p><strong>Created by:</strong> {workout.workoutTemplate.creatorName}</p>
+                <div className="exercise-list">
+                  <h4>Exercises</h4>
+                  {workout.workoutTemplate.workoutTemplateExercises.map((exercise) => (
+                    <div key={exercise.exerciseTemlateId} className="exercise-card">
+                      <p><strong>Note:</strong> {exercise.note}</p>
+                      <p><strong>Sets Recommendation:</strong> {exercise.setsRecommendation}</p>
+                      <p><strong>Intensity Percentage:</strong> {exercise.intensityPercentage}%</p>
+                      <p><strong>RPE Recommendation:</strong> {exercise.rpeRecommendation}</p>
+                      <p><strong>Weights Used:</strong> {exercise.weightsUsed}</p>
+                      <p><strong>Numbers of Reps:</strong> {exercise.numbersOfReps}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </>
       ) : (
         <div>No program details found</div>

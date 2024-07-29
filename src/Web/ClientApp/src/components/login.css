@@ -18,7 +18,7 @@
 
 .fitness {
     width: 100%;
-    height: 90vh;
+    height: 100vh;
     object-fit: cover;
 }
 
@@ -200,14 +200,6 @@ h2 {
     margin-right: 8px;
 }
 
-:root .text-login {
-    color: white;
-}
-
 .error {
     color: red;
-}
-
-:root .S9gUrf-YoZ4jf {
-    width: 400px;
 }

@@ -167,8 +167,8 @@ export function MuscleGroup() {
   return (
     <Container>
       <h1 className="my-4">Muscle Groups</h1>
-      <Row>
-        <Col md="6">
+      <Row className="align-items-center mb-3">
+        <Col xs="12" md="10" className="mb-3 mb-md-0">
           <Input
             type="text"
             placeholder="Search muscle group..."
@@ -177,7 +177,7 @@ export function MuscleGroup() {
             className="btn-search"
           />
         </Col>
-        <Col md="6" className="text-right">
+        <Col xs="12" md="2" className="text-md-right">
           <Button color="primary" onClick={toggleCreateModal} className="btn-create">Create Muscle Group</Button>
         </Col>
       </Row>
@@ -248,7 +248,7 @@ export function MuscleGroup() {
         </ModalFooter>
       </Modal>
 
-      <Table striped hover>
+      <Table striped hover responsive>
         <thead>
           <tr>
             <th>Muscle Group ID</th>

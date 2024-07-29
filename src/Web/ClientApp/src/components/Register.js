@@ -135,9 +135,6 @@ const Register = () => {
         <div className="register-right">
 
           <form className="register-form" onSubmit={handleSubmit}>
-            <div className="register-text">
-              <span className="gradient-text"> REGISTER</span>
-            </div>
             <Typography variant="body2" className="typography-black">User Name (*)</Typography>
             <TextField
               name="userName"
