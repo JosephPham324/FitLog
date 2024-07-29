@@ -1,0 +1,78 @@
+﻿.container {
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+:root .create-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 2px;
+    width: 90px;
+    height: 35px;
+    font-size: 20px;
+    text-align: center;
+}
+
+/* Remove background color on hover */
+.create-btn:hover {
+    background-color: #28a745;
+}
+
+:root .texth1 {
+    text-align: center;
+    font-size: 50px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.th {
+    background-color: #f4f4f4;
+}
+
+.update-btn, .delete-btn {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.update-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+    .update-btn:hover {
+        background-color: #0056b3;
+    }
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+    .delete-btn:hover {
+        background-color: #c82333;
+    }

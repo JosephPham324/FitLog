@@ -3,7 +3,8 @@ import React from 'react';
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import { MuscleGroup } from "./components/MuscleGroup";
-import ExerciseLog from "./components/ExerciseLog";
+import WorkoutLog from "./components/WorkoutOutLog/WorkoutOutLog";
+import CreateWorkoutLog from "./components/WorkoutOutLog/CreateWorkoutLog";
 import Login from './components/GoogleLogin';
 import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
@@ -15,6 +16,13 @@ import { CoachServiceBooking } from './components/CoachServiceBooking';
 import ChatPage from "./page/ChatPage";
 import UserListPage from "./page/TestAxios";
 import Logout from "./components/Logout";
+import CoachApplicationNotification from "./components/CoachApplicationNotification/CoachApplicationNotification"
+import WorkoutTemplatesListAdmin from "./components/Workout Templates List Admin/WorkoutTemplatesListAdmin";
+import WorkoutLogExport from "./components/WorkoutLogExport/WorkoutLogExport";
+import WorkoutLogGraphs from "./components/WorkoutLogGraphs/WorkoutLogGraphs";
+import ExerciseLogGraphs from "./components/ExerciseLogGraphs/ExerciseLogGraphs";
+import RolesListScreen from "./components/RolesListScreen/RolesListScreen";
+import ExerciseListScreen from "./components/ExerciseListScreen/ExerciseListScreen";
 import { Profile } from './page/Profile';
 import { ChangePassword } from './page/ChangePassword';
 import TrainingBoard from './page/TrainingBoard';
@@ -23,8 +31,10 @@ import RecoverAccount from './components/AccountRecovery/RecoverAccount'
 import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmation'
 import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
-import { WorkoutProgramsPage } from './components/WorkoutProgramsPage';
-import { WorkoutProgramsDetail } from './components/WorkoutProgramsDetail';// Correct the import statement
+import WorkoutProgramsPage from './components/WorkoutProgramsPage'
+import WorkoutProgramsDetail from './components/WorkoutProgramsDetail'
+
+
 
 const AppRoutes = [
   {
@@ -42,6 +52,18 @@ const AppRoutes = [
   {
     path: '/MuscleGroup',
     element: React.createElement(withAuthProtection(MuscleGroup))
+  },
+  {
+    path: '/WorkoutLog',
+    element: <WorkoutLog />
+  },
+  {
+    path: '/WorkoutLog',
+    element: React.createElement(withAuthProtection(WorkoutLog))
+  },
+  {
+    path: '/WorkoutHistory',
+    element: <WorkoutHistory />
   },
   {
     path: '/WorkoutHistory',
@@ -64,10 +86,6 @@ const AppRoutes = [
     element: <WorkoutProgramsDetail />
   },
   {
-    path: '/ExerciseLog',
-    element: React.createElement(withAuthProtection(ExerciseLog))
-  },
-  {
     path: '/login',
     element: <Login />
   },
@@ -79,6 +97,14 @@ const AppRoutes = [
     path: '/register',
     element: <Register />
   },
+  {
+    path: '/TrainingSurvey',
+    element: <TrainingSurvey />
+  },
+{
+  path: '/EquipmentsList',
+    element: <EquipmentsList />
+},
   {
     path: '/survey',
     element: React.createElement(withAuthProtection(TrainingSurvey))
@@ -97,6 +123,42 @@ const AppRoutes = [
   },
   {
     path: '/log-out',
+    element: <Logout/>
+  },
+  {
+    path: '/CoachApplicationNotification',
+    element: <CoachApplicationNotification />
+  },
+  {
+    path: '/WorkoutTemplatesListAdmin',
+    element: <WorkoutTemplatesListAdmin />
+  },
+  {
+    path: '/WorkoutLogExport',
+    element: <WorkoutLogExport />
+  },
+  {
+    path: '/WorkoutLogGraphs',
+    element: <WorkoutLogGraphs />
+  },
+  {
+    path: '/ExerciseLogGraphs',
+    element: <ExerciseLogGraphs />
+  },
+  {
+    path: '/RolesListScreen',
+    element: <RolesListScreen />
+  },
+  {
+    path: '/ExerciseListScreen',
+    element: <ExerciseListScreen />
+  },
+  {
+    path: '/CreateWorkoutLog',
+    element: <CreateWorkoutLog />
+  },
+  { 
+  path:'log-out',
     element: React.createElement(withAuthProtection(Logout))
   },
   {

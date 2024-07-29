@@ -1,9 +1,11 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Mappings;
 using FitLog.Application.Common.Models;
+using FitLog.Application.TodoLists.Queries.GetTodos;
 
 namespace FitLog.Application.Equipments.Queries.GetEquipmentsList;
 
-public record GetEquipmentsWithPaginationQuery : IRequest<PaginatedList<EquipmentDTO>>
+public record GetEquipmentsWithPaginationQuery : IRequest<PaginatedList<EquipmentDetailsDTO>>
 {
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
@@ -23,7 +25,7 @@ public class GetEquipmentsListWithPaginationQueryValidator : AbstractValidator<G
     }
 }
 
-public class GetEquipmentsListWithPaginationQueryHandler : IRequestHandler<GetEquipmentsWithPaginationQuery, PaginatedList<EquipmentDTO>>
+public class GetEquipmentsListWithPaginationQueryHandler : IRequestHandler<GetEquipmentsWithPaginationQuery, PaginatedList<EquipmentDetailsDTO>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -34,12 +36,12 @@ public class GetEquipmentsListWithPaginationQueryHandler : IRequestHandler<GetEq
         _mapper = mapper;
     }
 
-    public async Task<PaginatedList<EquipmentDTO>> Handle(GetEquipmentsWithPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<EquipmentDetailsDTO>> Handle(GetEquipmentsWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        var query = _context.Equipment
-            .OrderBy(e => e.EquipmentName)
-            .ProjectTo<EquipmentDTO>(_mapper.ConfigurationProvider);
-        
-        return await PaginatedList<EquipmentDTO>.CreateAsync(query.AsNoTracking(), request.PageNumber, request.PageSize);
+         return await _context.Equipment
+                 .AsNoTracking()
+                 .ProjectTo<EquipmentDetailsDTO>(_mapper.ConfigurationProvider)
+                 .OrderBy(t => t.EquipmentId)
+                 .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

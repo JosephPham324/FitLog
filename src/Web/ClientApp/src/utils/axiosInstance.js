@@ -10,12 +10,9 @@ const axiosInstance = axios.create({
 // Add a request interceptor to include the cookies
 axiosInstance.interceptors.request.use(
   (config) => {
-    //const jwtHeaderPayload = document.cookie.split('; ').find(row => row.startsWith('jwtHeaderPayload='));
-    //const jwtSignature = document.cookie.split('; ').find(row => row.startsWith('jwtSignature='));
     const jwtHeaderPayload = getCookie('jwtHeaderPayload');
     const jwtSignature = getCookie('jwtSignature');
 
-    console.log(`Bearer ${jwtHeaderPayload}.${jwtSignature}`);
     if (jwtHeaderPayload && jwtSignature) {
       config.headers.Authorization = `Bearer ${jwtHeaderPayload}.${jwtSignature}`;
     }
