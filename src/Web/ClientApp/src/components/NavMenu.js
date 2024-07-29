@@ -102,6 +102,11 @@ export const NavMenu = () => {
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
+                <NavItem>
+                  <NavItem>
+                    <NavLink tag={Link} className="text-white" to="/WorkoutProgramsPage"><b>Programs</b></NavLink>
+                  </NavItem>
+                </NavItem>
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret className="text-white">
                     <b> Admin</b>
@@ -127,7 +132,13 @@ export const NavMenu = () => {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <button className="btn btn-link nav-link text-white" onClick={logout}><b>Logout</b></button>
+                  <button
+                    className="btn btn-link nav-link text-white"
+                    style={{ backgroundColor: '#3971a1' }}
+                    onClick={logout}
+                  >
+                    <b>Logout</b>
+                  </button>
                 </NavItem>
               </>
             )}

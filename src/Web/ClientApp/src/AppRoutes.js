@@ -23,6 +23,8 @@ import RecoverAccount from './components/AccountRecovery/RecoverAccount'
 import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmation'
 import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
+import { WorkoutProgramsPage } from './components/WorkoutProgramsPage';
+import { WorkoutProgramsDetail } from './components/WorkoutProgramsDetail';// Correct the import statement
 
 const AppRoutes = [
   {
@@ -52,6 +54,14 @@ const AppRoutes = [
   {
     path: '/ManageAccount',
     element: <ManageAccount />
+  },
+  {
+    path: '/WorkoutProgramsPage',
+    element: <WorkoutProgramsPage />
+  },
+  {
+    path: '/program-details/:id',
+    element: <WorkoutProgramsDetail />
   },
   {
     path: '/ExerciseLog',

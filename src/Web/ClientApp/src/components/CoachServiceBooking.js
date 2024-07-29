@@ -68,7 +68,7 @@ export class CoachServiceBooking extends Component {
   }
 
   render() {
-    const { services, searchQuery, clientName, clientEmail, clientPhone, bookingDate, successMessage, selectedServiceDetails, showModal } = this.state;
+    const { services, searchQuery, selectedServiceDetails, showModal } = this.state;
     const filteredServices = services.filter(service => {
       const { id, serviceName, description, duration, price } = service;
       const query = searchQuery.toLowerCase();
@@ -106,7 +106,7 @@ export class CoachServiceBooking extends Component {
                 style={{ width: '140px' }}
                 onClick={() => this.handleDetailClick(service.id)}
               >
-                Detail
+                Booking
               </button>
             </li>
           ))}
@@ -133,64 +133,13 @@ export class CoachServiceBooking extends Component {
                       <p><strong>Announcement:</strong> {selectedServiceDetails.availabilityAnnouncement}</p>
                       <p><strong>Created By:</strong> {selectedServiceDetails.createdByUserName}</p>
                       <p><strong>Last Modified By:</strong> {selectedServiceDetails.lastModifiedByUserName}</p>
-                      {/*<form id="detailForm">*/}
-                      {/*  <div className="form-group">*/}
-                      {/*    <label htmlFor="clientName">Name</label>*/}
-                      {/*    <input*/}
-                      {/*      type="text"*/}
-                      {/*      className="form-control"*/}
-                      {/*      id="clientName"*/}
-                      {/*      name="clientName"*/}
-                      {/*      value={clientName}*/}
-                      {/*      onChange={this.handleInputChange}*/}
-                      {/*      required*/}
-                      {/*    />*/}
-                      {/*  </div>*/}
-                      {/*  <div className="form-group">*/}
-                      {/*    <label htmlFor="clientEmail">Email</label>*/}
-                      {/*    <input*/}
-                      {/*      type="email"*/}
-                      {/*      className="form-control"*/}
-                      {/*      id="clientEmail"*/}
-                      {/*      name="clientEmail"*/}
-                      {/*      value={clientEmail}*/}
-                      {/*      onChange={this.handleInputChange}*/}
-                      {/*      required*/}
-                      {/*    />*/}
-                      {/*  </div>*/}
-                      {/*  <div className="form-group">*/}
-                      {/*    <label htmlFor="clientPhone">Phone</label>*/}
-                      {/*    <input*/}
-                      {/*      type="text"*/}
-                      {/*      className="form-control"*/}
-                      {/*      id="clientPhone"*/}
-                      {/*      name="clientPhone"*/}
-                      {/*      value={clientPhone}*/}
-                      {/*      onChange={this.handleInputChange}*/}
-                      {/*      required*/}
-                      {/*    />*/}
-                      {/*  </div>*/}
-                      {/*  <div className="form-group">*/}
-                      {/*    <label htmlFor="bookingDate">Booking Date</label>*/}
-                      {/*    <input*/}
-                      {/*      type="date"*/}
-                      {/*      className="form-control"*/}
-                      {/*      id="bookingDate"*/}
-                      {/*      name="bookingDate"*/}
-                      {/*      value={bookingDate}*/}
-                      {/*      onChange={this.handleInputChange}*/}
-                      {/*      required*/}
-                      {/*    />*/}
-                      {/*  </div>*/}
-                      {/*  <input type="hidden" id="selectedServiceId" value={this.state.selectedServiceId || ''} />*/}
-                      {/*</form>*/}
                     </div>
                   ) : (
                     <div>Loading...</div>
                   )}
                 </div>
                 <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={this.handleCloseModal}>Close</button>
+                  <button type="button" className="btn btn-secondary" onClick={this.handleCloseModal}>Booking</button>
                 </div>
               </div>
             </div>

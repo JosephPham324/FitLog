@@ -255,15 +255,7 @@ const Register = () => {
             </Button>
           </form>
           <Typography variant="body1" className="or-text">Or</Typography>
-          <div className="social-buttons">
-            <Button type="button" variant="contained" className="btn google">
-              <FcGoogle className="icon" /> Google
-            </Button>
-            <Button type="button" variant="contained" className="btn facebook">
-              <FaFacebookF className="icon" /> Facebook
-            </Button>
-          </div>
-          <a href="https://localhost:44447/login" className="signin-link">Sign In</a>
+          <a href="https://localhost:44447/login" className="signin-link button">Sign In</a>
         </div>
       </div>
     </Container>

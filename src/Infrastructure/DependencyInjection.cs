@@ -38,8 +38,9 @@ public static class DependencyInjection
         services.AddScoped<ApplicationDbContextInitialiser>();
 
         services
-            .AddIdentity<AspNetUser,AspNetRole>(
-            options => {
+            .AddIdentity<AspNetUser, AspNetRole>(
+            options =>
+            {
                 // Configure strong password policies, etc here
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -62,7 +63,7 @@ public static class DependencyInjection
                 ValidIssuer = configuration["Jwt:Issuer"],
                 ValidAudience = configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey
-                (Encoding.UTF8.GetBytes(configuration["Jwt:Key"]??"")),
+                (Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? "")),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = false,
@@ -78,8 +79,8 @@ public static class DependencyInjection
          .AddCookie()
          .AddFacebook(facebookOptions =>
             {
-                facebookOptions.AppId = configuration["Authentication:Facebook:AppId"] ??"";
-                facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"] ??"";
+                facebookOptions.AppId = configuration["Authentication:Facebook:AppId"] ?? "";
+                facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"] ?? "";
             });
 
         services.AddSingleton(TimeProvider.System);
@@ -105,6 +106,7 @@ public static class DependencyInjection
             options.AddPolicy("CoachOnly", policy =>
             {
                 policy.RequireRole(Roles.Coach);
+
             });
 
             options.AddPolicy("AdminOrCoach", policy =>
