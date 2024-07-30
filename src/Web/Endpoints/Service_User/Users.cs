@@ -47,9 +47,10 @@ public class Users : EndpointGroupBase
            .MapPut(ResetPassword, "reset-password");
 
         app.MapGroup(this)
-           .RequireAuthorization()
-           .MapGet(GetUserProfile, "profile")
-           .MapPut(AuthenticatedResetPassword,"authenticated-reset-password");
+           //.RequireAuthorization()
+           .MapGet(GetUserProfile, "user-profile")
+           .MapPut(AuthenticatedResetPassword,"authenticated-reset-password")
+           .MapPut(UpdateUserProfile, "update-profile");
 
 
         // User management routes
@@ -61,8 +62,7 @@ public class Users : EndpointGroupBase
            .MapGet(SearchUsersByUserName, "search-by-username")
            .MapGet(GetUsersByRole, "get-by-roles")
            .MapPost(CreateUser, "create-account")
-           .MapDelete(DeleteAccount, "delete-account/{id}")
-           .MapPut(UpdateUser, "update-account");
+           .MapDelete(DeleteAccount, "delete-account/{id}");
         // Coaches routes
         app.MapGroup(this)
            .MapGroup("/coaches")
@@ -112,7 +112,7 @@ public class Users : EndpointGroupBase
     /// <returns>A task that represents the asynchronous operation. The task result contains the user profile DTO.</returns>
     public Task<UserProfileDTO> GetUserProfile(ISender sender, [AsParameters] GetProfileDetailsRequest request)
     {
-        request.UserId = _identityService.Id ?? "";
+        //request.UserId = _identityService.Id ?? "";
 
         return sender.Send(request);
     }
@@ -183,16 +183,6 @@ public class Users : EndpointGroupBase
         return sender.Send(command);
     }
 
-    /// <summary>
-    /// Updates a user account using the provided update user command parameters.
-    /// </summary>
-    /// <param name="sender">The sender used to send the update user command.</param>
-    /// <param name="command">The update user command containing the user's updated information.</param>
-    /// <returns>A task that represents the asynchronous update operation. The task result contains the result of the update.</returns>
-    public Task<Result> UpdateUser(ISender sender, [FromBody] UpdateUserCommand command)
-    {
-        return sender.Send(command);
-    }
 
     /// <summary>
     /// Gets a paginated list of coaches based on the provided pagination request parameters.
@@ -235,5 +225,11 @@ public class Users : EndpointGroupBase
     public Task<IEnumerable<UserListDTO>> GetUsersByRole(ISender sender, [AsParameters] GetAccountsByRoleQuery request)
     {
         return sender.Send(request);
+    }
+
+    public Task<Result> UpdateUserProfile(ISender sender, [AsParameters] UpdateUserCommand command)
+    {
+
+        return sender.Send(command);
     }
 }
