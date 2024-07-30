@@ -71,8 +71,7 @@ public class UpdateWorkoutLogCommandHandler : IRequestHandler<UpdateWorkoutLogCo
 
         if (workoutLog == null)
         {
-            return Result.Failure([$"Workout log with ID {request.WorkoutLogId} not found."]);
-            //throw new NotFoundException(nameof(WorkoutLog), request.WorkoutLogId.ToString());
+            return Result.Failure(new[] { $"Workout log with ID {request.WorkoutLogId} not found." });
         }
 
         workoutLog.Note = request.Note;
