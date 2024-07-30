@@ -25,7 +25,7 @@ import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
 import { WorkoutProgramsPage } from './components/WorkoutProgramsPage';
 import { WorkoutProgramsDetail } from './components/WorkoutProgramsDetail';// Correct the import statement
-
+import CoachProfile from './components/CoachProfile';
 const AppRoutes = [
   {
     index: true,
@@ -34,6 +34,10 @@ const AppRoutes = [
   {
     path: '/counter',
     element: React.createElement(withAuthProtection(Counter))
+  },
+  {
+    path: '/CoachProfile/:id',
+    element: <CoachProfile /> // Adding CoachProfile to the routes
   },
   {
     path: '/fetch-data',

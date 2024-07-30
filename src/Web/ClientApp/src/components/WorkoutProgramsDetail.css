@@ -20,7 +20,7 @@
 .program-detail-image {
     width: 100%;
     height: auto;
-    max-width: 600px;
+    max-width: 1000px;
     border-radius: 10px;
     margin-bottom: 20px;
 }
@@ -28,19 +28,24 @@
 .program-detail-info {
     width: 100%;
     text-align: left;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background-color: white;
+    padding: 20px;
 }
 
     .program-detail-info p {
-        margin: 5px 0;
+        margin: 10px 0;
     }
 
 .program-description, .program-overview {
     margin-bottom: 20px;
 }
 
-    .program-description h2, .program-overview h2 {
-        font-size: 1.5rem;
+    .program-description h1, .program-overview h1 {
+        font-size: 2rem;
         margin-bottom: 10px;
+        text-align: center;
     }
 
     .program-overview ul {
@@ -51,3 +56,28 @@
         .program-overview ul li {
             margin: 5px 0;
         }
+
+.table {
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: white;
+    border-collapse: collapse;
+}
+
+    .table th, .table td {
+        border: 1px solid gray;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .table th {
+        background-color: #f2f2f2;
+    }
+
+.program-overview {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
