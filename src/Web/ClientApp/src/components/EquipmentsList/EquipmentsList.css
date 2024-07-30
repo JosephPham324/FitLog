@@ -48,28 +48,15 @@
 }
 
 :root .create-buttone {
-    background-color: #4CAF50;
+    background-color: #1B6EC2;
     color: white;
     height: 40px;
     width: 195px;
 }
 
-:root .detail-buttone {
-    background-color: #2196F3;
-    color: white;
-    height: 40px;
-    width: 100px;
-}
 
 :root .edit-buttone {
-    background-color: #FFC107;
-    color: white;
-    height: 40px;
-    width: 100px;
-}
-
-:root .delete-buttone {
-    background-color: #f44336;
+    background-color: green;
     color: white;
     height: 40px;
     width: 100px;
@@ -93,9 +80,7 @@
         color: white;
     }
 
-    .page-button:hover {
-        background-color: #ddd;
-    }
+    
 
 .error-text {
     color: red;
@@ -111,3 +96,5 @@
     margin-top: 6px;
     border: 2px solid black;
 }
+
+

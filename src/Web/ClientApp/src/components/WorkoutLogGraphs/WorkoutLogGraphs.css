@@ -206,9 +206,13 @@
     text-align: center;
 }
 
-.graph-title {
+:root .graph-title {
     font-size: 18px;
     margin-bottom: 10px;
+}
+:root .recharts-surface1 {
+    width: 110%;
+    height: 100%;
 }
 
 /* Các phần khác của giao diện */

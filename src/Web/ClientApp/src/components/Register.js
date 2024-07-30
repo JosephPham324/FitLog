@@ -6,7 +6,7 @@
 //import logo from '../assets/Logo.png';
 //import image23 from '../assets/image23.png';
 //import { FaFacebookF } from 'react-icons/fa';
-//import axios from 'axios'; // Ensure axios is imported
+//import axios from 'axios';
 
 //const Register = () => {
 //  const [formData, setFormData] = useState({
@@ -27,7 +27,8 @@
 //    termsAccepted: '',
 //  });
 
-//  const [successMessage, setSuccessMessage] = useState(''); // State for success message
+//  const [successMessage, setSuccessMessage] = useState('');
+ 
 
 //  const handleChange = (e) => {
 //    const { name, value, checked, type } = e.target;
@@ -109,11 +110,11 @@
 //      try {
 //        const response = await axios.post('https://localhost:44447/api/Users/register', formData);
 //        console.log('Registration successful:', response.data);
-//        setSuccessMessage('Registration successful!'); // Update success message
-//        // Handle successful registration (e.g., redirect or show success message)
+//        setSuccessMessage('Registration successful!');
+       
 //      } catch (error) {
 //        console.error('Registration error:', error.response?.data || error.message);
-//        // Handle registration error (e.g., show error message)
+       
 //      }
 //    }
 //  };
@@ -123,7 +124,7 @@
 //      <div className="register-content">
 //        <div className="register-left">
 //          <img src={image23} alt="Background" className="background-image" />
-//          <div className="overlay"></div> {/* Thêm lớp phủ */}
+//          <div className="overlay"></div>
 //          <div className="logo-res">
 //            <img src={logo} alt="Fitlog Logo" className="logo-image" />
 //          </div>
@@ -255,7 +256,7 @@
 //            </Button>
 //          </form>
 //          <Typography variant="body1" className="or-text">Or</Typography>
-//          <a href="https://localhost:44447/login" className="signin-link">Sign In</a>
+//          <a href="https://localhost:44447/login" className="signin-link button">Sign In</a>
 //        </div>
 //      </div>
 //    </Container>
@@ -263,8 +264,6 @@
 //};
 
 //export default Register;
-
-
 
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Grid, InputAdornment, FormControlLabel, Checkbox, Alert } from '@mui/material';
@@ -296,7 +295,7 @@ const Register = () => {
   });
 
   const [successMessage, setSuccessMessage] = useState('');
- 
+
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -379,10 +378,10 @@ const Register = () => {
         const response = await axios.post('https://localhost:44447/api/Users/register', formData);
         console.log('Registration successful:', response.data);
         setSuccessMessage('Registration successful!');
-       
+
       } catch (error) {
         console.error('Registration error:', error.response?.data || error.message);
-       
+
       }
     }
   };
@@ -407,7 +406,7 @@ const Register = () => {
             <div className="register-text">
               <span className="gradient-text"> REGISTER</span>
             </div>
-            <Typography variant="body2" className="typography-black">User Name (*)</Typography>
+            <Typography variant="body2" className="typography-black">User Name <span className="red-asterisk">(*)</span></Typography>
             <TextField
               name="userName"
               variant="outlined"
@@ -426,7 +425,7 @@ const Register = () => {
               }}
             />
 
-            <Typography variant="body2" className="typography-black">Email (*)</Typography>
+            <Typography variant="body2" className="typography-black">Email <span className="red-asterisk">(*)</span></Typography>
             <TextField
               name="email"
               variant="outlined"
@@ -445,7 +444,7 @@ const Register = () => {
               }}
             />
 
-            <Typography variant="body2" className="typography-black">Password (*)</Typography>
+            <Typography variant="body2" className="typography-black">Password <span className="red-asterisk">(*)</span></Typography>
             <TextField
               name="password"
               type="password"
@@ -465,7 +464,7 @@ const Register = () => {
               }}
             />
 
-            <Typography variant="body2" className="typography-black">Confirm Password (*)</Typography>
+            <Typography variant="body2" className="typography-black">Confirm Password <span className="red-asterisk">(*)</span></Typography>
             <TextField
               name="confirmPassword"
               type="password"
@@ -485,7 +484,7 @@ const Register = () => {
               }}
             />
 
-            <Typography variant="body2" className="typography-black">Phone Number (*)</Typography>
+            <Typography variant="body2" className="typography-black">Phone Number <span className="red-asterisk">(*)</span></Typography>
             <TextField
               name="phoneNumber"
               variant="outlined"
@@ -509,7 +508,7 @@ const Register = () => {
                 control={<Checkbox name="termsAccepted" checked={formData.termsAccepted} onChange={handleChange} />}
                 label={
                   <Typography variant="body2" className="typography-black">
-                    I agree to FittLog's <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>. (*)
+                    I agree to FittLog's <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>. <span className="red-asterisk">*</span>
                   </Typography>
                 }
               />

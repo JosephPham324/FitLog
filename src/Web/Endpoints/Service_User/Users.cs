@@ -46,14 +46,14 @@ public class Users : EndpointGroupBase
            .MapPut(ResetPassword, "reset-password");
 
         app.MapGroup(this)
-           .RequireAuthorization()
+           //.RequireAuthorization()
            .MapGet(GetUserProfile, "profile")
            .MapPut(AuthenticatedResetPassword,"authenticated-reset-password");
 
 
         // User management routes
         app.MapGroup(this)
-           .RequireAuthorization("AdminOnly")
+           //.RequireAuthorization("AdminOnly")
            .MapGet(GetUserList, "all")
            .MapGet(SearchUsersByEmail, "search-by-email")
            .MapGet(SearchUsersByLoginProvider, "search-by-provider")
