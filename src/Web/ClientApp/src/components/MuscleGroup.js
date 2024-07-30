@@ -156,8 +156,8 @@ export function MuscleGroup() {
         <td>{group.imageUrl && <img src={group.imageUrl} alt={group.muscleGroupName} className="table-image" />}</td>
         <td>
           <div className="button-group">
-            <Button color="primary" className="mr-2 update-btn" onClick={() => handleEdit(group)}>Update</Button>
-            <Button color="danger" className="mr-2 delete-btn" onClick={() => deleteMuscleGroup(group.muscleGroupId)}>Delete</Button>
+            <Button color="success" className="mr-2 update-btn" onClick={() => handleEdit(group)}>Update</Button>
+            {/* <Button color="danger" className="mr-2 delete-btn" onClick={() => deleteMuscleGroup(group.muscleGroupId)}>Delete</Button>*/}
           </div>
         </td>
       </tr>
@@ -211,7 +211,7 @@ export function MuscleGroup() {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={createMuscleGroup}>Create</Button>
-          <Button color="secondary" onClick={toggleCreateModal}>Cancel</Button>
+          <Button color="danger" class="btn-cannle" onClick={toggleCreateModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
@@ -244,7 +244,7 @@ export function MuscleGroup() {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={updateMuscleGroup}>Update</Button>
-          <Button color="secondary" onClick={toggleUpdateModal}>Cancel</Button>
+          <Button color="danger" onClick={toggleUpdateModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
 

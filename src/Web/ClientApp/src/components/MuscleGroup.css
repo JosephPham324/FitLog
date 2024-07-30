@@ -4,7 +4,6 @@
 }
 
 .update-btn {
-    background-color: #007bff !important;
     border-color: #007bff !important;
 }
 
@@ -45,4 +44,8 @@
     width: 80%;
     height: 40px;
     text-align: center;
+}
+
+.btn-cannle {
+    background-color: red !important;
 }

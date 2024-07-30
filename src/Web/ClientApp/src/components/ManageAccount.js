@@ -132,19 +132,19 @@ export function ManageAccount() {
         <td>
           <div className="button-group">
             <Button
-              color="primary"
+              color="success"
               className="mr-2 update-btn"
               onClick={() => handleEdit(user)}
             >
               Update
             </Button>
-            <Button
+            {/*            <Button
               color="danger"
               className="mr-2 delete-btn"
               onClick={() => deleteUser(user.id)}
             >
               Delete
-            </Button>
+            </Button>*/}
           </div>
         </td>
       </tr>
@@ -218,7 +218,7 @@ export function ManageAccount() {
           <Button color="primary" onClick={createUser}>
             Create
           </Button>
-          <Button color="secondary" onClick={toggleCreateModal}>
+          <Button color="danger" onClick={toggleCreateModal}>
             Cancel
           </Button>
         </ModalFooter>
@@ -262,7 +262,7 @@ export function ManageAccount() {
           <Button color="primary" onClick={updateUser}>
             Update
           </Button>
-          <Button color="secondary" onClick={toggleUpdateModal}>
+          <Button color="danger" onClick={toggleUpdateModal}>
             Cancel
           </Button>
         </ModalFooter>

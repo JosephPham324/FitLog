@@ -93,14 +93,14 @@ public class ApplicationDbContextInitialiser
         }
 
         // Default users
-        var administrator = new AspNetUser { Id = Guid.NewGuid().ToString(),   UserName = "administrator@localhost", Email = "administrator@localhost" };
+        var administrator = new AspNetUser { Id = Guid.NewGuid().ToString(), UserName = "administrator@localhost", Email = "administrator@localhost" };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
-            await _userManager.CreateAsync(administrator, "Administrator1!");
+            await _userManager.CreateAsync(administrator, " ");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
-                await _userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
             }
         }
 

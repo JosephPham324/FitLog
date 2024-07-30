@@ -145,7 +145,7 @@
     color: #fff; /* Màu chữ */
     background-color: green; /* Màu nền */
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     text-decoration: none; /* Bỏ gạch chân của link */
     cursor: pointer;
     text-align: center;
@@ -154,4 +154,8 @@
 
 .container {
     margin-top: 30px;
+}
+
+.btn-register {
+    height: 50px;
 }

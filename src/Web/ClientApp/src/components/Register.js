@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Grid, InputAdornment, FormControlLabel, Checkbox, Alert } from '@mui/material';
+import { TextField, Container, InputAdornment, IconButton, InputLabel, FormControl, FormHelperText, Input, Typography, Button } from '@mui/material';
+import { Grid, FormControlLabel, Checkbox, Alert } from '@mui/material';
 import { Email, Lock, Phone, AccountCircle } from '@mui/icons-material';
 import { FcGoogle } from 'react-icons/fc';
 import './register.css';
@@ -7,8 +8,53 @@ import logo from '../assets/Logo.png';
 import image23 from '../assets/image23.png';
 import { FaFacebookF } from 'react-icons/fa';
 import axios from 'axios'; // Ensure axios is imported
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Register = () => {
+  const [values, setValues] = useState({
+    password: "",
+    showPassword: false,
+    passwordCheck: "",
+    showPasswordCheck: false
+  });
+
+  const handleClickShowPassword = () => {
+    setValues({
+      ...values,
+      showPassword: !values.showPassword,
+    });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handlePasswordChange = (prop) => (event) => {
+    setValues({
+      ...values,
+      [prop]: event.target.value,
+    });
+  };
+
+  const handleClickShowPasswordCheck = () => {
+    setValues({
+      ...values,
+      showPasswordCheck: !values.showPasswordCheck,
+    });
+  };
+
+  const handleMouseDownPasswordCheck = (event) => {
+    event.preventDefault();
+  };
+
+  const handlePasswordCheckChange = (prop) => (event) => {
+    setValues({
+      ...values,
+      [prop]: event.target.value,
+    });
+  };
+
   const [formData, setFormData] = useState({
     userName: '',
     email: '',
@@ -75,17 +121,17 @@ const Register = () => {
       newErrors.email = 'Email must be entered in the correct format.';
       valid = false;
     }
-    if (!formData.password) {
+    if (!values.password) {
       newErrors.password = 'This is a mandatory question.';
       valid = false;
-    } else if (!validatePassword(formData.password)) {
+    } else if (!validatePassword(values.password)) {
       newErrors.password = 'Password must be 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (@,!,-,_,/).';
       valid = false;
     }
-    if (!formData.confirmPassword) {
+    if (!values.passwordCheck) {
       newErrors.confirmPassword = 'This is a mandatory question.';
       valid = false;
-    } else if (formData.password !== formData.confirmPassword) {
+    } else if (values.password !== values.passwordCheck) {
       newErrors.confirmPassword = 'Passwords do not match.';
       valid = false;
     }
@@ -101,6 +147,8 @@ const Register = () => {
       valid = false;
     }
 
+    formData.password = values.password;
+
     setErrors(newErrors);
 
     if (valid) {
@@ -110,10 +158,22 @@ const Register = () => {
         const response = await axios.post('https://localhost:44447/api/Users/register', formData);
         console.log('Registration successful:', response.data);
         setSuccessMessage('Registration successful!'); // Update success message
-        // Handle successful registration (e.g., redirect or show success message)
       } catch (error) {
         console.error('Registration error:', error.response?.data || error.message);
-        // Handle registration error (e.g., show error message)
+        if (error.response && error.response.data && error.response.data.errors) {
+          const apiErrors = error.response.data.errors;
+          const updatedErrors = { ...newErrors };
+
+          if (apiErrors.Email) {
+            updatedErrors.email = apiErrors.Email[0];
+          }
+          if (apiErrors.UserName) {
+            updatedErrors.userName = apiErrors.UserName[0];
+          }
+          setErrors(updatedErrors);
+        } else {
+          // Handle other errors (network issues, etc.)
+        }
       }
     }
   };
@@ -133,7 +193,6 @@ const Register = () => {
           </Typography>
         </div>
         <div className="register-right">
-
           <form className="register-form" onSubmit={handleSubmit}>
             <Typography variant="body2" className="typography-black">User Name (*)</Typography>
             <TextField
@@ -174,44 +233,65 @@ const Register = () => {
             />
 
             <Typography variant="body2" className="typography-black">Password (*)</Typography>
-            <TextField
-              name="password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={formData.password}
-              onChange={handleChange}
-              error={!!errors.password}
-              helperText={errors.password}
-              InputProps={{
-                startAdornment: (
+            <FormControl variant="outlined" fullWidth margin="normal" error={!!errors.password} sx={{ border: '1px solid gray', borderRadius: '4px', padding: '8px' }}>
+              <Input
+                id="password"
+                type={values.showPassword ? 'text' : 'password'}
+                value={values.password}
+                onChange={handlePasswordChange('password')}
+                startAdornment={
                   <InputAdornment position="start">
                     <Lock />
                   </InputAdornment>
-                ),
-              }}
-            />
+                }
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              {errors.password && <FormHelperText>{errors.password}</FormHelperText>}
+            </FormControl>
 
             <Typography variant="body2" className="typography-black">Confirm Password (*)</Typography>
-            <TextField
-              name="confirmPassword"
-              type="password"
+            <FormControl
               variant="outlined"
               fullWidth
               margin="normal"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              sx={{ border: '1px solid gray', borderRadius: '4px', padding: '8px' }}
               error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword}
-              InputProps={{
-                startAdornment: (
+            >
+              <Input
+                id="confirmPassword"
+                type={values.showPasswordCheck ? 'text' : 'password'}
+                value={values.passwordCheck}
+                onChange={handlePasswordCheckChange('passwordCheck')}
+                startAdornment={
                   <InputAdornment position="start">
                     <Lock />
                   </InputAdornment>
-                ),
-              }}
-            />
+                }
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPasswordCheck}
+                      onMouseDown={handleMouseDownPasswordCheck}
+                    >
+                      {values.showPasswordCheck ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              {errors.confirmPassword && <FormHelperText>{errors.confirmPassword}</FormHelperText>}
+            </FormControl>
+
 
             <Typography variant="body2" className="typography-black">Phone Number (*)</Typography>
             <TextField
