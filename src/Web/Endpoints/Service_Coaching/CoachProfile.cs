@@ -33,33 +33,58 @@ public class CoachProfile : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-          .MapGet(GetCoachProfileDetails, "{id}")
           .MapGet(GetCertificationById, "{userId}/certifications/{id}")
-          .MapGet(GetCertificationsByUserId, "certifications/user/{userId}")
           .MapGet(GetCoachProfileDetails, "{id}")
-          .MapGet(GetCertificationById, "{userId}/certifications/{id}")
           .MapGet(GetCertificationsByUserId, "certifications/user/{userId}");
 
         app.MapGroup(this)
-           .RequireAuthorization()
+           //.RequireAuthorization()
            .MapPost(UpdateCoachProfileDetails, "{id}")
            .MapPost(CreateCoachApplication, "apply-coach")
            .MapPut(UpdateCoachApplication, "update-application")
-           .MapGet(GetApplicationsWithPagination,"paginated-list")
            // Certification Endpoints
            .MapPost(CreateCertification, "certifications")
            .MapPut(UpdateCertification, "certifications/{id}")
            .MapDelete(DeleteCertification, "certifications/{id}");
+
+        app.MapGroup(this)
+           //.RequireAuthorization("AdminOnly")
+           .MapGet(GetApplicationsWithPagination, "paginated-list");
     }
-    public async Task<Result> CreateCoachApplication(ISender sender, [FromBody] CreateCoachApplicationQuery request)
+    #region Gets
+    public async Task<CertificationDTO> GetCertificationById(ISender sender, [FromRoute] string userId, [FromRoute] int id)
     {
-        return await sender.Send(request);
+        var query = new GetCertificationByIdQuery() { CertificationId = id };
+        return await sender.Send(query);
     }
-    public async Task<object> GetCoachProfileDetails(ISender sender,string id)
+
+    public async Task<List<CertificationDTO>> GetCertificationsByUserId(ISender sender, string userId)
+    {
+        var query = new GetCertificationsByUserIdQuery()
+        {
+            UserId = userId
+        };
+        return await sender.Send(query);
+    }
+    public async Task<object> GetCoachProfileDetails(ISender sender, string id)
     {
         var request = new GetCoachProfileDetailsQuery(id);
         return await sender.Send(request);
     }
+
+
+    public async Task<PaginatedList<CoachApplicationDto>> GetApplicationsWithPagination(ISender sender, [AsParameters] GetCoachApplicationsWithPaginationQuery query)
+    {
+        return await sender.Send(query);
+    }
+
+    #endregion
+
+    public async Task<Result> CreateCoachApplication(ISender sender, [FromBody] CreateCoachApplicationQuery request)
+    {
+        return await sender.Send(request);
+    }
+   
     public async Task<Result> UpdateCoachProfileDetails(ISender sender,string id, [FromBody] UpdateCoachProfileCommand request)
     {
         return await sender.Send(request);
@@ -67,11 +92,6 @@ public class CoachProfile : EndpointGroupBase
     public async Task<Result> UpdateCoachApplication(ISender sender, string id, [FromBody] UpdateCoachApplicationStatusCommand request)
     {
         return await sender.Send(request);
-    }
-
-    public async Task<PaginatedList<CoachApplicationDto>> GetApplicationsWithPagination(ISender sender,[AsParameters] GetCoachApplicationsWithPaginationQuery query)
-    {
-        return await sender.Send(query);
     }
 
     public async Task<Result> CreateCertification(ISender sender, [FromBody] CreateCertificationCommand command)
@@ -94,18 +114,5 @@ public class CoachProfile : EndpointGroupBase
         return await sender.Send(command);
     }
 
-    public async Task<CertificationDTO> GetCertificationById(ISender sender, [FromRoute] string userId,  [FromRoute]int id)
-    {
-        var query = new GetCertificationByIdQuery() { CertificationId = id};
-        return await sender.Send(query);
-    }
-
-    public async Task<List<CertificationDTO>> GetCertificationsByUserId(ISender sender, string userId)
-    {
-        var query = new GetCertificationsByUserIdQuery()
-        {
-            UserId = userId
-        };
-        return await sender.Send(query);
-    }
+   
 }

@@ -4478,6 +4478,47 @@ export class CoachProfileClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
+    getCertificationById(userId: string, id: number): Promise<CertificationDTO> {
+        let url_ = this.baseUrl + "/api/CoachProfile/{userId}/certifications/{id}";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCertificationById(_response);
+        });
+    }
+
+    protected processGetCertificationById(response: Response): Promise<CertificationDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CertificationDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CertificationDTO>(null as any);
+    }
+
     getCoachProfileDetails(id: string): Promise<any> {
         let url_ = this.baseUrl + "/api/CoachProfile/{id}";
         if (id === undefined || id === null)
@@ -4557,6 +4598,51 @@ export class CoachProfileClient {
             });
         }
         return Promise.resolve<Result>(null as any);
+    }
+
+    getCertificationsByUserId(userId: string): Promise<CertificationDTO[]> {
+        let url_ = this.baseUrl + "/api/CoachProfile/certifications/user/{userId}";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCertificationsByUserId(_response);
+        });
+    }
+
+    protected processGetCertificationsByUserId(response: Response): Promise<CertificationDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CertificationDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CertificationDTO[]>(null as any);
     }
 
     createCoachApplication(request: CreateCoachApplicationQuery): Promise<Result> {
@@ -4639,49 +4725,6 @@ export class CoachProfileClient {
             });
         }
         return Promise.resolve<Result>(null as any);
-    }
-
-    getApplicationsWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfCoachApplicationDto> {
-        let url_ = this.baseUrl + "/api/CoachProfile/paginated-list?";
-        if (pageNumber === undefined || pageNumber === null)
-            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
-        else
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === undefined || pageSize === null)
-            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
-        else
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetApplicationsWithPagination(_response);
-        });
-    }
-
-    protected processGetApplicationsWithPagination(response: Response): Promise<PaginatedListOfCoachApplicationDto> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfCoachApplicationDto.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaginatedListOfCoachApplicationDto>(null as any);
     }
 
     createCertification(command: CreateCertificationCommand): Promise<Result> {
@@ -4803,14 +4846,16 @@ export class CoachProfileClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    getCertificationById(userId: string, id: number): Promise<CertificationDTO> {
-        let url_ = this.baseUrl + "/api/CoachProfile/{userId}/certifications/{id}";
-        if (userId === undefined || userId === null)
-            throw new Error("The parameter 'userId' must be defined.");
-        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    getApplicationsWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfCoachApplicationDto> {
+        let url_ = this.baseUrl + "/api/CoachProfile/paginated-list?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -4821,11 +4866,11 @@ export class CoachProfileClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetCertificationById(_response);
+            return this.processGetApplicationsWithPagination(_response);
         });
     }
 
-    protected processGetCertificationById(response: Response): Promise<CertificationDTO> {
+    protected processGetApplicationsWithPagination(response: Response): Promise<PaginatedListOfCoachApplicationDto> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -4833,7 +4878,7 @@ export class CoachProfileClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CertificationDTO.fromJS(resultData200);
+            result200 = PaginatedListOfCoachApplicationDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -4841,52 +4886,7 @@ export class CoachProfileClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CertificationDTO>(null as any);
-    }
-
-    getCertificationsByUserId(userId: string): Promise<CertificationDTO[]> {
-        let url_ = this.baseUrl + "/api/CoachProfile/users/{userId}/certifications";
-        if (userId === undefined || userId === null)
-            throw new Error("The parameter 'userId' must be defined.");
-        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetCertificationsByUserId(_response);
-        });
-    }
-
-    protected processGetCertificationsByUserId(response: Response): Promise<CertificationDTO[]> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(CertificationDTO.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CertificationDTO[]>(null as any);
+        return Promise.resolve<PaginatedListOfCoachApplicationDto>(null as any);
     }
 }
 
@@ -12286,6 +12286,106 @@ export interface IUpdateCoachApplicationStatusCommand {
     updatedById?: string;
 }
 
+export class CreateCertificationCommand implements ICreateCertificationCommand {
+    userId?: string | undefined;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+
+    constructor(data?: ICreateCertificationCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.certificationName = _data["certificationName"];
+            this.certificationDateIssued = _data["certificationDateIssued"] ? new Date(_data["certificationDateIssued"].toString()) : <any>undefined;
+            this.certificationExpirationData = _data["certificationExpirationData"] ? new Date(_data["certificationExpirationData"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateCertificationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCertificationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["certificationName"] = this.certificationName;
+        data["certificationDateIssued"] = this.certificationDateIssued ? formatDate(this.certificationDateIssued) : <any>undefined;
+        data["certificationExpirationData"] = this.certificationExpirationData ? formatDate(this.certificationExpirationData) : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateCertificationCommand {
+    userId?: string | undefined;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+}
+
+export class UpdateCertificationCommand implements IUpdateCertificationCommand {
+    certificationId?: number;
+    userId?: string | undefined;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+
+    constructor(data?: IUpdateCertificationCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.certificationId = _data["certificationId"];
+            this.userId = _data["userId"];
+            this.certificationName = _data["certificationName"];
+            this.certificationDateIssued = _data["certificationDateIssued"] ? new Date(_data["certificationDateIssued"].toString()) : <any>undefined;
+            this.certificationExpirationData = _data["certificationExpirationData"] ? new Date(_data["certificationExpirationData"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UpdateCertificationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateCertificationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["certificationId"] = this.certificationId;
+        data["userId"] = this.userId;
+        data["certificationName"] = this.certificationName;
+        data["certificationDateIssued"] = this.certificationDateIssued ? formatDate(this.certificationDateIssued) : <any>undefined;
+        data["certificationExpirationData"] = this.certificationExpirationData ? formatDate(this.certificationExpirationData) : <any>undefined;
+        return data;
+    }
+}
+
+export interface IUpdateCertificationCommand {
+    certificationId?: number;
+    userId?: string | undefined;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+}
+
 export class PaginatedListOfCoachApplicationDto implements IPaginatedListOfCoachApplicationDto {
     items?: CoachApplicationDto[];
     pageNumber?: number;
@@ -12412,106 +12512,6 @@ export interface ICoachApplicationDto {
     lastModified?: Date;
     applicantName?: string;
     applicantEmail?: string;
-}
-
-export class CreateCertificationCommand implements ICreateCertificationCommand {
-    userId?: string | undefined;
-    certificationName?: string | undefined;
-    certificationDateIssued?: Date | undefined;
-    certificationExpirationData?: Date | undefined;
-
-    constructor(data?: ICreateCertificationCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.userId = _data["userId"];
-            this.certificationName = _data["certificationName"];
-            this.certificationDateIssued = _data["certificationDateIssued"] ? new Date(_data["certificationDateIssued"].toString()) : <any>undefined;
-            this.certificationExpirationData = _data["certificationExpirationData"] ? new Date(_data["certificationExpirationData"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): CreateCertificationCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateCertificationCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        data["certificationName"] = this.certificationName;
-        data["certificationDateIssued"] = this.certificationDateIssued ? formatDate(this.certificationDateIssued) : <any>undefined;
-        data["certificationExpirationData"] = this.certificationExpirationData ? formatDate(this.certificationExpirationData) : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICreateCertificationCommand {
-    userId?: string | undefined;
-    certificationName?: string | undefined;
-    certificationDateIssued?: Date | undefined;
-    certificationExpirationData?: Date | undefined;
-}
-
-export class UpdateCertificationCommand implements IUpdateCertificationCommand {
-    certificationId?: number;
-    userId?: string | undefined;
-    certificationName?: string | undefined;
-    certificationDateIssued?: Date | undefined;
-    certificationExpirationData?: Date | undefined;
-
-    constructor(data?: IUpdateCertificationCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.certificationId = _data["certificationId"];
-            this.userId = _data["userId"];
-            this.certificationName = _data["certificationName"];
-            this.certificationDateIssued = _data["certificationDateIssued"] ? new Date(_data["certificationDateIssued"].toString()) : <any>undefined;
-            this.certificationExpirationData = _data["certificationExpirationData"] ? new Date(_data["certificationExpirationData"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): UpdateCertificationCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateCertificationCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["certificationId"] = this.certificationId;
-        data["userId"] = this.userId;
-        data["certificationName"] = this.certificationName;
-        data["certificationDateIssued"] = this.certificationDateIssued ? formatDate(this.certificationDateIssued) : <any>undefined;
-        data["certificationExpirationData"] = this.certificationExpirationData ? formatDate(this.certificationExpirationData) : <any>undefined;
-        return data;
-    }
-}
-
-export interface IUpdateCertificationCommand {
-    certificationId?: number;
-    userId?: string | undefined;
-    certificationName?: string | undefined;
-    certificationDateIssued?: Date | undefined;
-    certificationExpirationData?: Date | undefined;
 }
 
 export class CreateChatCommand implements ICreateChatCommand {

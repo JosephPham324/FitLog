@@ -3763,6 +3763,47 @@
         }
       }
     },
+    "/api/CoachProfile/{userId}/certifications/{id}": {
+      "get": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "GetCertificationById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertificationDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CoachProfile/{id}": {
       "get": {
         "tags": [
@@ -3826,6 +3867,40 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachProfile/certifications/user/{userId}": {
+      "get": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "GetCertificationsByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CertificationDTO"
+                  }
                 }
               }
             }
@@ -3901,48 +3976,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/CoachProfile/paginated-list": {
-      "get": {
-        "tags": [
-          "CoachProfile"
-        ],
-        "operationId": "GetApplicationsWithPagination",
-        "parameters": [
-          {
-            "name": "PageNumber",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "PageSize",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfCoachApplicationDto"
                 }
               }
             }
@@ -4056,25 +4089,26 @@
         }
       }
     },
-    "/api/CoachProfile/{userId}/certifications/{id}": {
+    "/api/CoachProfile/paginated-list": {
       "get": {
         "tags": [
           "CoachProfile"
         ],
-        "operationId": "GetCertificationById",
+        "operationId": "GetApplicationsWithPagination",
         "parameters": [
           {
-            "name": "userId",
-            "in": "path",
+            "name": "PageNumber",
+            "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             },
             "x-position": 1
           },
           {
-            "name": "id",
-            "in": "path",
+            "name": "PageSize",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4089,41 +4123,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CertificationDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/CoachProfile/users/{userId}/certifications": {
-      "get": {
-        "tags": [
-          "CoachProfile"
-        ],
-        "operationId": "GetCertificationsByUserId",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CertificationDTO"
-                  }
+                  "$ref": "#/components/schemas/PaginatedListOfCoachApplicationDto"
                 }
               }
             }
@@ -8006,6 +8006,58 @@
           }
         }
       },
+      "CreateCertificationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationDateIssued": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "certificationExpirationData": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateCertificationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "certificationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationDateIssued": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "certificationExpirationData": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        }
+      },
       "PaginatedListOfCoachApplicationDto": {
         "type": "object",
         "additionalProperties": false,
@@ -8067,58 +8119,6 @@
           },
           "applicantEmail": {
             "type": "string"
-          }
-        }
-      },
-      "CreateCertificationCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "userId": {
-            "type": "string",
-            "nullable": true
-          },
-          "certificationName": {
-            "type": "string",
-            "nullable": true
-          },
-          "certificationDateIssued": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          },
-          "certificationExpirationData": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          }
-        }
-      },
-      "UpdateCertificationCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "certificationId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userId": {
-            "type": "string",
-            "nullable": true
-          },
-          "certificationName": {
-            "type": "string",
-            "nullable": true
-          },
-          "certificationDateIssued": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          },
-          "certificationExpirationData": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
           }
         }
       },
