@@ -15,27 +15,17 @@ export function MuscleGroup() {
   const [createModal, setCreateModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const [editGroupId, setEditGroupId] = useState(null);
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
   const [nameErrorMessage, setNameErrorMessage] = useState('');
   const [imageErrorMessage, setImageErrorMessage] = useState('');
-  const rowsPerPage = 5;
 
   useEffect(() => {
-    fetchMuscleGroups(currentPage, searchTerm);
-  }, [currentPage, searchTerm]);
+    fetchMuscleGroups(currentPage);
+  }, [currentPage]);
 
-  const fetchMuscleGroups = async (page, searchTerm) => {
+  const fetchMuscleGroups = async (page) => {
     try {
-      const response = await axiosInstance.get(`${apiUrl}/get-list`, {
-        params: {
-          PageNumber: page,
-          PageSize: rowsPerPage,
-          searchTerm: searchTerm
-        }
-      });
-      setMuscleGroups(response.data.items);
-      setTotalPages(response.data.totalPages);
+      const response = await axiosInstance.get(`${apiUrl}?page=${page}`);
+      setMuscleGroups(response.data);
     } catch (error) {
       console.error('Error fetching muscle groups:', error);
     }
@@ -54,6 +44,8 @@ export function MuscleGroup() {
   const toggleUpdateModal = () => {
     setUpdateModal(!updateModal);
     if (!updateModal) {
+      setNewGroupName('');
+      setNewGroupImage(null);
       setNameErrorMessage('');
       setImageErrorMessage('');
     }
@@ -61,7 +53,7 @@ export function MuscleGroup() {
 
   const validateInput = () => {
     let valid = true;
-    if (!newGroupName) {
+    if (!newGroupName.trim()) {
       setNameErrorMessage('Muscle group name is required');
       valid = false;
     } else {
@@ -79,14 +71,14 @@ export function MuscleGroup() {
   const uploadImageToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'xabhblft'); // Sử dụng đúng tên preset
+    formData.append('upload_preset', 'xabhblft'); // Use the correct preset name
 
     try {
       const response = await axios.post(
         `https://api.cloudinary.com/v1_1/${cloudinary.config().cloud_name}/image/upload`,
         formData,
         {
-          withCredentials: false, // Cloudinary không yêu cầu thông tin đăng nhập
+          withCredentials: false, // Cloudinary does not require credentials
         }
       );
       return response.data.secure_url;
@@ -113,20 +105,16 @@ export function MuscleGroup() {
         ImageUrl: imageUrl
       });
 
-      fetchMuscleGroups(currentPage, searchTerm);
+      fetchMuscleGroups(currentPage);
       toggleCreateModal();
     } catch (error) {
-      console.error('Error creating muscle group:', error.message);
-      alert('Failed to create muscle group. Please check your input and try again.');
+      console.error('Error creating muscle group:', error);
+      alert('Failed to create muscle group. Please try again.');
     }
   };
 
   const updateMuscleGroup = async () => {
-    if (!window.confirm('Are you sure you want to update this muscle group?')) {
-      return;
-    }
-
-    if (!validateInput() || !editGroupId) {
+    if (!validateInput()) {
       return;
     }
 
@@ -142,19 +130,15 @@ export function MuscleGroup() {
         ImageUrl: imageUrl
       });
 
-      fetchMuscleGroups(currentPage, searchTerm);
+      fetchMuscleGroups(currentPage);
       toggleUpdateModal();
     } catch (error) {
-      console.error('Error updating muscle group:', error.message);
-      alert('Failed to update muscle group. Please check your input and try again.');
+      console.error('Error updating muscle group:', error);
+      alert('Failed to update muscle group. Please try again.');
     }
   };
 
   const deleteMuscleGroup = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this muscle group?')) {
-      return;
-    }
-
     try {
       await axiosInstance.delete(`${apiUrl}/${id}`, {
         data: {
@@ -162,23 +146,11 @@ export function MuscleGroup() {
         },
       });
 
-      fetchMuscleGroups(currentPage, searchTerm);
+      fetchMuscleGroups(currentPage);
     } catch (error) {
-      console.error('Error deleting muscle group:', error.message);
+      console.error('Error deleting muscle group:', error);
       alert('Failed to delete muscle group. Please try again.');
     }
-  };
-
-  const handleEdit = (group) => {
-    setNewGroupName(group.muscleGroupName);
-    setNewGroupImage(group.imageUrl);
-    setEditGroupId(group.muscleGroupId);
-    toggleUpdateModal();
-  };
-
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
   };
 
   const handleImageChange = (e) => {
@@ -193,7 +165,9 @@ export function MuscleGroup() {
       <tr key={group.muscleGroupId}>
         <td>{group.muscleGroupId}</td>
         <td>{group.muscleGroupName}</td>
-        <td>{group.imageUrl && <img src={group.imageUrl} alt={group.muscleGroupName} className="table-image" />}</td>
+        <td>
+          <img src={group.imageUrl} alt={group.muscleGroupName} style={{ width: '50px', height: '50px' }} />
+        </td>
         <td>
           <div className="button-group">
             <Button color="success" className="mr-2 update-btn" onClick={() => handleEdit(group)}>Update</Button>
@@ -204,25 +178,33 @@ export function MuscleGroup() {
     ));
   };
 
+  const handleEdit = (group) => {
+    setEditGroupId(group.muscleGroupId);
+    setNewGroupName(group.muscleGroupName);
+    toggleUpdateModal();
+  };
+
   return (
     <Container>
-      <h1 className="my-4">Muscle Groups</h1>
-      <Row className="align-items-center mb-3">
-        <Col xs="12" md="10" className="mb-3 mb-md-0">
-          <Input
-            type="text"
-            placeholder="Search muscle group..."
-            value={searchTerm}
-            onChange={handleSearch}
-            className="btn-search"
-          />
-        </Col>
-        <Col xs="12" md="2" className="text-md-right">
-          <Button color="primary" onClick={toggleCreateModal} className="btn-create">Create Muscle Group</Button>
+      <Row>
+        <Col>
+          <Button color="primary" onClick={toggleCreateModal}>Create New Muscle Group</Button>
+          <Table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {renderTableRows()}
+            </tbody>
+          </Table>
         </Col>
       </Row>
 
-      {/* Create Muscle Group Modal */}
       <Modal isOpen={createModal} toggle={toggleCreateModal}>
         <ModalHeader toggle={toggleCreateModal}>Create Muscle Group</ModalHeader>
         <ModalBody>
@@ -251,11 +233,10 @@ export function MuscleGroup() {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={createMuscleGroup}>Create</Button>
-          <Button color="danger" onClick={toggleCreateModal}>Cancel</Button>
+          <Button color="secondary" onClick={toggleCreateModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
-      {/* Update Muscle Group Modal */}
       <Modal isOpen={updateModal} toggle={toggleUpdateModal}>
         <ModalHeader toggle={toggleUpdateModal}>Update Muscle Group</ModalHeader>
         <ModalBody>
@@ -284,46 +265,9 @@ export function MuscleGroup() {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={updateMuscleGroup}>Update</Button>
-          <Button color="danger" onClick={toggleUpdateModal}>Cancel</Button>
+          <Button color="secondary" onClick={toggleUpdateModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
-
-      <Table striped hover responsive>
-        <thead>
-          <tr>
-            <th>Muscle Group ID</th>
-            <th>Muscle Group Name</th>
-            <th>Image</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {renderTableRows()}
-        </tbody>
-      </Table>
-      <div className="pagination">
-        <Button
-          className="pre"
-          color="primary"
-          size="sm"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-        >
-          Previous
-        </Button>
-        <span className="mx-2">
-          Page {currentPage} of {totalPages}
-        </span>
-        <Button
-          className="next"
-          color="primary"
-          size="sm"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          Next
-        </Button>
-      </div>
     </Container>
   );
 }
