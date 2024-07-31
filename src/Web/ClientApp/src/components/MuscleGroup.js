@@ -1,6 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap';
 import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
+import cloudinary from './cloudinaryConfig'; // Import Cloudinary config
+import axios from 'axios'; // Import Axios
 import './MuscleGroup.css';
 
 const apiUrl = '/MuscleGroups';
@@ -9,7 +11,7 @@ export function MuscleGroup() {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [newGroupName, setNewGroupName] = useState('');
-  const [newGroupImage, setNewGroupImage] = useState('');
+  const [newGroupImage, setNewGroupImage] = useState(null);
   const [createModal, setCreateModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const [editGroupId, setEditGroupId] = useState(null);
@@ -43,7 +45,7 @@ export function MuscleGroup() {
     setCreateModal(!createModal);
     if (!createModal) {
       setNewGroupName('');
-      setNewGroupImage('');
+      setNewGroupImage(null);
       setNameErrorMessage('');
       setImageErrorMessage('');
     }
@@ -66,7 +68,7 @@ export function MuscleGroup() {
       setNameErrorMessage('');
     }
     if (!newGroupImage) {
-      setImageErrorMessage('Muscle group image URL is required');
+      setImageErrorMessage('Muscle group image is required');
       valid = false;
     } else {
       setImageErrorMessage('');
@@ -74,15 +76,41 @@ export function MuscleGroup() {
     return valid;
   };
 
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'xabhblft'); // Sử dụng đúng tên preset
+
+    try {
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudinary.config().cloud_name}/image/upload`,
+        formData,
+        {
+          withCredentials: false, // Cloudinary không yêu cầu thông tin đăng nhập
+        }
+      );
+      return response.data.secure_url;
+    } catch (error) {
+      console.error('Error uploading image to Cloudinary:', error);
+      alert('Failed to upload image. Please try again.');
+      return null;
+    }
+  };
+
   const createMuscleGroup = async () => {
     if (!validateInput()) {
+      return;
+    }
+
+    const imageUrl = await uploadImageToCloudinary(newGroupImage);
+    if (!imageUrl) {
       return;
     }
 
     try {
       await axiosInstance.post(`${apiUrl}/create`, {
         MuscleGroupName: newGroupName,
-        ImageUrl: newGroupImage
+        ImageUrl: imageUrl
       });
 
       fetchMuscleGroups(currentPage, searchTerm);
@@ -102,11 +130,16 @@ export function MuscleGroup() {
       return;
     }
 
+    const imageUrl = await uploadImageToCloudinary(newGroupImage);
+    if (!imageUrl) {
+      return;
+    }
+
     try {
       await axiosInstance.put(`${apiUrl}/${editGroupId}`, {
         id: editGroupId,
         MuscleGroupName: newGroupName,
-        ImageUrl: newGroupImage
+        ImageUrl: imageUrl
       });
 
       fetchMuscleGroups(currentPage, searchTerm);
@@ -125,7 +158,7 @@ export function MuscleGroup() {
     try {
       await axiosInstance.delete(`${apiUrl}/${id}`, {
         data: {
-          "id": id,
+          id: id,
         },
       });
 
@@ -148,6 +181,13 @@ export function MuscleGroup() {
     setCurrentPage(1);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewGroupImage(file);
+    }
+  };
+
   const renderTableRows = () => {
     return muscleGroups.map(group => (
       <tr key={group.muscleGroupId}>
@@ -156,7 +196,7 @@ export function MuscleGroup() {
         <td>{group.imageUrl && <img src={group.imageUrl} alt={group.muscleGroupName} className="table-image" />}</td>
         <td>
           <div className="button-group">
-            <Button color="primary" className="mr-2 update-btn" onClick={() => handleEdit(group)}>Update</Button>
+            <Button color="success" className="mr-2 update-btn" onClick={() => handleEdit(group)}>Update</Button>
             <Button color="danger" className="mr-2 delete-btn" onClick={() => deleteMuscleGroup(group.muscleGroupId)}>Delete</Button>
           </div>
         </td>
@@ -167,8 +207,8 @@ export function MuscleGroup() {
   return (
     <Container>
       <h1 className="my-4">Muscle Groups</h1>
-      <Row>
-        <Col md="6">
+      <Row className="align-items-center mb-3">
+        <Col xs="12" md="10" className="mb-3 mb-md-0">
           <Input
             type="text"
             placeholder="Search muscle group..."
@@ -177,7 +217,7 @@ export function MuscleGroup() {
             className="btn-search"
           />
         </Col>
-        <Col md="6" className="text-right">
+        <Col xs="12" md="2" className="text-md-right">
           <Button color="primary" onClick={toggleCreateModal} className="btn-create">Create Muscle Group</Button>
         </Col>
       </Row>
@@ -198,12 +238,12 @@ export function MuscleGroup() {
               {nameErrorMessage && <Alert color="danger">{nameErrorMessage}</Alert>}
             </FormGroup>
             <FormGroup>
-              <Label for="newGroupImage">Image URL</Label>
+              <Label for="newGroupImage">Image</Label>
               <Input
-                type="text"
+                type="file"
                 id="newGroupImage"
-                value={newGroupImage}
-                onChange={(e) => setNewGroupImage(e.target.value)}
+                accept="image/*"
+                onChange={handleImageChange}
               />
               {imageErrorMessage && <Alert color="danger">{imageErrorMessage}</Alert>}
             </FormGroup>
@@ -211,7 +251,7 @@ export function MuscleGroup() {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={createMuscleGroup}>Create</Button>
-          <Button color="secondary" onClick={toggleCreateModal}>Cancel</Button>
+          <Button color="danger" onClick={toggleCreateModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
@@ -231,12 +271,12 @@ export function MuscleGroup() {
               {nameErrorMessage && <Alert color="danger">{nameErrorMessage}</Alert>}
             </FormGroup>
             <FormGroup>
-              <Label for="newGroupImage">Image URL</Label>
+              <Label for="newGroupImage">Image</Label>
               <Input
-                type="text"
+                type="file"
                 id="newGroupImage"
-                value={newGroupImage}
-                onChange={(e) => setNewGroupImage(e.target.value)}
+                accept="image/*"
+                onChange={handleImageChange}
               />
               {imageErrorMessage && <Alert color="danger">{imageErrorMessage}</Alert>}
             </FormGroup>
@@ -244,11 +284,11 @@ export function MuscleGroup() {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={updateMuscleGroup}>Update</Button>
-          <Button color="secondary" onClick={toggleUpdateModal}>Cancel</Button>
+          <Button color="danger" onClick={toggleUpdateModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
-      <Table striped hover>
+      <Table striped hover responsive>
         <thead>
           <tr>
             <th>Muscle Group ID</th>

@@ -41,17 +41,57 @@ export const WorkoutProgramsDetail = () => {
     <div className="program-detail-container">
       {programDetail ? (
         <>
-          <h1 className="title"><strong>{programDetail.programName}</strong></h1>
           <div className="program-detail-card">
             <img src={programDetail.programThumbnail} alt={programDetail.programName} className="program-detail-image" />
             <div className="program-detail-info">
-              <p><strong>Goal:</strong> {programDetail.goal}</p>
+              <h1 className="title mt-3"><strong>{programDetail.programName}</strong></h1>
+              <p className="mt-2"><strong>Goal:</strong> {programDetail.goal}</p>
               <p><strong>Experience Level:</strong> {programDetail.experienceLevel}</p>
               <p><strong>Gym Type:</strong> {programDetail.gymType}</p>
               <p><strong>Muscles Priority:</strong> {programDetail.musclesPriority}</p>
               <p><strong>Age Group:</strong> {programDetail.ageGroup}</p>
               <p><strong>Public Program:</strong> {programDetail.publicProgram ? 'Yes' : 'No'}</p>
-              <p><strong>Created by:</strong> {programDetail.userName}</p>
+              <p className="mb-3"><strong>Created by:</strong> {programDetail.userName}</p>
+            </div>
+          </div>
+          <div className="program-overview">
+            <div>
+              <h1><strong>Program Workouts</strong></h1>
+              {programDetail.programWorkouts.map((workout) => (
+                <div key={workout.programWorkoutId} className="workout-card">
+                  <h3>Week {workout.weekNumber}, Day {workout.orderInWeek}</h3>
+                  <p><strong>Workout:</strong> {workout.workoutTemplate.templateName}</p>
+                  <p><strong>Duration:</strong> {workout.workoutTemplate.duration}</p>
+                  <p><strong>Created by:</strong> {workout.workoutTemplate.creatorName}</p>
+                  <div className="exercise-list">
+                    <h4>Exercises</h4>
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Note</th>
+                          <th>Sets Recommendation</th>
+                          <th>Intensity Percentage</th>
+                          <th>RPE Recommendation</th>
+                          <th>Weights Used</th>
+                          <th>Numbers of Reps</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {workout.workoutTemplate.workoutTemplateExercises.map((exercise) => (
+                          <tr key={exercise.exerciseTemlateId}>
+                            <td>{exercise.note}</td>
+                            <td>{exercise.setsRecommendation}</td>
+                            <td>{exercise.intensityPercentage}%</td>
+                            <td>{exercise.rpeRecommendation}</td>
+                            <td>{exercise.weightsUsed}</td>
+                            <td>{exercise.numbersOfReps}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </>
