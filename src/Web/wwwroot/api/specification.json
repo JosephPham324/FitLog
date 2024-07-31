@@ -354,7 +354,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfEquipmentDTO"
+                  "$ref": "#/components/schemas/PaginatedListOfEquipmentDetailsDTO"
                 }
               }
             }
@@ -2918,7 +2918,7 @@
         }
       }
     },
-    "/api/Users/profile": {
+    "/api/Users/user-profile": {
       "get": {
         "tags": [
           "Users"
@@ -2968,6 +2968,101 @@
           "required": true,
           "x-position": 1
         },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/update-profile": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "UpdateUserProfile",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "FirstName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "LastName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "DateOfBirth",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "Gender",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "Email",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "PhoneNumber",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 7
+          },
+          {
+            "name": "UserName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 8
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -3144,6 +3239,41 @@
         }
       }
     },
+    "/api/Users/get-by-roles": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetUsersByRole",
+        "parameters": [
+          {
+            "name": "Roles",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserListDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Users/create-account": {
       "post": {
         "tags": [
@@ -3193,38 +3323,6 @@
             "x-position": 1
           }
         ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/update-account": {
-      "put": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "UpdateUser",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUserCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
         "responses": {
           "200": {
             "description": "",
@@ -3517,6 +3615,195 @@
         }
       }
     },
+    "/api/CoachingServices/booking/{id}/status": {
+      "put": {
+        "tags": [
+          "CoachingServices"
+        ],
+        "operationId": "UpdateBookingStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookingStatusCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachingServices/book/{id}": {
+      "post": {
+        "tags": [
+          "CoachingServices"
+        ],
+        "operationId": "BookService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookServiceCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachingServices/booking/{id}": {
+      "get": {
+        "tags": [
+          "CoachingServices"
+        ],
+        "operationId": "GetBookingDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachingServices/service/{serviceId}/bookings": {
+      "get": {
+        "tags": [
+          "CoachingServices"
+        ],
+        "operationId": "GetServiceBookings",
+        "parameters": [
+          {
+            "name": "serviceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachProfile/{userId}/certifications/{id}": {
+      "get": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "GetCertificationById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertificationDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CoachProfile/{id}": {
       "get": {
         "tags": [
@@ -3587,6 +3874,40 @@
         }
       }
     },
+    "/api/CoachProfile/certifications/user/{userId}": {
+      "get": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "GetCertificationsByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CertificationDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CoachProfile/apply-coach": {
       "post": {
         "tags": [
@@ -3648,6 +3969,112 @@
           "required": true,
           "x-position": 2
         },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachProfile/certifications": {
+      "post": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "CreateCertification",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCertificationCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CoachProfile/certifications/{id}": {
+      "put": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "UpdateCertification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCertificationCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CoachProfile"
+        ],
+        "operationId": "DeleteCertification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -4024,14 +4451,14 @@
           }
         }
       },
-      "PaginatedListOfEquipmentDTO": {
+      "PaginatedListOfEquipmentDetailsDTO": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/EquipmentDTO"
+              "$ref": "#/components/schemas/EquipmentDetailsDTO"
             }
           },
           "pageNumber": {
@@ -4051,20 +4478,6 @@
           },
           "hasNextPage": {
             "type": "boolean"
-          }
-        }
-      },
-      "EquipmentDTO": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "equipmentId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "equipmentName": {
-            "type": "string",
-            "nullable": true
           }
         }
       },
@@ -7041,6 +7454,9 @@
             "type": "string",
             "nullable": true
           },
+          "roles": {
+            "type": "string"
+          },
           "programs": {
             "type": "array",
             "items": {
@@ -7275,10 +7691,6 @@
           }
         }
       },
-      "UpdateUserCommand": {
-        "type": "object",
-        "additionalProperties": false
-      },
       "PaginatedListOfCoachSummaryDTO": {
         "type": "object",
         "additionalProperties": false,
@@ -7505,6 +7917,34 @@
           }
         }
       },
+      "UpdateBookingStatusCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bookingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "newStatus": {
+            "type": "string"
+          },
+          "paymentDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "BookServiceCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "coachingServiceId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "UpdateCoachProfileCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -7563,6 +8003,58 @@
           },
           "updatedById": {
             "type": "string"
+          }
+        }
+      },
+      "CreateCertificationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationDateIssued": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "certificationExpirationData": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateCertificationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "certificationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificationDateIssued": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "certificationExpirationData": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
           }
         }
       },

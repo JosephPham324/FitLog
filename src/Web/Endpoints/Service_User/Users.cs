@@ -20,6 +20,7 @@ using FitLog.Application.Users.Commands.ConfirmEmail;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Web.Services;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using FitLog.Application.Users.Queries.GetAccountsByRole;
 
 namespace FitLog.Web.Endpoints.Service_User;
 
@@ -46,21 +47,22 @@ public class Users : EndpointGroupBase
            .MapPut(ResetPassword, "reset-password");
 
         app.MapGroup(this)
-           .RequireAuthorization()
-           .MapGet(GetUserProfile, "profile")
-           .MapPut(AuthenticatedResetPassword,"authenticated-reset-password");
+           //.RequireAuthorization()
+           .MapGet(GetUserProfile, "user-profile")
+           .MapPut(AuthenticatedResetPassword,"authenticated-reset-password")
+           .MapPut(UpdateUserProfile, "update-profile");
 
 
         // User management routes
         app.MapGroup(this)
-           .RequireAuthorization("AdminOnly")
+           //.RequireAuthorization("AdminOnly")
            .MapGet(GetUserList, "all")
            .MapGet(SearchUsersByEmail, "search-by-email")
            .MapGet(SearchUsersByLoginProvider, "search-by-provider")
            .MapGet(SearchUsersByUserName, "search-by-username")
+           .MapGet(GetUsersByRole, "get-by-roles")
            .MapPost(CreateUser, "create-account")
-           .MapDelete(DeleteAccount, "delete-account/{id}")
-           .MapPut(UpdateUser, "update-account");
+           .MapDelete(DeleteAccount, "delete-account/{id}");
         // Coaches routes
         app.MapGroup(this)
            .MapGroup("/coaches")
@@ -110,7 +112,7 @@ public class Users : EndpointGroupBase
     /// <returns>A task that represents the asynchronous operation. The task result contains the user profile DTO.</returns>
     public Task<UserProfileDTO> GetUserProfile(ISender sender, [AsParameters] GetProfileDetailsRequest request)
     {
-        request.UserId = _identityService.Id ?? "";
+        //request.UserId = _identityService.Id ?? "";
 
         return sender.Send(request);
     }
@@ -181,16 +183,6 @@ public class Users : EndpointGroupBase
         return sender.Send(command);
     }
 
-    /// <summary>
-    /// Updates a user account using the provided update user command parameters.
-    /// </summary>
-    /// <param name="sender">The sender used to send the update user command.</param>
-    /// <param name="command">The update user command containing the user's updated information.</param>
-    /// <returns>A task that represents the asynchronous update operation. The task result contains the result of the update.</returns>
-    public Task<Result> UpdateUser(ISender sender, [FromBody] UpdateUserCommand command)
-    {
-        return sender.Send(command);
-    }
 
     /// <summary>
     /// Gets a paginated list of coaches based on the provided pagination request parameters.
@@ -222,5 +214,22 @@ public class Users : EndpointGroupBase
             NewPassword = command.NewPassword
         };
         return await sender.Send(resetCommand);
+    }
+
+    /// <summary>
+    /// Searches for users by username based on the provided request parameters.
+    /// </summary>
+    /// <param name="sender">The sender used to send the search users by username request.</param>
+    /// <param name="request">The request containing the username to search for.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the list of users matching the username.</returns>
+    public Task<IEnumerable<UserListDTO>> GetUsersByRole(ISender sender, [AsParameters] GetAccountsByRoleQuery request)
+    {
+        return sender.Send(request);
+    }
+
+    public Task<Result> UpdateUserProfile(ISender sender, [AsParameters] UpdateUserCommand command)
+    {
+
+        return sender.Send(command);
     }
 }

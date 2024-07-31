@@ -73,7 +73,8 @@ const Register = () => {
     termsAccepted: '',
   });
 
-  const [successMessage, setSuccessMessage] = useState(''); // State for success message
+  const [successMessage, setSuccessMessage] = useState('');
+ 
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -183,7 +184,7 @@ const Register = () => {
       <div className="register-content">
         <div className="register-left">
           <img src={image23} alt="Background" className="background-image" />
-          <div className="overlay"></div> {/* Thêm lớp phủ */}
+          <div className="overlay"></div>
           <div className="logo-res">
             <img src={logo} alt="Fitlog Logo" className="logo-image" />
           </div>
@@ -340,3 +341,4 @@ const Register = () => {
 };
 
 export default Register;
+

@@ -1,29 +1,55 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using FluentValidation;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using FitLog.Application.Users.Queries.GetUsers;
+using FitLog.Domain.Entities;
 
-namespace FitLog.Application.Users.Queries.GetAccountsByRole;
-
-public record GetAccountsByRoleQuery : IRequest<object>
+namespace FitLog.Application.Users.Queries.GetAccountsByRole
 {
-}
-
-public class GetAccountsByRoleQueryValidator : AbstractValidator<GetAccountsByRoleQuery>
-{
-    public GetAccountsByRoleQueryValidator()
+    public record GetAccountsByRoleQuery : IRequest<IEnumerable<UserListDTO>>
     {
-    }
-}
-
-public class GetAccountsByRoleQueryHandler : IRequestHandler<GetAccountsByRoleQuery, object>
-{
-    private readonly IApplicationDbContext _context;
-
-    public GetAccountsByRoleQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
+        public string Roles { get; init; } = string.Empty;
     }
 
-    public Task<object> Handle(GetAccountsByRoleQuery request, CancellationToken cancellationToken)
+    public class GetAccountsByRoleQueryValidator : AbstractValidator<GetAccountsByRoleQuery>
     {
-        throw new NotImplementedException();
+        public GetAccountsByRoleQueryValidator()
+        {
+            RuleFor(x => x.Roles).NotEmpty().WithMessage("At least one role is required.");
+        }
+    }
+
+    public class GetAccountsByRoleQueryHandler : IRequestHandler<GetAccountsByRoleQuery, IEnumerable<UserListDTO>>
+    {
+        private readonly UserManager<AspNetUser> _userManager;
+        private readonly IMapper _mapper;
+
+        public GetAccountsByRoleQueryHandler(UserManager<AspNetUser> userManager, IMapper mapper)
+        {
+            _userManager = userManager;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<UserListDTO>> Handle(GetAccountsByRoleQuery request, CancellationToken cancellationToken)
+        {
+            var roles = request.Roles.Split(',').Select(role => role.Trim()).ToList();
+            var usersInRoles = new List<AspNetUser>();
+
+            foreach (var role in roles)
+            {
+                var usersInRole = await _userManager.GetUsersInRoleAsync(role);
+                usersInRoles.AddRange(usersInRole);
+            }
+
+            var distinctUsers = usersInRoles.DistinctBy(user => user.Id).ToList(); // Ensure unique users
+            var userDtos = _mapper.Map<List<UserListDTO>>(distinctUsers);
+
+            return userDtos;
+        }
     }
 }

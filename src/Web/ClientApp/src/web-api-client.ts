@@ -439,7 +439,7 @@ export class EquipmentsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getEquipmentsWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfEquipmentDTO> {
+    getEquipmentsWithPagination(pageNumber: number, pageSize: number): Promise<PaginatedListOfEquipmentDetailsDTO> {
         let url_ = this.baseUrl + "/api/Equipments/get-all?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
@@ -463,7 +463,7 @@ export class EquipmentsClient {
         });
     }
 
-    protected processGetEquipmentsWithPagination(response: Response): Promise<PaginatedListOfEquipmentDTO> {
+    protected processGetEquipmentsWithPagination(response: Response): Promise<PaginatedListOfEquipmentDetailsDTO> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -471,7 +471,7 @@ export class EquipmentsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfEquipmentDTO.fromJS(resultData200);
+            result200 = PaginatedListOfEquipmentDetailsDTO.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -479,7 +479,7 @@ export class EquipmentsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PaginatedListOfEquipmentDTO>(null as any);
+        return Promise.resolve<PaginatedListOfEquipmentDetailsDTO>(null as any);
     }
 
     getEquipmentById(id: number): Promise<EquipmentDetailsDTO> {
@@ -3573,7 +3573,7 @@ export class UsersClient {
     }
 
     getUserProfile(userId: string | null): Promise<UserProfileDTO> {
-        let url_ = this.baseUrl + "/api/Users/profile?";
+        let url_ = this.baseUrl + "/api/Users/user-profile?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
         else if(userId !== null)
@@ -3632,6 +3632,57 @@ export class UsersClient {
     }
 
     protected processAuthenticatedResetPassword(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    updateUserProfile(userId: string | null | undefined, firstName: string | null | undefined, lastName: string | null | undefined, dateOfBirth: Date | null | undefined, gender: string | null | undefined, email: string | null | undefined, phoneNumber: string | null | undefined, userName: string | null | undefined): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/update-profile?";
+        if (userId !== undefined && userId !== null)
+            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+        if (firstName !== undefined && firstName !== null)
+            url_ += "FirstName=" + encodeURIComponent("" + firstName) + "&";
+        if (lastName !== undefined && lastName !== null)
+            url_ += "LastName=" + encodeURIComponent("" + lastName) + "&";
+        if (dateOfBirth !== undefined && dateOfBirth !== null)
+            url_ += "DateOfBirth=" + encodeURIComponent(dateOfBirth ? "" + dateOfBirth.toISOString() : "") + "&";
+        if (gender !== undefined && gender !== null)
+            url_ += "Gender=" + encodeURIComponent("" + gender) + "&";
+        if (email !== undefined && email !== null)
+            url_ += "Email=" + encodeURIComponent("" + email) + "&";
+        if (phoneNumber !== undefined && phoneNumber !== null)
+            url_ += "PhoneNumber=" + encodeURIComponent("" + phoneNumber) + "&";
+        if (userName !== undefined && userName !== null)
+            url_ += "UserName=" + encodeURIComponent("" + userName) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateUserProfile(_response);
+        });
+    }
+
+    protected processUpdateUserProfile(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3831,6 +3882,52 @@ export class UsersClient {
         return Promise.resolve<(UserListDTO | undefined)[]>(null as any);
     }
 
+    getUsersByRole(roles: string | null): Promise<UserListDTO[]> {
+        let url_ = this.baseUrl + "/api/Users/get-by-roles?";
+        if (roles === undefined)
+            throw new Error("The parameter 'roles' must be defined.");
+        else if(roles !== null)
+            url_ += "Roles=" + encodeURIComponent("" + roles) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUsersByRole(_response);
+        });
+    }
+
+    protected processGetUsersByRole(response: Response): Promise<UserListDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(UserListDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserListDTO[]>(null as any);
+    }
+
     createUser(command: CreateUserCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Users/create-account";
         url_ = url_.replace(/[?&]$/, "");
@@ -3890,45 +3987,6 @@ export class UsersClient {
     }
 
     protected processDeleteAccount(response: Response): Promise<Result> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    updateUser(command: UpdateUserCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/Users/update-account";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateUser(_response);
-        });
-    }
-
-    protected processUpdateUser(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -4246,6 +4304,168 @@ export class CoachingServicesClient {
         }
         return Promise.resolve<PaginatedListOfCoachingServiceDTO>(null as any);
     }
+
+    updateBookingStatus(id: number, command: UpdateBookingStatusCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/CoachingServices/booking/{id}/status";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateBookingStatus(_response);
+        });
+    }
+
+    protected processUpdateBookingStatus(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    bookService(id: number, command: BookServiceCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/CoachingServices/book/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBookService(_response);
+        });
+    }
+
+    protected processBookService(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    getBookingDetails(id: number): Promise<any> {
+        let url_ = this.baseUrl + "/api/CoachingServices/booking/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetBookingDetails(_response);
+        });
+    }
+
+    protected processGetBookingDetails(response: Response): Promise<any> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<any>(null as any);
+    }
+
+    getServiceBookings(serviceId: number): Promise<any> {
+        let url_ = this.baseUrl + "/api/CoachingServices/service/{serviceId}/bookings";
+        if (serviceId === undefined || serviceId === null)
+            throw new Error("The parameter 'serviceId' must be defined.");
+        url_ = url_.replace("{serviceId}", encodeURIComponent("" + serviceId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetServiceBookings(_response);
+        });
+    }
+
+    protected processGetServiceBookings(response: Response): Promise<any> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<any>(null as any);
+    }
 }
 
 export class CoachProfileClient {
@@ -4256,6 +4476,47 @@ export class CoachProfileClient {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getCertificationById(userId: string, id: number): Promise<CertificationDTO> {
+        let url_ = this.baseUrl + "/api/CoachProfile/{userId}/certifications/{id}";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCertificationById(_response);
+        });
+    }
+
+    protected processGetCertificationById(response: Response): Promise<CertificationDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CertificationDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CertificationDTO>(null as any);
     }
 
     getCoachProfileDetails(id: string): Promise<any> {
@@ -4339,6 +4600,51 @@ export class CoachProfileClient {
         return Promise.resolve<Result>(null as any);
     }
 
+    getCertificationsByUserId(userId: string): Promise<CertificationDTO[]> {
+        let url_ = this.baseUrl + "/api/CoachProfile/certifications/user/{userId}";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCertificationsByUserId(_response);
+        });
+    }
+
+    protected processGetCertificationsByUserId(response: Response): Promise<CertificationDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CertificationDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CertificationDTO[]>(null as any);
+    }
+
     createCoachApplication(request: CreateCoachApplicationQuery): Promise<Result> {
         let url_ = this.baseUrl + "/api/CoachProfile/apply-coach";
         url_ = url_.replace(/[?&]$/, "");
@@ -4403,6 +4709,125 @@ export class CoachProfileClient {
     }
 
     protected processUpdateCoachApplication(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    createCertification(command: CreateCertificationCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/CoachProfile/certifications";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateCertification(_response);
+        });
+    }
+
+    protected processCreateCertification(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    updateCertification(id: number, command: UpdateCertificationCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/CoachProfile/certifications/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateCertification(_response);
+        });
+    }
+
+    protected processUpdateCertification(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    deleteCertification(id: number): Promise<Result> {
+        let url_ = this.baseUrl + "/api/CoachProfile/certifications/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteCertification(_response);
+        });
+    }
+
+    protected processDeleteCertification(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -5144,15 +5569,15 @@ export interface IWeatherForecast {
     summary?: string | undefined;
 }
 
-export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO {
-    items?: EquipmentDTO[];
+export class PaginatedListOfEquipmentDetailsDTO implements IPaginatedListOfEquipmentDetailsDTO {
+    items?: EquipmentDetailsDTO[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
 
-    constructor(data?: IPaginatedListOfEquipmentDTO) {
+    constructor(data?: IPaginatedListOfEquipmentDetailsDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5166,7 +5591,7 @@ export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items!.push(EquipmentDTO.fromJS(item));
+                    this.items!.push(EquipmentDetailsDTO.fromJS(item));
             }
             this.pageNumber = _data["pageNumber"];
             this.totalPages = _data["totalPages"];
@@ -5176,9 +5601,9 @@ export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO
         }
     }
 
-    static fromJS(data: any): PaginatedListOfEquipmentDTO {
+    static fromJS(data: any): PaginatedListOfEquipmentDetailsDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfEquipmentDTO();
+        let result = new PaginatedListOfEquipmentDetailsDTO();
         result.init(data);
         return result;
     }
@@ -5199,53 +5624,13 @@ export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO
     }
 }
 
-export interface IPaginatedListOfEquipmentDTO {
-    items?: EquipmentDTO[];
+export interface IPaginatedListOfEquipmentDetailsDTO {
+    items?: EquipmentDetailsDTO[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
-}
-
-export class EquipmentDTO implements IEquipmentDTO {
-    equipmentId?: number;
-    equipmentName?: string | undefined;
-
-    constructor(data?: IEquipmentDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.equipmentId = _data["equipmentId"];
-            this.equipmentName = _data["equipmentName"];
-        }
-    }
-
-    static fromJS(data: any): EquipmentDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new EquipmentDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["equipmentId"] = this.equipmentId;
-        data["equipmentName"] = this.equipmentName;
-        return data;
-    }
-}
-
-export interface IEquipmentDTO {
-    equipmentId?: number;
-    equipmentName?: string | undefined;
 }
 
 export class EquipmentDetailsDTO implements IEquipmentDetailsDTO {
@@ -10774,6 +11159,7 @@ export class UserProfileDTO implements IUserProfileDTO {
     lastName?: string | undefined;
     dateOfBirth?: Date | undefined;
     gender?: string | undefined;
+    roles?: string;
     programs?: ProgramDTO[];
     certifications?: CertificationDTO[];
     coachingServices?: CoachingServiceDTO[];
@@ -10797,6 +11183,7 @@ export class UserProfileDTO implements IUserProfileDTO {
             this.lastName = _data["lastName"];
             this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : <any>undefined;
             this.gender = _data["gender"];
+            this.roles = _data["roles"];
             if (Array.isArray(_data["programs"])) {
                 this.programs = [] as any;
                 for (let item of _data["programs"])
@@ -10832,6 +11219,7 @@ export class UserProfileDTO implements IUserProfileDTO {
         data["lastName"] = this.lastName;
         data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
         data["gender"] = this.gender;
+        data["roles"] = this.roles;
         if (Array.isArray(this.programs)) {
             data["programs"] = [];
             for (let item of this.programs)
@@ -10860,6 +11248,7 @@ export interface IUserProfileDTO {
     lastName?: string | undefined;
     dateOfBirth?: Date | undefined;
     gender?: string | undefined;
+    roles?: string;
     programs?: ProgramDTO[];
     certifications?: CertificationDTO[];
     coachingServices?: CoachingServiceDTO[];
@@ -11273,36 +11662,6 @@ export interface ICreateUserCommand {
     role?: string;
 }
 
-export class UpdateUserCommand implements IUpdateUserCommand {
-
-    constructor(data?: IUpdateUserCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): UpdateUserCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateUserCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IUpdateUserCommand {
-}
-
 export class PaginatedListOfCoachSummaryDTO implements IPaginatedListOfCoachSummaryDTO {
     items?: CoachSummaryDTO[];
     pageNumber?: number;
@@ -11695,6 +12054,86 @@ export interface IUpdateCoachingServiceCommand {
     availabilityAnnouncement?: string | undefined;
 }
 
+export class UpdateBookingStatusCommand implements IUpdateBookingStatusCommand {
+    bookingId?: number;
+    newStatus?: string;
+    paymentDate?: Date | undefined;
+
+    constructor(data?: IUpdateBookingStatusCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bookingId = _data["bookingId"];
+            this.newStatus = _data["newStatus"];
+            this.paymentDate = _data["paymentDate"] ? new Date(_data["paymentDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UpdateBookingStatusCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateBookingStatusCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bookingId"] = this.bookingId;
+        data["newStatus"] = this.newStatus;
+        data["paymentDate"] = this.paymentDate ? this.paymentDate.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IUpdateBookingStatusCommand {
+    bookingId?: number;
+    newStatus?: string;
+    paymentDate?: Date | undefined;
+}
+
+export class BookServiceCommand implements IBookServiceCommand {
+    coachingServiceId?: number;
+
+    constructor(data?: IBookServiceCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.coachingServiceId = _data["coachingServiceId"];
+        }
+    }
+
+    static fromJS(data: any): BookServiceCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookServiceCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["coachingServiceId"] = this.coachingServiceId;
+        return data;
+    }
+}
+
+export interface IBookServiceCommand {
+    coachingServiceId?: number;
+}
+
 export class UpdateCoachProfileCommand implements IUpdateCoachProfileCommand {
     userId?: string;
     bio?: string | undefined;
@@ -11845,6 +12284,106 @@ export interface IUpdateCoachApplicationStatusCommand {
     status?: string;
     statusReason?: string | undefined;
     updatedById?: string;
+}
+
+export class CreateCertificationCommand implements ICreateCertificationCommand {
+    userId?: string | undefined;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+
+    constructor(data?: ICreateCertificationCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.certificationName = _data["certificationName"];
+            this.certificationDateIssued = _data["certificationDateIssued"] ? new Date(_data["certificationDateIssued"].toString()) : <any>undefined;
+            this.certificationExpirationData = _data["certificationExpirationData"] ? new Date(_data["certificationExpirationData"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateCertificationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCertificationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["certificationName"] = this.certificationName;
+        data["certificationDateIssued"] = this.certificationDateIssued ? formatDate(this.certificationDateIssued) : <any>undefined;
+        data["certificationExpirationData"] = this.certificationExpirationData ? formatDate(this.certificationExpirationData) : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateCertificationCommand {
+    userId?: string | undefined;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+}
+
+export class UpdateCertificationCommand implements IUpdateCertificationCommand {
+    certificationId?: number;
+    userId?: string | undefined;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
+
+    constructor(data?: IUpdateCertificationCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.certificationId = _data["certificationId"];
+            this.userId = _data["userId"];
+            this.certificationName = _data["certificationName"];
+            this.certificationDateIssued = _data["certificationDateIssued"] ? new Date(_data["certificationDateIssued"].toString()) : <any>undefined;
+            this.certificationExpirationData = _data["certificationExpirationData"] ? new Date(_data["certificationExpirationData"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UpdateCertificationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateCertificationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["certificationId"] = this.certificationId;
+        data["userId"] = this.userId;
+        data["certificationName"] = this.certificationName;
+        data["certificationDateIssued"] = this.certificationDateIssued ? formatDate(this.certificationDateIssued) : <any>undefined;
+        data["certificationExpirationData"] = this.certificationExpirationData ? formatDate(this.certificationExpirationData) : <any>undefined;
+        return data;
+    }
+}
+
+export interface IUpdateCertificationCommand {
+    certificationId?: number;
+    userId?: string | undefined;
+    certificationName?: string | undefined;
+    certificationDateIssued?: Date | undefined;
+    certificationExpirationData?: Date | undefined;
 }
 
 export class PaginatedListOfCoachApplicationDto implements IPaginatedListOfCoachApplicationDto {

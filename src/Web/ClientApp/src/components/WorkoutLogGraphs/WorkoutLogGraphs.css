@@ -1,0 +1,253 @@
+﻿.dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Các phần khác của giao diện */
+.summary-dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    font-size: 30px;
+}
+
+
+
+:root .tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    border: 1px solid #000; /* Đổi thành màu đen */
+    border-radius: 25px; /* Tăng viền bo tròn */
+    overflow: hidden;
+    width: 285px;
+    align-items: center;
+}
+
+    .tabs button {
+        background-color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 0;
+        outline: none;
+        flex: 1;
+        transition: background-color 0.3s, color 0.3s;
+        border-right: 1px solid #000; /* Thêm viền bên phải */
+    }
+
+        .tabs button:last-child {
+            border-right: none; /* Loại bỏ viền cho nút cuối cùng */
+        }
+
+        .tabs button.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+
+
+.summary {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.summary-item {
+    text-align: center;
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 0 10px;
+}
+
+    .summary-item .number {
+        font-size: 24px;
+        color: #6a1b9a;
+        font-weight: bold;
+    }
+
+    .summary-item .label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .summary-item .unit {
+        font-size: 14px;
+        color: #666;
+        font-weight: normal;
+    }
+
+.muscle-tracker {
+    width: 90%;
+    margin: 20px 0;
+}
+
+.muscle-tracker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.date-selector {
+    display: flex;
+    align-items: center;
+}
+
+    .date-selector button {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .date-selector span {
+        margin: 0 10px;
+        font-size: 14px;
+    }
+
+.muscle-tracker-content {
+    display: flex;
+}
+
+.muscle-image {
+    flex: 1;
+}
+
+    .muscle-image img {
+        width: 100%;
+        height: auto;
+    }
+
+.muscle-sets {
+    flex: 1;
+    margin-left: 20px;
+}
+
+    .muscle-sets table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .muscle-sets th, .muscle-sets td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+        background: white;
+    }
+
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.chest {
+    background-color: orange;
+}
+
+.upper-back {
+    background-color: orange;
+}
+
+.lats {
+    background-color: orange;
+}
+
+.triceps {
+    background-color: orange;
+}
+
+.glutes {
+    background-color: orange;
+}
+
+.quadriceps {
+    background-color: orange;
+}
+
+.hamstrings {
+    background-color: orange;
+}
+
+.percent {
+    float: right;
+}
+
+.sets-calculation {
+    margin-top: 10px;
+    color: blue;
+}
+
+    .sets-calculation a {
+        font-size: 12px;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+.graphs {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin: 20px 0;
+}
+
+.graph {
+    width: 48%;
+    text-align: center;
+}
+
+.graph-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Các phần khác của giao diện */
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }

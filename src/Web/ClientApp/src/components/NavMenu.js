@@ -85,7 +85,7 @@ export const NavMenu = () => {
                     <DropdownItem tag={Link} to="/WorkoutHistory">
                       <b>Workout History</b>
                     </DropdownItem>
-                    <DropdownItem tag={Link} to="/ExerciseLog">
+                    <DropdownItem tag={Link} to="/WorkoutLog">
                       <b> Workout Log</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/profile">

@@ -62,44 +62,28 @@ public class ExportWorkoutDataQueryHandler : IRequestHandler<ExportWorkoutDataQu
         {
             foreach (var exerciseLog in log.ExerciseLogs)
             {
-                var exerciseName = exerciseLog.Exercise?.ExerciseName;
-                var note = exerciseLog.Note;
+                var exerciseName = exerciseLog.Exercise?.ExerciseName ?? "Unknown";
+                var note = exerciseLog.Note ?? "No note";
                 var order = exerciseLog.OrderInSession;
-
                 var sets = exerciseLog.NumberOfSets;
 
-                List<string> setLog = new List<string>();
+                var setLog = new List<string>();
                 for (int i = 0; i < sets; i++)
                 {
-                    string weight;
-                    string reps;
-                    if (exerciseLog.WeightsUsedValue == null || i < exerciseLog.WeightsUsedValue.Count == false)
-                    {
-                        weight = "No weight";
-                    } else
-                    {
-                        weight = exerciseLog.WeightsUsedValue[i] + "kg";
-                    }
-
-                    if (exerciseLog.NumberOfRepsValue == null || i < exerciseLog.NumberOfRepsValue.Count == false)
-                    {
-                        reps = "No reps";
-                    }
-                    else
-                    {
-                        reps = exerciseLog.NumberOfRepsValue[i] + "";
-                    }
-
+                    string weight = (exerciseLog.WeightsUsedValue == null || i >= exerciseLog.WeightsUsedValue.Count) ? "No weight" : $"{exerciseLog.WeightsUsedValue[i]}kg";
+                    string reps = (exerciseLog.NumberOfRepsValue == null || i >= exerciseLog.NumberOfRepsValue.Count) ? "No reps" : $"{exerciseLog.NumberOfRepsValue[i]}";
                     setLog.Add($"{weight}x{reps}");
                 }
 
-                //var weights = string.Join("/", exerciseLog.SelectMany(el => el.WeightsUsed?.Trim('[', ']').Split(',').Select(w => $"{w}kg") ?? Array.Empty<string>()));
-                //var reps = string.Join("/", exerciseLog.SelectMany(el => el.NumberOfReps?.Trim('[', ']').Split(',') ?? Array.Empty<string>()));
-
-                result.AppendLine($"{log.Created:yyyy-MM-dd},{log.Note},{exerciseName},{order},{sets},{string.Join(" / ", setLog)},{note}");
+                var row = $"{log.Created:yyyy-MM-dd},{log.Note},{exerciseName},{order},{sets},{string.Join(" / ", setLog)},{note}";
+                result.AppendLine(row);  // Ensure each entry ends with a newline
             }
         }
 
-        return result.ToString();
+        // Return the result, trimming any trailing newlines
+        return result.ToString().TrimEnd();
     }
+
+
+
 }

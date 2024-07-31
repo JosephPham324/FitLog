@@ -34,7 +34,7 @@ public class Equipments : EndpointGroupBase
             .MapDelete(DeleteEquipment, "{id}");
     }
 
-    public Task<PaginatedList<EquipmentDTO>> GetEquipmentsWithPagination(ISender sender, [AsParameters] GetEquipmentsWithPaginationQuery query)
+    public Task<PaginatedList<EquipmentDetailsDTO>> GetEquipmentsWithPagination(ISender sender, [AsParameters] GetEquipmentsWithPaginationQuery query)
     {
         return sender.Send(query);
     }
