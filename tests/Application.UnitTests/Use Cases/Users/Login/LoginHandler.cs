@@ -41,7 +41,6 @@ namespace FitLog.Application.UnitTests.Users.Queries.Login
             _configurationMock.SetupGet(x => x["Jwt:Audience"]).Returns("test_audience");
             _configurationMock.SetupGet(x => x["Jwt:Key"]).Returns("this_is_a_very_secure_key_123456789012345678901234567890123456789012345678901234567890");
 
-
             _handler = new LoginHandler(_userManagerMock.Object, _configurationMock.Object);
         }
 
@@ -89,6 +88,86 @@ namespace FitLog.Application.UnitTests.Users.Queries.Login
 
             _userManagerMock.Setup(x => x.FindByNameAsync(command.Username))
                 .ReturnsAsync((AspNetUser?)null);
+
+            // Act
+            var result = await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Success.Should().BeFalse();
+            result.Token.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task Handle_Should_Throw_UnauthorizedAccessException_When_User_Is_Disabled()
+        {
+            // Arrange
+            var user = new AspNetUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserName = "disableduser",
+                Email = "disabled@example.com",
+                IsDeleted = true
+            };
+
+            var command = new LoginQuery
+            {
+                Username = "disableduser",
+                Password = "Test@123"
+            };
+
+            _userManagerMock.Setup(x => x.FindByNameAsync(command.Username))
+                .ReturnsAsync(user);
+
+            // Act
+            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            await act.Should().ThrowAsync<UnauthorizedAccessException>()
+                .WithMessage("User account is disabled");
+        }
+
+        [Fact]
+        public async Task Handle_Should_Return_Failure_Result_When_User_Not_Found()
+        {
+            // Arrange
+            var command = new LoginQuery
+            {
+                Username = "nonexistentuser",
+                Password = "Test@123"
+            };
+
+            _userManagerMock.Setup(x => x.FindByNameAsync(command.Username))
+                .ReturnsAsync((AspNetUser?)null);
+
+            // Act
+            var result = await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Success.Should().BeFalse();
+            result.Token.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task Handle_Should_Return_Failure_Result_When_Password_Is_Incorrect()
+        {
+            // Arrange
+            var user = new AspNetUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserName = "testuser",
+                Email = "test@example.com"
+            };
+
+            var command = new LoginQuery
+            {
+                Username = "testuser",
+                Password = "WrongPassword"
+            };
+
+            _userManagerMock.Setup(x => x.FindByNameAsync(command.Username))
+                .ReturnsAsync(user);
+            _userManagerMock.Setup(x => x.CheckPasswordAsync(user, command.Password))
+                .ReturnsAsync(false);
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
