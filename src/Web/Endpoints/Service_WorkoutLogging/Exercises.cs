@@ -85,9 +85,9 @@ public class Exercises : EndpointGroupBase
     {
         var muscleGroupIdsList = string.IsNullOrWhiteSpace(muscleGroupIds) ? new List<int>() : muscleGroupIds.Split(',').Select(int.Parse).ToList();
         int? equipId = null;
-        if (equipmentId != null)
+        if (equipmentId.IsNullOrEmpty() == false)
         {
-            equipId = int.Parse(equipmentId);
+            equipId = int.Parse(equipmentId ??"0");
         }
         var query = new SearchExercisesQuery
         {

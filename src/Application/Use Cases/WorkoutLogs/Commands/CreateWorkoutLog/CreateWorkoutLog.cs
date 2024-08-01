@@ -8,6 +8,7 @@ using FitLog.Domain.Entities;
 namespace FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
 public record CreateWorkoutLogCommandDTO
 {
+    public string? WorkoutLogName { get; init; }
     public string? Note { get; init; }
     public TimeOnly? Duration { get; init; }
     public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
@@ -17,12 +18,15 @@ public record CreateWorkoutLogCommand : IRequest<Result>
 {
     [JsonIgnore]
     public string? CreatedBy { get; set; }
+    public string? WorkoutLogName { get; init; }
+
     public string? Note { get; init; }
     public TimeOnly? Duration { get; init; }
     public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
 
     public CreateWorkoutLogCommand(string? createdBy, CreateWorkoutLogCommandDTO dto)
     {
+        WorkoutLogName = dto.WorkoutLogName;
         CreatedBy = createdBy;
         Note = dto.Note;
         Duration = dto.Duration;
@@ -117,6 +121,7 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
     {
         var workoutLog = new WorkoutLog
         {
+            WorkoutLogName = request.WorkoutLogName ?? DateTime.Now.TimeOfDay.ToString() + "Workout",
             CreatedBy = request.CreatedBy,
             Note = request.Note,
             Duration = request.Duration,

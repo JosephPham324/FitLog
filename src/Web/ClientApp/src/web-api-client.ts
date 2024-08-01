@@ -8859,6 +8859,7 @@ export interface IExerciseLog {
 }
 
 export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
+    workoutLogName?: string;
     note?: string | undefined;
     duration?: string | undefined;
     createdByNavigation?: AspNetUser | undefined;
@@ -8871,6 +8872,7 @@ export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
     override init(_data?: any) {
         super.init(_data);
         if (_data) {
+            this.workoutLogName = _data["workoutLogName"];
             this.note = _data["note"];
             this.duration = _data["duration"];
             this.createdByNavigation = _data["createdByNavigation"] ? AspNetUser.fromJS(_data["createdByNavigation"]) : <any>undefined;
@@ -8891,6 +8893,7 @@ export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
 
     override toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["workoutLogName"] = this.workoutLogName;
         data["note"] = this.note;
         data["duration"] = this.duration;
         data["createdByNavigation"] = this.createdByNavigation ? this.createdByNavigation.toJSON() : <any>undefined;
@@ -8905,6 +8908,7 @@ export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
 }
 
 export interface IWorkoutLog extends IBaseAuditableEntity {
+    workoutLogName?: string;
     note?: string | undefined;
     duration?: string | undefined;
     createdByNavigation?: AspNetUser | undefined;
@@ -9878,6 +9882,7 @@ export interface IWorkoutLogDTO {
 }
 
 export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
+    workoutLogName?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
     exerciseLogs?: CreateExerciseLogCommand[] | undefined;
@@ -9893,6 +9898,7 @@ export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
 
     init(_data?: any) {
         if (_data) {
+            this.workoutLogName = _data["workoutLogName"];
             this.note = _data["note"];
             this.duration = _data["duration"];
             if (Array.isArray(_data["exerciseLogs"])) {
@@ -9912,6 +9918,7 @@ export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["workoutLogName"] = this.workoutLogName;
         data["note"] = this.note;
         data["duration"] = this.duration;
         if (Array.isArray(this.exerciseLogs)) {
@@ -9924,6 +9931,7 @@ export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
 }
 
 export interface ICreateWorkoutLogCommandDTO {
+    workoutLogName?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
     exerciseLogs?: CreateExerciseLogCommand[] | undefined;

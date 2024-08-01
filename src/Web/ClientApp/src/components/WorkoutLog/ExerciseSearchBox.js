@@ -12,6 +12,9 @@ const ExerciseSearchBox = ({ closePopup, setSelectedExercise }) => {
   const [exercises, setExercises] = useState([]);
   const [error, setError] = useState(null);
   const [selectedExerciseId, setSelectedExerciseId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
     const fetchMuscleGroups = async () => {
@@ -60,6 +63,7 @@ const ExerciseSearchBox = ({ closePopup, setSelectedExercise }) => {
       );
       setExercises(response.data);
       setError(null);
+      setCurrentPage(1); // Reset to first page on new search
     } catch (err) {
       setError('Failed to fetch exercises. Please try again later.');
     }
@@ -72,10 +76,18 @@ const ExerciseSearchBox = ({ closePopup, setSelectedExercise }) => {
   const handleOkClick = () => {
     const selectedExercise = exercises.find(exercise => exercise.exerciseId === selectedExerciseId);
     setSelectedExercise(selectedExercise);
-
-    console.log(selectedExerciseId);
     closePopup();
   };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate pagination
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedExercises = exercises.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(exercises.length / ITEMS_PER_PAGE);
 
   return (
     <div className="modal show d-block" role="dialog">
@@ -129,22 +141,35 @@ const ExerciseSearchBox = ({ closePopup, setSelectedExercise }) => {
             <button className="btn btn-primary" onClick={handleSearch}>Search</button>
             <div className="mt-3">
               <h6>Exercises</h6>
-              {exercises.length > 0 ? (
-                <ul className="list-group">
-                  {exercises.map((exercise) => (
-                    <li
-                      key={exercise.exerciseId}
-                      className={`list-group-item ${exercise.exerciseId === selectedExerciseId ? 'active' : ''}`}
-                      onClick={() => handleExerciseClick(exercise.exerciseId)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {exercise.exerciseName} - {exercise.type}
-                    </li>
-                  ))}
-                </ul>
+              {paginatedExercises.length > 0 ? (
+                <div className="exercise-list-container">
+                  <ul className="list-group">
+                    {paginatedExercises.map((exercise) => (
+                      <li
+                        key={exercise.exerciseId}
+                        className={`list-group-item ${exercise.exerciseId === selectedExerciseId ? 'active' : ''}`}
+                        onClick={() => handleExerciseClick(exercise.exerciseId)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {exercise.exerciseName} - {exercise.type}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ) : (
                 <p>No exercises found.</p>
               )}
+            </div>
+            <div className="pagination-container mt-3">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  className={`btn ${i + 1 === currentPage ? 'btn-primary' : 'btn-secondary'} ml-1`}
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
             </div>
             <button className="btn btn-success mt-3" onClick={handleOkClick} disabled={!selectedExerciseId}>
               OK

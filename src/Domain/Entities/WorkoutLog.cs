@@ -16,6 +16,7 @@ public partial class WorkoutLog : BaseAuditableEntity
 
     //public string? LastModifiedBy { get; set; }
     #endregion
+    public string WorkoutLogName { get; set; } = string.Empty;
 
     public string? Note { get; set; }
 

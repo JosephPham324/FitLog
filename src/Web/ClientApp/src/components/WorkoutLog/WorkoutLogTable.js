@@ -3,8 +3,7 @@ import ExerciseSearchBox from './ExerciseSearchBox';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './WorkoutLogTable.css';
 
-const WorkoutTable = () => {
-  const [rows, setRows] = useState([]);
+const WorkoutTable = ({ rows, setRows }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
   const [currentNote, setCurrentNote] = useState('');
@@ -68,21 +67,6 @@ const WorkoutTable = () => {
     }
 
     setRows(newRows);
-  };
-
-  const extractData = () => {
-    const exerciseLogs = rows.map((row, rowIndex) => ({
-      exerciseId: row.exercise.exerciseId,
-      orderInSession: rowIndex + 1,
-      note: row.note,
-      numberOfSets: row.sets,
-      weightsUsed: row.data.map(set => set.weight).join(', '),
-      numberOfReps: row.data.map(set => set.reps).join(', '),
-      footageUrls: row.data.map(set => set.intensity).join(', ')
-    }));
-
-    console.log({ exerciseLogs });
-    // You can process the data here or send it to a server
   };
 
   const deleteRow = (rowIndex) => {
@@ -199,9 +183,6 @@ const WorkoutTable = () => {
           </div>
         </div>
       )}
-      <button className="btn btn-success mt-3" onClick={extractData}>
-        Extract Data
-      </button>
     </div>
   );
 };
