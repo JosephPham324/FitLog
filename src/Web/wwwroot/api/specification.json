@@ -642,6 +642,58 @@
         }
       }
     },
+    "/api/Exercises/search": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "SearchExercises",
+        "parameters": [
+          {
+            "name": "exerciseName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "equipmentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "muscleGroupIds",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExerciseDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Exercises": {
       "post": {
         "tags": [
