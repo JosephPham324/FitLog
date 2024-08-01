@@ -11,6 +11,7 @@ using FitLog.Application.MuscleGroups.Commands.DeleteMuscleGroup;
 using FitLog.Application.MuscleGroups.Commands.UpdateMuscleGroup;
 using FitLog.Application.MuscleGroups.Queries.GetMuscleGroupDetails;
 using FitLog.Application.MuscleGroups.Queries.GetMuscleGroupsListWithPagination;
+using FitLog.Application.MuscleGroups.Queries.PaginatedSearchMuscleGroup;
 using FitLog.Application.TrainingSurveys.Commands;
 using FitLog.Web.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +45,7 @@ public class MuscleGroups : EndpointGroupBase
             .MapPut(UpdateMuscleGroup, "{id}")
             .MapDelete(DeleteMuscleGroup, "{id}");
     }
-    [Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
+
     public Task<Result> CreateMuscleGroup(ISender sender, [FromBody] CreateMuscleGroupCommand command)
     {
         return sender.Send(command);
@@ -56,18 +57,20 @@ public class MuscleGroups : EndpointGroupBase
     }
 
 
+    public Task<PaginatedList<Application.MuscleGroups.Queries.GetMuscleGroupDetails.MuscleGroupDTO>> SearchMuscleGroup(ISender sender, [AsParameters] PaginatedSearchMuscleGroupQuery query)
+    {
+        return sender.Send(query);
+    }
+
     public Task<Application.MuscleGroups.Queries.GetMuscleGroupDetails.MuscleGroupDTO> GetMuscleGroupsById(ISender sender, [AsParameters] GetMuscleGroupDetailsQuery query)
     {
         return sender.Send(query);
-
     }
 
-    [Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
     public Task<Result> UpdateMuscleGroup(ISender sender, int id, [FromBody] UpdateMuscleGroupCommand command)
     {
         return sender.Send(command);
     }
-    [Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
     public Task<Result> DeleteMuscleGroup(ISender sender, [FromBody] DeleteMuscleGroupCommand command)
     {
         return sender.Send(command);

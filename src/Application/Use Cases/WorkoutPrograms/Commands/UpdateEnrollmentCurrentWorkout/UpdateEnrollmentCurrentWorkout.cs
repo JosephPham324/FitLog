@@ -3,16 +3,16 @@ using FitLog.Application.Common.Models;
 
 namespace FitLog.Application.WorkoutPrograms.Commands.UpdateEnrollmentCurrentWorkout;
 
-public record UpdateEnrollmentCurrentWeekCommand : IRequest<Result>
+public record UpdateEnrollmentCurrentWorkoutCommand : IRequest<Result>
 {
     public int EnrollmentId { get; init; }
     public int CurrentWeekNo { get; init; }
     public int CurrentWorkoutOrder { get; init; }
 }
 
-public class UpdateEnrollmentCurrentWeekCommandValidator : AbstractValidator<UpdateEnrollmentCurrentWeekCommand>
+public class UpdateEnrollmentCurrentWorkoutCommandValidator : AbstractValidator<UpdateEnrollmentCurrentWorkoutCommand>
 {
-    public UpdateEnrollmentCurrentWeekCommandValidator()
+    public UpdateEnrollmentCurrentWorkoutCommandValidator()
     {
         RuleFor(x => x.EnrollmentId).GreaterThan(0).WithMessage("Enrollment ID must be greater than 0.");
         RuleFor(x => x.CurrentWeekNo).GreaterThan(0).WithMessage("Current week number must be greater than 0.");
@@ -20,16 +20,16 @@ public class UpdateEnrollmentCurrentWeekCommandValidator : AbstractValidator<Upd
     }
 }
 
-public class UpdateEnrollmentCurrentWeekCommandHandler : IRequestHandler<UpdateEnrollmentCurrentWeekCommand, Result>
+public class UpdateEnrollmentCurrentWorkoutCommandHandler : IRequestHandler<UpdateEnrollmentCurrentWorkoutCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
-    public UpdateEnrollmentCurrentWeekCommandHandler(IApplicationDbContext context)
+    public UpdateEnrollmentCurrentWorkoutCommandHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<Result> Handle(UpdateEnrollmentCurrentWeekCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateEnrollmentCurrentWorkoutCommand request, CancellationToken cancellationToken)
     {
         var enrollment = await _context.ProgramEnrollments.FindAsync(request.EnrollmentId);
 
