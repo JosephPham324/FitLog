@@ -2924,18 +2924,6 @@
           "Users"
         ],
         "operationId": "GetUserProfile",
-        "parameters": [
-          {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
         "responses": {
           "200": {
             "description": "",

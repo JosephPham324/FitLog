@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Icon } from "@iconify/react/dist/iconify.js";
 import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
 
 export const Profile = () => {
-    const [profile, setProfile] = useState(null);
+    const [profile, setProfile] = useState({
+        firstName: '',
+        lastName: '',
+        userName: '',
+        gender: '',
+        dateOfBirth: '',
+        roles: '',
+        phoneNumber: '',
+        email: ''
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const userId = 'your-user-id'; // Replace with actual userId
-                const response = await axiosInstance.get('/Users/profile', {
-                    params: { userId }
-                });
+                const response = await axiosInstance.get('/Users/user-profile');
                 setProfile(response.data);
             } catch (error) {
                 setError('Error fetching user profile');
@@ -25,6 +31,27 @@ export const Profile = () => {
 
         fetchProfile();
     }, []);
+
+    const handleChange = (e) => {
+        setProfile({
+            ...profile,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const updateProfile = async () => {
+        // Create a copy of the profile object without read-only fields
+        const { userName, roles, email, ...updatableProfile } = profile;
+
+        try {
+            console.log('Sending profile data:', updatableProfile); // Log the payload to verify
+            await axiosInstance.put('/Users/update-profile', updatableProfile);
+            alert('Profile updated successfully!');
+        } catch (error) {
+            setError('Error updating profile');
+            console.error('Error updating profile:', error.response || error.message);
+        }
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -51,26 +78,26 @@ export const Profile = () => {
                                 <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
                                     First name
                                 </div>
-                                <input value={profile.firstName} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" />
+                                <input name="firstName" value={profile.firstName} onChange={handleChange} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" />
                             </div>
                             <div>
                                 <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
                                     Last name
                                 </div>
-                                <input value={profile.lastName} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" />
+                                <input name="lastName" value={profile.lastName} onChange={handleChange} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" />
                             </div>
                             <div>
                                 <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
                                     Username
                                 </div>
-                                <input value={profile.userName} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" readOnly />
+                                <input name="userName" value={profile.userName} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" readOnly />
                             </div>
                             <div>
                                 <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
                                     Gender
                                 </div>
-                                <select value={profile.gender} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl">
-                                    <option value="Male">Orther</option>
+                                <select name="gender" value={profile.gender} onChange={handleChange} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl">
+                                    <option value="Other">Other</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
@@ -79,29 +106,29 @@ export const Profile = () => {
                                 <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
                                     Date of birth
                                 </div>
-                                <input type="date" value={profile.dateOfBirth} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" />
+                                <input type="date" name="dateOfBirth" value={profile.dateOfBirth} onChange={handleChange} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" />
                             </div>
                             <div>
                                 <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
                                     Role
                                 </div>
-                                <input value="Member" className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" readOnly />
+                                <input name="roles" value={profile.roles} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" readOnly />
                             </div>
                         </div>
                         <div className="mt-5">
                             <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
-                                Number Phone
+                                Phone Number
                             </div>
-                            <input value={profile.phoneNumber} className="w-full bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" />
+                            <input name="phoneNumber" value={profile.phoneNumber} onChange={handleChange} className="w-full bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" />
                         </div>
                         <div className="mt-5">
                             <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
                                 Email
                             </div>
-                            <input value={profile.email} className="w-full bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" readOnly />
+                            <input name="email" value={profile.email} className="w-full bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" readOnly />
                         </div>
 
-                        <button className="my-5 px-4 py-3 rounded-lg m-auto bg-green-600 text-white font-medium block hover:bg-green-500">Save Profile</button>
+                        <button onClick={updateProfile} className="my-5 px-4 py-3 rounded-lg m-auto bg-green-600 text-white font-medium block hover:bg-green-500">Save Profile</button>
                     </div>
                 </div>
             </div>
