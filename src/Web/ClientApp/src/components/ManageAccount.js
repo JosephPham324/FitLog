@@ -28,7 +28,8 @@ export function ManageAccount() {
         params: {
           PageNumber: page,
           PageSize: rowsPerPage,
-        }
+          searchTerm: searchTerm,
+        },
       });
       setUsers(response.data.items);
       setTotalPages(response.data.totalPages);
@@ -98,7 +99,7 @@ export function ManageAccount() {
       await axiosInstance.delete(`${apiUrl}/delete-account/${id}`, {
         data: {
           id: id,
-        }
+        },
       });
 
       fetchUsers(currentPage, searchTerm);
@@ -131,13 +132,19 @@ export function ManageAccount() {
         <td>
           <div className="button-group">
             <Button
-              color="primary"
+              color="success"
               className="mr-2 update-btn"
               onClick={() => handleEdit(user)}
             >
               Update
             </Button>
-            <Button color="danger" className="mr-2 delete-btn" onClick={() => deleteUser(user.id)}>Delete</Button>
+            {/*            <Button
+              color="danger"
+              className="mr-2 delete-btn"
+              onClick={() => deleteUser(user.id)}
+            >
+              Delete
+            </Button>*/}
           </div>
         </td>
       </tr>
@@ -147,8 +154,8 @@ export function ManageAccount() {
   return (
     <Container>
       <h1 className="my-4">Manage Account</h1>
-      <Row>
-        <Col md="6">
+      <Row className="align-items-center mb-3">
+        <Col xs="12" md="10" className="mb-3 mb-md-0">
           <Input
             type="text"
             placeholder="Search by username..."
@@ -157,7 +164,7 @@ export function ManageAccount() {
             className="btn-search"
           />
         </Col>
-        <Col md="6" className="text-right">
+        <Col xs="12" md="2" className="text-md-right">
           <Button color="primary" onClick={toggleCreateModal} className="btn-create">
             Create User
           </Button>
@@ -211,7 +218,7 @@ export function ManageAccount() {
           <Button color="primary" onClick={createUser}>
             Create
           </Button>
-          <Button color="secondary" onClick={toggleCreateModal}>
+          <Button color="danger" onClick={toggleCreateModal}>
             Cancel
           </Button>
         </ModalFooter>
@@ -255,19 +262,19 @@ export function ManageAccount() {
           <Button color="primary" onClick={updateUser}>
             Update
           </Button>
-          <Button color="secondary" onClick={toggleUpdateModal}>
+          <Button color="danger" onClick={toggleUpdateModal}>
             Cancel
           </Button>
         </ModalFooter>
       </Modal>
 
-      <Table striped hover>
+      <Table striped hover responsive>
         <thead>
           <tr>
             <th>User ID</th>
             <th>Username</th>
             <th>Email</th>
-            <th>Phone Number</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>

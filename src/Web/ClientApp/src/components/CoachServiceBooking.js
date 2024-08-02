@@ -89,7 +89,7 @@ export class CoachServiceBooking extends Component {
             type="text"
             id="searchService"
             className="form-control"
-            style={{ height: '50px', marginTop: '30px' }}
+            style={{ height: '50px', border: '1px solid #ccc', marginTop: '20px' }}
             placeholder="Search Services"
             value={searchQuery}
             onChange={this.searchServices}

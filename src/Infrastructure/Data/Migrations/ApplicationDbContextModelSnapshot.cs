@@ -949,6 +949,12 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<string>("WorkoutLogName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("WorkoutLogName");
+
                     b.HasKey("Id")
                         .HasName("PK__WorkoutL__592592550AEBF56C");
 

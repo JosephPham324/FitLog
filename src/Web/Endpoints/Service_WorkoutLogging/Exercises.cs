@@ -7,8 +7,10 @@ using FitLog.Application.Exercises.Commands.UpdateExercise;
 using FitLog.Application.Exercises.Queries.GetExerciseDetails;
 using FitLog.Application.Exercises.Queries.GetExercises;
 using FitLog.Application.Exercises.Queries.GetExercsieTypes;
+using FitLog.Application.Exercises.Queries.SearchExercises;
 using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
@@ -30,7 +32,8 @@ public class Exercises : EndpointGroupBase
             //All users can get exercise information
             .MapGet(GetExercisesWithPagination, "paginated-all")
             .MapGet(GetExerciseTypes, "exercise-types")
-            .MapGet(GetExerciseById, "{id}");
+            .MapGet(GetExerciseById, "{id}")
+            .MapGet(SearchExercises, "search");
 
         app.MapGroup(this)
             .RequireAuthorization("AdminOrCoach")
@@ -75,6 +78,25 @@ public class Exercises : EndpointGroupBase
     public Task<Result> ImportExercises(ISender sender, [FromBody] ImportExercisesCommand command)
     {
         return sender.Send(command);
+    }
+
+
+    public Task<List<ExerciseDTO>> SearchExercises(ISender sender, [FromQuery] string? exerciseName, [FromQuery] string? equipmentId, [FromQuery] string? muscleGroupIds)
+    {
+        var muscleGroupIdsList = string.IsNullOrWhiteSpace(muscleGroupIds) ? new List<int>() : muscleGroupIds.Split(',').Select(int.Parse).ToList();
+        int? equipId = null;
+        if (equipmentId.IsNullOrEmpty() == false)
+        {
+            equipId = int.Parse(equipmentId ??"0");
+        }
+        var query = new SearchExercisesQuery
+        {
+            ExerciseName = exerciseName,
+            EquipmentId = equipId,
+            MuscleGroupIds = muscleGroupIdsList
+        };
+
+        return sender.Send(query);
     }
 }
 

@@ -141,8 +141,8 @@ const Login = () => {
                 <a href="/recover-account/initiate">Forgot Password?</a> {/* Added recover password link */}
               </div>
 
-              <button type="submit" className="btn1">
-                <span className="text-login">LOGIN</span>
+              <button type="submit" className="btn-login">
+                <p className="text-login">LOGIN</p>
               </button>
 
               <div className="social-login">

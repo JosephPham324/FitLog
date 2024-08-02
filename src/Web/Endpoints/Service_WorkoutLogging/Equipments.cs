@@ -8,6 +8,8 @@ using FitLog.Application.TodoItems.Commands.UpdateTodoItemDetail;
 using Microsoft.AspNetCore.Mvc;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Web.Services;
+using FitLog.Application.Exercises.Queries.SearchExercises;
+using FitLog.Application.Equipments.Queries.PaginatedSearchEquipment;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
@@ -25,6 +27,8 @@ public class Equipments : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapGet(GetEquipmentsWithPagination, "get-all")
+            .MapGet(SearchEquipment, "search")
+
             .MapGet(GetEquipmentById, "{id}");
 
         app.MapGroup(this)
@@ -39,6 +43,11 @@ public class Equipments : EndpointGroupBase
         return sender.Send(query);
     }
 
+    public Task<PaginatedList<EquipmentDTO>> SearchEquipment(ISender sender, [AsParameters] PaginatedSearchEquipmentQuery query)
+    {
+        return sender.Send(query);
+    }
+
 
     public async Task<EquipmentDetailsDTO> GetEquipmentById(ISender sender, int id)
     {
@@ -47,13 +56,13 @@ public class Equipments : EndpointGroupBase
         return result;
     }
 
-    [Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
+    //[Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
     public Task<Result> CreateEquipment(ISender sender, [FromBody] CreateEquipmentCommand command)
     {
         return sender.Send(command);
     }
 
-    [Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
+    //[Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
     public async Task<Result> UpdateEquipment(ISender sender, int id, [FromBody] UpdateEquipmentCommand command)
     {
         if (id != command.EquipmentId) return Result.Failure(["Id doesn't match instance"]);
@@ -61,8 +70,9 @@ public class Equipments : EndpointGroupBase
         return result;
     }
 
-    [Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
-    public async Task<Result> DeleteEquipment(ISender sender, int id)
+    //[Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
+    public async Task<Result> DeleteEquipment(ISender sender, int id, [FromBody] DeleteEquipmentCommand command)
+
     {
         var request = new DeleteEquipmentCommand()
         {

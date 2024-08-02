@@ -154,13 +154,13 @@
 
 
 import React, { useEffect, useState } from 'react';
-import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import axiosInstance from '../utils/axiosInstance';
+import { Link } from 'react-router-dom';
 import './WorkoutProgramsPage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-export const WorkoutProgramsPage = () => {
+const WorkoutProgramsPage = () => {
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -216,7 +216,6 @@ export const WorkoutProgramsPage = () => {
       (filters.musclesPriority === '' || program.musclesPriority.split(', ').some(muscle => filters.musclesPriority.includes(muscle)))
     );
   }).sort((a, b) => {
-    // Sắp xếp theo thứ tự ưu tiên: 1-2-4-3-5
     const priorityOrder = ['experienceLevel', 'gymType', 'fitnessGoal', 'musclesPriority', 'daysPerWeek'];
     const aPriority = priorityOrder.findIndex(item => a[item] === filters[item]);
     const bPriority = priorityOrder.findIndex(item => b[item] === filters[item]);
@@ -247,7 +246,6 @@ export const WorkoutProgramsPage = () => {
   return (
     <div className="container">
       <h1 className="title text-center"><strong>Workout Programs</strong></h1>
-      <div></div>
       <div className="row mb-4">
         <div className="col-md-6">
           <input
@@ -329,3 +327,4 @@ export const WorkoutProgramsPage = () => {
 };
 
 export default WorkoutProgramsPage;
+

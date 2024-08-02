@@ -8,6 +8,7 @@ using FitLog.Domain.Entities;
 namespace FitLog.Application.WorkoutLogs.Commands.CreateWorkoutLog;
 public record CreateWorkoutLogCommandDTO
 {
+    public string? WorkoutLogName { get; init; }
     public string? Note { get; init; }
     public TimeOnly? Duration { get; init; }
     public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
@@ -17,12 +18,15 @@ public record CreateWorkoutLogCommand : IRequest<Result>
 {
     [JsonIgnore]
     public string? CreatedBy { get; set; }
+    public string? WorkoutLogName { get; init; }
+
     public string? Note { get; init; }
     public TimeOnly? Duration { get; init; }
     public List<CreateExerciseLogCommand>? ExerciseLogs { get; init; }
 
-    public CreateWorkoutLogCommand(string createdBy, CreateWorkoutLogCommandDTO dto)
+    public CreateWorkoutLogCommand(string? createdBy, CreateWorkoutLogCommandDTO dto)
     {
+        WorkoutLogName = dto.WorkoutLogName;
         CreatedBy = createdBy;
         Note = dto.Note;
         Duration = dto.Duration;
@@ -63,9 +67,47 @@ public class CreateWorkoutLogCommandValidator : AbstractValidator<CreateWorkoutL
 {
     public CreateWorkoutLogCommandValidator()
     {
+        RuleFor(x => x.CreatedBy)
+            .NotEmpty().WithMessage("CreatedBy is required.");
+
+        RuleFor(x => x.Note)
+            .MaximumLength(500).WithMessage("Note must not exceed 500 characters.");
+
+        RuleForEach(x => x.ExerciseLogs).SetValidator(new CreateExerciseLogCommandValidator());
     }
 }
 
+public class CreateExerciseLogCommandValidator : AbstractValidator<CreateExerciseLogCommand>
+{
+    public CreateExerciseLogCommandValidator()
+    {
+        RuleFor(x => x.ExerciseId)
+            .NotNull().WithMessage("ExerciseId is required.");
+
+        RuleFor(x => x.FootageUrls)
+            .Must(BeValidJson).WithMessage("FootageUrls must be a valid JSON array.");
+
+        // Additional rules can be added here if needed
+    }
+
+    private bool BeValidJson(string? footageUrls)
+    {
+        if (string.IsNullOrEmpty(footageUrls))
+        {
+            return true;
+        }
+
+        try
+        {
+            JsonDocument.Parse(footageUrls);
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+}
 public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCommand, Result>
 {
     private readonly IApplicationDbContext _context;
@@ -79,6 +121,7 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
     {
         var workoutLog = new WorkoutLog
         {
+            WorkoutLogName = request.WorkoutLogName ?? DateTime.Now.TimeOfDay.ToString() + "Workout",
             CreatedBy = request.CreatedBy,
             Note = request.Note,
             Duration = request.Duration,
@@ -87,7 +130,14 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
         };
 
         _context.WorkoutLogs.Add(workoutLog);
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure([ex.Message]);
+        }
 
         if (request.ExerciseLogs != null)
         {
@@ -111,8 +161,14 @@ public class CreateWorkoutLogCommandHandler : IRequestHandler<CreateWorkoutLogCo
                 _context.ExerciseLogs.Add(exerciseLogEntity);
             }
         }
-
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure([ex.Message]);
+        }
 
         return Result.Successful();
     }

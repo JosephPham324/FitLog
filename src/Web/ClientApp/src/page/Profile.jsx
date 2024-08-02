@@ -70,6 +70,7 @@ export const Profile = () => {
                                     Gender
                                 </div>
                                 <select value={profile.gender} className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl">
+                                    <option value="Male">Orther</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
@@ -84,7 +85,7 @@ export const Profile = () => {
                                 <div className="pl-2 text-neutral-500 mb-1 font-medium text-sm">
                                     Role
                                 </div>
-                                <input value="User" className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" readOnly />
+                                <input value="Member" className="w-2/3 bg-neutral-300 text-neutral-600 py-3 px-2 font-medium rounded-xl" readOnly />
                             </div>
                         </div>
                         <div className="mt-5">

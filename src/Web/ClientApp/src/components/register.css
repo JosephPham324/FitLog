@@ -122,12 +122,6 @@
     font-size: 32px;
 }
 
-.gradient-text {
-    background: linear-gradient(90deg, #33CCFF, #33CC33, #FF99FF, #FFCC00, #FF6699, #9933FF, #FF6600);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 .terms-policy-register {
     text-align: center;
 }
@@ -151,7 +145,7 @@
     color: #fff; /* Màu chữ */
     background-color: green; /* Màu nền */
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     text-decoration: none; /* Bỏ gạch chân của link */
     cursor: pointer;
     text-align: center;
@@ -162,6 +156,12 @@
     margin-top: 30px;
 }
 
+
 .red-asterisk {
     color: red;
 }
+
+.btn-register {
+    height: 50px;
+}
+
