@@ -1,14 +1,15 @@
 ﻿import React, { useState } from 'react';
-import ExerciseSearchBox from './ExerciseSearchBox';
+import ExerciseSearchBox from '../WorkoutLog/ExerciseSearchBox';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './WorkoutLogTable.css';
+import '../WorkoutLog/WorkoutLogTable.css';
 
-const WorkoutTable = ({ rows, setRows }) => {
+const CreateWorkoutTemplateTable = ({ rows, setRows }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
   const [currentNote, setCurrentNote] = useState('');
   const [currentNoteRow, setCurrentNoteRow] = useState(null);
   const [exerciseChangeRow, setExerciseChangeRow] = useState(null);
+  const [repsType, setRepsType] = useState('reps');
 
   const openPopup = () => {
     setIsPopupOpen(true);
@@ -36,7 +37,7 @@ const WorkoutTable = ({ rows, setRows }) => {
   };
 
   const addRow = (exercise) => {
-    setRows([...rows, { exercise, sets: 1, data: [{ reps: '', weight: ''/*, intensity: ''*/ }], note: '' }]);
+    setRows([...rows, { exercise, sets: 1, data: [{ reps: '', weight: '', intensity: '' }], note: '' }]);
   };
 
   const changeExercise = (exercise) => {
@@ -60,7 +61,7 @@ const WorkoutTable = ({ rows, setRows }) => {
 
     if (sets > currentSets) {
       for (let i = currentSets; i < sets; i++) {
-        newRows[rowIndex].data.push({ reps: '', weight: ''/*, intensity: ''*/ });
+        newRows[rowIndex].data.push({ reps: '', weight: '', intensity: '' });
       }
     } else {
       newRows[rowIndex].data = newRows[rowIndex].data.slice(0, sets);
@@ -74,6 +75,10 @@ const WorkoutTable = ({ rows, setRows }) => {
     setRows(newRows);
   };
 
+  const handleRepsTypeChange = (event) => {
+    setRepsType(event.target.value);
+  };
+
   return (
     <div>
       <table className="table table-striped workout-table">
@@ -83,7 +88,14 @@ const WorkoutTable = ({ rows, setRows }) => {
             <th>Exercise</th>
             <th>Sets</th>
             <th>Weight (kg)</th>
-            <th>Reps</th>
+            <th>
+              <select value={repsType} onChange={handleRepsTypeChange} className="form-control">
+                <option value="reps">Reps</option>
+                <option value="repRange">Rep Range</option>
+                <option value="amrap">AMRAP</option>
+              </select>
+            </th>
+            <th>Intensity</th>
             <th>Note</th>
             <th>Action</th>
           </tr>
@@ -115,28 +127,50 @@ const WorkoutTable = ({ rows, setRows }) => {
               </td>
               <td>
                 {row.data.map((set, setIndex) => (
+                  <div key={`reps-${rowIndex}-${setIndex}`} className="mb-2">
+                    {repsType === 'reps' && (
+                      <input
+                        type="number"
+                        value={set.reps}
+                        onChange={(e) => handleInputChange(rowIndex, setIndex, 'reps', e.target.value)}
+                        className="form-control"
+                        placeholder={`Set ${setIndex + 1}`}
+                      />
+                    )}
+                    {repsType === 'repRange' && (
+                      <div className="d-flex">
+                        <input
+                          type="number"
+                          value={set.repsMin}
+                          onChange={(e) => handleInputChange(rowIndex, setIndex, 'repsMin', e.target.value)}
+                          className="form-control mr-2"
+                          placeholder="Min Reps"
+                        />
+                        <input
+                          type="number"
+                          value={set.repsMax}
+                          onChange={(e) => handleInputChange(rowIndex, setIndex, 'repsMax', e.target.value)}
+                          className="form-control"
+                          placeholder="Max Reps"
+                        />
+                      </div>
+                    )}
+                    {repsType === 'amrap' && <span>AMRAP</span>}
+                  </div>
+                ))}
+              </td>
+              <td>
+                {row.data.map((set, setIndex) => (
                   <input
-                    key={`reps-${rowIndex}-${setIndex}`}
-                    type="number"
-                    value={set.reps}
-                    onChange={(e) => handleInputChange(rowIndex, setIndex, 'reps', e.target.value)}
+                    key={`intensity-${rowIndex}-${setIndex}`}
+                    type="text"
+                    value={set.intensity}
+                    onChange={(e) => handleInputChange(rowIndex, setIndex, 'intensity', e.target.value)}
                     className="form-control mb-2"
                     placeholder={`Set ${setIndex + 1}`}
                   />
                 ))}
               </td>
-              {/*<td>*/}
-              {/*  {row.data.map((set, setIndex) => (*/}
-              {/*    <input*/}
-              {/*      key={`intensity-${rowIndex}-${setIndex}`}*/}
-              {/*      type="text"*/}
-              {/*      value={set.intensity}*/}
-              {/*      onChange={(e) => handleInputChange(rowIndex, setIndex, 'intensity', e.target.value)}*/}
-              {/*      className="form-control mb-2"*/}
-              {/*      placeholder={`Set ${setIndex + 1}`}*/}
-              {/*    />*/}
-              {/*  ))}*/}
-              {/*</td>*/}
               <td>
                 <button className="btn btn-secondary" onClick={() => openNotePopup(rowIndex)}>Note</button>
               </td>
@@ -186,4 +220,4 @@ const WorkoutTable = ({ rows, setRows }) => {
   );
 };
 
-export default WorkoutTable;
+export default CreateWorkoutTemplateTable;

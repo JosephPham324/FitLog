@@ -1,9 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
-import WorkoutTable from '../components/WorkoutLog/WorkoutLogTable';
+import WorkoutTable from '../../../components/WorkoutLog/WorkoutLogTable';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import axiosInstance from '../utils/axiosInstance';
-//import './WorkoutLog.css'; // Add this line to include the custom CSS file
+import axiosInstance from '../../../utils/axiosInstance';
+import './CreateWorkoutLog.css'; // Add this line to include the custom CSS file
 
 const WorkoutLog = () => {
     const [workoutName, setWorkoutName] = useState('');
