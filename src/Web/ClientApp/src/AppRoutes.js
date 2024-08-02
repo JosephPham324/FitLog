@@ -36,6 +36,7 @@ import { WorkoutProgramsDetail } from './components/WorkoutProgramsDetail';// Co
 import CoachProfile from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
+import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
 const AppRoutes = [
   {
     index: true,
@@ -160,6 +161,10 @@ const AppRoutes = [
   {
     path: '/CreateWorkoutLog',
     element: <CreateWorkoutLog />
+  },
+  {
+    path: '/workout-log/create/:templateId',
+    element: <CreateWorkoutLogFromTemplate />
   },
   {
     path: 'log-out',

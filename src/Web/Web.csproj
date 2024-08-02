@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\page\WorkoutLog\CreateWorkoutLogFromTemplate\" />
+    <Folder Include="ClientApp\src\page\WorkoutLog\UpdateWorkoutTemplate\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

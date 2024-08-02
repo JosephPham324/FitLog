@@ -2660,7 +2660,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutTemplateDetailsDto"
+                }
+              }
+            }
           }
         }
       }
@@ -7655,6 +7662,88 @@
           },
           "creatorName": {
             "type": "string"
+          }
+        }
+      },
+      "WorkoutTemplateDetailsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "templateName": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "nullable": true
+          },
+          "creatorName": {
+            "type": "string"
+          },
+          "workoutTemplateExercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutTemplateExerciseDTO"
+            }
+          }
+        }
+      },
+      "WorkoutTemplateExerciseDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseTemlateId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "setsRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "intensityPercentage": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rpeRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numbersOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "exercise": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ExerciseDTO"
+              }
+            ]
           }
         }
       },

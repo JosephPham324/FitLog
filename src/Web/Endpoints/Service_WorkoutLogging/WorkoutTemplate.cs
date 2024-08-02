@@ -108,10 +108,10 @@ public class WorkoutTemplates : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public async Task<IResult> GetWorkoutTemplateDetails(ISender sender, int id)
+    public async Task<WorkoutTemplateDetailsDto> GetWorkoutTemplateDetails(ISender sender, int id)
     {
         var result = await sender.Send(new GetWorkoutTemplateDetailsQuery { Id = id });
-        return result is not null ? Results.Ok(result) : Results.NotFound();
+        return result;
     }
 
     public Task<PaginatedList<WorkoutTemplateListDto>> FilterWorkoutTemplates(ISender sender, [AsParameters] FilterWorkoutTemplatesQuery query)
