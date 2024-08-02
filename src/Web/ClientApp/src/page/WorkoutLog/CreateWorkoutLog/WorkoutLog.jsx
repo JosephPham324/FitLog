@@ -1,9 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
 import WorkoutTable from '../../../components/WorkoutLog/WorkoutLogTable';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
 import axiosInstance from '../../../utils/axiosInstance';
 import './CreateWorkoutLog.css'; // Add this line to include the custom CSS file
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 
 const WorkoutLog = () => {
     const [workoutName, setWorkoutName] = useState('');
@@ -11,6 +11,9 @@ const WorkoutLog = () => {
     const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
     const [duration, setDuration] = useState(0); // Duration in seconds
     const [rows, setRows] = useState([]); // Move rows state here for centralized data
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    const navigate = useNavigate(); // Initialize useNavigate for redirection
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -60,9 +63,26 @@ const WorkoutLog = () => {
 
         try {
             const response = await axiosInstance.post('https://localhost:44447/api/WorkoutLog', logData);
-            console.log(response.data);
+            if (response.data.success) {
+                setPopupMessage('Log saved successfully!');
+                setIsPopupOpen(true);
+                setTimeout(() => {
+                    setIsPopupOpen(false);
+                    navigate('/'); // Redirect to root URL after 2 seconds
+                }, 2000);
+            } else {
+                setPopupMessage('Error saving log: ' + response.data.errors.join(', '));
+                setIsPopupOpen(true);
+                setTimeout(() => {
+                    setIsPopupOpen(false);
+                }, 2000);
+            }
         } catch (error) {
-            console.error('Error saving log:', error);
+            setPopupMessage('Error saving log. Please try again.');
+            setIsPopupOpen(true);
+            setTimeout(() => {
+                setIsPopupOpen(false);
+            }, 2000);
         }
     };
 
@@ -119,6 +139,22 @@ const WorkoutLog = () => {
                             <div className="modal-footer">
                                 <button className="btn btn-secondary" onClick={closeNotePopup}>Cancel</button>
                                 <button className="btn btn-primary" onClick={saveNote}>Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {isPopupOpen && (
+                <div className="modal show d-block" role="dialog">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-body text-center">
+                                <p>{popupMessage}</p>
+                                {popupMessage === 'Log saved successfully!' && (
+                                    <div>
+                                        <p>Redirecting to the home page...</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
