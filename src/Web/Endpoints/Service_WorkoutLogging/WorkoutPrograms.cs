@@ -4,6 +4,9 @@ using FitLog.Application.Use_Cases.WorkoutPrograms.DTOs;
 using FitLog.Application.WorkoutPrograms.Commands.CreateWorkoutProgram;
 using FitLog.Application.WorkoutPrograms.Commands.DeleteWorkoutProgram;
 using FitLog.Application.WorkoutPrograms.Commands.EnrollProgram;
+using FitLog.Application.WorkoutPrograms.Commands.UpdateEnrollmentCurrentWorkout;
+using FitLog.Application.WorkoutPrograms.Commands.UpdateEnrollmentProgress;
+using FitLog.Application.WorkoutPrograms.Commands.UpdateEnrollmentStatus;
 using FitLog.Application.WorkoutPrograms.Commands.UpdateWorkoutProgram;
 using FitLog.Application.WorkoutPrograms.Queries.GetEnrollmentByUser;
 using FitLog.Application.WorkoutPrograms.Queries.GetWorkoutProgramDetails;
@@ -35,12 +38,29 @@ public class WorkoutPrograms : EndpointGroupBase
            .MapGet(GetWorkoutProgramsList);
 
         app.MapGroup(this)
-            .RequireAuthorization()
+            //.RequireAuthorization()
             .MapPost(CreateWorkoutProgram)
-            .MapPut(UpdateWorkoutProgram, "{id}")
-            .MapDelete(DeleteWorkoutProgram, "{id}")
             .MapGet(GetEnrollmentsByUser, "enrollments/user/")
-            .MapPost(EnrollProgram, "enroll/{id}");
+            .MapPut(UpdateWorkoutProgram, "{id}")
+            .MapDelete(DeleteWorkoutProgram, "{id}");
+
+        //Referring to a specific program
+        var specificProgram = app.MapGroup(this)
+           .MapGroup("{id}")
+           //.RequireAuthorization()
+           ;
+
+        //specificProgram
+        //    .MapPut(UpdateWorkoutProgram, "{id}")
+        //    .MapDelete(DeleteWorkoutProgram, "{id}");
+
+        //Enrollment
+        specificProgram
+           .MapGroup("enrollment")
+           .MapPost(EnrollProgram)
+           .MapPut(UpdateEnrollmentProgress, "{enrollmentId}/progress")
+           .MapPut(UpdateEnrollmentCurrentWorkout, "{enrollmentId}/current-workout")
+           .MapPut(UpdateEnrollmentStatus, "{enrollmentId}/status");
     }
 
     public Task<List<WorkoutProgramListDTO>> GetWorkoutProgramsList(ISender sender, [AsParameters] GetWorkoutProgramsListQuery query)
@@ -91,5 +111,19 @@ public class WorkoutPrograms : EndpointGroupBase
         }
         var query = new GetEnrollmentsByUserQuery { UserId = userId };
         return await sender.Send(query);
+    }
+
+    public async Task<Result> UpdateEnrollmentProgress(ISender sender, int id, [FromRoute] string enrollmentId, UpdateEnrollmentProgressCommand command)
+    {
+        return await sender.Send(command);
+    }
+
+    public async Task<Result> UpdateEnrollmentStatus(ISender sender, int id, [FromRoute] string enrollmentId ,UpdateEnrollmentStatusCommand command)
+    {
+        return await sender.Send(command);
+    }
+    public async Task<Result> UpdateEnrollmentCurrentWorkout(ISender sender, int id, [FromRoute] string enrollmentId, UpdateEnrollmentCurrentWorkoutCommand command)
+    {
+        return await sender.Send(command);
     }
 }

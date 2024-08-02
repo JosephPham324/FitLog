@@ -16,6 +16,8 @@ public class WorkoutLogConfiguration : IEntityTypeConfiguration<WorkoutLog>
         builder.ToTable("WorkoutLog");
 
         builder.Property(e => e.Id).HasColumnName("WorkoutLogID");
+        builder.Property(e => e.WorkoutLogName).HasColumnName("WorkoutLogName")
+            .HasMaxLength(150);
         builder.Property(e => e.Note).HasMaxLength(1000);
         builder.Property(e => e.Duration).HasColumnType("time");
         builder.Property(e => e.Created)

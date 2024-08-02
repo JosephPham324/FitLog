@@ -23,7 +23,7 @@ public class Roles : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization("AdminOnly")
+            //.RequireAuthorization("AdminOnly")
             .MapGet(GetRolesList)
             .MapGet(GetRoleById, "{id}")
             .MapPost(CreateRole)
@@ -50,7 +50,7 @@ public class Roles : EndpointGroupBase
         return sender.Send(command);
     }
     //Update
-    public Task<Result> UpdateRole(ISender sender, int id, [FromBody] UpdateRoleCommand command)
+    public Task<Result> UpdateRole(ISender sender, [FromRoute] string id, [FromBody] UpdateRoleCommand command)
     {
         //Check matching id
         if (id != command.RoleId) return Task.FromResult(Result.Failure(new List<string> { "Id mismatch" }));

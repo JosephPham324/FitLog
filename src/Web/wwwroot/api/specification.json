@@ -362,6 +362,57 @@
         }
       }
     },
+    "/api/Equipments/search": {
+      "get": {
+        "tags": [
+          "Equipments"
+        ],
+        "operationId": "SearchEquipment",
+        "parameters": [
+          {
+            "name": "EquipmentName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfEquipmentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Equipments/{id}": {
       "get": {
         "tags": [
@@ -635,6 +686,58 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Exercises/search": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "operationId": "SearchExercises",
+        "parameters": [
+          {
+            "name": "exerciseName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "equipmentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "muscleGroupIds",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExerciseDTO"
+                  }
                 }
               }
             }
@@ -2069,6 +2172,29 @@
         }
       }
     },
+    "/api/WorkoutPrograms/enrollments/user": {
+      "get": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "GetEnrollmentsByUser",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProgramEnrollmentDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/WorkoutPrograms/{id}": {
       "put": {
         "tags": [
@@ -2129,30 +2255,7 @@
         }
       }
     },
-    "/api/WorkoutPrograms/enrollments/user": {
-      "get": {
-        "tags": [
-          "WorkoutPrograms"
-        ],
-        "operationId": "GetEnrollmentsByUser",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProgramEnrollmentDTO"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/WorkoutPrograms/enroll/{id}": {
+    "/api/WorkoutPrograms/{id}/enrollment": {
       "post": {
         "tags": [
           "WorkoutPrograms"
@@ -2181,6 +2284,165 @@
           },
           "required": true,
           "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutPrograms/{id}/enrollment/{enrollmentId}/progress": {
+      "put": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "UpdateEnrollmentProgress",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "enrollmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEnrollmentProgressCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutPrograms/{id}/enrollment/{enrollmentId}/current-workout": {
+      "put": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "UpdateEnrollmentCurrentWorkout",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "enrollmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEnrollmentCurrentWorkoutCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutPrograms/{id}/enrollment/{enrollmentId}/status": {
+      "put": {
+        "tags": [
+          "WorkoutPrograms"
+        ],
+        "operationId": "UpdateEnrollmentStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "enrollmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEnrollmentStatusCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
         },
         "responses": {
           "200": {
@@ -2674,8 +2936,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             },
             "x-position": 1
           }
@@ -3091,6 +3352,64 @@
               "format": "int32"
             },
             "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfUserListDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/search": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SearchUsers",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "externalProvider",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "roles",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
           }
         ],
         "responses": {
@@ -4482,6 +4801,50 @@
             "nullable": true
           },
           "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedListOfEquipmentDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EquipmentDTO"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EquipmentDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "equipmentName": {
             "type": "string",
             "nullable": true
           }
@@ -5895,6 +6258,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+              "workoutLogName": {
+                "type": "string"
+              },
               "note": {
                 "type": "string",
                 "nullable": true
@@ -6590,6 +6956,10 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "workoutLogName": {
+            "type": "string",
+            "nullable": true
+          },
           "note": {
             "type": "string",
             "nullable": true
@@ -6943,6 +7313,51 @@
           }
         }
       },
+      "ProgramEnrollmentDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enrollmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "programId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "enrolledDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "currentWeekNo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "currentWorkoutOrder": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "programName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          }
+        }
+      },
       "UpdateWorkoutProgramCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -6994,51 +7409,6 @@
           }
         }
       },
-      "ProgramEnrollmentDTO": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "enrollmentId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userId": {
-            "type": "string"
-          },
-          "programId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "enrolledDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "endDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "status": {
-            "type": "string"
-          },
-          "currentWeekNo": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "currentWorkoutOrder": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "programName": {
-            "type": "string"
-          },
-          "userName": {
-            "type": "string"
-          }
-        }
-      },
       "EnrollProgramCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -7046,6 +7416,53 @@
           "programId": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "UpdateEnrollmentProgressCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enrollmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workoutsProgress": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/WorkoutProgress"
+            }
+          }
+        }
+      },
+      "UpdateEnrollmentCurrentWorkoutCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enrollmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentWeekNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentWorkoutOrder": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UpdateEnrollmentStatusCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enrollmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "newStatus": {
+            "type": "string"
           }
         }
       },
@@ -7320,10 +7737,6 @@
         "additionalProperties": false,
         "properties": {
           "roleId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "roleName": {
             "type": "string"
           },
           "roleDescription": {

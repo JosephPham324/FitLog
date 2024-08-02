@@ -5,8 +5,8 @@ namespace FitLog.Application.Roles.Commands.UpdateRole;
 
 public record UpdateRoleCommand : IRequest<Result>
 {
-    public int RoleId { get; set; }
-    public string RoleName { get; set; } = string.Empty;
+    public string RoleId { get; set; } = string.Empty;
+    //public string RoleName { get; set; } = string.Empty;
     public string RoleDescription { get; set; } = string.Empty;
 }
 
@@ -14,14 +14,9 @@ public class UpdateRoleCommandValidator : AbstractValidator<UpdateRoleCommand>
 {
     public UpdateRoleCommandValidator()
     {
-        RuleFor(v => v.RoleName)
-            .MaximumLength(200)
-            .NotEmpty();
+       
         RuleFor(v => v.RoleId)
-            .GreaterThan(0);    
-        RuleFor(v => v.RoleName)
-            .MaximumLength(200)
-            .NotEmpty();
+            .MaximumLength(200);    
     }
 }
 
@@ -43,7 +38,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
             return Result.Failure(new List<string> { "Role not found." });
         }
 
-        entity.Name = request.RoleName;
+        entity.RoleDesc = request.RoleDescription;
 
         try
         {

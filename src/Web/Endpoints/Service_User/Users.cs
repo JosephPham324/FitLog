@@ -57,6 +57,7 @@ public class Users : EndpointGroupBase
         app.MapGroup(this)
            //.RequireAuthorization("AdminOnly")
            .MapGet(GetUserList, "all")
+           .MapGet(SearchUsers, "search")
            .MapGet(SearchUsersByEmail, "search-by-email")
            .MapGet(SearchUsersByLoginProvider, "search-by-provider")
            .MapGet(SearchUsersByUserName, "search-by-username")
@@ -119,6 +120,11 @@ public class Users : EndpointGroupBase
             UserId = UserId
         };
         return sender.Send(request);
+    }
+
+    public Task<PaginatedList<UserListDTO>> SearchUsers(ISender sender, [FromQuery] string? email, [FromQuery] string? username, [FromQuery] string? externalProvider, [FromQuery] string? roles)
+    {
+        return sender.Send(new SearchUsersWithPaginationQuery { Email = email, Username = username, Provider = externalProvider, Roles = roles });
     }
 
     /// <summary>

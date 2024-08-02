@@ -482,6 +482,51 @@ export class EquipmentsClient {
         return Promise.resolve<PaginatedListOfEquipmentDetailsDTO>(null as any);
     }
 
+    searchEquipment(equipmentName: string | null | undefined, pageNumber: number, pageSize: number): Promise<PaginatedListOfEquipmentDTO> {
+        let url_ = this.baseUrl + "/api/Equipments/search?";
+        if (equipmentName !== undefined && equipmentName !== null)
+            url_ += "EquipmentName=" + encodeURIComponent("" + equipmentName) + "&";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearchEquipment(_response);
+        });
+    }
+
+    protected processSearchEquipment(response: Response): Promise<PaginatedListOfEquipmentDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfEquipmentDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfEquipmentDTO>(null as any);
+    }
+
     getEquipmentById(id: number): Promise<EquipmentDetailsDTO> {
         let url_ = this.baseUrl + "/api/Equipments/{id}";
         if (id === undefined || id === null)
@@ -813,6 +858,54 @@ export class ExercisesClient {
             });
         }
         return Promise.resolve<Result>(null as any);
+    }
+
+    searchExercises(exerciseName: string | null | undefined, equipmentId: string | null | undefined, muscleGroupIds: string | null | undefined): Promise<ExerciseDTO[]> {
+        let url_ = this.baseUrl + "/api/Exercises/search?";
+        if (exerciseName !== undefined && exerciseName !== null)
+            url_ += "exerciseName=" + encodeURIComponent("" + exerciseName) + "&";
+        if (equipmentId !== undefined && equipmentId !== null)
+            url_ += "equipmentId=" + encodeURIComponent("" + equipmentId) + "&";
+        if (muscleGroupIds !== undefined && muscleGroupIds !== null)
+            url_ += "muscleGroupIds=" + encodeURIComponent("" + muscleGroupIds) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearchExercises(_response);
+        });
+    }
+
+    protected processSearchExercises(response: Response): Promise<ExerciseDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ExerciseDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExerciseDTO[]>(null as any);
     }
 
     createExercise(command: CreateExerciseCommand): Promise<Result> {
@@ -2559,6 +2652,48 @@ export class WorkoutProgramsClient {
         return Promise.resolve<Result>(null as any);
     }
 
+    getEnrollmentsByUser(): Promise<ProgramEnrollmentDTO[]> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments/user";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetEnrollmentsByUser(_response);
+        });
+    }
+
+    protected processGetEnrollmentsByUser(response: Response): Promise<ProgramEnrollmentDTO[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ProgramEnrollmentDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ProgramEnrollmentDTO[]>(null as any);
+    }
+
     updateWorkoutProgram(id: number, command: UpdateWorkoutProgramCommand): Promise<void> {
         let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}";
         if (id === undefined || id === null)
@@ -2631,50 +2766,8 @@ export class WorkoutProgramsClient {
         return Promise.resolve<void>(null as any);
     }
 
-    getEnrollmentsByUser(): Promise<ProgramEnrollmentDTO[]> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/enrollments/user";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetEnrollmentsByUser(_response);
-        });
-    }
-
-    protected processGetEnrollmentsByUser(response: Response): Promise<ProgramEnrollmentDTO[]> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ProgramEnrollmentDTO.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ProgramEnrollmentDTO[]>(null as any);
-    }
-
     enrollProgram(id: number, command: EnrollProgramCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/WorkoutPrograms/enroll/{id}";
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}/enrollment";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2697,6 +2790,141 @@ export class WorkoutProgramsClient {
     }
 
     protected processEnrollProgram(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    updateEnrollmentProgress(id: number, enrollmentId: string, command: UpdateEnrollmentProgressCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}/enrollment/{enrollmentId}/progress";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (enrollmentId === undefined || enrollmentId === null)
+            throw new Error("The parameter 'enrollmentId' must be defined.");
+        url_ = url_.replace("{enrollmentId}", encodeURIComponent("" + enrollmentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateEnrollmentProgress(_response);
+        });
+    }
+
+    protected processUpdateEnrollmentProgress(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    updateEnrollmentCurrentWorkout(id: number, enrollmentId: string, command: UpdateEnrollmentCurrentWorkoutCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}/enrollment/{enrollmentId}/current-workout";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (enrollmentId === undefined || enrollmentId === null)
+            throw new Error("The parameter 'enrollmentId' must be defined.");
+        url_ = url_.replace("{enrollmentId}", encodeURIComponent("" + enrollmentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateEnrollmentCurrentWorkout(_response);
+        });
+    }
+
+    protected processUpdateEnrollmentCurrentWorkout(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    updateEnrollmentStatus(id: number, enrollmentId: string, command: UpdateEnrollmentStatusCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/WorkoutPrograms/{id}/enrollment/{enrollmentId}/status";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (enrollmentId === undefined || enrollmentId === null)
+            throw new Error("The parameter 'enrollmentId' must be defined.");
+        url_ = url_.replace("{enrollmentId}", encodeURIComponent("" + enrollmentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateEnrollmentStatus(_response);
+        });
+    }
+
+    protected processUpdateEnrollmentStatus(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3278,7 +3506,7 @@ export class RolesClient {
         return Promise.resolve<RoleDto>(null as any);
     }
 
-    updateRole(id: number, command: UpdateRoleCommand): Promise<Result> {
+    updateRole(id: string, command: UpdateRoleCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Roles/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -3722,6 +3950,49 @@ export class UsersClient {
     }
 
     protected processGetUserList(response: Response): Promise<PaginatedListOfUserListDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfUserListDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfUserListDTO>(null as any);
+    }
+
+    searchUsers(email: string | null | undefined, username: string | null | undefined, externalProvider: string | null | undefined, roles: string | null | undefined): Promise<PaginatedListOfUserListDTO> {
+        let url_ = this.baseUrl + "/api/Users/search?";
+        if (email !== undefined && email !== null)
+            url_ += "email=" + encodeURIComponent("" + email) + "&";
+        if (username !== undefined && username !== null)
+            url_ += "username=" + encodeURIComponent("" + username) + "&";
+        if (externalProvider !== undefined && externalProvider !== null)
+            url_ += "externalProvider=" + encodeURIComponent("" + externalProvider) + "&";
+        if (roles !== undefined && roles !== null)
+            url_ += "roles=" + encodeURIComponent("" + roles) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearchUsers(_response);
+        });
+    }
+
+    protected processSearchUsers(response: Response): Promise<PaginatedListOfUserListDTO> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -5671,6 +5942,110 @@ export interface IEquipmentDetailsDTO {
     equipmentId?: number;
     equipmentName?: string | undefined;
     imageUrl?: string | undefined;
+}
+
+export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO {
+    items?: EquipmentDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfEquipmentDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(EquipmentDTO.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfEquipmentDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfEquipmentDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfEquipmentDTO {
+    items?: EquipmentDTO[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class EquipmentDTO implements IEquipmentDTO {
+    equipmentId?: number;
+    equipmentName?: string | undefined;
+
+    constructor(data?: IEquipmentDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.equipmentId = _data["equipmentId"];
+            this.equipmentName = _data["equipmentName"];
+        }
+    }
+
+    static fromJS(data: any): EquipmentDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new EquipmentDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["equipmentId"] = this.equipmentId;
+        data["equipmentName"] = this.equipmentName;
+        return data;
+    }
+}
+
+export interface IEquipmentDTO {
+    equipmentId?: number;
+    equipmentName?: string | undefined;
 }
 
 export class Result implements IResult {
@@ -8480,6 +8855,7 @@ export interface IExerciseLog {
 }
 
 export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
+    workoutLogName?: string;
     note?: string | undefined;
     duration?: string | undefined;
     createdByNavigation?: AspNetUser | undefined;
@@ -8492,6 +8868,7 @@ export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
     override init(_data?: any) {
         super.init(_data);
         if (_data) {
+            this.workoutLogName = _data["workoutLogName"];
             this.note = _data["note"];
             this.duration = _data["duration"];
             this.createdByNavigation = _data["createdByNavigation"] ? AspNetUser.fromJS(_data["createdByNavigation"]) : <any>undefined;
@@ -8512,6 +8889,7 @@ export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
 
     override toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["workoutLogName"] = this.workoutLogName;
         data["note"] = this.note;
         data["duration"] = this.duration;
         data["createdByNavigation"] = this.createdByNavigation ? this.createdByNavigation.toJSON() : <any>undefined;
@@ -8526,6 +8904,7 @@ export class WorkoutLog extends BaseAuditableEntity implements IWorkoutLog {
 }
 
 export interface IWorkoutLog extends IBaseAuditableEntity {
+    workoutLogName?: string;
     note?: string | undefined;
     duration?: string | undefined;
     createdByNavigation?: AspNetUser | undefined;
@@ -9499,6 +9878,7 @@ export interface IWorkoutLogDTO {
 }
 
 export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
+    workoutLogName?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
     exerciseLogs?: CreateExerciseLogCommand[] | undefined;
@@ -9514,6 +9894,7 @@ export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
 
     init(_data?: any) {
         if (_data) {
+            this.workoutLogName = _data["workoutLogName"];
             this.note = _data["note"];
             this.duration = _data["duration"];
             if (Array.isArray(_data["exerciseLogs"])) {
@@ -9533,6 +9914,7 @@ export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["workoutLogName"] = this.workoutLogName;
         data["note"] = this.note;
         data["duration"] = this.duration;
         if (Array.isArray(this.exerciseLogs)) {
@@ -9545,6 +9927,7 @@ export class CreateWorkoutLogCommandDTO implements ICreateWorkoutLogCommandDTO {
 }
 
 export interface ICreateWorkoutLogCommandDTO {
+    workoutLogName?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
     exerciseLogs?: CreateExerciseLogCommand[] | undefined;
@@ -10114,6 +10497,78 @@ export interface IWorkoutTemplateExerciseDto {
     numbersOfReps?: string | undefined;
 }
 
+export class ProgramEnrollmentDTO implements IProgramEnrollmentDTO {
+    enrollmentId?: number;
+    userId?: string;
+    programId?: number;
+    enrolledDate?: Date;
+    endDate?: Date | undefined;
+    status?: string;
+    currentWeekNo?: number | undefined;
+    currentWorkoutOrder?: number | undefined;
+    programName?: string;
+    userName?: string;
+
+    constructor(data?: IProgramEnrollmentDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.enrollmentId = _data["enrollmentId"];
+            this.userId = _data["userId"];
+            this.programId = _data["programId"];
+            this.enrolledDate = _data["enrolledDate"] ? new Date(_data["enrolledDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+            this.status = _data["status"];
+            this.currentWeekNo = _data["currentWeekNo"];
+            this.currentWorkoutOrder = _data["currentWorkoutOrder"];
+            this.programName = _data["programName"];
+            this.userName = _data["userName"];
+        }
+    }
+
+    static fromJS(data: any): ProgramEnrollmentDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProgramEnrollmentDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["enrollmentId"] = this.enrollmentId;
+        data["userId"] = this.userId;
+        data["programId"] = this.programId;
+        data["enrolledDate"] = this.enrolledDate ? this.enrolledDate.toISOString() : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+        data["status"] = this.status;
+        data["currentWeekNo"] = this.currentWeekNo;
+        data["currentWorkoutOrder"] = this.currentWorkoutOrder;
+        data["programName"] = this.programName;
+        data["userName"] = this.userName;
+        return data;
+    }
+}
+
+export interface IProgramEnrollmentDTO {
+    enrollmentId?: number;
+    userId?: string;
+    programId?: number;
+    enrolledDate?: Date;
+    endDate?: Date | undefined;
+    status?: string;
+    currentWeekNo?: number | undefined;
+    currentWorkoutOrder?: number | undefined;
+    programName?: string;
+    userName?: string;
+}
+
 export class UpdateWorkoutProgramCommand implements IUpdateWorkoutProgramCommand {
     id?: number;
     programName?: string;
@@ -10190,78 +10645,6 @@ export interface IUpdateWorkoutProgramCommand {
     publicProgram?: boolean | undefined;
 }
 
-export class ProgramEnrollmentDTO implements IProgramEnrollmentDTO {
-    enrollmentId?: number;
-    userId?: string;
-    programId?: number;
-    enrolledDate?: Date;
-    endDate?: Date | undefined;
-    status?: string;
-    currentWeekNo?: number | undefined;
-    currentWorkoutOrder?: number | undefined;
-    programName?: string;
-    userName?: string;
-
-    constructor(data?: IProgramEnrollmentDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.enrollmentId = _data["enrollmentId"];
-            this.userId = _data["userId"];
-            this.programId = _data["programId"];
-            this.enrolledDate = _data["enrolledDate"] ? new Date(_data["enrolledDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
-            this.status = _data["status"];
-            this.currentWeekNo = _data["currentWeekNo"];
-            this.currentWorkoutOrder = _data["currentWorkoutOrder"];
-            this.programName = _data["programName"];
-            this.userName = _data["userName"];
-        }
-    }
-
-    static fromJS(data: any): ProgramEnrollmentDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProgramEnrollmentDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["enrollmentId"] = this.enrollmentId;
-        data["userId"] = this.userId;
-        data["programId"] = this.programId;
-        data["enrolledDate"] = this.enrolledDate ? this.enrolledDate.toISOString() : <any>undefined;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
-        data["status"] = this.status;
-        data["currentWeekNo"] = this.currentWeekNo;
-        data["currentWorkoutOrder"] = this.currentWorkoutOrder;
-        data["programName"] = this.programName;
-        data["userName"] = this.userName;
-        return data;
-    }
-}
-
-export interface IProgramEnrollmentDTO {
-    enrollmentId?: number;
-    userId?: string;
-    programId?: number;
-    enrolledDate?: Date;
-    endDate?: Date | undefined;
-    status?: string;
-    currentWeekNo?: number | undefined;
-    currentWorkoutOrder?: number | undefined;
-    programName?: string;
-    userName?: string;
-}
-
 export class EnrollProgramCommand implements IEnrollProgramCommand {
     programId?: number;
 
@@ -10296,6 +10679,142 @@ export class EnrollProgramCommand implements IEnrollProgramCommand {
 
 export interface IEnrollProgramCommand {
     programId?: number;
+}
+
+export class UpdateEnrollmentProgressCommand implements IUpdateEnrollmentProgressCommand {
+    enrollmentId?: number;
+    workoutsProgress?: { [key: string]: WorkoutProgress; };
+
+    constructor(data?: IUpdateEnrollmentProgressCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.enrollmentId = _data["enrollmentId"];
+            if (_data["workoutsProgress"]) {
+                this.workoutsProgress = {} as any;
+                for (let key in _data["workoutsProgress"]) {
+                    if (_data["workoutsProgress"].hasOwnProperty(key))
+                        (<any>this.workoutsProgress)![key] = _data["workoutsProgress"][key] ? WorkoutProgress.fromJS(_data["workoutsProgress"][key]) : new WorkoutProgress();
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateEnrollmentProgressCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateEnrollmentProgressCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["enrollmentId"] = this.enrollmentId;
+        if (this.workoutsProgress) {
+            data["workoutsProgress"] = {};
+            for (let key in this.workoutsProgress) {
+                if (this.workoutsProgress.hasOwnProperty(key))
+                    (<any>data["workoutsProgress"])[key] = this.workoutsProgress[key] ? this.workoutsProgress[key].toJSON() : <any>undefined;
+            }
+        }
+        return data;
+    }
+}
+
+export interface IUpdateEnrollmentProgressCommand {
+    enrollmentId?: number;
+    workoutsProgress?: { [key: string]: WorkoutProgress; };
+}
+
+export class UpdateEnrollmentCurrentWorkoutCommand implements IUpdateEnrollmentCurrentWorkoutCommand {
+    enrollmentId?: number;
+    currentWeekNo?: number;
+    currentWorkoutOrder?: number;
+
+    constructor(data?: IUpdateEnrollmentCurrentWorkoutCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.enrollmentId = _data["enrollmentId"];
+            this.currentWeekNo = _data["currentWeekNo"];
+            this.currentWorkoutOrder = _data["currentWorkoutOrder"];
+        }
+    }
+
+    static fromJS(data: any): UpdateEnrollmentCurrentWorkoutCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateEnrollmentCurrentWorkoutCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["enrollmentId"] = this.enrollmentId;
+        data["currentWeekNo"] = this.currentWeekNo;
+        data["currentWorkoutOrder"] = this.currentWorkoutOrder;
+        return data;
+    }
+}
+
+export interface IUpdateEnrollmentCurrentWorkoutCommand {
+    enrollmentId?: number;
+    currentWeekNo?: number;
+    currentWorkoutOrder?: number;
+}
+
+export class UpdateEnrollmentStatusCommand implements IUpdateEnrollmentStatusCommand {
+    enrollmentId?: number;
+    newStatus?: string;
+
+    constructor(data?: IUpdateEnrollmentStatusCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.enrollmentId = _data["enrollmentId"];
+            this.newStatus = _data["newStatus"];
+        }
+    }
+
+    static fromJS(data: any): UpdateEnrollmentStatusCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateEnrollmentStatusCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["enrollmentId"] = this.enrollmentId;
+        data["newStatus"] = this.newStatus;
+        return data;
+    }
+}
+
+export interface IUpdateEnrollmentStatusCommand {
+    enrollmentId?: number;
+    newStatus?: string;
 }
 
 export class CreatePersonalTemplateCommand implements ICreatePersonalTemplateCommand {
@@ -10899,8 +11418,7 @@ export interface IAddRoleCommand {
 }
 
 export class UpdateRoleCommand implements IUpdateRoleCommand {
-    roleId?: number;
-    roleName?: string;
+    roleId?: string;
     roleDescription?: string;
 
     constructor(data?: IUpdateRoleCommand) {
@@ -10915,7 +11433,6 @@ export class UpdateRoleCommand implements IUpdateRoleCommand {
     init(_data?: any) {
         if (_data) {
             this.roleId = _data["roleId"];
-            this.roleName = _data["roleName"];
             this.roleDescription = _data["roleDescription"];
         }
     }
@@ -10930,15 +11447,13 @@ export class UpdateRoleCommand implements IUpdateRoleCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["roleId"] = this.roleId;
-        data["roleName"] = this.roleName;
         data["roleDescription"] = this.roleDescription;
         return data;
     }
 }
 
 export interface IUpdateRoleCommand {
-    roleId?: number;
-    roleName?: string;
+    roleId?: string;
     roleDescription?: string;
 }
 

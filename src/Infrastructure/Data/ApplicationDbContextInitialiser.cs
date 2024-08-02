@@ -97,6 +97,7 @@ public class ApplicationDbContextInitialiser
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
+            //PASSWORD: Administrator1!
             await _userManager.CreateAsync(administrator, "Administrator1!");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
