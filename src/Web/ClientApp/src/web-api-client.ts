@@ -562,20 +562,16 @@ export class EquipmentsClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    deleteEquipment(id: number, command: DeleteEquipmentCommand): Promise<Result> {
+    deleteEquipment(id: number): Promise<Result> {
         let url_ = this.baseUrl + "/api/Equipments/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(command);
-
         let options_: RequestInit = {
-            body: content_,
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -5382,42 +5378,6 @@ export interface IUpdateEquipmentCommand {
     equipmentId?: number;
     equipmentName?: string | undefined;
     imageUrl?: string | undefined;
-}
-
-export class DeleteEquipmentCommand implements IDeleteEquipmentCommand {
-    equipmentId?: number;
-
-    constructor(data?: IDeleteEquipmentCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.equipmentId = _data["equipmentId"];
-        }
-    }
-
-    static fromJS(data: any): DeleteEquipmentCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new DeleteEquipmentCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["equipmentId"] = this.equipmentId;
-        return data;
-    }
-}
-
-export interface IDeleteEquipmentCommand {
-    equipmentId?: number;
 }
 
 export class PaginatedListOfExerciseDTO implements IPaginatedListOfExerciseDTO {

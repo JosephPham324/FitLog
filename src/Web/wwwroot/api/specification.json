@@ -452,18 +452,6 @@
             "x-position": 1
           }
         ],
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteEquipmentCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
         "responses": {
           "200": {
             "description": "",
@@ -4116,16 +4104,6 @@
           "imageUrl": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "DeleteEquipmentCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "equipmentId": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },

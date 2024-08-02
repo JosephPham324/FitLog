@@ -62,10 +62,13 @@ public class Equipments : EndpointGroupBase
     }
 
     [Microsoft.AspNetCore.Authorization.Authorize("AdminOnly")]
-    public async Task<Result> DeleteEquipment(ISender sender, int id, [FromBody] DeleteEquipmentCommand command)
+    public async Task<Result> DeleteEquipment(ISender sender, int id)
     {
-        if (id != command.EquipmentId) return Result.Failure(["Id doesn't match instance"]);
-        var result = await sender.Send(command);
+        var request = new DeleteEquipmentCommand()
+        {
+            EquipmentId = id
+        };
+        var result = await sender.Send(request);
         return result;
     }
 }

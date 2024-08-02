@@ -1,12 +1,212 @@
+﻿//import React, { useState, useEffect } from 'react';
+//import {
+//  Button,
+//  Container,
+//  Input,
+//  Row,
+//  Col,
+//  Form,
+//  FormGroup,
+//  Label,
+//  Modal,
+//  ModalHeader,
+//  ModalBody,
+//  ModalFooter,
+//  Table,
+//  Alert,
+//} from 'reactstrap';
+//import axiosInstance from '../../utils/axiosInstance'; // Import axiosInstance from config
+//import './RolesListScreen.css';
+
+//const RolesListScreen = () => {
+//  const [roles, setRoles] = useState([]);
+//  const [showPopup, setShowPopup] = useState(false);
+//  const [editingRole, setEditingRole] = useState(null);
+//  const [newRole, setNewRole] = useState({ id: '', name: '', des: '' });
+//  const [error, setError] = useState('');
+//  const [hoveredRole, setHoveredRole] = useState(null);
+
+//  useEffect(() => {
+//    fetchRoles();
+//  }, []);
+
+//  const fetchRoles = async () => {
+//    try {
+//      const response = await axiosInstance.get('/Roles');
+//      setRoles(response.data);
+//    } catch (error) {
+//      console.error('Error fetching roles:', error);
+//    }
+//  };
+
+//  const handleAddRole = () => {
+//    setShowPopup(true);
+//  };
+
+//  const handleSaveRole = async () => {
+//    if (!newRole.name && !newRole.des) {
+//      setError('Data fields cannot be left blank');
+//      return;
+//    } else if (!newRole.name) {
+//      setError('The Name field cannot be left blank');
+//      return;
+//    } else if (!newRole.des) {
+//      setError('Des field cannot be left blank');
+//      return;
+//    }
+
+//    try {
+//      if (editingRole) {
+//        await axiosInstance.put(`/Roles/${newRole.id}`, newRole);
+//        setRoles(roles.map(role => (role.id === editingRole.id ? newRole : role)));
+//      } else {
+//        const response = await axiosInstance.post('/Roles', newRole);
+//        setRoles([...roles, response.data]);
+//      }
+//      setShowPopup(false);
+//      setNewRole({ id: '', name: '', des: '' });
+//      setEditingRole(null);
+//      setError('');
+//    } catch (error) {
+//      console.error('Error saving role:', error);
+//      setError('An error occurred while saving the role');
+//    }
+//  };
+
+//  const handleEditRole = (role) => {
+//    setEditingRole(role);
+//    setNewRole(role);
+//    setShowPopup(true);
+//  };
+
+//  const handleClosePopup = () => {
+//    setShowPopup(false);
+//    setNewRole({ id: '', name: '', des: '' });
+//    setEditingRole(null);
+//    setError('');
+//  };
+
+//  const handleMouseEnter = (role) => {
+//    setHoveredRole(role);
+//  };
+
+//  const handleMouseLeave = () => {
+//    setHoveredRole(null);
+//  };
+
+//  return (
+//    <Container>
+//      <div className="header">
+//        <h1>Roles List</h1>
+//        <Button color="primary" onClick={handleAddRole}>Create Role</Button>
+//      </div>
+//      <Table striped hover responsive>
+//        <thead>
+//          <tr>
+//            <th>Name</th>
+//            <th>Des</th>
+//            <th>Action</th>
+//          </tr>
+//        </thead>
+//        <tbody>
+//          {roles.map(role => (
+//            <tr key={role.id}>
+//              <td>{role.name}</td>
+//              <td>
+//                {role.des}
+//                <span
+//                  className="info-icon"
+//                  onMouseEnter={() => handleMouseEnter(role)}
+//                  onMouseLeave={handleMouseLeave}
+//                >
+//                  &#x26A0;
+//                </span>
+//                {hoveredRole === role && (
+//                  <div className="tooltip">
+//                    <p>{role.des}</p>
+//                  </div>
+//                )}
+//              </td>
+//              <td>
+//                <Button color="success" className="action-buttone" onClick={() => handleEditRole(role)}>Update</Button>
+//              </td>
+//            </tr>
+//          ))}
+//        </tbody>
+//      </Table>
+
+//      <Modal isOpen={showPopup} toggle={handleClosePopup}>
+//        <ModalHeader toggle={handleClosePopup}>{editingRole ? 'Update Role' : 'Create Role'}</ModalHeader>
+//        <ModalBody>
+//          <Form>
+//            {editingRole && (
+//              <FormGroup>
+//                <Label for="roleId">ID</Label>
+//                <Input type="text" id="roleId" value={newRole.id} readOnly />
+//              </FormGroup>
+//            )}
+//            <FormGroup>
+//              <Label for="roleName"> Role Name <span style={{ color: 'red' }}>*</span></Label>
+//              <Input
+//                type="text"
+//                id="roleName"
+//                placeholder="Name"
+//                value={newRole.name}
+//                onChange={(e) => setNewRole({ ...newRole, name: e.target.value })}
+//              />
+//            </FormGroup>
+//            <FormGroup>
+//              <Label for="roleDes">Des <span style={{ color: 'red' }}>*</span></Label>
+//              <Input
+//                type="text"
+//                id="roleDes"
+//                placeholder="Des"
+//                value={newRole.des}
+//                onChange={(e) => setNewRole({ ...newRole, des: e.target.value })}
+//              />
+//            </FormGroup>
+//            {error && <Alert color="danger">{error}</Alert>}
+//          </Form>
+//        </ModalBody>
+//        <ModalFooter>
+//          <Button color="primary" onClick={handleSaveRole}>{editingRole ? 'Update' : 'Create'}</Button>
+//          <Button color="danger" onClick={handleClosePopup}>Cancel</Button>
+//        </ModalFooter>
+//      </Modal>
+//    </Container>
+//  );
+//};
+
+//export default RolesListScreen;
+
+
+
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import {
+  Button,
+  Container,
+  Input,
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Label,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Table,
+  Alert,
+} from 'reactstrap';
+import axiosInstance from '../../utils/axiosInstance'; // Import axiosInstance from config
 import './RolesListScreen.css';
 
 const RolesListScreen = () => {
   const [roles, setRoles] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showCreatePopup, setShowCreatePopup] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [editingRole, setEditingRole] = useState(null);
-  const [newRole, setNewRole] = useState({ id: '', name: '', des: '' });
+  const [newRole, setNewRole] = useState({ roleName: '', roleDesc: '' });
   const [error, setError] = useState('');
   const [hoveredRole, setHoveredRole] = useState(null);
 
@@ -16,7 +216,7 @@ const RolesListScreen = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await axios.get('https://localhost:44447/api/Roles');
+      const response = await axiosInstance.get('/Roles');
       setRoles(response.data);
     } catch (error) {
       console.error('Error fetching roles:', error);
@@ -24,32 +224,26 @@ const RolesListScreen = () => {
   };
 
   const handleAddRole = () => {
-    setShowPopup(true);
+    setShowCreatePopup(true);
   };
 
-  const handleSaveRole = async () => {
-    if (!newRole.name && !newRole.des) {
+  const handleCreateRole = async () => {
+    if (!newRole.roleName && !newRole.roleDesc) {
       setError('Data fields cannot be left blank');
       return;
-    } else if (!newRole.name) {
+    } else if (!newRole.roleName) {
       setError('The Name field cannot be left blank');
       return;
-    } else if (!newRole.des) {
+    } else if (!newRole.roleDesc) {
       setError('Des field cannot be left blank');
       return;
     }
 
     try {
-      if (editingRole) {
-        await axios.put(`https://localhost:44447/api/Roles/${newRole.id}`, newRole);
-        setRoles(roles.map(role => (role.id === editingRole.id ? newRole : role)));
-      } else {
-        const response = await axios.post('https://localhost:44447/api/Exercises', newRole);
-        setRoles([...roles, response.data]);
-      }
-      setShowPopup(false);
-      setNewRole({ id: '', name: '', des: '' });
-      setEditingRole(null);
+      const response = await axiosInstance.post('/Roles', newRole);
+      setRoles([...roles, response.data]);
+      setShowCreatePopup(false);
+      setNewRole({ roleName: '', roleDesc: '' });
       setError('');
     } catch (error) {
       console.error('Error saving role:', error);
@@ -59,13 +253,44 @@ const RolesListScreen = () => {
 
   const handleEditRole = (role) => {
     setEditingRole(role);
-    setNewRole(role);
-    setShowPopup(true);
+    setNewRole({ roleName: role.name, roleDesc: role.des });
+    setShowUpdatePopup(true);
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    setNewRole({ id: '', name: '', des: '' });
+  const handleUpdateRole = async () => {
+    if (!newRole.roleName && !newRole.roleDesc) {
+      setError('Data fields cannot be left blank');
+      return;
+    } else if (!newRole.roleName) {
+      setError('The Name field cannot be left blank');
+      return;
+    } else if (!newRole.roleDesc) {
+      setError('Des field cannot be left blank');
+      return;
+    }
+
+    try {
+      await axiosInstance.put(`/Roles/${editingRole.id}`, newRole);
+      setRoles(roles.map(role => (role.id === editingRole.id ? { ...editingRole, name: newRole.roleName, des: newRole.roleDesc } : role)));
+      setShowUpdatePopup(false);
+      setNewRole({ roleName: '', roleDesc: '' });
+      setEditingRole(null);
+      setError('');
+    } catch (error) {
+      console.error('Error updating role:', error);
+      setError('An error occurred while updating the role');
+    }
+  };
+
+  const handleCloseCreatePopup = () => {
+    setShowCreatePopup(false);
+    setNewRole({ roleName: '', roleDesc: '' });
+    setError('');
+  };
+
+  const handleCloseUpdatePopup = () => {
+    setShowUpdatePopup(false);
+    setNewRole({ roleName: '', roleDesc: '' });
     setEditingRole(null);
     setError('');
   };
@@ -79,12 +304,12 @@ const RolesListScreen = () => {
   };
 
   return (
-    <div className="container">
+    <Container>
       <div className="header">
         <h1>Roles List</h1>
-        <button className="add-role-button" onClick={handleAddRole}>Create Exercise</button>
+        <Button color="primary" onClick={handleAddRole}>Create Role</Button>
       </div>
-      <table className="table">
+      <Table striped hover responsive>
         <thead>
           <tr>
             <th>Name</th>
@@ -112,40 +337,81 @@ const RolesListScreen = () => {
                 )}
               </td>
               <td>
-                <button className="action-button" onClick={() => handleEditRole(role)}>Edit</button>
+                <Button color="success" className="action-buttone" onClick={() => handleEditRole(role)}>Update</Button>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
-      {showPopup && (
-        <div className="popup">
-          <div className="popup-inner">
-            <div className="popup-header">
-              <h2>{editingRole ? 'Edit Exercise' : 'Create Exercise'}</h2>
-              <button className="close-button" onClick={handleClosePopup}>X</button>
-            </div>
-            <form>
-              {editingRole && <input type="text" value={newRole.id} readOnly />}
-              <input
+      </Table>
+
+      {/* Create Role Modal */}
+      <Modal isOpen={showCreatePopup} toggle={handleCloseCreatePopup}>
+        <ModalHeader toggle={handleCloseCreatePopup}>Create Role</ModalHeader>
+        <ModalBody>
+          <Form>
+            <FormGroup>
+              <Label for="roleName">Role Name <span style={{ color: 'red' }}>*</span></Label>
+              <Input
                 type="text"
+                id="roleName"
                 placeholder="Name"
-                value={newRole.name}
-                onChange={(e) => setNewRole({ ...newRole, name: e.target.value })}
+                value={newRole.roleName}
+                onChange={(e) => setNewRole({ ...newRole, roleName: e.target.value })}
               />
-              <input
+            </FormGroup>
+            <FormGroup>
+              <Label for="roleDesc">Des <span style={{ color: 'red' }}>*</span></Label>
+              <Input
                 type="text"
+                id="roleDesc"
                 placeholder="Des"
-                value={newRole.des}
-                onChange={(e) => setNewRole({ ...newRole, des: e.target.value })}
+                value={newRole.roleDesc}
+                onChange={(e) => setNewRole({ ...newRole, roleDesc: e.target.value })}
               />
-              {error && <p className="error-message">{error}</p>}
-              <button type="button" onClick={handleSaveRole}>{editingRole ? 'Save' : 'Add'}</button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
+            </FormGroup>
+            {error && <Alert color="danger">{error}</Alert>}
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={handleCreateRole}>Create</Button>
+          <Button color="danger" onClick={handleCloseCreatePopup}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* Update Role Modal */}
+      <Modal isOpen={showUpdatePopup} toggle={handleCloseUpdatePopup}>
+        <ModalHeader toggle={handleCloseUpdatePopup}>Update Role</ModalHeader>
+        <ModalBody>
+          <Form>
+            <FormGroup>
+              <Label for="roleName">Role Name <span style={{ color: 'red' }}>*</span></Label>
+              <Input
+                type="text"
+                id="roleName"
+                placeholder="Name"
+                value={newRole.roleName}
+                onChange={(e) => setNewRole({ ...newRole, roleName: e.target.value })}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="roleDesc">Des <span style={{ color: 'red' }}>*</span></Label>
+              <Input
+                type="text"
+                id="roleDesc"
+                placeholder="Des"
+                value={newRole.roleDesc}
+                onChange={(e) => setNewRole({ ...newRole, roleDesc: e.target.value })}
+              />
+            </FormGroup>
+            {error && <Alert color="danger">{error}</Alert>}
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={handleUpdateRole}>Update</Button>
+          <Button color="danger" onClick={handleCloseUpdatePopup}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
+    </Container>
   );
 };
 
