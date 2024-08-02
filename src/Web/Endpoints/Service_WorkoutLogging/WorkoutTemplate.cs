@@ -1,5 +1,6 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
+using FitLog.Application.MuscleGroups.Commands.DeleteMuscleGroup;
 using FitLog.Application.Use_Cases.WorkoutTemplates.Queries;
 using FitLog.Application.WorkoutTemplates.Commands.CreatePersonalTemplate;
 using FitLog.Application.WorkoutTemplates.Commands.CreateWorkoutTemplate;
@@ -12,6 +13,7 @@ using FitLog.Application.WorkoutTemplates.Queries.GetWorkoutTemplateDetails;
 using FitLog.Application.WorkoutTemplates.Queries.SearchWorkoutTemplateByName;
 using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging;
 
@@ -39,31 +41,66 @@ public class WorkoutTemplates : EndpointGroupBase
             .MapGet(FilterWorkoutTemplates, "filter-workout-templates");
     }
 
-    public Task<int> CreatePersonalTemplate(ISender sender, [FromBody] CreatePersonalTemplateCommand command)
-    {
-
-        command.UserId = _identityService.Id ?? "";
-
-        return sender.Send(command);
-    }
-
-    public Task<int> CreateWorkoutTemplate(ISender sender, [FromBody] CreateWorkoutTemplateCommand command)
+    public async Task<Result> CreatePersonalTemplate(ISender sender, [FromBody] CreatePersonalTemplateCommand command)
     {
         command.UserId = _identityService.Id ?? "";
-
-        return sender.Send(command);
+        Result? result = null;
+        try
+        {
+            result = await sender.Send(command);
+        }
+        catch (Exception e)
+        {
+            return Result.Failure([e.Message]);
+        }
+        return result ?? Result.Failure(["Failed to create template"]);
     }
 
-    public Task<bool> UpdateWorkoutTemplate(ISender sender, [FromBody] UpdateWorkoutTemplateCommand command, int id)
+    public async Task<Result> CreateWorkoutTemplate(ISender sender, [FromBody] CreateWorkoutTemplateCommand command)
     {
-        if (command.Id != id) return Task.FromResult(false);
-        return sender.Send(command);
+        command.UserId = _identityService.Id ?? "";
+        Result? result = null;
+        try
+        {
+            result = await sender.Send(command);
+        } catch(Exception e)
+        {
+            return Result.Failure([e.Message]);
+        }
+        return result ?? Result.Failure(["Failed to create template"]);
     }
 
-    public Task<bool> DeleteWorkoutTemplate(ISender sender, int id)
+    public async Task<Result> UpdateWorkoutTemplate(ISender sender, [FromBody] UpdateWorkoutTemplateCommand command, int id)
     {
-        var command = new DeleteWorkoutTemplateCommand(id);
-        return sender.Send(command);
+        Result? result = null;
+        try
+        {
+            result = await sender.Send(command);
+        }
+        catch (Exception e)
+        {
+            return Result.Failure([e.Message]);
+        }
+        return result ?? Result.Failure(["Failed to create template"]);
+    }
+
+    public async Task<Result> DeleteWorkoutTemplate(ISender sender, int id)
+    {
+        Result? result = null;
+        var command = new DeleteMuscleGroupCommand()
+        {
+            Id = id
+        };
+        try
+        {
+            result = await sender.Send(command);
+        }
+        catch (Exception e)
+        {
+            return Result.Failure([e.Message]);
+        }
+        return result ?? Result.Failure(["Failed to create template"]);
+        
     }
 
     public Task<PaginatedList<WorkoutTemplateListDto>> GetPublicTemplates(ISender sender, [AsParameters] GetPublicTemplatesQuery query)

@@ -2954,7 +2954,7 @@ export class WorkoutTemplatesClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createPersonalTemplate(command: CreatePersonalTemplateCommand): Promise<number> {
+    createPersonalTemplate(command: CreatePersonalTemplateCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutTemplates/create-personal-template";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2974,7 +2974,7 @@ export class WorkoutTemplatesClient {
         });
     }
 
-    protected processCreatePersonalTemplate(response: Response): Promise<number> {
+    protected processCreatePersonalTemplate(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2982,8 +2982,7 @@ export class WorkoutTemplatesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2991,10 +2990,10 @@ export class WorkoutTemplatesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    createWorkoutTemplate(command: CreateWorkoutTemplateCommand): Promise<number> {
+    createWorkoutTemplate(command: CreateWorkoutTemplateCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutTemplates/create-workout-template";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3014,7 +3013,7 @@ export class WorkoutTemplatesClient {
         });
     }
 
-    protected processCreateWorkoutTemplate(response: Response): Promise<number> {
+    protected processCreateWorkoutTemplate(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3022,8 +3021,7 @@ export class WorkoutTemplatesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3031,10 +3029,10 @@ export class WorkoutTemplatesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    updateWorkoutTemplate(id: number, command: UpdateWorkoutTemplateCommand): Promise<boolean> {
+    updateWorkoutTemplate(id: number, command: UpdateWorkoutTemplateCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutTemplates/update-workout-template/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -3057,7 +3055,7 @@ export class WorkoutTemplatesClient {
         });
     }
 
-    protected processUpdateWorkoutTemplate(response: Response): Promise<boolean> {
+    protected processUpdateWorkoutTemplate(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3065,8 +3063,7 @@ export class WorkoutTemplatesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3074,10 +3071,10 @@ export class WorkoutTemplatesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
-    deleteWorkoutTemplate(id: number): Promise<boolean> {
+    deleteWorkoutTemplate(id: number): Promise<Result> {
         let url_ = this.baseUrl + "/api/WorkoutTemplates/delete-workout-template/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -3096,7 +3093,7 @@ export class WorkoutTemplatesClient {
         });
     }
 
-    protected processDeleteWorkoutTemplate(response: Response): Promise<boolean> {
+    protected processDeleteWorkoutTemplate(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3104,8 +3101,7 @@ export class WorkoutTemplatesClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Result.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3113,7 +3109,7 @@ export class WorkoutTemplatesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<Result>(null as any);
     }
 
     getPublicTemplates(pageNumber: number, pageSize: number): Promise<PaginatedListOfWorkoutTemplateListDto> {

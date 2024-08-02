@@ -15,6 +15,7 @@ const ExerciseSearchBox = ({ closePopup, setSelectedExercise }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const ITEMS_PER_PAGE = 5;
+  //const baseAPI = {env.}
 
   useEffect(() => {
     const fetchMuscleGroups = async () => {
