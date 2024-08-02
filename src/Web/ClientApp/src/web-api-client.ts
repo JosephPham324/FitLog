@@ -3800,12 +3800,8 @@ export class UsersClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    getUserProfile(userId: string | null): Promise<UserProfileDTO> {
-        let url_ = this.baseUrl + "/api/Users/user-profile?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+    getUserProfile(): Promise<UserProfileDTO> {
+        let url_ = this.baseUrl + "/api/Users/user-profile";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
