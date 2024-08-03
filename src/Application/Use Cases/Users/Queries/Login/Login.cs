@@ -84,7 +84,7 @@ public class LoginHandler : IRequestHandler<LoginQuery, LoginResultDTO>
     public async Task<LoginResultDTO> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByNameAsync(request.Username);
-        
+
         if (user?.IsDeleted == true)
         {
             throw new UnauthorizedAccessException("User account is disabled");

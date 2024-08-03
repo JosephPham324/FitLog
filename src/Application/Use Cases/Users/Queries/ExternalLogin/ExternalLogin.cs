@@ -126,12 +126,12 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
     private async Task<string> GenerateJwtTokenWithExternalProvider(AspNetUser user, string providerUserId)
     {
         var claims = new List<Claim>
-        {
-            new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, providerUserId),
-            new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Email, user.Email??""),
-            new Claim("Id", user.Id),
-            // Add other claims as needed
-        };
+    {
+        new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, providerUserId),
+        new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Email, user.Email ?? ""),
+        new Claim("Id", user.Id),
+        // Add other claims as needed
+    };
 
         // Fetch roles and add them to claims
         var roles = await _userManager.GetRolesAsync(user);
@@ -152,4 +152,5 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
 }

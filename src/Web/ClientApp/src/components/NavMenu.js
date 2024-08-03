@@ -75,6 +75,9 @@ export const NavMenu = () => {
             <NavItem>
               <NavLink tag={Link} className="text-white" to="/"><b>Home</b></NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink tag={Link} className="text-white" to="/TrainingSurvey"><b>Training Survey</b></NavLink>
+            </NavItem>
             {isAuthenticated && (
               <>
                 <UncontrolledDropdown nav inNavbar>

@@ -329,7 +329,11 @@ export function MuscleGroup() {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={createMuscleGroup}>Create</Button>
+
+          <Button color="danger" class="btn-cannle" onClick={toggleCreateModal}>Cancel</Button>
+
           <Button color="danger" onClick={toggleCreateModal}>Cancel</Button>
+
         </ModalFooter>
       </Modal>
 
