@@ -1621,6 +1621,146 @@ export class StatisticsClient {
         return Promise.resolve<ExerciseHistoryEntry[]>(null as any);
     }
 
+    getExerciseRecords(exerciseId: number): Promise<PersonalRecordDTO> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise/{ExerciseId}/records";
+        if (exerciseId === undefined || exerciseId === null)
+            throw new Error("The parameter 'exerciseId' must be defined.");
+        url_ = url_.replace("{ExerciseId}", encodeURIComponent("" + exerciseId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExerciseRecords(_response);
+        });
+    }
+
+    protected processGetExerciseRecords(response: Response): Promise<PersonalRecordDTO> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PersonalRecordDTO.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PersonalRecordDTO>(null as any);
+    }
+
+    getExerciseTotalReps(exerciseId: number, timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise/{ExerciseId}/total-reps?";
+        if (exerciseId === undefined || exerciseId === null)
+            throw new Error("The parameter 'exerciseId' must be defined.");
+        url_ = url_.replace("{ExerciseId}", encodeURIComponent("" + exerciseId));
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
+            url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExerciseTotalReps(_response);
+        });
+    }
+
+    protected processGetExerciseTotalReps(response: Response): Promise<{ [key: string]: number; }> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: number; }>(null as any);
+    }
+
+    getExerciseTotalTonnage(exerciseId: number, timeFrame: string): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise/{ExerciseId}/total-tonnage?";
+        if (exerciseId === undefined || exerciseId === null)
+            throw new Error("The parameter 'exerciseId' must be defined.");
+        url_ = url_.replace("{ExerciseId}", encodeURIComponent("" + exerciseId));
+        if (timeFrame === undefined || timeFrame === null)
+            throw new Error("The parameter 'timeFrame' must be defined and cannot be null.");
+        else
+            url_ += "TimeFrame=" + encodeURIComponent("" + timeFrame) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExerciseTotalTonnage(_response);
+        });
+    }
+
+    protected processGetExerciseTotalTonnage(response: Response): Promise<{ [key: string]: number; }> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: number; }>(null as any);
+    }
+
     getUserWorkoutLogSummary(id: string, timeFrame: string): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
         let url_ = this.baseUrl + "/api/Statistics/user/{id}/overall/summary?";
         if (id === undefined || id === null)
@@ -7138,6 +7278,106 @@ export class ExerciseHistoryKey implements IExerciseHistoryKey {
 export interface IExerciseHistoryKey {
     exerciseId?: number;
     exerciseName?: string;
+}
+
+export class PersonalRecordDTO implements IPersonalRecordDTO {
+    actual1RepMax?: number;
+    estimated1RepMax?: number;
+    maxVolume?: number;
+    bestPerformances?: { [key: string]: BestPerformanceDTO; } | undefined;
+
+    constructor(data?: IPersonalRecordDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.actual1RepMax = _data["actual1RepMax"];
+            this.estimated1RepMax = _data["estimated1RepMax"];
+            this.maxVolume = _data["maxVolume"];
+            if (_data["bestPerformances"]) {
+                this.bestPerformances = {} as any;
+                for (let key in _data["bestPerformances"]) {
+                    if (_data["bestPerformances"].hasOwnProperty(key))
+                        (<any>this.bestPerformances)![key] = _data["bestPerformances"][key] ? BestPerformanceDTO.fromJS(_data["bestPerformances"][key]) : new BestPerformanceDTO();
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): PersonalRecordDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new PersonalRecordDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["actual1RepMax"] = this.actual1RepMax;
+        data["estimated1RepMax"] = this.estimated1RepMax;
+        data["maxVolume"] = this.maxVolume;
+        if (this.bestPerformances) {
+            data["bestPerformances"] = {};
+            for (let key in this.bestPerformances) {
+                if (this.bestPerformances.hasOwnProperty(key))
+                    (<any>data["bestPerformances"])[key] = this.bestPerformances[key] ? this.bestPerformances[key].toJSON() : <any>undefined;
+            }
+        }
+        return data;
+    }
+}
+
+export interface IPersonalRecordDTO {
+    actual1RepMax?: number;
+    estimated1RepMax?: number;
+    maxVolume?: number;
+    bestPerformances?: { [key: string]: BestPerformanceDTO; } | undefined;
+}
+
+export class BestPerformanceDTO implements IBestPerformanceDTO {
+    weight?: number;
+    date?: Date;
+
+    constructor(data?: IBestPerformanceDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.weight = _data["weight"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): BestPerformanceDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new BestPerformanceDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["weight"] = this.weight;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IBestPerformanceDTO {
+    weight?: number;
+    date?: Date;
 }
 
 export class ProgramOverviewDto implements IProgramOverviewDto {
