@@ -10166,6 +10166,7 @@ export interface IPaginatedListOfWorkoutLogDTO {
 }
 
 export class WorkoutLogDTO implements IWorkoutLogDTO {
+    id?: number;
     createdBy?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
@@ -10184,6 +10185,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.createdBy = _data["createdBy"];
             this.note = _data["note"];
             this.duration = _data["duration"];
@@ -10206,6 +10208,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["createdBy"] = this.createdBy;
         data["note"] = this.note;
         data["duration"] = this.duration;
@@ -10221,6 +10224,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
 }
 
 export interface IWorkoutLogDTO {
+    id?: number;
     createdBy?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;

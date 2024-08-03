@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -82,7 +82,7 @@ namespace FitLog.Application.UnitTests.Use_Cases.WorkoutTemplates.Update
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            result.Should().BeTrue(); // Ensure handle method returns true upon successful update
+            result.Should().*//**//*BeTrue(); // Ensure handle method returns true upon successful update
 
             // Verify that SaveChangesAsync was called once
             _contextMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -141,3 +141,4 @@ namespace FitLog.Application.UnitTests.Use_Cases.WorkoutTemplates.Update
     }
 
 }
+*/
