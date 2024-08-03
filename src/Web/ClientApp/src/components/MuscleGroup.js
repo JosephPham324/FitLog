@@ -32,22 +32,31 @@ export function MuscleGroup() {
   const [newGroupImage, setNewGroupImage] = useState(null);
   const [createModal, setCreateModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [confirmUpdateModal, setConfirmUpdateModal] = useState(false);
   const [editGroupId, setEditGroupId] = useState(null);
+  const [existingGroupName, setExistingGroupName] = useState('');
   const [nameErrorMessage, setNameErrorMessage] = useState('');
   const [imageErrorMessage, setImageErrorMessage] = useState('');
   const [existingImage, setExistingImage] = useState('');
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [successModal, setSuccessModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errorModal, setErrorModal] = useState(false);
   const rowsPerPage = 5;
 
   useEffect(() => {
-    fetchMuscleGroups(currentPage);
-  }, [currentPage]);
+    fetchMuscleGroups(currentPage, searchTerm);
+  }, [currentPage, searchTerm]);
 
-  const fetchMuscleGroups = async (page) => {
+  const fetchMuscleGroups = async (page, searchTerm) => {
     try {
-      const response = await axiosInstance.get(`${apiUrl}/get-list`, {
+      const response = await axiosInstance.get(`${apiUrl}/search`, {
         params: {
+          MuscleGroupName: searchTerm,
           PageNumber: page,
           PageSize: rowsPerPage,
         },
@@ -82,10 +91,29 @@ export function MuscleGroup() {
     }
   };
 
-  const validateInput = () => {
+  const toggleDeleteModal = () => {
+    setDeleteModal(!deleteModal);
+  };
+
+  const toggleConfirmUpdateModal = () => {
+    setConfirmUpdateModal(!confirmUpdateModal);
+  };
+
+  const toggleSuccessModal = () => {
+    setSuccessModal(!successModal);
+  };
+
+  const toggleErrorModal = () => {
+    setErrorModal(!errorModal);
+  };
+
+  const validateInput = (isUpdate = false) => {
     let valid = true;
     if (!newGroupName.trim()) {
       setNameErrorMessage('Muscle group name is required');
+      valid = false;
+    } else if (isUpdate && newGroupName === existingGroupName) {
+      setNameErrorMessage('New muscle group name must be different from the existing name');
       valid = false;
     } else {
       setNameErrorMessage('');
@@ -114,8 +142,8 @@ export function MuscleGroup() {
       );
       return response.data.secure_url;
     } catch (error) {
+      setImageErrorMessage('Failed to upload image. Please try again.');
       console.error('Error uploading image to Cloudinary:', error);
-      alert('Failed to upload image. Please try again.');
       return null;
     }
   };
@@ -136,8 +164,10 @@ export function MuscleGroup() {
         ImageUrl: imageUrl
       });
 
-      fetchMuscleGroups(currentPage);
+      fetchMuscleGroups(currentPage, searchTerm);
       toggleCreateModal();
+      setSuccessMessage('Muscle group created successfully!');
+      toggleSuccessModal();
     } catch (error) {
       console.error('Error creating muscle group:', error.message);
       alert('Failed to create muscle group. Please check your input and try again.');
@@ -145,11 +175,7 @@ export function MuscleGroup() {
   };
 
   const updateMuscleGroup = async () => {
-    if (!window.confirm('Are you sure you want to update this muscle group?')) {
-      return;
-    }
-
-    if (!validateInput() || !editGroupId) {
+    if (!validateInput(true) || !editGroupId) {
       return;
     }
 
@@ -168,30 +194,52 @@ export function MuscleGroup() {
         ImageUrl: imageUrl
       });
 
-      fetchMuscleGroups(currentPage);
+      fetchMuscleGroups(currentPage, searchTerm);
       toggleUpdateModal();
+      toggleConfirmUpdateModal();
+      setSuccessMessage('Muscle group updated successfully!');
+      toggleSuccessModal();
     } catch (error) {
       console.error('Error updating muscle group:', error.message);
       alert('Failed to update muscle group. Please check your input and try again.');
     }
   };
 
-  const deleteMuscleGroup = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this muscle group?')) {
+  const confirmUpdate = () => {
+    toggleConfirmUpdateModal();
+    updateMuscleGroup();
+  };
+
+  const deleteMuscleGroup = async () => {
+    if (!deleteId) {
       return;
     }
+    console.log("deleting")
 
     try {
-      await axiosInstance.delete(`${apiUrl}/${id}`);
-      fetchMuscleGroups(currentPage);
-    } catch (error) {
+      var response = await axiosInstance.delete(`${apiUrl}/${deleteId}`);
+      if (response.data.success) {
+        setSuccessMessage('Muscle group deleted successfully!');
+        toggleSuccessModal();
+      }
+      else {
+        console.log('Error saving template: ' + response.data.errors.join(', '));
+        setErrorMessage('' + response.data.errors.join(', '));
+        toggleErrorModal();
+      }
+      fetchMuscleGroups(currentPage, searchTerm);
+      toggleDeleteModal();
+    }
+    catch (error) {
       console.error('Error deleting muscle group:', error.message);
-      alert('Failed to delete muscle group. Please try again.');
+      setErrorMessage('Failed to delete muscle group. Please try again.');
+      toggleErrorModal();
     }
   };
 
   const handleEdit = (group) => {
     setNewGroupName(group.name);
+    setExistingGroupName(group.name);
     setNewGroupImage(null);
     setExistingImage(group.imageUrl);
     setEditGroupId(group.id);
@@ -201,7 +249,7 @@ export function MuscleGroup() {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
-    fetchMuscleGroups(1);
+    fetchMuscleGroups(1, e.target.value);
   };
 
   const handleImageChange = (e) => {
@@ -216,10 +264,11 @@ export function MuscleGroup() {
       <tr key={group.id}>
         <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
         <td>{group.name}</td>
-        <td>{group.imageUrl && <img src={group.imageUrl} alt={group.name} className="table-image" />}</td>
+        <td style={{ display: 'flex', justifyContent: 'center' }}>{group.imageUrl && <img src={group.imageUrl} alt={group.name} className="table-image" />}</td>
         <td>
           <div className="button-group">
             <Button color="success" className="mr-2 update-btn" onClick={() => handleEdit(group)}>Update</Button>
+            <Button color="danger" className="mr-2 delete-btn" onClick={() => { toggleDeleteModal(); setDeleteId(group.id); }}>Delete</Button>
           </div>
         </td>
       </tr>
@@ -361,8 +410,54 @@ export function MuscleGroup() {
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={updateMuscleGroup}>Update</Button>
+          <Button color="primary" onClick={toggleConfirmUpdateModal}>Update</Button>
           <Button color="danger" onClick={toggleUpdateModal}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* Delete Muscle Group Modal */}
+      <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
+        <ModalHeader toggle={toggleDeleteModal}>Delete Muscle Group</ModalHeader>
+        <ModalBody>
+          Are you sure you want to delete this muscle group?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" onClick={deleteMuscleGroup}>Yes</Button>
+          <Button color="primary" onClick={toggleDeleteModal}>No</Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* Confirm Update Muscle Group Modal */}
+      <Modal isOpen={confirmUpdateModal} toggle={toggleConfirmUpdateModal}>
+        <ModalHeader toggle={toggleConfirmUpdateModal}>Confirm Update</ModalHeader>
+        <ModalBody>
+          Are you sure you want to update this muscle group?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={confirmUpdate}>Yes</Button>
+          <Button color="danger" onClick={toggleConfirmUpdateModal}>No</Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* Success Modal */}
+      <Modal isOpen={successModal} toggle={toggleSuccessModal}>
+        <ModalHeader toggle={toggleSuccessModal}>Success</ModalHeader>
+        <ModalBody>
+          {successMessage}
+        </ModalBody>
+        <ModalFooter>
+          <Button color="success" onClick={toggleSuccessModal}>OK</Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* Error Modal */}
+      <Modal isOpen={errorModal} toggle={toggleErrorModal}>
+        <ModalHeader toggle={toggleErrorModal}>Error</ModalHeader>
+        <ModalBody>
+          {errorMessage}
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" onClick={toggleErrorModal}>OK</Button>
         </ModalFooter>
       </Modal>
 
