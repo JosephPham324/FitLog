@@ -1,9 +1,10 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutTemplates.Commands.UpdateWorkoutTemplate;
 
-public record UpdateWorkoutTemplateCommand : IRequest<bool>
+public record UpdateWorkoutTemplateCommand : IRequest<Result>
 {
     public int Id { get; init; }
     public string? TemplateName { get; init; }
@@ -53,7 +54,7 @@ public class UpdateWorkoutTemplateCommandValidator : AbstractValidator<UpdateWor
 }
 
 
-public class UpdateWorkoutTemplateCommandHandler : IRequestHandler<UpdateWorkoutTemplateCommand, bool>
+public class UpdateWorkoutTemplateCommandHandler : IRequestHandler<UpdateWorkoutTemplateCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -62,7 +63,7 @@ public class UpdateWorkoutTemplateCommandHandler : IRequestHandler<UpdateWorkout
         _context = context;
     }
 
-    public async Task<bool> Handle(UpdateWorkoutTemplateCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateWorkoutTemplateCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.WorkoutTemplates
             .Include(wt => wt.WorkoutTemplateExercises)
@@ -70,7 +71,7 @@ public class UpdateWorkoutTemplateCommandHandler : IRequestHandler<UpdateWorkout
 
         if (entity == null)
         {
-            throw new NotFoundException(nameof(WorkoutTemplate), request.Id + "");
+            return Result.Failure(["Workout Template not found"]);
         }
 
         entity.TemplateName = request.TemplateName;
@@ -101,6 +102,6 @@ public class UpdateWorkoutTemplateCommandHandler : IRequestHandler<UpdateWorkout
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result.Successful();
     }
 }

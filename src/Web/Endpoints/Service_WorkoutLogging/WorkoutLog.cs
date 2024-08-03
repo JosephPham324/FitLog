@@ -8,6 +8,7 @@ using FitLog.Application.WorkoutLogs.Commands.DeleteWorkoutLog;
 using FitLog.Application.WorkoutLogs.Commands.UpdateWorkoutLog;
 using FitLog.Application.WorkoutLogs.Queries.ExportWorkoutData;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutHistory;
+using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogDetails;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,7 @@ public class WorkoutLog : EndpointGroupBase
             .RequireAuthorization()
             .MapGet(GetWorkoutLogsWithPagination, "get-all")
             .MapGet(GetWorkoutHistory, "history")
+            .MapGet(GetWorkoutLogDetails, "{WorkoutLogId}")
             .MapPost(CreateWorkoutLog)
             .MapPut(UpdateWorkoutLog, "{id}")
             .MapDelete(DeleteWorkoutLog, "{id}");
@@ -42,6 +44,18 @@ public class WorkoutLog : EndpointGroupBase
     {
         return sender.Send(query);
     }
+    public async Task<WorkoutLogDetailsDto> GetWorkoutLogDetails(ISender sender, [FromRoute] int WorkoutLogId)
+    {
+        var UserId = _identityService.Id ?? "";
+        var query = new GetWorkoutLogDetailsQuery(
+            )
+        {
+            UserId = UserId,
+            WorkoutLogId = WorkoutLogId
+        };
+        return await sender.Send(query);
+    }
+
 
     public async Task<object> GetEquipmentById(ISender sender, [AsParameters] GetWorkoutLogsWithPaginationQuery query)
     {
@@ -66,8 +80,19 @@ public class WorkoutLog : EndpointGroupBase
         return sender.Send(command);
     }
 
-    public Task<List<WorkoutLogDTO>> GetWorkoutHistory(ISender sender, [AsParameters] GetWorkoutHistoryQuery query)
+    public Task<List<WorkoutLogDTO>> GetWorkoutHistory(ISender sender, [FromQuery] string StartDate, [FromQuery] string EndDate)
     {
+        var UserId = _identityService.Id ?? "";
+        try
+        {
+            DateTime.Parse(StartDate);
+            DateTime.Parse(EndDate);
+        }
+        catch (Exception)
+        {
+            throw new Exception("Please enter valid date");
+        }
+        var query = new GetWorkoutHistoryQuery(UserId, DateTime.Parse(StartDate), DateTime.Parse(EndDate));
         return sender.Send(query);
     }
 

@@ -35,6 +35,14 @@ public class DeleteEquipmentCommandHandler : IRequestHandler<DeleteEquipmentComm
             return Result.Failure(["Entity not found"]); // Entity not found
         }
 
+        var isReferenced = _context.Exercises
+            .Where(entity => entity.EquipmentId == request.EquipmentId)
+            .Any();
+        if (isReferenced)
+        {
+            return Result.Failure(["Equipment is referenced by 1 or more exercises."]); // Entity not found
+        }
+
         _context.Equipment.Remove(entity);
 
         try

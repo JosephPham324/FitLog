@@ -32,6 +32,7 @@ public class GetWorkoutTemplateDetailsQueryHandler : IRequestHandler<GetWorkoutT
             .Include(wt => wt.CreatedByNavigation)
             .Include(wt => wt.LastModifiedByNavigation)
             .Include(wt => wt.WorkoutTemplateExercises)
+                .ThenInclude(wte=>wte.Exercise)
             .FirstOrDefaultAsync(wt => wt.Id == request.Id, cancellationToken);
         var res = _mapper.Map<WorkoutTemplateDetailsDto>(query);
         return res;

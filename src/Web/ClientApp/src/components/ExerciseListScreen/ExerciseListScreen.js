@@ -74,24 +74,41 @@
 
 //export default ExerciseListScreen;
 
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ExerciseListScreen.css';
 
 const exercises = [
-  { name: 'Inverted Row', muscles: 'Upper Back, Lats', times: 2, details: 'Description and benefits of Inverted Row.' },
-  { name: 'Y Raise', muscles: 'Rear Delts, Upper Back', times: 17, details: 'Description and benefits of Y Raise.' },
-  { name: 'Bodyweight BSS', muscles: 'Glutes, Quadriceps, Abductors', times: 1, details: 'Description and benefits of Bodyweight BSS.' },
-  { name: 'BTN Press', muscles: 'Middle Delts, Front Delts, Upper Back', times: 1, details: 'Description and benefits of BTN Press.' },
-  { name: 'Hammer Preacher Curl', muscles: 'Biceps, Forearms', times: 11, details: 'Description and benefits of Hammer Preacher Curl.' },
-  { name: 'Cable Skier', muscles: 'Rear Delts, Middle Delts', times: 1, details: 'Description and benefits of Cable Skier.' },
-  { name: 'Chest Supported Row (Machine)', muscles: 'Upper Back, Lats, Biceps', times: 26, details: 'Description and benefits of Chest Supported Row (Machine).' },
+  { name: 'Inverted Row', muscles: 'Upper Back, Lats', times: 2 },
+  { name: 'Y Raise', muscles: 'Rear Delts, Upper Back', times: 17 },
+  { name: 'Bodyweight BSS', muscles: 'Glutes, Quadriceps, Abductors', times: 1 },
+  { name: 'BTN Press', muscles: 'Middle Delts, Front Delts, Upper Back', times: 1 },
+  { name: 'Hammer Preacher Curl', muscles: 'Biceps, Forearms', times: 11 },
+  { name: 'Cable Skier', muscles: 'Rear Delts, Middle Delts', times: 1 },
+  { name: 'Chest Supported Row (Machine)', muscles: 'Upper Back, Lats, Biceps', times: 26 },
 ];
 
 const ExerciseListScreen = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [hoveredExercise, setHoveredExercise] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [muscleGroups, setMuscleGroups] = useState([]);
+  const [equipment, setEquipment] = useState([]);
+  const [selectedTargetType, setSelectedTargetType] = useState('');
+  const [selectedMuscleGroup, setSelectedMuscleGroup] = useState('');
+  const [selectedEquipment, setSelectedEquipment] = useState('');
+
+  useEffect(() => {
+    // Fetch muscle groups from the API
+    fetch('https://localhost:44447/api/MuscleGroups')
+      .then((response) => response.json())
+      .then((data) => setMuscleGroups(data))
+      .catch((error) => console.error('Error fetching muscle groups:', error));
+
+    // Fetch equipment from the API
+    fetch('https://localhost:44447/api/Equipment')
+      .then((response) => response.json())
+      .then((data) => setEquipment(data))
+      .catch((error) => console.error('Error fetching equipment:', error));
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -101,24 +118,31 @@ const ExerciseListScreen = () => {
     exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleMouseEnter = (exercise) => {
-    setHoveredExercise(exercise);
+  const handleCreateNewClick = () => {
+    setShowPopup(true);
   };
 
-  const handleMouseLeave = () => {
-    setHoveredExercise(null);
+  const handleClosePopup = () => {
+    setShowPopup(false);
   };
 
-  const handleCreateNewExercise = () => {
-    // Logic for creating a new exercise goes here
-    console.log("Create new exercise");
+  const handleTargetTypeClick = (type) => {
+    setSelectedTargetType(type);
+  };
+
+  const handleMuscleGroupChange = (event) => {
+    setSelectedMuscleGroup(event.target.value);
+  };
+
+  const handleEquipmentChange = (event) => {
+    setSelectedEquipment(event.target.value);
   };
 
   return (
     <div className="exercise-list-screen">
       <header className="header">
         <h1>Exercises</h1>
-        <button className="create-new-button" onClick={handleCreateNewExercise}>Create Exercise</button>
+        <button className="create-new-button" onClick={handleCreateNewClick}>Create New</button>
       </header>
       <div className="search-bar">
         <input
@@ -152,18 +176,7 @@ const ExerciseListScreen = () => {
               <span className="exercise-muscles">{exercise.muscles}</span>
             </div>
             <span className="exercise-times">{exercise.times} times</span>
-            <button
-              className="info-button"
-              onMouseEnter={() => handleMouseEnter(exercise)}
-              onMouseLeave={handleMouseLeave}
-            >
-              i
-            </button>
-            {hoveredExercise === exercise && (
-              <div className="tooltip">
-                <p>{exercise.details}</p>
-              </div>
-            )}
+            <button className="info-button">i</button>
           </li>
         ))}
       </ul>
@@ -171,6 +184,62 @@ const ExerciseListScreen = () => {
         <button className="add-superset-button">Add as Superset</button>
         <button className="add-exercises-button">Add Exercises</button>
       </div>
+
+      {showPopup && (
+        <div className="create-popup">
+          <div className="create-popup-content">
+            <div className="popup-header">
+              <h2>Create Exercise</h2>
+              <button className="close-button" onClick={handleClosePopup}>×</button>
+            </div>
+            <div className="form-group">
+              <label>Name <span className="required">*</span></label>
+              <input type="text" placeholder="Enter exercise name" />
+            </div>
+            <div className="form-group">
+              <label>Target Type <span className="required">*</span></label>
+              <div className="button-group">
+                <button
+                  className={`target-button ${selectedTargetType === 'Reps' ? 'active' : ''}`}
+                  onClick={() => handleTargetTypeClick('Reps')}
+                >
+                  Reps
+                </button>
+                <button
+                  className={`target-button ${selectedTargetType === 'Time' ? 'active' : ''}`}
+                  onClick={() => handleTargetTypeClick('Time')}
+                >
+                  Time
+                </button>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Equipment <span className="required">*</span></label>
+              <select value={selectedEquipment} onChange={handleEquipmentChange}>
+                {equipment.map((equip) => (
+                  <option key={equip.id} value={equip.name}>
+                    {equip.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Muscle Group <span className="required">*</span></label>
+              <select value={selectedMuscleGroup} onChange={handleMuscleGroupChange}>
+                {muscleGroups.map((group) => (
+                  <option key={group.id} value={group.name}>
+                    {group.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="popup-buttons">
+              <button onClick={handleClosePopup}>Cancel</button>
+              <button>Save</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

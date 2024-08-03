@@ -36,7 +36,7 @@ const WorkoutTable = ({ rows, setRows }) => {
   };
 
   const addRow = (exercise) => {
-    setRows([...rows, { exercise, sets: 1, data: [{ reps: '', weight: '', intensity: '' }], note: '' }]);
+    setRows([...rows, { exercise, sets: 1, data: [{ reps: '', weight: ''/*, intensity: ''*/ }], note: '' }]);
   };
 
   const changeExercise = (exercise) => {
@@ -60,7 +60,7 @@ const WorkoutTable = ({ rows, setRows }) => {
 
     if (sets > currentSets) {
       for (let i = currentSets; i < sets; i++) {
-        newRows[rowIndex].data.push({ reps: '', weight: '', intensity: '' });
+        newRows[rowIndex].data.push({ reps: '', weight: ''/*, intensity: ''*/ });
       }
     } else {
       newRows[rowIndex].data = newRows[rowIndex].data.slice(0, sets);
@@ -84,7 +84,6 @@ const WorkoutTable = ({ rows, setRows }) => {
             <th>Sets</th>
             <th>Weight (kg)</th>
             <th>Reps</th>
-            <th>Intensity</th>
             <th>Note</th>
             <th>Action</th>
           </tr>
@@ -126,18 +125,18 @@ const WorkoutTable = ({ rows, setRows }) => {
                   />
                 ))}
               </td>
-              <td>
-                {row.data.map((set, setIndex) => (
-                  <input
-                    key={`intensity-${rowIndex}-${setIndex}`}
-                    type="text"
-                    value={set.intensity}
-                    onChange={(e) => handleInputChange(rowIndex, setIndex, 'intensity', e.target.value)}
-                    className="form-control mb-2"
-                    placeholder={`Set ${setIndex + 1}`}
-                  />
-                ))}
-              </td>
+              {/*<td>*/}
+              {/*  {row.data.map((set, setIndex) => (*/}
+              {/*    <input*/}
+              {/*      key={`intensity-${rowIndex}-${setIndex}`}*/}
+              {/*      type="text"*/}
+              {/*      value={set.intensity}*/}
+              {/*      onChange={(e) => handleInputChange(rowIndex, setIndex, 'intensity', e.target.value)}*/}
+              {/*      className="form-control mb-2"*/}
+              {/*      placeholder={`Set ${setIndex + 1}`}*/}
+              {/*    />*/}
+              {/*  ))}*/}
+              {/*</td>*/}
               <td>
                 <button className="btn btn-secondary" onClick={() => openNotePopup(rowIndex)}>Note</button>
               </td>

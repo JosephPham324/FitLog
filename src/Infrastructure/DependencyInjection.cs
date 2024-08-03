@@ -94,7 +94,7 @@ public static class DependencyInjection
 
             options.AddPolicy("MemberOnly", policy =>
             {
-                policy.RequireRole(Roles.Administrator);
+                policy.RequireRole(Roles.Member);
             });
 
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));

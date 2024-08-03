@@ -31,10 +31,12 @@ import RecoverAccount from './components/AccountRecovery/RecoverAccount'
 import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmation'
 import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
-import { WorkoutProgramsPage } from './components/WorkoutProgramsPage';
-import { WorkoutProgramsDetail } from './components/WorkoutProgramsDetail';// Correct the import statement
+import WorkoutProgramsPage from './components/WorkoutProgramsPage';
+import WorkoutProgramsDetail from './components/WorkoutProgramsDetail';// Correct the import statement
 import CoachProfile from './components/CoachProfile';
-import WorkoutLogPage from './page/WorkoutLog';
+import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
+import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
+import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
 const AppRoutes = [
   {
     index: true,
@@ -45,7 +47,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(Counter))
   },
   {
-    path: '/CoachProfile/:id',
+    path: '/coachprofile/:id',
     element: <CoachProfile /> // Adding CoachProfile to the routes
   },
   {
@@ -53,35 +55,35 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(FetchData))
   },
   {
-    path: '/MuscleGroup',
+    path: '/musclegroup',
     element: React.createElement(withAuthProtection(MuscleGroup))
   },
   {
-    path: '/WorkoutLog',
+    path: '/workoutlog',
     element: <WorkoutLog />
   },
   {
-    path: '/WorkoutLog',
+    path: '/workoutlog',
     element: React.createElement(withAuthProtection(WorkoutLog))
   },
   {
-    path: '/WorkoutHistory',
+    path: '/workouthistory',
     element: <WorkoutHistory />
   },
   {
-    path: '/WorkoutHistory',
+    path: '/workouthistory',
     element: React.createElement(withAuthProtection(WorkoutHistory))
   },
   {
-    path: '/CoachServiceBooking',
+    path: '/coachservicebooking',
     element: <CoachServiceBooking />
   },
   {
-    path: '/ManageAccount',
+    path: '/manageaccount',
     element: <ManageAccount />
   },
   {
-    path: '/WorkoutProgramsPage',
+    path: '/workoutprogramspage',
     element: <WorkoutProgramsPage />
   },
   {
@@ -101,11 +103,11 @@ const AppRoutes = [
     element: <Register />
   },
   {
-    path: '/TrainingSurvey',
+    path: '/trainingsurvey',
     element: <TrainingSurvey />
   },
   {
-    path: '/EquipmentsList',
+    path: '/equipmentslist',
     element: <EquipmentsList />
   },
   {
@@ -129,36 +131,40 @@ const AppRoutes = [
     element: <Logout />
   },
   {
-    path: '/CoachApplicationNotification',
+    path: '/coachapplicationnotification',
     element: <CoachApplicationNotification />
   },
   {
-    path: '/WorkoutTemplatesListAdmin',
+    path: '/workouttemplateslistadmin',
     element: <WorkoutTemplatesListAdmin />
   },
   {
-    path: '/WorkoutLogExport',
+    path: '/workoutlogexport',
     element: <WorkoutLogExport />
   },
   {
-    path: '/WorkoutLogGraphs',
+    path: '/workoutloggraphs',
     element: <WorkoutLogGraphs />
   },
   {
-    path: '/ExerciseLogGraphs',
+    path: '/exerciseloggraphs',
     element: <ExerciseLogGraphs />
   },
   {
-    path: '/RolesListScreen',
+    path: '/roleslistscreen',
     element: <RolesListScreen />
   },
   {
-    path: '/ExerciseListScreen',
+    path: '/exerciselistscreen',
     element: <ExerciseListScreen />
   },
   {
-    path: '/CreateWorkoutLog',
+    path: '/createworkoutlog',
     element: <CreateWorkoutLog />
+  },
+  {
+    path: '/workout-log/create/:templateId',
+    element: <CreateWorkoutLogFromTemplate />
   },
   {
     path: 'log-out',
@@ -195,7 +201,12 @@ const AppRoutes = [
   {
     path: '/workout-log/create',
     element: <WorkoutLogPage />
+  },
+  {
+    path: '/workout-templates/create',
+    element: <CreateWorkoutTemplatePage />
   }
 ];
+
 
 export default AppRoutes;

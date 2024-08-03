@@ -1,10 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutTemplates.Commands.CreateWorkoutTemplate;
 
-public record CreateWorkoutTemplateCommand : IRequest<int>
+public record CreateWorkoutTemplateCommand : IRequest<Result>
 {
     [JsonIgnore]
     public string? UserId { get; set; } = "";//Temp user token
@@ -49,7 +50,7 @@ public class CreateWorkoutTemplateExerciseValidator : AbstractValidator<WorkoutT
     }
 }
 
-public class CreateWorkoutTemplateCommandHandler : IRequestHandler<CreateWorkoutTemplateCommand, int>
+public class CreateWorkoutTemplateCommandHandler : IRequestHandler<CreateWorkoutTemplateCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -58,7 +59,7 @@ public class CreateWorkoutTemplateCommandHandler : IRequestHandler<CreateWorkout
         _context = context;
     }
 
-    public async Task<int> Handle(CreateWorkoutTemplateCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateWorkoutTemplateCommand request, CancellationToken cancellationToken)
     {
         var workoutTemplate = new WorkoutTemplate
         {
@@ -92,6 +93,6 @@ public class CreateWorkoutTemplateCommandHandler : IRequestHandler<CreateWorkout
         _context.WorkoutTemplates.Add(workoutTemplate);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return workoutTemplate.Id;
+        return Result.Successful();
     }
 }

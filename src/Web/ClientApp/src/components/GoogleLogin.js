@@ -26,8 +26,10 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const setAuthCookies = (jwtToken) => {
+  const setAuthCookies = (jwtToken, rememberMe = false) => {
     const parts = jwtToken.split('.');
+    const expDay = rememberMe
+
     setCookie('jwtHeaderPayload', `${parts[0]}.${parts[1]}`, 1);
     setCookie('jwtSignature', parts[2], 1);
   };

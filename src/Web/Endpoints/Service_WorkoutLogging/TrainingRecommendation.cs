@@ -30,7 +30,7 @@ public class TrainingRecommendation : EndpointGroupBase
            .MapPost(GetWorkoutRecommendation, "/workout-recommendation/user");
     }
 
-    public Task<List<ProgramOverviewDto>> GetProgramRecommendations(ISender sender, [AsParameters] GetProgramRecommendationsQuery query)
+    public Task<Dictionary<string, List<ProgramOverviewDto>>> GetProgramRecommendations(ISender sender, [AsParameters] GetProgramRecommendationsQuery query)
     {
 
         return sender.Send(query);

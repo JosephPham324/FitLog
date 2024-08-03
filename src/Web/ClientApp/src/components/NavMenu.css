@@ -87,4 +87,13 @@
     .navbar-nav {
         gap: 10px;
     }
+/* Center the nested dropdown menu */
+.centered-dropdown-menu {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
+}
+
+.nested-dropdown .dropdown-menu {
+    position: relative;
 }

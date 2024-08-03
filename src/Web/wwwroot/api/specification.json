@@ -1342,6 +1342,128 @@
         }
       }
     },
+    "/api/Statistics/exercise/{ExerciseId}/records": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseRecords",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonalRecordDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Statistics/exercise/{ExerciseId}/total-reps": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseTotalReps",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "TimeFrame",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Statistics/exercise/{ExerciseId}/total-tonnage": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseTotalTonnage",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "TimeFrame",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Statistics/user/{id}/overall/summary": {
       "get": {
         "tags": [
@@ -1724,9 +1846,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProgramOverviewDto"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProgramOverviewDto"
+                    }
                   }
                 }
               }
@@ -1928,34 +2053,22 @@
         "operationId": "GetWorkoutHistory",
         "parameters": [
           {
-            "name": "UserId",
+            "name": "StartDate",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             },
             "x-position": 1
           },
           {
-            "name": "StartDate",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "nullable": true
-            },
-            "x-position": 2
-          },
-          {
             "name": "EndDate",
             "in": "query",
+            "required": true,
             "schema": {
-              "type": "string",
-              "format": "date-time",
-              "nullable": true
+              "type": "string"
             },
-            "x-position": 3
+            "x-position": 2
           }
         ],
         "responses": {
@@ -1968,6 +2081,38 @@
                   "items": {
                     "$ref": "#/components/schemas/WorkoutLogDTO"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutLog/{WorkoutLogId}": {
+      "get": {
+        "tags": [
+          "WorkoutLog"
+        ],
+        "operationId": "GetWorkoutLogDetails",
+        "parameters": [
+          {
+            "name": "WorkoutLogId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutLogDetailsDto"
                 }
               }
             }
@@ -2533,8 +2678,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -2566,8 +2710,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -2611,7 +2754,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -2643,7 +2786,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -2713,7 +2856,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutTemplateDetailsDto"
+                }
+              }
+            }
           }
         }
       }
@@ -5401,6 +5551,45 @@
           }
         }
       },
+      "PersonalRecordDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "actual1RepMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "estimated1RepMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxVolume": {
+            "type": "number",
+            "format": "double"
+          },
+          "bestPerformances": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BestPerformanceDTO"
+            }
+          }
+        }
+      },
+      "BestPerformanceDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "ProgramOverviewDto": {
         "type": "object",
         "additionalProperties": false,
@@ -7023,6 +7212,46 @@
           }
         }
       },
+      "WorkoutLogDetailsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workoutLogName": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "exerciseLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseLogDTO"
+            }
+          }
+        }
+      },
       "CreateWorkoutLogCommandDTO": {
         "type": "object",
         "additionalProperties": false,
@@ -7728,6 +7957,88 @@
           },
           "creatorName": {
             "type": "string"
+          }
+        }
+      },
+      "WorkoutTemplateDetailsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "templateName": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "nullable": true
+          },
+          "creatorName": {
+            "type": "string"
+          },
+          "workoutTemplateExercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutTemplateExerciseDTO"
+            }
+          }
+        }
+      },
+      "WorkoutTemplateExerciseDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exerciseTemlateId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderInSession": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "orderInSuperset": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "setsRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "intensityPercentage": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rpeRecommendation": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightsUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "numbersOfReps": {
+            "type": "string",
+            "nullable": true
+          },
+          "exercise": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ExerciseDTO"
+              }
+            ]
           }
         }
       },
