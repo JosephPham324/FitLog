@@ -1,11 +1,12 @@
 ﻿import React, { useState, useEffect } from 'react';
-import WorkoutTable from '../../../components/WorkoutLog/WorkoutLogTable';
+import WorkoutTable from '../../../components/UpdateWorkoutLog/WorkoutLogTable';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
 import axiosInstance from '../../../utils/axiosInstance';
 import './CreateWorkoutLog.css'; // Add this line to include the custom CSS file
+import { useParams } from 'react-router-dom';
 
-const WorkoutLog = () => {
+const UpdateWorkoutLogPage = () => {
+    const { workoutLogId } = useParams(); // Get workoutLogId from URL parameters
     const [workoutName, setWorkoutName] = useState('');
     const [workoutNote, setWorkoutNote] = useState('');
     const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
@@ -13,12 +14,38 @@ const WorkoutLog = () => {
     const [rows, setRows] = useState([]); // Move rows state here for centralized data
 
     useEffect(() => {
+        // Fetch data when the component mounts
+        const fetchWorkoutLog = async () => {
+            try {
+                const response = await axiosInstance.get(`/WorkoutLog/${workoutLogId}`);
+                const logData = response.data;
+                console.log(response.data)
+                setWorkoutName(logData.workoutLogName);
+                setWorkoutNote(logData.note);
+                setDuration(parseDuration(logData.duration));
+                setRows(logData.exerciseLogs.map(log => ({
+                    exercise: { exerciseId: log.exerciseId, exerciseName: log.exerciseName }, // Assuming exerciseName is provided
+                    exerciseLogId: log.ExerciseLodId, // Use appropriate ID if available
+                    sets: log.numberOfSets,
+                    data: JSON.parse(log.weightsUsed).map((weight, index) => ({
+                        weight,
+                        reps: JSON.parse(log.numberOfReps)[index]
+                    })),
+                    note: log.note
+                })));
+            } catch (error) {
+                console.error('Error fetching workout log:', error);
+            }
+        };
+
+        fetchWorkoutLog();
+
         const timer = setInterval(() => {
             setDuration(prevDuration => prevDuration + 1);
         }, 1000);
 
         return () => clearInterval(timer);
-    }, []);
+    }, [workoutLogId]);
 
     const openNotePopup = () => {
         setIsNotePopupOpen(true);
@@ -39,19 +66,26 @@ const WorkoutLog = () => {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
 
+    const parseDuration = (duration) => {
+        const [hours, minutes, seconds] = duration.split(':').map(Number);
+        return (hours * 3600) + (minutes * 60) + seconds;
+    };
+
     const saveLog = async () => {
         const exerciseLogs = rows.map((row, rowIndex) => ({
+            exerciseLogId: row.exerciseLogId, // Use appropriate ID if available
             exerciseId: row.exercise.exerciseId,
             orderInSession: rowIndex + 1,
             note: row.note,
             numberOfSets: row.sets,
             weightsUsed: `[${row.data.map(set => set.weight).join(', ')}]`,
             numberOfReps: `[${row.data.map(set => set.reps).join(', ')}]`,
-            //footageUrls: row.data.map(set => set.intensity).join(', ')
-            footageUrls: "[]"
+            footageUrls: "[]", // Placeholder, replace with actual footage URLs if available
+            isDeleted: false // Set to true if the exercise log is deleted
         }));
 
         const logData = {
+            workoutLogId,
             workoutLogName: workoutName,
             duration: formatDuration(duration),
             note: workoutNote,
@@ -59,7 +93,7 @@ const WorkoutLog = () => {
         };
 
         try {
-            const response = await axiosInstance.post('https://localhost:44447/api/WorkoutLog', logData);
+            const response = await axiosInstance.put(`/WorkoutLog/${workoutLogId}`, logData);
             console.log(response.data);
         } catch (error) {
             console.error('Error saving log:', error);
@@ -131,4 +165,4 @@ const WorkoutLog = () => {
     );
 };
 
-export default WorkoutLog;
+export default UpdateWorkoutLogPage;

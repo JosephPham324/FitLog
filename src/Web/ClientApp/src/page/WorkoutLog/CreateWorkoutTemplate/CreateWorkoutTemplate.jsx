@@ -1,9 +1,9 @@
 ﻿import React, { useState } from 'react';
-import CreateWorkoutTemplateTable from '../../../components/WorkoutTemplate/WorkoutTemplate'; // Updated import
+import CreateWorkoutTemplateTable from '../../../components/WorkoutTemplate/WorkoutTemplate';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axiosInstance from '../../../utils/axiosInstance';
 import './CreateWorkoutTemplate.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useNavigate } from 'react-router-dom';
 
 const CreateWorkoutTemplatePage = () => {
     const [workoutName, setWorkoutName] = useState('');
@@ -51,9 +51,7 @@ const CreateWorkoutTemplatePage = () => {
         };
 
         try {
-            const response = await axiosInstance.post('https://localhost:44447/api/WorkoutTemplates/create-personal-template', templateData);
-            console.log(response.data.success)
-            console.log(response.data)
+            const response = await axiosInstance.post('/WorkoutTemplates/create-personal-template', templateData);
             if (response.data.success) {
                 setPopupMessage('Template saved successfully!');
                 setIsPopupOpen(true);
