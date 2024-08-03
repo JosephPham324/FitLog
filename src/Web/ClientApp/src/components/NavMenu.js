@@ -9,6 +9,8 @@ import './NavMenu.css';
 import logoImage from '../assets/Logo.png';
 import { AuthContext } from '../context/AuthContext';
 import { getCookie } from '../utils/cookiesOperations';
+import { getUserRole } from '../utils/tokenOperations'; // Path to the decoding logic
+
 
 export const NavMenu = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
@@ -61,6 +63,9 @@ export const NavMenu = () => {
     setCollapsed(!collapsed);
   };
 
+  const userRole = getUserRole();
+  console.log(userRole);
+
   return (
     <header>
       <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow" light>
@@ -88,7 +93,7 @@ export const NavMenu = () => {
                     <DropdownItem tag={Link} to="/workout-log/create">
                       <b>Log Workout</b>
                     </DropdownItem>
-                    <UncontrolledDropdown nav inNavbar className="nested-dropdown dropdown-item">
+                    <UncontrolledDropdown nav inNavbar className="nested-dropdown">
                       <DropdownToggle nav caret className="text-dark">
                         <b>Templates</b>
                       </DropdownToggle>
@@ -112,22 +117,24 @@ export const NavMenu = () => {
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
-                <UncontrolledDropdown nav inNavbar>
-                  <DropdownToggle nav caret className="text-white">
-                    <b>Admin</b>
-                  </DropdownToggle>
-                  <DropdownMenu right>
-                    <DropdownItem tag={Link} to="/musclegroup">
-                      <b>Muscle Groups</b>
-                    </DropdownItem>
-                    <DropdownItem tag={Link} to="/admin/management/equipments">
-                      <b>Equipments</b>
-                    </DropdownItem>
-                    <DropdownItem tag={Link} to="/manageaccount">
-                      <b>Users</b>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
+                {userRole === 'Administrator' && (
+                  <UncontrolledDropdown nav inNavbar>
+                    <DropdownToggle nav caret className="text-white">
+                      <b>Admin</b>
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem tag={Link} to="/musclegroup">
+                        <b>Muscle Groups</b>
+                      </DropdownItem>
+                      <DropdownItem tag={Link} to="/admin/management/equipments">
+                        <b>Equipments</b>
+                      </DropdownItem>
+                      <DropdownItem tag={Link} to="/manageaccount">
+                        <b>Users</b>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                )}
                 <NavItem>
                   <NavLink tag={Link} className="text-white" to="/profile"><b>Profile</b></NavLink>
                 </NavItem>

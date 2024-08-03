@@ -68,7 +68,7 @@ const WorkoutLog = () => {
 
     return (
         <div className="container mt-5">
-            <h1 className="text-center mb-4">Create Workout Log</h1>
+            <h1 className="text-center mb-4">Update Workout Log</h1>
             <div className="mb-3 row">
                 <label className="col-sm-2 col-form-label">Workout Log Name</label>
                 <div className="col-sm-10">

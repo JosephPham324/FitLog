@@ -2172,7 +2172,7 @@ export class TrainingRecommendationClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getProgramRecommendations(userId: string | null): Promise<ProgramOverviewDto[]> {
+    getProgramRecommendations(userId: string | null): Promise<{ [key: string]: ProgramOverviewDto[]; }> {
         let url_ = this.baseUrl + "/api/TrainingRecommendation/programs-recommendation/user?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
@@ -2192,7 +2192,7 @@ export class TrainingRecommendationClient {
         });
     }
 
-    protected processGetProgramRecommendations(response: Response): Promise<ProgramOverviewDto[]> {
+    protected processGetProgramRecommendations(response: Response): Promise<{ [key: string]: ProgramOverviewDto[]; }> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -2200,10 +2200,12 @@ export class TrainingRecommendationClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ProgramOverviewDto.fromJS(item));
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] ? resultData200[key].map((i: any) => ProgramOverviewDto.fromJS(i)) : [];
+                }
             }
             else {
                 result200 = <any>null;
@@ -2215,7 +2217,7 @@ export class TrainingRecommendationClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ProgramOverviewDto[]>(null as any);
+        return Promise.resolve<{ [key: string]: ProgramOverviewDto[]; }>(null as any);
     }
 
     getWorkoutRecommendation(query: GetWorkoutRecommendationQuery): Promise<ExerciseDTO[]> {
@@ -2449,16 +2451,16 @@ export class WorkoutLogClient {
         return Promise.resolve<PaginatedListOfWorkoutLogDTO>(null as any);
     }
 
-    getWorkoutHistory(userId: string | null, startDate: Date | null | undefined, endDate: Date | null | undefined): Promise<WorkoutLogDTO[]> {
+    getWorkoutHistory(startDate: string, endDate: string): Promise<WorkoutLogDTO[]> {
         let url_ = this.baseUrl + "/api/WorkoutLog/history?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (startDate !== undefined && startDate !== null)
-            url_ += "StartDate=" + encodeURIComponent(startDate ? "" + startDate.toISOString() : "") + "&";
-        if (endDate !== undefined && endDate !== null)
-            url_ += "EndDate=" + encodeURIComponent(endDate ? "" + endDate.toISOString() : "") + "&";
+        if (startDate === undefined || startDate === null)
+            throw new Error("The parameter 'startDate' must be defined and cannot be null.");
+        else
+            url_ += "StartDate=" + encodeURIComponent("" + startDate) + "&";
+        if (endDate === undefined || endDate === null)
+            throw new Error("The parameter 'endDate' must be defined and cannot be null.");
+        else
+            url_ += "EndDate=" + encodeURIComponent("" + endDate) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2497,6 +2499,44 @@ export class WorkoutLogClient {
             });
         }
         return Promise.resolve<WorkoutLogDTO[]>(null as any);
+    }
+
+    getWorkoutLogDetails(workoutLogId: number): Promise<WorkoutLogDetailsDto> {
+        let url_ = this.baseUrl + "/api/WorkoutLog/{WorkoutLogId}";
+        if (workoutLogId === undefined || workoutLogId === null)
+            throw new Error("The parameter 'workoutLogId' must be defined.");
+        url_ = url_.replace("{WorkoutLogId}", encodeURIComponent("" + workoutLogId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetWorkoutLogDetails(_response);
+        });
+    }
+
+    protected processGetWorkoutLogDetails(response: Response): Promise<WorkoutLogDetailsDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkoutLogDetailsDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<WorkoutLogDetailsDto>(null as any);
     }
 
     createWorkoutLog(commandDTO: CreateWorkoutLogCommandDTO): Promise<Result> {
@@ -10114,6 +10154,78 @@ export interface IWorkoutLogDTO {
     duration?: string | undefined;
     created?: Date;
     lastModified?: Date | undefined;
+    exerciseLogs?: ExerciseLogDTO[];
+}
+
+export class WorkoutLogDetailsDto implements IWorkoutLogDetailsDto {
+    id?: number;
+    workoutLogName?: string;
+    note?: string | undefined;
+    duration?: string | undefined;
+    createdBy?: string | undefined;
+    created?: Date;
+    lastModified?: Date;
+    exerciseLogs?: ExerciseLogDTO[];
+
+    constructor(data?: IWorkoutLogDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.workoutLogName = _data["workoutLogName"];
+            this.note = _data["note"];
+            this.duration = _data["duration"];
+            this.createdBy = _data["createdBy"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            if (Array.isArray(_data["exerciseLogs"])) {
+                this.exerciseLogs = [] as any;
+                for (let item of _data["exerciseLogs"])
+                    this.exerciseLogs!.push(ExerciseLogDTO.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): WorkoutLogDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkoutLogDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["workoutLogName"] = this.workoutLogName;
+        data["note"] = this.note;
+        data["duration"] = this.duration;
+        data["createdBy"] = this.createdBy;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        if (Array.isArray(this.exerciseLogs)) {
+            data["exerciseLogs"] = [];
+            for (let item of this.exerciseLogs)
+                data["exerciseLogs"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IWorkoutLogDetailsDto {
+    id?: number;
+    workoutLogName?: string;
+    note?: string | undefined;
+    duration?: string | undefined;
+    createdBy?: string | undefined;
+    created?: Date;
+    lastModified?: Date;
     exerciseLogs?: ExerciseLogDTO[];
 }
 
