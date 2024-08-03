@@ -1,25 +1,41 @@
-﻿.programs-container {
+﻿/* WorkoutProgramsPage.css */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.programs-container {
     padding: 20px;
 }
 
 .title {
     text-align: center;
-    margin-bottom: 40px;
-    font-size: 2.5rem;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.search-filter-container {
+    background-color: #dfe8ee;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 30px;
 }
 
 .program-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     overflow: hidden;
-    transition: transform 0.2s;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
     text-decoration: none;
     color: inherit;
 }
 
     .program-card:hover {
-        transform: scale(1.05);
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
 
 .program-image {
@@ -29,12 +45,12 @@
 }
 
 .program-details {
-    padding: 20px;
+    padding: 1rem;
 }
 
 .program-name {
-    font-size: 1.5em;
-    margin-bottom: 10px;
+    font-size: 2rem;
+    margin-bottom: 1rem;
 }
 
 .program-goal,
@@ -50,4 +66,12 @@
 .title-filter {
     font-size: 15px;
     margin-left: 5px;
+}
+
+.program-details p {
+    margin: 0.25rem 0;
+}
+
+.form-control {
+    margin-bottom: 1rem;
 }

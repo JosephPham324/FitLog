@@ -1079,6 +1079,51 @@ export class MuscleGroupsClient {
         return Promise.resolve<PaginatedListOfMuscleGroupDTO>(null as any);
     }
 
+    searchMuscleGroup(muscleGroupName: string | null | undefined, pageNumber: number, pageSize: number): Promise<PaginatedListOfMuscleGroupDTO2> {
+        let url_ = this.baseUrl + "/api/MuscleGroups/search?";
+        if (muscleGroupName !== undefined && muscleGroupName !== null)
+            url_ += "MuscleGroupName=" + encodeURIComponent("" + muscleGroupName) + "&";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearchMuscleGroup(_response);
+        });
+    }
+
+    protected processSearchMuscleGroup(response: Response): Promise<PaginatedListOfMuscleGroupDTO2> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfMuscleGroupDTO2.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfMuscleGroupDTO2>(null as any);
+    }
+
     getMuscleGroupsById(): Promise<MuscleGroupDTO2> {
         let url_ = this.baseUrl + "/api/MuscleGroups";
         url_ = url_.replace(/[?&]$/, "");
@@ -1112,45 +1157,6 @@ export class MuscleGroupsClient {
             });
         }
         return Promise.resolve<MuscleGroupDTO2>(null as any);
-    }
-
-    deleteMuscleGroup(command: DeleteMuscleGroupCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/api/MuscleGroups";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteMuscleGroup(_response);
-        });
-    }
-
-    protected processDeleteMuscleGroup(response: Response): Promise<Result> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
     }
 
     createMuscleGroup(command: CreateMuscleGroupCommand): Promise<Result> {
@@ -1216,6 +1222,44 @@ export class MuscleGroupsClient {
     }
 
     protected processUpdateMuscleGroup(response: Response): Promise<Result> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    deleteMuscleGroup(id: number): Promise<Result> {
+        let url_ = this.baseUrl + "/api/MuscleGroups/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteMuscleGroup(_response);
+        });
+    }
+
+    protected processDeleteMuscleGroup(response: Response): Promise<Result> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -6904,6 +6948,70 @@ export interface IMuscleGroupDTO {
     imageUrl?: string | undefined;
 }
 
+export class PaginatedListOfMuscleGroupDTO2 implements IPaginatedListOfMuscleGroupDTO2 {
+    items?: MuscleGroupDTO2[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfMuscleGroupDTO2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(MuscleGroupDTO2.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfMuscleGroupDTO2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfMuscleGroupDTO2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfMuscleGroupDTO2 {
+    items?: MuscleGroupDTO2[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
 export class MuscleGroupDTO2 implements IMuscleGroupDTO2 {
     muscleGroupId?: number;
     muscleGroupName?: string | undefined;
@@ -7030,42 +7138,6 @@ export interface IUpdateMuscleGroupCommand {
     id?: number;
     muscleGroupName?: string | undefined;
     imageUrl?: string | undefined;
-}
-
-export class DeleteMuscleGroupCommand implements IDeleteMuscleGroupCommand {
-    id?: number;
-
-    constructor(data?: IDeleteMuscleGroupCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): DeleteMuscleGroupCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new DeleteMuscleGroupCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        return data;
-    }
-}
-
-export interface IDeleteMuscleGroupCommand {
-    id?: number;
 }
 
 export class SummaryWorkoutLogStatsDTO implements ISummaryWorkoutLogStatsDTO {

@@ -36,6 +36,7 @@ public class MuscleGroups : EndpointGroupBase
         app.MapGroup(this)
             //All users can view data
             .MapGet(GetMuscleGroupsList, "get-list")
+            .MapGet(SearchMuscleGroup, "search")
             .MapGet(GetMuscleGroupsById, "{id}");
         //Changes data
         app.MapGroup(this)
@@ -71,8 +72,12 @@ public class MuscleGroups : EndpointGroupBase
     {
         return sender.Send(command);
     }
-    public Task<Result> DeleteMuscleGroup(ISender sender, [FromBody] DeleteMuscleGroupCommand command)
+    public Task<Result> DeleteMuscleGroup(ISender sender, int id)
     {
+        var command = new DeleteMuscleGroupCommand()
+        {
+            Id = id
+        };
         return sender.Send(command);
     }
 }

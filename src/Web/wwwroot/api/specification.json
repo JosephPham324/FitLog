@@ -881,6 +881,57 @@
         }
       }
     },
+    "/api/MuscleGroups/search": {
+      "get": {
+        "tags": [
+          "MuscleGroups"
+        ],
+        "operationId": "SearchMuscleGroup",
+        "parameters": [
+          {
+            "name": "MuscleGroupName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfMuscleGroupDTO2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/MuscleGroups": {
       "get": {
         "tags": [
@@ -894,36 +945,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MuscleGroupDTO2"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "MuscleGroups"
-        ],
-        "operationId": "DeleteMuscleGroup",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteMuscleGroupCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -993,6 +1014,36 @@
           "required": true,
           "x-position": 2
         },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "MuscleGroups"
+        ],
+        "operationId": "DeleteMuscleGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -5291,6 +5342,36 @@
           }
         }
       },
+      "PaginatedListOfMuscleGroupDTO2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MuscleGroupDTO2"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
       "MuscleGroupDTO2": {
         "type": "object",
         "additionalProperties": false,
@@ -5338,16 +5419,6 @@
           "imageUrl": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "DeleteMuscleGroupCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },

@@ -54,14 +54,14 @@
 
 :root th, td {
     padding: 10px;
-    text-align: left;
+    text-align: center;
     background: white;
     border: 1px solid black;
     color: black;
 }
 
 :root th {
-    background-color: #2196F3;
+    background-color: #967fa9;
     color: black; /* Add this line to change the color of th elements to black */
     border: 1px solid;
 }

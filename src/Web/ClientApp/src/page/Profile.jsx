@@ -4,6 +4,7 @@ import axiosInstance from '../utils/axiosInstance'; // Import the configured Axi
 
 export const Profile = () => {
     const [profile, setProfile] = useState({
+        userId: '',
         firstName: '',
         lastName: '',
         userName: '',
@@ -40,12 +41,26 @@ export const Profile = () => {
     };
 
     const updateProfile = async () => {
-        // Create a copy of the profile object without read-only fields
-        const { userName, roles, email, ...updatableProfile } = profile;
-
         try {
-            console.log('Sending profile data:', updatableProfile); // Log the payload to verify
-            await axiosInstance.put('/Users/update-profile', updatableProfile);
+            const queryParams = new URLSearchParams({
+                UserId: profile.userId,
+                FirstName: profile.firstName,
+                LastName: profile.lastName,
+                DateOfBirth: profile.dateOfBirth,
+                Gender: profile.gender,
+                Email: profile.email,
+                PhoneNumber: profile.phoneNumber,
+                UserName: profile.userName,
+            }).toString();
+
+            const url = `/Users/update-profile?${queryParams}`;
+            console.log('Sending profile data to:', url); // Log the URL to verify
+
+            await axiosInstance.put(url, {}, {
+                headers: {
+                    'accept': 'application/json'
+                }
+            });
             alert('Profile updated successfully!');
         } catch (error) {
             setError('Error updating profile');
