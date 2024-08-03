@@ -68,3 +68,14 @@
     color: white !important; /* Đặt màu chữ của "Notifications" thành màu trắng và sử dụng !important để ưu tiên */
     font-size: 1em;
 }
+
+/* Center the nested dropdown menu */
+.centered-dropdown-menu {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
+}
+
+.nested-dropdown .dropdown-menu {
+    position: relative;
+}

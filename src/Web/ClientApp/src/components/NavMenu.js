@@ -75,9 +75,6 @@ export const NavMenu = () => {
             <NavItem>
               <NavLink tag={Link} className="text-white" to="/"><b>Home</b></NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink tag={Link} className="text-white" to="/TrainingSurvey"><b>Training Survey</b></NavLink>
-            </NavItem>
             {isAuthenticated && (
               <>
                 <UncontrolledDropdown nav inNavbar>
@@ -85,53 +82,68 @@ export const NavMenu = () => {
                     <b>Training</b>
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem tag={Link} to="/WorkoutHistory">
+                    <DropdownItem tag={Link} to="/workouthistory">
                       <b>Workout History</b>
                     </DropdownItem>
-                    <DropdownItem tag={Link} to="/WorkoutLog">
-                      <b> Workout Log</b>
+                    <DropdownItem tag={Link} to="/workout-log/create">
+                      <b>Log Workout</b>
                     </DropdownItem>
-                    <DropdownItem tag={Link} to="/profile">
-                      <b> Profile</b>
+                    <UncontrolledDropdown nav inNavbar className="nested-dropdown dropdown-item">
+                      <DropdownToggle nav caret className="text-dark">
+                        <b>Templates</b>
+                      </DropdownToggle>
+                      <DropdownMenu right className="centered-dropdown-menu">
+                        <DropdownItem tag={Link} to="/workout-templates/create">
+                          <b>Create</b>
+                        </DropdownItem>
+                        <DropdownItem tag={Link} to="/workout-templates/list">
+                          <b>List</b>
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                    <DropdownItem tag={Link} to="/trainingsurvey">
+                      <b>Training Survey</b>
                     </DropdownItem>
-                    <DropdownItem tag={Link} to="/changepassword">
-                      <b>Change Password</b>
+                    <DropdownItem tag={Link} to="/workoutprogramspage">
+                      <b>Programs</b>
                     </DropdownItem>
-                    <DropdownItem tag={Link} to="/trainingBoard">
-                      <b> Training Board</b>
+                    <DropdownItem tag={Link} to="/training-board">
+                      <b>Training Board</b>
                     </DropdownItem>
-                    <DropdownItem tag={Link} to="/CoachServiceBooking">
-                      <b> Coach Service Booking</b>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret className="text-white">
+                    <b>Admin</b>
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem tag={Link} to="/musclegroup">
+                      <b>Muscle Groups</b>
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/admin/management/equipments">
+                      <b>Equipments</b>
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/manageaccount">
+                      <b>Users</b>
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
                 <NavItem>
-                  <NavItem>
-                    <NavLink tag={Link} className="text-white" to="/WorkoutProgramsPage"><b>Programs</b></NavLink>
-                  </NavItem>
+                  <NavLink tag={Link} className="text-white" to="/profile"><b>Profile</b></NavLink>
                 </NavItem>
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret className="text-white">
-                    <b> Admin</b>
+                    <b>Service</b>
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem tag={Link} to="/MuscleGroup">
-                      <b> Muscle Group</b>
-                    </DropdownItem>
-                    <DropdownItem tag={Link} to="/admin/management/equipments">
-                      <b> Equipments List</b>
-                    </DropdownItem>
-                    <DropdownItem tag={Link} to="/users-list">
-                      <b>  User List</b>
-                    </DropdownItem>
-                    <DropdownItem tag={Link} to="/ManageAccount">
-                      <b>  Manage Account</b>
+                    <DropdownItem tag={Link} to="/coachservicebooking">
+                      <b>Coach Service Booking</b>
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
                 <NavItem>
                   <NavLink className="text-white-noti" href="#">
-                    <b> Notifications</b> <Badge color="secondary">{notifications.length}</Badge>
+                    <b>Notifications</b> <Badge color="secondary">{notifications.length}</Badge>
                   </NavLink>
                 </NavItem>
                 <NavItem>
