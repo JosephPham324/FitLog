@@ -1,10 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutTemplates.Commands.CreatePersonalTemplate;
 
-public record CreatePersonalTemplateCommand : IRequest<int>
+public record CreatePersonalTemplateCommand : IRequest<Result>
 {
     [JsonIgnore]
     public string UserId { get; set; } = "";//Temp user token
@@ -50,7 +51,7 @@ public class PersonalTemplateExerciseValidator : AbstractValidator<PersonalTempl
     }
 }
 
-public class CreatePersonalTemplateCommandHandler : IRequestHandler<CreatePersonalTemplateCommand, int>
+public class CreatePersonalTemplateCommandHandler : IRequestHandler<CreatePersonalTemplateCommand, Result>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUserTokenService _currentUserService;
@@ -61,7 +62,7 @@ public class CreatePersonalTemplateCommandHandler : IRequestHandler<CreatePerson
         _currentUserService = currentUserService;
     }
 
-    public async Task<int> Handle(CreatePersonalTemplateCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreatePersonalTemplateCommand request, CancellationToken cancellationToken)
     {
         //var userId = request.UserToken;
 
@@ -72,6 +73,7 @@ public class CreatePersonalTemplateCommandHandler : IRequestHandler<CreatePerson
             IsPublic = false, // Personal templates are not public
             CreatedBy = request.UserId,
             Created = DateTimeOffset.UtcNow,
+            LastModifiedBy = request.UserId,
         };
 
         foreach (var exerciseDto in request.WorkoutTemplateExercises)
@@ -95,7 +97,7 @@ public class CreatePersonalTemplateCommandHandler : IRequestHandler<CreatePerson
         _context.WorkoutTemplates.Add(personalTemplate);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return personalTemplate.Id;
+        return Result.Successful();
     }
 
 }

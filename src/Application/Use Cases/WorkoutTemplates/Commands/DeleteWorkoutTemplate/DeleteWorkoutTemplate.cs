@@ -1,9 +1,10 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutTemplates.Commands.DeleteWorkoutTemplate;
 
-public record DeleteWorkoutTemplateCommand (int Id) : IRequest<bool>;
+public record DeleteWorkoutTemplateCommand (int Id) : IRequest<Result>;
 
 public class DeleteWorkoutTemplateCommandValidator : AbstractValidator<DeleteWorkoutTemplateCommand>
 {
@@ -14,7 +15,7 @@ public class DeleteWorkoutTemplateCommandValidator : AbstractValidator<DeleteWor
     }
 }
 
-public class DeleteWorkoutTemplateCommandHandler : IRequestHandler<DeleteWorkoutTemplateCommand, bool>
+public class DeleteWorkoutTemplateCommandHandler : IRequestHandler<DeleteWorkoutTemplateCommand, Result>
 {
     private readonly IApplicationDbContext _context;
 
@@ -23,19 +24,19 @@ public class DeleteWorkoutTemplateCommandHandler : IRequestHandler<DeleteWorkout
         _context = context;
     }
 
-    public async Task<bool> Handle(DeleteWorkoutTemplateCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteWorkoutTemplateCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.WorkoutTemplates.FindAsync(new object[] { request.Id }, cancellationToken);
 
         if (entity == null)
         {
-            throw new NotFoundException(nameof(WorkoutTemplate), request.Id + "");
+            return Result.Failure(["Workout Template not found"]);
         }
 
         _context.WorkoutTemplates.Remove(entity);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result.Successful();
     }
 }

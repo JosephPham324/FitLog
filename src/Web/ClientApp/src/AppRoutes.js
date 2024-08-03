@@ -34,7 +34,9 @@ import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
 import { WorkoutProgramsPage } from './components/WorkoutProgramsPage';
 import { WorkoutProgramsDetail } from './components/WorkoutProgramsDetail';// Correct the import statement
 import CoachProfile from './components/CoachProfile';
-import WorkoutLogPage from './page/WorkoutLog';
+import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
+import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
+import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
 const AppRoutes = [
   {
     index: true,
@@ -104,10 +106,10 @@ const AppRoutes = [
     path: '/TrainingSurvey',
     element: <TrainingSurvey />
   },
-{
-  path: '/EquipmentsList',
+  {
+    path: '/EquipmentsList',
     element: <EquipmentsList />
-},
+  },
   {
     path: '/survey',
     element: React.createElement(withAuthProtection(TrainingSurvey))
@@ -126,7 +128,7 @@ const AppRoutes = [
   },
   {
     path: '/log-out',
-    element: <Logout/>
+    element: <Logout />
   },
   {
     path: '/CoachApplicationNotification',
@@ -160,12 +162,16 @@ const AppRoutes = [
     path: '/CreateWorkoutLog',
     element: <CreateWorkoutLog />
   },
-  { 
-  path:'log-out',
+  {
+    path: '/workout-log/create/:templateId',
+    element: <CreateWorkoutLogFromTemplate />
+  },
+  {
+    path: 'log-out',
     element: React.createElement(withAuthProtection(Logout))
   },
   {
-    path: '/profile',
+    path: '/profile/',
     element: React.createElement(withAuthProtection(Profile))
   },
   {
@@ -195,6 +201,10 @@ const AppRoutes = [
   {
     path: '/workout-log/create',
     element: <WorkoutLogPage />
+  },
+  {
+    path: '/workout-templates/create',
+    element: <CreateWorkoutTemplatePage/>
   }
 ];
 

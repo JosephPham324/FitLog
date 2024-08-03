@@ -49,7 +49,7 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
 
             // User statistics
             var userStats = app.MapGroup(this)
-               .RequireAuthorization("CoachOnly")
+               //.RequireAuthorization("CoachOnly")
                ;
 
             userStats

@@ -9,8 +9,12 @@
         border-color: #007bff !important;
     }
 
-.update-btn {
+:root .update-btn {
     border-color: #007bff !important;
+    background-color: green;
+    height: 60px;
+    width: auto;
+    text-align: center;
 }
 
 
@@ -64,8 +68,16 @@
 }
 
 .table-image {
-    width: 400px; /* Adjusted width to fit better */
-    height: auto; /* Maintain aspect ratio */
+    width: 500px; /* Adjusted width to fit better */
+    height: 350px; /* Maintain aspect ratio */
+}
+
+:root .table td {
+    vertical-align: middle;
+}
+
+:root table th {
+    text-align: center;
 }
 
 .small-button {
@@ -96,3 +108,34 @@
     background-color: red !important;
 }
 
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal {
+    z-index: 1050 !important;
+}
+
+:root .btn-primary {
+    height: 60px;
+    width: auto;
+}
+
+:root .btn-danger {
+    height: 60px;
+    width: auto;
+}
+
+:root .alert-danger {
+    --bs-alert-color: red;
+    --bs-alert-link-color: var(--bs-danger-text-emphasis);
+    font-size: 15px;
+    margin-top: 7px;
+    --bs-alert-bg: var(--bs-danger-bg-subtle);
+    --bs-alert-border-color: var(--bs-danger-border-subtle);
+}
+
+.my-4 {
+    font-size: 50px;
+    text-align: center;
+}
