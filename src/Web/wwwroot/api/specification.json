@@ -1291,6 +1291,128 @@
         }
       }
     },
+    "/api/Statistics/exercise/{ExerciseId}/records": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseRecords",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonalRecordDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Statistics/exercise/{ExerciseId}/total-reps": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseTotalReps",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "TimeFrame",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Statistics/exercise/{ExerciseId}/total-tonnage": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseTotalTonnage",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "TimeFrame",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Statistics/user/{id}/overall/summary": {
       "get": {
         "tags": [
@@ -5332,6 +5454,45 @@
           },
           "exerciseName": {
             "type": "string"
+          }
+        }
+      },
+      "PersonalRecordDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "actual1RepMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "estimated1RepMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxVolume": {
+            "type": "number",
+            "format": "double"
+          },
+          "bestPerformances": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BestPerformanceDTO"
+            }
+          }
+        }
+      },
+      "BestPerformanceDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
