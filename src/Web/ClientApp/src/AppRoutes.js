@@ -38,6 +38,7 @@ import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
+import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
 import { Navigate } from 'react-router-dom';
 
 
@@ -193,6 +194,10 @@ const AppRoutes = [
   {
     path: '/workout-log/:workoutLogId/update',
     element: <UpdateWorkoutLogPage />
+  },
+  {
+    path: '/workout-log/:workoutLogId/details',
+    element: <WorkoutLogDetailsPage />
   },
   {
     path: '/workout-templates/create',
