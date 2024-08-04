@@ -3,7 +3,7 @@ import ExerciseSearchBox from './ExerciseSearchBox';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './WorkoutLogTable.css';
 
-const WorkoutTable = ({ rows, setRows }) => {
+const WorkoutTable = ({ rows, setRows, onDeleteRow }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
   const [currentNote, setCurrentNote] = useState('');
@@ -36,7 +36,7 @@ const WorkoutTable = ({ rows, setRows }) => {
   };
 
   const addRow = (exercise) => {
-    setRows([...rows, { exercise, sets: 1, data: [{ reps: '', weight: '' }], note: '' }]);
+    setRows([...rows, { exercise, sets: 1, data: [{ reps: '', weight: '' }], note: '', isDeleted: false }]);
   };
 
   const changeExercise = (exercise) => {
@@ -70,8 +70,7 @@ const WorkoutTable = ({ rows, setRows }) => {
   };
 
   const deleteRow = (rowIndex) => {
-    const newRows = rows.filter((_, index) => index !== rowIndex);
-    setRows(newRows);
+    onDeleteRow(rowIndex);
   };
 
   return (
@@ -90,7 +89,7 @@ const WorkoutTable = ({ rows, setRows }) => {
         </thead>
         <tbody>
           {rows.map((row, rowIndex) => (
-            <tr key={rowIndex}>
+            <tr key={rowIndex} className={row.isDeleted ? 'table-danger' : ''}>
               <td>{rowIndex + 1}</td>
               <td>{row.exercise.exerciseName}</td>
               <td>
@@ -99,6 +98,7 @@ const WorkoutTable = ({ rows, setRows }) => {
                   value={row.sets}
                   onChange={(e) => handleSetsChange(rowIndex, parseInt(e.target.value))}
                   className="form-control"
+                  disabled={row.isDeleted}
                 />
               </td>
               <td>
@@ -110,6 +110,7 @@ const WorkoutTable = ({ rows, setRows }) => {
                     onChange={(e) => handleInputChange(rowIndex, setIndex, 'weight', e.target.value)}
                     className="form-control mb-2"
                     placeholder={`Set ${setIndex + 1}`}
+                    disabled={row.isDeleted}
                   />
                 ))}
               </td>
@@ -122,14 +123,15 @@ const WorkoutTable = ({ rows, setRows }) => {
                     onChange={(e) => handleInputChange(rowIndex, setIndex, 'reps', e.target.value)}
                     className="form-control mb-2"
                     placeholder={`Set ${setIndex + 1}`}
+                    disabled={row.isDeleted}
                   />
                 ))}
               </td>
               <td>
-                <button className="btn btn-secondary" onClick={() => openNotePopup(rowIndex)}>Note</button>
+                <button className="btn btn-secondary" onClick={() => openNotePopup(rowIndex)} disabled={row.isDeleted}>Note</button>
               </td>
               <td>
-                <button className="btn btn-warning" onClick={() => { setExerciseChangeRow(rowIndex); openPopup(); }}>Change</button>
+                <button className="btn btn-warning" onClick={() => { setExerciseChangeRow(rowIndex); openPopup(); }} disabled={row.isDeleted}>Change</button>
                 <button className="btn btn-danger ml-2" onClick={() => deleteRow(rowIndex)}>Delete</button>
               </td>
             </tr>

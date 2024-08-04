@@ -56,35 +56,35 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(FetchData))
   },
   {
-    path: '/musclegroup',
+    path: '/muscle-groups',
     element: React.createElement(withAuthProtection(MuscleGroup))
   },
+  //{
+  //  path: '/workout-log',
+  //  element: <WorkoutLog />
+  //},
   {
-    path: '/workoutlog',
-    element: <WorkoutLog />
-  },
-  {
-    path: '/workoutlog',
+    path: '/workout-log',
     element: React.createElement(withAuthProtection(WorkoutLog))
   },
+  //{
+  //  path: '/workout-history',
+  //  element: <WorkoutHistory />
+  //},
   {
-    path: '/workouthistory',
-    element: <WorkoutHistory />
-  },
-  {
-    path: '/workouthistory',
+    path: '/workout-history',
     element: React.createElement(withAuthProtection(WorkoutHistory))
   },
   {
-    path: '/coachservicebooking',
+    path: '/coach-service-booking',
     element: <CoachServiceBooking />
   },
   {
-    path: '/manageaccount',
+    path: '/manage-account',
     element: <ManageAccount />
   },
   {
-    path: '/workoutprogramspage',
+    path: '/workout-programs',
     element: <WorkoutProgramsPage />
   },
   {
@@ -140,27 +140,27 @@ const AppRoutes = [
     element: <WorkoutTemplatesListAdmin />
   },
   {
-    path: '/workoutlogexport',
+    path: '/workout-log-export',
     element: <WorkoutLogExport />
   },
   {
-    path: '/workoutloggraphs',
+    path: '/workout-log-graphs',
     element: <WorkoutLogGraphs />
   },
   {
-    path: '/exerciseloggraphs',
+    path: '/exercise-log-graphs',
     element: <ExerciseLogGraphs />
   },
   {
-    path: '/roleslistscreen',
+    path: '/roles-list-screen',
     element: <RolesListScreen />
   },
   {
-    path: '/exerciselistscreen',
+    path: '/exercise-list-screen',
     element: <ExerciseListScreen />
   },
   {
-    path: '/createworkoutlog',
+    path: '/create-workout-log',
     element: <CreateWorkoutLog />
   },
   {

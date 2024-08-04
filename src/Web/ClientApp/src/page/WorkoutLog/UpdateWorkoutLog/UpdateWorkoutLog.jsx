@@ -11,7 +11,8 @@ const UpdateWorkoutLogPage = () => {
     const [workoutNote, setWorkoutNote] = useState('');
     const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
     const [duration, setDuration] = useState(0); // Duration in seconds
-    const [rows, setRows] = useState([]); // Move rows state here for centralized data
+    const [rows, setRows] = useState([]); // State for active rows
+    const [deletedRows, setDeletedRows] = useState([]); // State for deleted rows
 
     useEffect(() => {
         // Fetch data when the component mounts
@@ -19,19 +20,19 @@ const UpdateWorkoutLogPage = () => {
             try {
                 const response = await axiosInstance.get(`/WorkoutLog/${workoutLogId}`);
                 const logData = response.data;
-                console.log(response.data)
                 setWorkoutName(logData.workoutLogName);
                 setWorkoutNote(logData.note);
                 setDuration(parseDuration(logData.duration));
                 setRows(logData.exerciseLogs.map(log => ({
                     exercise: { exerciseId: log.exerciseId, exerciseName: log.exerciseName }, // Assuming exerciseName is provided
-                    exerciseLogId: log.ExerciseLodId, // Use appropriate ID if available
+                    exerciseLogId: log.exerciseLogId, // Use appropriate ID if available
                     sets: log.numberOfSets,
                     data: JSON.parse(log.weightsUsed).map((weight, index) => ({
                         weight,
                         reps: JSON.parse(log.numberOfReps)[index]
                     })),
-                    note: log.note
+                    note: log.note,
+                    isDeleted: false // Initial state is not deleted
                 })));
             } catch (error) {
                 console.error('Error fetching workout log:', error);
@@ -72,7 +73,7 @@ const UpdateWorkoutLogPage = () => {
     };
 
     const saveLog = async () => {
-        const exerciseLogs = rows.map((row, rowIndex) => ({
+        const exerciseLogs = [...rows, ...deletedRows].map((row, rowIndex) => ({
             exerciseLogId: row.exerciseLogId, // Use appropriate ID if available
             exerciseId: row.exercise.exerciseId,
             orderInSession: rowIndex + 1,
@@ -81,7 +82,7 @@ const UpdateWorkoutLogPage = () => {
             weightsUsed: `[${row.data.map(set => set.weight).join(', ')}]`,
             numberOfReps: `[${row.data.map(set => set.reps).join(', ')}]`,
             footageUrls: "[]", // Placeholder, replace with actual footage URLs if available
-            isDeleted: false // Set to true if the exercise log is deleted
+            isDeleted: row.isDeleted // Include the isDeleted property
         }));
 
         const logData = {
@@ -94,10 +95,20 @@ const UpdateWorkoutLogPage = () => {
 
         try {
             const response = await axiosInstance.put(`/WorkoutLog/${workoutLogId}`, logData);
-            console.log(response.data);
+            alert(response.data.success); // Log the data to be saved)
+            // Handle response if necessary
         } catch (error) {
             console.error('Error saving log:', error);
         }
+    };
+
+    const handleDeleteRow = (rowIndex) => {
+        setRows(prevRows => {
+            const newRows = [...prevRows];
+            newRows[rowIndex].isDeleted = true;
+            setDeletedRows(prevDeletedRows => [...prevDeletedRows, newRows[rowIndex]]);
+            return prevRows.filter((_, index) => index !== rowIndex);
+        });
     };
 
     return (
@@ -131,7 +142,7 @@ const UpdateWorkoutLogPage = () => {
                     <button className="btn btn-secondary" onClick={openNotePopup}>Add Note</button>
                 </div>
             </div>
-            <WorkoutTable rows={rows} setRows={setRows} />
+            <WorkoutTable rows={rows} setRows={setRows} onDeleteRow={handleDeleteRow} />
             {isNotePopupOpen && (
                 <div className="modal show d-block" role="dialog">
                     <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
