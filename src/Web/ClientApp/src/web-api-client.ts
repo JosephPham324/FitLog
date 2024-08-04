@@ -4098,29 +4098,17 @@ export class UsersClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    updateUserProfile(userId: string | null | undefined, firstName: string | null | undefined, lastName: string | null | undefined, dateOfBirth: Date | null | undefined, gender: string | null | undefined, email: string | null | undefined, phoneNumber: string | null | undefined, userName: string | null | undefined): Promise<Result> {
-        let url_ = this.baseUrl + "/api/Users/update-profile?";
-        if (userId !== undefined && userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        if (firstName !== undefined && firstName !== null)
-            url_ += "FirstName=" + encodeURIComponent("" + firstName) + "&";
-        if (lastName !== undefined && lastName !== null)
-            url_ += "LastName=" + encodeURIComponent("" + lastName) + "&";
-        if (dateOfBirth !== undefined && dateOfBirth !== null)
-            url_ += "DateOfBirth=" + encodeURIComponent(dateOfBirth ? "" + dateOfBirth.toISOString() : "") + "&";
-        if (gender !== undefined && gender !== null)
-            url_ += "Gender=" + encodeURIComponent("" + gender) + "&";
-        if (email !== undefined && email !== null)
-            url_ += "Email=" + encodeURIComponent("" + email) + "&";
-        if (phoneNumber !== undefined && phoneNumber !== null)
-            url_ += "PhoneNumber=" + encodeURIComponent("" + phoneNumber) + "&";
-        if (userName !== undefined && userName !== null)
-            url_ += "UserName=" + encodeURIComponent("" + userName) + "&";
+    updateUserProfile(command: UpdateUserCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/api/Users/update-profile";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -10166,6 +10154,7 @@ export interface IPaginatedListOfWorkoutLogDTO {
 }
 
 export class WorkoutLogDTO implements IWorkoutLogDTO {
+    id?: number;
     createdBy?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
@@ -10184,6 +10173,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.createdBy = _data["createdBy"];
             this.note = _data["note"];
             this.duration = _data["duration"];
@@ -10206,6 +10196,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["createdBy"] = this.createdBy;
         data["note"] = this.note;
         data["duration"] = this.duration;
@@ -10221,6 +10212,7 @@ export class WorkoutLogDTO implements IWorkoutLogDTO {
 }
 
 export interface IWorkoutLogDTO {
+    id?: number;
     createdBy?: string | undefined;
     note?: string | undefined;
     duration?: string | undefined;
@@ -12547,6 +12539,70 @@ export class AuthenticatedResetPasswordCommandDto implements IAuthenticatedReset
 export interface IAuthenticatedResetPasswordCommandDto {
     oldPassword?: string;
     newPassword?: string;
+}
+
+export class UpdateUserCommand implements IUpdateUserCommand {
+    userId?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    dateOfBirth?: Date | undefined;
+    gender?: string | undefined;
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+    userName?: string | undefined;
+
+    constructor(data?: IUpdateUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : <any>undefined;
+            this.gender = _data["gender"];
+            this.email = _data["email"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.userName = _data["userName"];
+        }
+    }
+
+    static fromJS(data: any): UpdateUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
+        data["gender"] = this.gender;
+        data["email"] = this.email;
+        data["phoneNumber"] = this.phoneNumber;
+        data["userName"] = this.userName;
+        return data;
+    }
+}
+
+export interface IUpdateUserCommand {
+    userId?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    dateOfBirth?: Date | undefined;
+    gender?: string | undefined;
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+    userName?: string | undefined;
 }
 
 export class PaginatedListOfUserListDTO implements IPaginatedListOfUserListDTO {
