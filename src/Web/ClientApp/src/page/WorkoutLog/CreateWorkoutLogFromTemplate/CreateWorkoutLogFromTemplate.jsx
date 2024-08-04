@@ -12,7 +12,7 @@ const CreateWorkoutLogFromTemplate = () => {
     const [workoutNote, setWorkoutNote] = useState('');
     const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
     const [duration, setDuration] = useState(0); // Duration in seconds
-    const [rows, setRows] = useState([]); // Move rows state here for centralized data
+    const [rows, setRows] = useState([]); // Centralized data for rows
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [isIntensityPopupOpen, setIsIntensityPopupOpen] = useState(false);
@@ -27,8 +27,9 @@ const CreateWorkoutLogFromTemplate = () => {
                 console.log(response.data);
 
                 setWorkoutName(template.templateName);
-                setWorkoutNote('');
-                setDuration(parseDuration(template.duration));
+                const expectedDuration = parseDuration(template.duration);
+                setWorkoutNote(`Expected duration: ${formatDuration(expectedDuration)}`);
+                setDuration(0); // Start the duration from 0
 
                 const prefilledRows = template.workoutTemplateExercises.map(ex => ({
                     exercise: ex.exercise,
@@ -53,6 +54,14 @@ const CreateWorkoutLogFromTemplate = () => {
 
         fetchTemplate();
     }, [templateId]);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setDuration(prevDuration => prevDuration + 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
 
     const parseDuration = (duration) => {
         const parts = duration.split(':');

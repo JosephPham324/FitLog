@@ -31,7 +31,7 @@ public class WorkoutTemplates : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization()
+            //.RequireAuthorization()
             .MapPost(CreatePersonalTemplate, "create-personal-template")
             .MapPost(CreateWorkoutTemplate, "create-workout-template")
             .MapPut(UpdateWorkoutTemplate, "update-workout-template/{id}")
