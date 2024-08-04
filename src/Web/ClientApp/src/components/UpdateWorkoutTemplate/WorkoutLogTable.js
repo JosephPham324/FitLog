@@ -36,7 +36,7 @@ const WorkoutTable = ({ rows, setRows, onDeleteRow }) => {
   };
 
   const addRow = (exercise) => {
-    setRows([...rows, { exercise, sets: 1, data: [{ reps: '', weight: '' }], note: '', isDeleted: false }]);
+    setRows([...rows, { exercise, sets: 1, intensity: '', data: [{ reps: '', weight: '' }], note: '', isDeleted: false }]);
   };
 
   const changeExercise = (exercise) => {
@@ -49,7 +49,7 @@ const WorkoutTable = ({ rows, setRows, onDeleteRow }) => {
 
   const handleInputChange = (rowIndex, setIndex, field, value) => {
     const newRows = [...rows];
-    newRows[rowIndex].data[setIndex][field] = field === 'weight' || field === 'reps' ? Number(value) : value;
+    newRows[rowIndex].data[setIndex][field] = value;
     setRows(newRows);
   };
 
@@ -69,6 +69,12 @@ const WorkoutTable = ({ rows, setRows, onDeleteRow }) => {
     setRows(newRows);
   };
 
+  const handleIntensityChange = (rowIndex, value) => {
+    const newRows = [...rows];
+    newRows[rowIndex].intensity = value;
+    setRows(newRows);
+  };
+
   const deleteRow = (rowIndex) => {
     onDeleteRow(rowIndex);
   };
@@ -83,6 +89,7 @@ const WorkoutTable = ({ rows, setRows, onDeleteRow }) => {
             <th>Sets</th>
             <th>Weight (kg)</th>
             <th>Reps</th>
+            <th>Intensity</th>
             <th>Note</th>
             <th>Action</th>
           </tr>
@@ -126,6 +133,15 @@ const WorkoutTable = ({ rows, setRows, onDeleteRow }) => {
                     disabled={row.isDeleted}
                   />
                 ))}
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value={row.intensity}
+                  onChange={(e) => handleIntensityChange(rowIndex, e.target.value)}
+                  className="form-control"
+                  disabled={row.isDeleted}
+                />
               </td>
               <td>
                 <button className="btn btn-secondary" onClick={() => openNotePopup(rowIndex)} disabled={row.isDeleted}>Note</button>

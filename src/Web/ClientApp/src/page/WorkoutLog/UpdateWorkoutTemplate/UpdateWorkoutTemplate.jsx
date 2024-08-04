@@ -28,6 +28,7 @@ const UpdateWorkoutTemplatePage = () => {
                 setRows(templateData.workoutTemplateExercises.map(exercise => ({
                     exercise: { exerciseId: exercise.exercise.exerciseId, exerciseName: exercise.exercise.exerciseName },
                     sets: exercise.setsRecommendation,
+                    intensity: exercise.intensityPercentage, // Assuming intensity is a single value
                     data: JSON.parse(exercise.weightsUsed).map((weight, index) => ({
                         weight,
                         reps: JSON.parse(exercise.numbersOfReps)[index]
@@ -66,7 +67,7 @@ const UpdateWorkoutTemplatePage = () => {
             orderInSuperset: 0, // Assuming no supersets, update if necessary
             note: row.note,
             setsRecommendation: row.sets,
-            intensityPercentage: 0, // Assuming no intensity recommendation, update if necessary
+            intensityPercentage: row.intensity, // Single value for intensity
             rpeRecommendation: 0, // Assuming no RPE recommendation, update if necessary
             weightsUsed: `[${row.data.map(set => set.weight).join(', ')}]`,
             numbersOfReps: `[${row.data.map(set => set.reps).join(', ')}]`,
