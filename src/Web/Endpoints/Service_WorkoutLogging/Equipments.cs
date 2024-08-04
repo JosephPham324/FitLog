@@ -43,7 +43,7 @@ public class Equipments : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public Task<PaginatedList<EquipmentDTO>> SearchEquipment(ISender sender, [AsParameters] PaginatedSearchEquipmentQuery query)
+    public Task<PaginatedList<EquipmentDetailsDTO>> SearchEquipment(ISender sender, [AsParameters] PaginatedSearchEquipmentQuery query)
     {
         return sender.Send(query);
     }

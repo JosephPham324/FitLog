@@ -482,7 +482,7 @@ export class EquipmentsClient {
         return Promise.resolve<PaginatedListOfEquipmentDetailsDTO>(null as any);
     }
 
-    searchEquipment(equipmentName: string | null | undefined, pageNumber: number, pageSize: number): Promise<PaginatedListOfEquipmentDTO> {
+    searchEquipment(equipmentName: string | null | undefined, pageNumber: number, pageSize: number): Promise<PaginatedListOfEquipmentDetailsDTO> {
         let url_ = this.baseUrl + "/api/Equipments/search?";
         if (equipmentName !== undefined && equipmentName !== null)
             url_ += "EquipmentName=" + encodeURIComponent("" + equipmentName) + "&";
@@ -508,7 +508,7 @@ export class EquipmentsClient {
         });
     }
 
-    protected processSearchEquipment(response: Response): Promise<PaginatedListOfEquipmentDTO> {
+    protected processSearchEquipment(response: Response): Promise<PaginatedListOfEquipmentDetailsDTO> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -516,7 +516,7 @@ export class EquipmentsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfEquipmentDTO.fromJS(resultData200);
+            result200 = PaginatedListOfEquipmentDetailsDTO.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -524,7 +524,7 @@ export class EquipmentsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PaginatedListOfEquipmentDTO>(null as any);
+        return Promise.resolve<PaginatedListOfEquipmentDetailsDTO>(null as any);
     }
 
     getEquipmentById(id: number): Promise<EquipmentDetailsDTO> {
@@ -607,16 +607,20 @@ export class EquipmentsClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    deleteEquipment(id: number): Promise<Result> {
+    deleteEquipment(id: number, command: DeleteEquipmentCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Equipments/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
+            body: content_,
             method: "DELETE",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1481,16 +1485,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: number; }>(null as any);
     }
 
-    getExerciseLogHistory(userId: string | null, exerciseId: number): Promise<ExerciseLogDTO[]> {
-        let url_ = this.baseUrl + "/api/Statistics/exercise/exercise-log-history?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+    getExerciseLogHistory(exerciseId: number): Promise<ExerciseLogDTO[]> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise/exercise-log-history/{ExerciseId}";
         if (exerciseId === undefined || exerciseId === null)
-            throw new Error("The parameter 'exerciseId' must be defined and cannot be null.");
-        else
-            url_ += "ExerciseId=" + encodeURIComponent("" + exerciseId) + "&";
+            throw new Error("The parameter 'exerciseId' must be defined.");
+        url_ = url_.replace("{ExerciseId}", encodeURIComponent("" + exerciseId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1531,7 +1530,7 @@ export class StatisticsClient {
         return Promise.resolve<ExerciseLogDTO[]>(null as any);
     }
 
-    getEstimated1RM(userId: string | null, exerciseId: number): Promise<any> {
+    getEstimated1RM(userId: string | null, exerciseId: number): Promise<{ [key: string]: OneRepMaxRecord; }> {
         let url_ = this.baseUrl + "/api/Statistics/exercise/estimated1RM?";
         if (userId === undefined)
             throw new Error("The parameter 'userId' must be defined.");
@@ -1555,7 +1554,7 @@ export class StatisticsClient {
         });
     }
 
-    protected processGetEstimated1RM(response: Response): Promise<any> {
+    protected processGetEstimated1RM(response: Response): Promise<{ [key: string]: OneRepMaxRecord; }> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1563,8 +1562,16 @@ export class StatisticsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] ? OneRepMaxRecord.fromJS(resultData200[key]) : new OneRepMaxRecord();
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1572,7 +1579,7 @@ export class StatisticsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<any>(null as any);
+        return Promise.resolve<{ [key: string]: OneRepMaxRecord; }>(null as any);
     }
 
     getExercisesWithHistory(): Promise<ExerciseHistoryEntry[]> {
@@ -5944,110 +5951,6 @@ export interface IEquipmentDetailsDTO {
     imageUrl?: string | undefined;
 }
 
-export class PaginatedListOfEquipmentDTO implements IPaginatedListOfEquipmentDTO {
-    items?: EquipmentDTO[];
-    pageNumber?: number;
-    totalPages?: number;
-    totalCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-
-    constructor(data?: IPaginatedListOfEquipmentDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(EquipmentDTO.fromJS(item));
-            }
-            this.pageNumber = _data["pageNumber"];
-            this.totalPages = _data["totalPages"];
-            this.totalCount = _data["totalCount"];
-            this.hasPreviousPage = _data["hasPreviousPage"];
-            this.hasNextPage = _data["hasNextPage"];
-        }
-    }
-
-    static fromJS(data: any): PaginatedListOfEquipmentDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfEquipmentDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["pageNumber"] = this.pageNumber;
-        data["totalPages"] = this.totalPages;
-        data["totalCount"] = this.totalCount;
-        data["hasPreviousPage"] = this.hasPreviousPage;
-        data["hasNextPage"] = this.hasNextPage;
-        return data;
-    }
-}
-
-export interface IPaginatedListOfEquipmentDTO {
-    items?: EquipmentDTO[];
-    pageNumber?: number;
-    totalPages?: number;
-    totalCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-}
-
-export class EquipmentDTO implements IEquipmentDTO {
-    equipmentId?: number;
-    equipmentName?: string | undefined;
-
-    constructor(data?: IEquipmentDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.equipmentId = _data["equipmentId"];
-            this.equipmentName = _data["equipmentName"];
-        }
-    }
-
-    static fromJS(data: any): EquipmentDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new EquipmentDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["equipmentId"] = this.equipmentId;
-        data["equipmentName"] = this.equipmentName;
-        return data;
-    }
-}
-
-export interface IEquipmentDTO {
-    equipmentId?: number;
-    equipmentName?: string | undefined;
-}
-
 export class Result implements IResult {
     success?: boolean;
     errors?: string[];
@@ -6178,6 +6081,42 @@ export interface IUpdateEquipmentCommand {
     equipmentId?: number;
     equipmentName?: string | undefined;
     imageUrl?: string | undefined;
+}
+
+export class DeleteEquipmentCommand implements IDeleteEquipmentCommand {
+    equipmentId?: number;
+
+    constructor(data?: IDeleteEquipmentCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.equipmentId = _data["equipmentId"];
+        }
+    }
+
+    static fromJS(data: any): DeleteEquipmentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteEquipmentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["equipmentId"] = this.equipmentId;
+        return data;
+    }
+}
+
+export interface IDeleteEquipmentCommand {
+    equipmentId?: number;
 }
 
 export class PaginatedListOfExerciseDTO implements IPaginatedListOfExerciseDTO {
@@ -7022,6 +6961,66 @@ export interface IExerciseLogDTO {
     numberOfReps?: string | undefined;
     footageUrls?: string | undefined;
     exerciseName?: string | undefined;
+}
+
+export class OneRepMaxRecord implements IOneRepMaxRecord {
+    epley?: number;
+    brzycki?: number;
+    lander?: number;
+    lombardi?: number;
+    mayhew?: number;
+    oConner?: number;
+    wathan?: number;
+
+    constructor(data?: IOneRepMaxRecord) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.epley = _data["epley"];
+            this.brzycki = _data["brzycki"];
+            this.lander = _data["lander"];
+            this.lombardi = _data["lombardi"];
+            this.mayhew = _data["mayhew"];
+            this.oConner = _data["oConner"];
+            this.wathan = _data["wathan"];
+        }
+    }
+
+    static fromJS(data: any): OneRepMaxRecord {
+        data = typeof data === 'object' ? data : {};
+        let result = new OneRepMaxRecord();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["epley"] = this.epley;
+        data["brzycki"] = this.brzycki;
+        data["lander"] = this.lander;
+        data["lombardi"] = this.lombardi;
+        data["mayhew"] = this.mayhew;
+        data["oConner"] = this.oConner;
+        data["wathan"] = this.wathan;
+        return data;
+    }
+}
+
+export interface IOneRepMaxRecord {
+    epley?: number;
+    brzycki?: number;
+    lander?: number;
+    lombardi?: number;
+    mayhew?: number;
+    oConner?: number;
+    wathan?: number;
 }
 
 export class ExerciseHistoryEntry implements IExerciseHistoryEntry {
@@ -11304,6 +11303,7 @@ export interface IFacebookLoginRequest {
 export class RoleDto implements IRoleDto {
     id?: string;
     name?: string;
+    roleDesc?: string | undefined;
 
     constructor(data?: IRoleDto) {
         if (data) {
@@ -11318,6 +11318,7 @@ export class RoleDto implements IRoleDto {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
+            this.roleDesc = _data["roleDesc"];
         }
     }
 
@@ -11332,6 +11333,7 @@ export class RoleDto implements IRoleDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
+        data["roleDesc"] = this.roleDesc;
         return data;
     }
 }
@@ -11339,6 +11341,7 @@ export class RoleDto implements IRoleDto {
 export interface IRoleDto {
     id?: string;
     name?: string;
+    roleDesc?: string | undefined;
 }
 
 export class AddRoleCommand implements IAddRoleCommand {

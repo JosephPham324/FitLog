@@ -9,7 +9,7 @@ public record GetExerciseLogHistoryQuery : IRequest<IEnumerable<ExerciseLogDTO>>
 {
     [JsonIgnore]
     public string UserId { get; set; } = string.Empty;
-    public int ExerciseId { get; init; }
+    public int ExerciseId { get; set; }
 }
 
 public class GetExerciseLogHistoryQueryValidator : AbstractValidator<GetExerciseLogHistoryQuery>

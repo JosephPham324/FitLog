@@ -1,9 +1,9 @@
-//import React, { useState, useEffect } from 'react';
+﻿//import React, { useState, useEffect } from 'react';
 //import axiosInstance from '../../utils/axiosInstance'; // Adjust the import path according to your project structure
 //import './WorkoutLogGraphs.css';
 //import MuscleGroupsExercises from '../../assets/MuscleGroupsExercises.png';
-//import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-//import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, addDays } from 'date-fns';
+//import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+//import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, addWeeks, subWeeks, addMonths, subMonths, addYears, subYears } from 'date-fns';
 
 //const WorkoutLogGraphs = () => {
 //  const [activeTab, setActiveTab] = useState('Weekly');
@@ -16,15 +16,17 @@
 //  });
 //  const [chartData, setChartData] = useState([]);
 //  const [muscleEngagementData, setMuscleEngagementData] = useState([]);
-//  const [dateRange, setDateRange] = useState('');
+//  const [totalRepsData, setTotalRepsData] = useState([]);
+//  const [frequencyData, setFrequencyData] = useState([]); // New state for frequency data
+//  const [dateRange, setDateRange] = useState({ start: new Date(), end: new Date() });
 
 //  const toggleModal = () => {
 //    setModalOpen(!modalOpen);
 //  };
 
-//  const fetchSummaryData = async (timeFrame) => {
+//  const fetchSummaryData = async (timeFrame, start, end) => {
 //    try {
-//      const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/overall/summary?TimeFrame=${timeFrame}`);
+//      const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/overall/summary?TimeFrame=${timeFrame}&Start=${start.toISOString()}&End=${end.toISOString()}`);
 //      const data = response.data;
 //      setSummaryData({
 //        numberOfWorkouts: data.numberOfWorkouts,
@@ -38,13 +40,33 @@
 //    }
 //  };
 
-//  const fetchMuscleEngagementData = async (timeFrame) => {
+//  const fetchMuscleEngagementData = async (timeFrame, start, end) => {
 //    try {
-//      const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/overall/muscles-engagement?TimeFrame=${timeFrame}`);
+//      const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/overall/muscles-engagement?TimeFrame=${timeFrame}&Start=${start.toISOString()}&End=${end.toISOString()}`);
 //      const data = response.data;
 //      setMuscleEngagementData(data.muscleEngagement || []); // Adjust according to the actual API response structure
 //    } catch (error) {
 //      console.error('Error fetching muscle engagement data:', error);
+//    }
+//  };
+
+//  const fetchTotalRepsData = async (timeFrame, start, end) => {
+//    try {
+//      const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/overall/total-training-reps?TimeFrame=${timeFrame}&Start=${start.toISOString()}&End=${end.toISOString()}`);
+//      const data = response.data;
+//      setTotalRepsData(data.totalReps || []); // Adjust according to the actual API response structure
+//    } catch (error) {
+//      console.error('Error fetching total reps data:', error);
+//    }
+//  };
+
+//  const fetchFrequencyData = async (timeFrame, start, end) => {
+//    try {
+//      const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/overall/frequency?TimeFrame=${timeFrame}&Start=${start.toISOString()}&End=${end.toISOString()}`);
+//      const data = response.data;
+//      setFrequencyData(data.frequency || []); // Adjust according to the actual API response structure
+//    } catch (error) {
+//      console.error('Error fetching frequency data:', error);
 //    }
 //  };
 
@@ -54,30 +76,68 @@
 
 //    switch (timeFrame) {
 //      case 'Weekly':
-//        start = startOfWeek(today, { weekStartsOn: 1 });
-//        end = endOfWeek(today, { weekStartsOn: 1 });
+//        start = startOfWeek(dateRange.start, { weekStartsOn: 1 });
+//        end = endOfWeek(dateRange.start, { weekStartsOn: 1 });
 //        break;
 //      case 'Monthly':
-//        start = startOfMonth(today);
-//        end = endOfMonth(today);
+//        start = startOfMonth(dateRange.start);
+//        end = endOfMonth(dateRange.start);
 //        break;
 //      case 'Yearly':
-//        start = new Date(today.getFullYear(), 0, 1);
-//        end = new Date(today.getFullYear(), 11, 31);
+//        start = new Date(dateRange.start.getFullYear(), 0, 1);
+//        end = new Date(dateRange.start.getFullYear(), 11, 31);
 //        break;
 //      default:
-//        start = startOfWeek(today, { weekStartsOn: 1 });
-//        end = endOfWeek(today, { weekStartsOn: 1 });
+//        start = startOfWeek(dateRange.start, { weekStartsOn: 1 });
+//        end = endOfWeek(dateRange.start, { weekStartsOn: 1 });
 //    }
 
-//    setDateRange(`${format(start, 'MMM d')} - ${format(end, 'MMM d')}`);
+//    setDateRange({ start, end });
+//    fetchSummaryData(timeFrame, start, end);
+//    fetchMuscleEngagementData(timeFrame, start, end);
+//    fetchTotalRepsData(timeFrame, start, end);
+//    fetchFrequencyData(timeFrame, start, end); // Fetch frequency data as well
 //  };
 
 //  useEffect(() => {
-//    fetchSummaryData(activeTab);
-//    fetchMuscleEngagementData(activeTab);
 //    updateDateRange(activeTab);
-//  }, [activeTab]);
+//  }, [activeTab, dateRange.start]);
+
+//  const handlePreviousClick = () => {
+//    let newStart;
+//    switch (activeTab) {
+//      case 'Weekly':
+//        newStart = subWeeks(dateRange.start, 1);
+//        break;
+//      case 'Monthly':
+//        newStart = subMonths(dateRange.start, 1);
+//        break;
+//      case 'Yearly':
+//        newStart = subYears(dateRange.start, 1);
+//        break;
+//      default:
+//        newStart = subWeeks(dateRange.start, 1);
+//    }
+//    setDateRange({ ...dateRange, start: newStart });
+//  };
+
+//  const handleNextClick = () => {
+//    let newStart;
+//    switch (activeTab) {
+//      case 'Weekly':
+//        newStart = addWeeks(dateRange.start, 1);
+//        break;
+//      case 'Monthly':
+//        newStart = addMonths(dateRange.start, 1);
+//        break;
+//      case 'Yearly':
+//        newStart = addYears(dateRange.start, 1);
+//        break;
+//      default:
+//        newStart = addWeeks(dateRange.start, 1);
+//    }
+//    setDateRange({ ...dateRange, start: newStart });
+//  };
 
 //  return (
 //    <div className="dashboard">
@@ -116,9 +176,9 @@
 //        <div className="muscle-tracker-header">
 //          <h2>Muscle Engagement Tracker</h2>
 //          <div className="date-selector">
-//            <button>&lt;</button>
-//            <span>{dateRange}</span>
-//            <button>&gt;</button>
+//            <button onClick={handlePreviousClick}>&lt;</button>
+//            <span>{`${format(dateRange.start, 'MMM d')} - ${format(dateRange.end, 'MMM d')}`}</span>
+//            <button onClick={handleNextClick}>&gt;</button>
 //          </div>
 //        </div>
 //        <div className="muscle-tracker-content">
@@ -154,16 +214,27 @@
 //          </div>
 //        </div>
 //      </div>
+
 //      <div className="frequency">
 //        <div className="chart">
-//          {/* Your chart component or library goes here */}
+//          <h2>Frequency</h2>
+//          <ResponsiveContainer width="100%" height={300}>
+//            <BarChart data={frequencyData} margin={{ left: 50 }}>
+//              <CartesianGrid strokeDasharray="3 3" />
+//              <XAxis dataKey="date" />
+//              <YAxis />
+//              <Tooltip />
+//              <Bar dataKey="workouts" fill="#82ca9d" />
+//            </BarChart>
+//          </ResponsiveContainer>
 //        </div>
 //      </div>
+
 //      <div className="graphs">
 //        <div className="graph">
 //          <div className="graph-title">Total Reps</div>
 //          <ResponsiveContainer width="100%" height={300}>
-//            <LineChart data={chartData} margin={{ left: 50 }}>
+//            <LineChart data={totalRepsData} margin={{ left: 50 }}>
 //              <CartesianGrid strokeDasharray="3 3" />
 //              <XAxis dataKey="date" />
 //              <YAxis />
@@ -206,7 +277,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../utils/axiosInstance'; // Adjust the import path according to your project structure
 import './WorkoutLogGraphs.css';
 import MuscleGroupsExercises from '../../assets/MuscleGroupsExercises.png';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, addWeeks, subWeeks, addMonths, subMonths, addYears, subYears } from 'date-fns';
 
 const WorkoutLogGraphs = () => {
@@ -221,6 +292,7 @@ const WorkoutLogGraphs = () => {
   const [chartData, setChartData] = useState([]);
   const [muscleEngagementData, setMuscleEngagementData] = useState([]);
   const [totalRepsData, setTotalRepsData] = useState([]);
+  const [frequencyData, setFrequencyData] = useState([]); // New state for frequency data
   const [dateRange, setDateRange] = useState({ start: new Date(), end: new Date() });
 
   const toggleModal = () => {
@@ -263,6 +335,26 @@ const WorkoutLogGraphs = () => {
     }
   };
 
+  const fetchFrequencyData = async (timeFrame, start, end) => {
+    try {
+      const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/overall/frequency?TimeFrame=${timeFrame}&Start=${start.toISOString()}&End=${end.toISOString()}`);
+      const data = response.data;
+      setFrequencyData(data.frequency || []); // Adjust according to the actual API response structure
+    } catch (error) {
+      console.error('Error fetching frequency data:', error);
+    }
+  };
+
+  const fetchTotalTrainingVolumeData = async (timeFrame, start, end) => {
+    try {
+      const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/overall/total-training-tonnage?TimeFrame=${timeFrame}&Start=${start.toISOString()}&End=${end.toISOString()}`);
+      const data = response.data;
+      setChartData(data.totalTonnage || []); // Adjust according to the actual API response structure
+    } catch (error) {
+      console.error('Error fetching total training volume data:', error);
+    }
+  };
+
   const updateDateRange = (timeFrame) => {
     let start, end;
     const today = new Date();
@@ -289,6 +381,8 @@ const WorkoutLogGraphs = () => {
     fetchSummaryData(timeFrame, start, end);
     fetchMuscleEngagementData(timeFrame, start, end);
     fetchTotalRepsData(timeFrame, start, end);
+    fetchFrequencyData(timeFrame, start, end); // Fetch frequency data as well
+    fetchTotalTrainingVolumeData(timeFrame, start, end); // Fetch total training volume data as well
   };
 
   useEffect(() => {
@@ -406,11 +500,22 @@ const WorkoutLogGraphs = () => {
           </div>
         </div>
       </div>
+
       <div className="frequency">
         <div className="chart">
-          {/* Your chart component or library goes here */}
+          <h2>Frequency</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={frequencyData} margin={{ left: 50 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="workouts" fill="#82ca9d" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
+
       <div className="graphs">
         <div className="graph">
           <div className="graph-title">Total Reps</div>
@@ -442,7 +547,7 @@ const WorkoutLogGraphs = () => {
         <div className="modal">
           <div className="modal-content">
             <span className="close" onClick={toggleModal}>&times;</span>
-            <p>The general set formula is expressed as n(A?B) = n(A) + n(B) - n(A?B), where A and B represent two sets. Here, n(A?B) denotes the count of elements existing in either set A or B, while n(A?B) indicates the count of elements shared by both sets A and B.</p>
+            <p>The general set formula is expressed as n(A∪B) = n(A) + n(B) - n(A∩B), where A and B represent two sets. Here, n(A∪B) denotes the count of elements existing in either set A or B, while n(A∩B) indicates the count of elements shared by both sets A and B.</p>
           </div>
         </div>
       )}
