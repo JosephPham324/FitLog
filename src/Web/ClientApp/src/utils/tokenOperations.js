@@ -21,3 +21,9 @@ export function getUserRole() {
   const decodedToken = getDecodedToken();
   return decodedToken ? decodedToken.role || '' : '';
 }
+
+
+export function getUserId() {
+  const decodedToken = getDecodedToken();
+  return decodedToken ? decodedToken.Id || '' : '';
+}
