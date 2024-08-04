@@ -74,6 +74,7 @@
     .navbar-nav {
         flex-direction: column;
         align-items: center;
+        gap: 10px;
     }
 
     .navbar-brand {
@@ -84,16 +85,14 @@
         font-size: 0.8em;
     }
 
-    .navbar-nav {
-        gap: 10px;
+    /* Center the nested dropdown menu */
+    .centered-dropdown-menu {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        right: auto !important;
     }
-/* Center the nested dropdown menu */
-.centered-dropdown-menu {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    right: auto !important;
-}
 
-.nested-dropdown .dropdown-menu {
-    position: relative;
+    .nested-dropdown .dropdown-menu {
+        position: relative;
+    }
 }
