@@ -73,14 +73,14 @@ public class WorkoutTemplates : EndpointGroupBase
     public async Task<Result> UpdateWorkoutTemplate(ISender sender, [FromBody] UpdateWorkoutTemplateCommand command, int id)
     {
         Result? result = null;
-        try
-        {
+        //try
+        //{
             result = await sender.Send(command);
-        }
-        catch (Exception e)
-        {
-            return Result.Failure([e.Message]);
-        }
+        //}
+        //catch (Exception e)
+        //{
+            //return Result.Failure([e.Message]);
+        //}
         return result ?? Result.Failure(["Failed to create template"]);
     }
 

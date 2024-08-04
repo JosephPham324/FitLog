@@ -40,6 +40,7 @@ import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFrom
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
 import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
 import { Navigate } from 'react-router-dom';
+import UpdateWorkoutTemplatePage from "./page/WorkoutLog/UpdateWorkoutTemplate/UpdateWorkoutTemplate";
 
 
 const AppRoutes = [
@@ -202,6 +203,10 @@ const AppRoutes = [
   {
     path: '/workout-templates/create',
     element: React.createElement(withAuthProtection(CreateWorkoutTemplatePage))
+  },
+  {
+    path: '/workout-templates/:templateId/update',
+    element: React.createElement(withAuthProtection(UpdateWorkoutTemplatePage))
   },
   // Wildcard route to catch all unmatched routes and redirect to home page
   {

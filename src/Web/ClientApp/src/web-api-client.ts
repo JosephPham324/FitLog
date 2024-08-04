@@ -11423,6 +11423,7 @@ export class WorkoutTemplateExerciseDto2 implements IWorkoutTemplateExerciseDto2
     rpeRecommendation?: number | undefined;
     weightsUsed?: string | undefined;
     numbersOfReps?: string | undefined;
+    isDeleted?: boolean;
 
     constructor(data?: IWorkoutTemplateExerciseDto2) {
         if (data) {
@@ -11444,6 +11445,7 @@ export class WorkoutTemplateExerciseDto2 implements IWorkoutTemplateExerciseDto2
             this.rpeRecommendation = _data["rpeRecommendation"];
             this.weightsUsed = _data["weightsUsed"];
             this.numbersOfReps = _data["numbersOfReps"];
+            this.isDeleted = _data["isDeleted"];
         }
     }
 
@@ -11465,6 +11467,7 @@ export class WorkoutTemplateExerciseDto2 implements IWorkoutTemplateExerciseDto2
         data["rpeRecommendation"] = this.rpeRecommendation;
         data["weightsUsed"] = this.weightsUsed;
         data["numbersOfReps"] = this.numbersOfReps;
+        data["isDeleted"] = this.isDeleted;
         return data;
     }
 }
@@ -11479,6 +11482,7 @@ export interface IWorkoutTemplateExerciseDto2 {
     rpeRecommendation?: number | undefined;
     weightsUsed?: string | undefined;
     numbersOfReps?: string | undefined;
+    isDeleted?: boolean;
 }
 
 export class PaginatedListOfWorkoutTemplateListDto implements IPaginatedListOfWorkoutTemplateListDto {

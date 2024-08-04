@@ -1,0 +1,24 @@
+﻿.modal.show.d-block {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-lg {
+    max-width: 90%;
+}
+
+.form-check-inline {
+    margin-right: 10px;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.list-group-item.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}

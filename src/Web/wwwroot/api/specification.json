@@ -7847,6 +7847,9 @@
           "numbersOfReps": {
             "type": "string",
             "nullable": true
+          },
+          "isDeleted": {
+            "type": "boolean"
           }
         }
       },

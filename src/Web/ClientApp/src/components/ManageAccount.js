@@ -141,7 +141,7 @@ export function ManageAccount() {
             {/*            <Button
               color="danger"
               className="mr-2 delete-btn"
-              onClick={() => deleteUser(user.id)}
+              onClick={() => deleteUser(user.templateId)}
             >
               Delete
             </Button>*/}

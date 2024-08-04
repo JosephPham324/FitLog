@@ -1,0 +1,8 @@
+﻿.workout-table th, .workout-table td {
+    vertical-align: middle;
+}
+
+.workout-table input {
+    width: 100%;
+    box-sizing: border-box;
+}
