@@ -20,7 +20,7 @@ const WorkoutTemplateDetailsPage = () => {
         const templateData = response.data;
         setWorkoutName(templateData.templateName);
         setDuration(parseInt(templateData.duration));
-        setOwnerId(templateData.ownerId); // Assuming ownerId is part of the response data
+        setOwnerId(templateData.createdBy); // Assuming ownerId is part of the response data
         setRows(templateData.workoutTemplateExercises.map(exercise => ({
           exercise: { exerciseId: exercise.exercise.exerciseId, exerciseName: exercise.exercise.exerciseName },
           sets: exercise.setsRecommendation,
@@ -40,10 +40,12 @@ const WorkoutTemplateDetailsPage = () => {
   }, [templateId]);
 
   const handleUpdateButtonClick = () => {
-    navigate(`/workout-template/${templateId}/update`);
+    navigate(`/workout-templates/${templateId}/update`);
   };
 
-  const userId = getUserId();
+    const userId = getUserId();
+    console.log(userId);
+    console.log(ownerId)
 
   return (
     <div className="container mt-5">

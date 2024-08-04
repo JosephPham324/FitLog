@@ -7923,6 +7923,9 @@
           "creatorName": {
             "type": "string"
           },
+          "createdBy": {
+            "type": "string"
+          },
           "workoutTemplateExercises": {
             "type": "array",
             "items": {

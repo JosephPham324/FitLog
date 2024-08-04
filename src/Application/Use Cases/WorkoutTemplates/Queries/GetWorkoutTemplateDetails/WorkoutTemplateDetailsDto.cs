@@ -10,6 +10,7 @@ public class WorkoutTemplateDetailsDto
     public string? TemplateName { get; set; }
     public string? Duration { get; set; }
     public string CreatorName { get; set; } = string.Empty;
+    public string CreatedBy { get; set; } = string.Empty;
     public ICollection<WorkoutTemplateExerciseDTO> WorkoutTemplateExercises { get; set; } = new List<WorkoutTemplateExerciseDTO>();
 
     private class Mapping : AutoMapper.Profile
