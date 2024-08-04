@@ -1,0 +1,29 @@
+﻿.custom-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    padding-right: 1.5rem; /* Adjust this based on the down arrow icon */
+    font-size: 1rem;
+    color: inherit; /* Use inherited color */
+    cursor: pointer;
+}
+
+    .custom-select:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .custom-select::after {
+        content: '▼'; /* Unicode character for down arrow */
+        position: absolute;
+        right: 1rem;
+        pointer-events: none;
+    }
+
+.table .custom-select {
+    display: inline-block;
+    width: auto;
+    margin-right: 1rem;
+}

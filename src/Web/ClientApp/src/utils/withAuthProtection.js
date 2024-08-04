@@ -4,7 +4,13 @@ import { AuthContext } from '../context/AuthContext';
 
 const withAuthProtection = (WrappedComponent) => {
   const ProtectedComponent = (props) => {
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, loading } = useContext(AuthContext);
+    console.log('isAuthenticated in ProtectedComponent:', isAuthenticated);
+    console.log('loading in ProtectedComponent:', loading);
+
+    if (loading) {
+      return <div>Loading...</div>; // Show a loading indicator while checking authentication
+    }
 
     if (!isAuthenticated) {
       return <Navigate to="/login" />;

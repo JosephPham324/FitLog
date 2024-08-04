@@ -153,7 +153,7 @@ export function ManageAccount() {
 
   return (
     <Container>
-      <h1 className="my-4">Manage Account</h1>
+      <h1 className="my-4"><strong>Manage Account</strong></h1>
       <Row className="align-items-center mb-3">
         <Col xs="12" md="10" className="mb-3 mb-md-0">
           <Input

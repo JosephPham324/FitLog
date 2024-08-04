@@ -1,61 +1,129 @@
 ﻿.workout-history {
+    display: flex;
+    justify-content: space-around;
     padding: 20px;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
 }
 
 .calendar-container {
-    background-color: #ffffff;
-    border-radius: 8px;
+    background-color: white;
+    height: 50%;
     padding: 20px;
-    margin-right: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.has-workout {
-    background-color: #007bff !important;
-    color: #ffffff !important;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .workout-container {
-    background-color: #ffffff;
-    border-radius: 8px;
+    background-color: white;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    margin-left: 20px;
 }
 
-.workout-details h3 {
-    margin-top: 0;
+.workout-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.workout-details {
+    background-color: #e9e9e9;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 10px;
 }
 
 .workout-entry {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #dee2e6;
+    margin-top: 10px;
 }
 
-    .workout-entry:last-child {
-        border-bottom: none;
-    }
+.calendar-container h2,
+.workout-container h2 {
+    margin-bottom: 20px;
+}
 
-    .workout-entry span {
-        display: block;
-        width: 30%;
+.calendar-container .react-calendar {
+    border: none;
+    font-family: Arial, sans-serif;
+}
+
+.has-workout abbr {
+    background-color: #00bcd4;
+    color: white;
+    border-radius: 50%;
+    padding: 5px;
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.workout-details h3 {
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+    table th, table td {
+        border: 1px solid #ddd;
+        padding: 8px;
         text-align: center;
     }
 
-.workout-list {
-    max-height: 400px; /* Chiều cao cố định của danh sách workout */
-    overflow-y: auto; /* Tạo thanh cuộn khi danh sách quá dài */
-}
-
-.workout-details {
-    margin-bottom: 20px; /* Khoảng cách giữa các workout-details */
-}
+    table th {
+        background-color: #f2f2f2;
+    }
 
 .pagination {
-    margin-top: 10px; /* Khoảng cách từ phân trang đến danh sách workout */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
     .pagination button {
-        margin-right: 10px; /* Khoảng cách giữa các nút */
+        background-color: #fff;
+        border: 1px solid #ddd;
+        color: #007bff;
+        padding: 8px 12px;
+        margin: 0 2px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
     }
+
+        .pagination button.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .pagination button:disabled {
+            cursor: not-allowed;
+            color: #aaa;
+        }
+
+        .pagination button:hover:not(.active):not(:disabled) {
+            background-color: #e9e9e9;
+        }
+/* WorkoutHistory.css */
+.has-workout .react-calendar__tile {
+    background-color: #00aaff;
+    color: white;
+}
+
+    .has-workout .react-calendar__tile:hover {
+        background-color: #007acc;
+    }
+
+.active {
+    background-color: #007acc;
+    color: white;
+}

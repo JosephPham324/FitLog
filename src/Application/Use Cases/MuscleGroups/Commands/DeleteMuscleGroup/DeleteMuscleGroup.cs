@@ -33,6 +33,18 @@ public class DeleteMuscleGroupCommandHandler : IRequestHandler<DeleteMuscleGroup
             return Result.Failure(["Muscle group not found"]); // Entity not found
         }
 
+        //Check if referenced
+        var isReferenced =
+            await _context.Exercises
+            .Include(e => e.ExerciseMuscleGroups)
+            .Where(e => e.ExerciseMuscleGroups.Any(em => em.MuscleGroupId == request.Id))
+            .AnyAsync();
+        if (isReferenced)
+        {
+            return Result.Failure(["Muscle is referenced by 1 or more exercises!"]); // Entity not found
+        }
+
+
         _context.MuscleGroups.Remove(entity);
         try
         {

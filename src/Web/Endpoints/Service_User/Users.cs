@@ -49,7 +49,7 @@ public class Users : EndpointGroupBase
         app.MapGroup(this)
            //.RequireAuthorization()
            .MapGet(GetUserProfile, "user-profile")
-           .MapPut(AuthenticatedResetPassword,"authenticated-reset-password")
+           .MapPut(AuthenticatedResetPassword, "authenticated-reset-password")
            .MapPut(UpdateUserProfile, "update-profile");
 
 
@@ -69,7 +69,7 @@ public class Users : EndpointGroupBase
            .MapGroup("/coaches")
            .MapGet(GetCoachesList, "coaches");
 
-       
+
     }
 
     /// <summary>
@@ -111,10 +111,14 @@ public class Users : EndpointGroupBase
     /// <param name="sender">The sender used to send the get profile details request.</param>
     /// <param name="request">The request containing parameters for fetching the user profile details.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the user profile DTO.</returns>
-    public Task<UserProfileDTO> GetUserProfile(ISender sender, [AsParameters] GetProfileDetailsRequest request)
+    public Task<UserProfileDTO> GetUserProfile(ISender sender /*[AsParameters] GetProfileDetailsRequest request*/)
     {
-        //request.UserId = _identityService.Id ?? "";
 
+        var UserId = _identityService.Id ?? "";
+        var request = new GetProfileDetailsRequest()
+        {
+            UserId = UserId
+        };
         return sender.Send(request);
     }
 
@@ -205,7 +209,7 @@ public class Users : EndpointGroupBase
     {
         return await sender.Send(command);
     }
-    
+
     public async Task<Result> ConfirmEmail(ISender sender, [FromBody] ConfirmEmailCommand command)
     {
         return await sender.Send(command);
@@ -233,7 +237,7 @@ public class Users : EndpointGroupBase
         return sender.Send(request);
     }
 
-    public Task<Result> UpdateUserProfile(ISender sender, [AsParameters] UpdateUserCommand command)
+    public Task<Result> UpdateUserProfile(ISender sender, [FromBody] UpdateUserCommand command)
     {
 
         return sender.Send(command);

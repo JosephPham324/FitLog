@@ -33,8 +33,15 @@ import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
 import WorkoutProgramsPage from './components/WorkoutProgramsPage';
 import { WorkoutProgramsDetail } from './components/WorkoutProgramsDetail';// Correct the import statement
+
 import CoachProfile from './components/CoachProfile';
-import WorkoutLogPage from './page/WorkoutLog';
+import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
+import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
+import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
+import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
+import { Navigate } from 'react-router-dom';
+
+
 const AppRoutes = [
   {
     index: true,
@@ -45,7 +52,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(Counter))
   },
   {
-    path: '/CoachProfile/:id',
+    path: '/coachprofile/:id',
     element: <CoachProfile /> // Adding CoachProfile to the routes
   },
   {
@@ -53,35 +60,23 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(FetchData))
   },
   {
-    path: '/MuscleGroup',
+    path: '/muscle-groups',
     element: React.createElement(withAuthProtection(MuscleGroup))
   },
   {
-    path: '/WorkoutLog',
-    element: <WorkoutLog />
-  },
-  {
-    path: '/WorkoutLog',
-    element: React.createElement(withAuthProtection(WorkoutLog))
-  },
-  {
-    path: '/WorkoutHistory',
-    element: <WorkoutHistory />
-  },
-  {
-    path: '/WorkoutHistory',
+    path: '/workout-history',
     element: React.createElement(withAuthProtection(WorkoutHistory))
   },
   {
-    path: '/CoachServiceBooking',
+    path: '/coach-service-booking',
     element: <CoachServiceBooking />
   },
   {
-    path: '/ManageAccount',
+    path: '/manage-account',
     element: <ManageAccount />
   },
   {
-    path: '/WorkoutProgramsPage',
+    path: '/workout-programs',
     element: <WorkoutProgramsPage />
   },
   {
@@ -101,13 +96,13 @@ const AppRoutes = [
     element: <Register />
   },
   {
-    path: '/TrainingSurvey',
+    path: '/trainingsurvey',
     element: <TrainingSurvey />
   },
-{
-  path: '/EquipmentsList',
+  {
+    path: '/equipmentslist',
     element: <EquipmentsList />
-},
+  },
   {
     path: '/survey',
     element: React.createElement(withAuthProtection(TrainingSurvey))
@@ -126,46 +121,46 @@ const AppRoutes = [
   },
   {
     path: '/log-out',
-    element: <Logout/>
+    element: <Logout />
   },
   {
-    path: '/CoachApplicationNotification',
+    path: '/coach-application-notification',
     element: <CoachApplicationNotification />
   },
   {
-    path: '/WorkoutTemplatesListAdmin',
-    element: <WorkoutTemplatesListAdmin />
+    path: '/workout-templates-admin',
+    element: React.createElement(withAuthProtection(WorkoutTemplatesListAdmin))
   },
   {
-    path: '/WorkoutLogExport',
-    element: <WorkoutLogExport />
+    path: '/workout-log-export',
+    element: React.createElement(withAuthProtection(WorkoutLogExport))
   },
   {
-    path: '/WorkoutLogGraphs',
-    element: <WorkoutLogGraphs />
+    path: '/workout-log-graphs',
+    element: React.createElement(withAuthProtection(WorkoutLogGraphs))
   },
   {
-    path: '/ExerciseLogGraphs',
-    element: <ExerciseLogGraphs />
+    path: '/exercise-log-graphs',
+    element: React.createElement(withAuthProtection(ExerciseLogGraphs))
   },
   {
-    path: '/RolesListScreen',
-    element: <RolesListScreen />
+    path: '/roles-list-screen',
+    element: React.createElement(withAuthProtection(RolesListScreen))
   },
   {
-    path: '/ExerciseListScreen',
+    path: '/exercise-list-screen',
     element: <ExerciseListScreen />
   },
   {
-    path: '/CreateWorkoutLog',
-    element: <CreateWorkoutLog />
-  },
-  { 
-  path:'log-out',
-    element: React.createElement(withAuthProtection(Logout))
+    path: '/create-workout-log',
+    element: React.createElement(withAuthProtection(CreateWorkoutLog))
   },
   {
-    path: '/profile',
+    path: '/workout-log/create/:templateId',
+    element: React.createElement(withAuthProtection(CreateWorkoutLogFromTemplate))
+  },
+  {
+    path: '/profile/',
     element: React.createElement(withAuthProtection(Profile))
   },
   {
@@ -195,6 +190,19 @@ const AppRoutes = [
   {
     path: '/workout-log/create',
     element: <WorkoutLogPage />
+  },
+  {
+    path: '/workout-log/:workoutLogId/update',
+    element: <UpdateWorkoutLogPage />
+  },
+  {
+    path: '/workout-templates/create',
+    element: React.createElement(withAuthProtection(CreateWorkoutTemplatePage))
+  },
+  // Wildcard route to catch all unmatched routes and redirect to home page
+  {
+    path: '*',
+    element: <Navigate to="/" />
   }
 ];
 

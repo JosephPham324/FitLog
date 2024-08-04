@@ -1,4 +1,4 @@
-﻿
+
     .button-group {
         display: flex;
         justify-content: space-between;
@@ -11,6 +11,10 @@
 
 .update-btn {
     border-color: #007bff !important;
+    background-color: green;
+    height: 60px;
+    width: auto;
+    text-align: center;
 }
 
 
@@ -64,8 +68,16 @@
 }
 
 .table-image {
-    width: 400px; /* Adjusted width to fit better */
-    height: auto; /* Maintain aspect ratio */
+    width: 500px; /* Adjusted width to fit better */
+    height: 350px; /* Maintain aspect ratio */
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+:root .table th {
+    text-align: center;
 }
 
 .small-button {
@@ -73,15 +85,7 @@
     font-size: 12px;
 }
 
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
-    margin-bottom: 50px;
-}
-
-:root .pre, :root .next {
+.pre, .next {
     width: 15%;
     height: 50px;
 }
@@ -96,3 +100,70 @@
     background-color: red !important;
 }
 
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal {
+    z-index: 1050 !important;
+}
+
+.btn-primary {
+    height: 60px;
+    width: auto;
+}
+
+.btn-danger {
+    height: 60px;
+    width: auto;
+}
+
+.alert-danger {
+    --bs-alert-color: red;
+    --bs-alert-link-color: var(--bs-danger-text-emphasis);
+    font-size: 15px;
+    margin-top: 7px;
+    --bs-alert-bg: var(--bs-danger-bg-subtle);
+    --bs-alert-border-color: var(--bs-danger-border-subtle);
+}
+
+.my-4 {
+    font-size: 50px;
+    text-align: center;
+}
+
+.table tr td {
+    text-align: center;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    height: 100px;
+}
+
+    .pagination button {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        color: #007bff;
+        padding: 12px 18px; /* Increased padding for larger buttons */
+        margin: 0 2px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .pagination button.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .pagination button:disabled {
+            cursor: not-allowed;
+            color: #aaa;
+        }
+
+        .pagination button:hover:not(.active):not(:disabled) {
+            background-color: #e9e9e9;
+        }

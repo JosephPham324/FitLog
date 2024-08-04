@@ -2,6 +2,9 @@
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseEstimated1RMs;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
 using FitLog.Application.Statistics_Exercise.Queries.GetExercisesWithHistory;
+using FitLog.Application.Statistics_Exercise.Queries.GetRecordsHistory;
+using FitLog.Application.Statistics_Exercise.Queries.GetTotalRepsForExercise;
+using FitLog.Application.Statistics_Exercise.Queries.GetTotalTrainingTonnageForExercise;
 using FitLog.Application.Statistics_Workout.Queries.GetMuscleEngagement;
 using FitLog.Application.Statistics_Workout.Queries.GetSummaryStats;
 using FitLog.Application.Statistics_Workout.Queries.GetTotalReps;
@@ -12,8 +15,6 @@ using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 using FitLog.Domain.Entities;
 using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FitLog.Web.Endpoints.Service_WorkoutLogging
 {
@@ -24,8 +25,8 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
 
         public Statistics()
         {
-            _tokenService = new CurrentUserFromToken(httpContextAccessor: new HttpContextAccessor());
-            _identityService = new CurrentUser(httpContextAccessor: new HttpContextAccessor());
+            _tokenService = new CurrentUserFromToken(new HttpContextAccessor());
+            _identityService = new CurrentUser(new HttpContextAccessor());
         }
 
         public override void Map(WebApplication app)
@@ -46,13 +47,15 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
                 .MapGroup("exercise")
                 .MapGet(GetExerciseLogHistory, "exercise-log-history/{ExerciseId}")
                 .MapGet(GetEstimated1RM, "estimated1RM")
-                .MapGet(GetExercisesWithHistory, "logged-exercises");
+                .MapGet(GetExercisesWithHistory, "logged-exercises")
+                .MapGet(GetExerciseRecords, "{ExerciseId}/records")
+                .MapGet(GetExerciseTotalReps, "{ExerciseId}/total-reps")
+                .MapGet(GetExerciseTotalTonnage, "{ExerciseId}/total-tonnage");
 
             // User statistics
             var userStats = app.MapGroup(this)
-               .RequireAuthorization("CoachOnly")
+               //.RequireAuthorization("CoachOnly")
                ;
-
             userStats
                 .MapGroup("user/{id}/overall")
                 .MapGet(GetUserWorkoutLogSummary, "summary")
@@ -153,6 +156,42 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             return await sender.Send(query);
         }
 
+        public async Task<PersonalRecordDTO> GetExerciseRecords(ISender sender, [FromRoute] int ExerciseId)
+        {
+            var UserId = _identityService.Id ?? "";
+            var query = new GetRecordsHistoryQuery()
+            {
+                UserId = UserId,
+                ExerciseId = ExerciseId
+            };
+
+            return await sender.Send(query);
+        }
+
+        public async Task<Dictionary<DateTime, int>> GetExerciseTotalReps(ISender sender, [FromRoute] int ExerciseId, [FromQuery] string TimeFrame)
+        {
+            var UserId = _identityService.Id ?? "";
+            var query = new GetTotalRepsForExerciseQuery()
+            {
+                UserId = UserId,
+                TimeFrame = TimeFrame,
+                ExerciseId = ExerciseId
+            };
+            return await sender.Send(query);
+        }
+
+        public async Task<Dictionary<DateTime, double>> GetExerciseTotalTonnage(ISender sender, [FromRoute] int ExerciseId, [FromQuery] string TimeFrame)
+        {
+            var UserId = _identityService.Id ?? "";
+            var query = new GetTotalTrainingTonnageForExerciseQuery()
+            {
+                UserId = UserId,
+                TimeFrame = TimeFrame,
+                ExerciseId = ExerciseId
+            };
+            return await sender.Send(query);
+        }
+
         // User statistics methods
         public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetUserWorkoutLogSummary(ISender sender, [FromRoute] string id, [FromQuery] string TimeFrame)
         {
@@ -218,7 +257,6 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
                 throw new UnauthorizedAccessException("User is not coached by the current user");
             }
 
-
             var query = new GetTotalRepsQuery()
             {
                 UserId = id,
@@ -266,7 +304,6 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             {
                 throw new UnauthorizedAccessException("User is not coached by the current user");
             }
-
 
             var query = new GetTrainingFrequencyQuery
             {

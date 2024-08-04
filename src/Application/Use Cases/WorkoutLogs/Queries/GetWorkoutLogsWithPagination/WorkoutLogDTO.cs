@@ -5,6 +5,7 @@ namespace FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
 
 public class WorkoutLogDTO
 {
+    public int Id { get; set; }
     public string? CreatedBy { get; set; }
     public string? Note { get; set; }
     public TimeOnly? Duration { get; set; }
