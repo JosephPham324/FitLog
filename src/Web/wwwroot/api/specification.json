@@ -2794,12 +2794,54 @@
         }
       }
     },
-    "/api/WorkoutTemplates/get-public-templates": {
+    "/api/WorkoutTemplates/public-templates": {
       "get": {
         "tags": [
           "WorkoutTemplates"
         ],
         "operationId": "GetPublicTemplates",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfWorkoutTemplateListDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkoutTemplates/personal-templates": {
+      "get": {
+        "tags": [
+          "WorkoutTemplates"
+        ],
+        "operationId": "GetPersonalTemplates",
         "parameters": [
           {
             "name": "PageNumber",

@@ -98,11 +98,11 @@ export const NavMenu = () => {
                         <b>Templates</b>
                       </DropdownToggle>
                       <DropdownMenu right className="centered-dropdown-menu">
-                        <DropdownItem tag={Link} to="/workout-templates/create">
-                          <b>Create</b>
+                        <DropdownItem tag={Link} to="/workout-templates/">
+                          <b>Public</b>
                         </DropdownItem>
-                        <DropdownItem tag={Link} to="/workout-templates/list">
-                          <b>List</b>
+                        <DropdownItem tag={Link} to="/workout-templates/private">
+                          <b>Private</b>
                         </DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown>

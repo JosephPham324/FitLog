@@ -36,7 +36,8 @@ public class WorkoutTemplates : EndpointGroupBase
             .MapPost(CreateWorkoutTemplate, "create-workout-template")
             .MapPut(UpdateWorkoutTemplate, "update-workout-template/{id}")
             .MapDelete(DeleteWorkoutTemplate, "delete-workout-template/{id}")
-            .MapGet(GetPublicTemplates, "get-public-templates")
+            .MapGet(GetPublicTemplates, "public-templates")
+            .MapGet(GetPersonalTemplates, "personal-templates")
             .MapGet(GetWorkoutTemplateDetails, "get-workout-template-details/{id}")
             .MapGet(FilterWorkoutTemplates, "filter-workout-templates");
     }
@@ -107,6 +108,18 @@ public class WorkoutTemplates : EndpointGroupBase
     {
         return sender.Send(query);
     }
+    public async Task<PaginatedList<WorkoutTemplateListDto>> GetPersonalTemplates(ISender sender, [FromQuery] int PageNumber, [FromQuery] int PageSize)
+    { 
+        var userId = _identityService.Id ?? "";
+        GetPersonalTemplatesQuery query = new GetPersonalTemplatesQuery()
+        {
+            UserId = userId,
+            PageNumber = PageNumber,
+            PageSize = PageSize
+        };
+        return await sender.Send(query);
+    }
+
 
     public async Task<WorkoutTemplateDetailsDto> GetWorkoutTemplateDetails(ISender sender, int id)
     {
