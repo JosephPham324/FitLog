@@ -40,9 +40,9 @@ public class WorkoutLog : EndpointGroupBase
             .MapGet(ExportWorkotuData, "export");
     }
 
-    public Task<PaginatedList<WorkoutLogDTO>> GetWorkoutLogsWithPagination(ISender sender, [AsParameters] GetWorkoutLogsWithPaginationQuery query)
+    public async Task<PaginatedList<WorkoutLogDTO>> GetWorkoutLogsWithPagination(ISender sender, [AsParameters] GetWorkoutLogsWithPaginationQuery query)
     {
-        return sender.Send(query);
+        return await sender.Send(query);
     }
     public async Task<WorkoutLogDetailsDto> GetWorkoutLogDetails(ISender sender, [FromRoute] int WorkoutLogId)
     {
@@ -63,24 +63,24 @@ public class WorkoutLog : EndpointGroupBase
         return result;
     }
 
-    public Task<Result> CreateWorkoutLog(ISender sender, [FromBody] CreateWorkoutLogCommandDTO commandDTO)
+    public async Task<Result> CreateWorkoutLog(ISender sender, [FromBody] CreateWorkoutLogCommandDTO commandDTO)
     {
         CreateWorkoutLogCommand command = new CreateWorkoutLogCommand(_identityService.Id ?? "", commandDTO); ;
 
-        return sender.Send(command);
+        return await sender.Send(command);
     }
 
-    public Task<Result> DeleteWorkoutLog(ISender sender, int id, [FromBody] DeleteWorkoutLogCommand command)
+    public async Task<Result> DeleteWorkoutLog(ISender sender, int id, [FromBody] DeleteWorkoutLogCommand command)
     {
-        return sender.Send(command);
+        return await sender.Send(command);
     }
 
-    public Task<Result> UpdateWorkoutLog(ISender sender, int id, [FromBody] UpdateWorkoutLogCommand command)
+    public async Task<Result> UpdateWorkoutLog(ISender sender, int id, [FromBody] UpdateWorkoutLogCommand command)
     {
-        return sender.Send(command);
+        return await sender.Send(command);
     }
 
-    public Task<List<WorkoutLogDTO>> GetWorkoutHistory(ISender sender, [FromQuery] string StartDate, [FromQuery] string EndDate)
+    public async Task<List<WorkoutLogDTO>> GetWorkoutHistory(ISender sender, [FromQuery] string StartDate, [FromQuery] string EndDate)
     {
         var UserId = _identityService.Id ?? "";
         try
@@ -93,11 +93,11 @@ public class WorkoutLog : EndpointGroupBase
             throw new Exception("Please enter valid date");
         }
         var query = new GetWorkoutHistoryQuery(UserId, DateTime.Parse(StartDate), DateTime.Parse(EndDate));
-        return sender.Send(query);
+        return await sender.Send(query);
     }
 
-    public Task<string> ExportWorkotuData(ISender sender, [AsParameters] ExportWorkoutDataQuery query)
+    public async Task<string> ExportWorkotuData(ISender sender, [AsParameters] ExportWorkoutDataQuery query)
     {
-        return sender.Send(query);
+        return await sender.Send(query);
     }
 }

@@ -59,7 +59,7 @@
 ////        }
 ////      });
 ////      const data = response.data.items.map(item => ({
-////        id: item.equipmentId,
+////        templateId: item.equipmentId,
 ////        name: item.equipmentName,
 ////        imageUrl: item.imageUrl || '',
 ////      }));
@@ -214,12 +214,12 @@
 
 ////    try {
 ////      const updateData = {
-////        equipmentId: selectedEquipment.id,
+////        equipmentId: selectedEquipment.templateId,
 ////        equipmentName: selectedEquipment.name,
 ////        imageUrl: selectedEquipment.imageUrl,
 ////      };
 
-////      await axiosInstance.put(`/Equipments/${selectedEquipment.id}`, updateData, {
+////      await axiosInstance.put(`/Equipments/${selectedEquipment.templateId}`, updateData, {
 ////        headers: {
 ////          'Content-Type': 'application/json',
 ////        },
@@ -236,7 +236,7 @@
 
 ////  const handleDelete = async () => {
 ////    try {
-////      const response = await axiosInstance.delete(`/Equipments/${selectedEquipment.id}`);
+////      const response = await axiosInstance.delete(`/Equipments/${selectedEquipment.templateId}`);
 ////      if (response.data.success === false) {
 ////        alert(response.data.errors[0]);
 ////      }
@@ -333,7 +333,7 @@
 ////        </thead>
 ////        <tbody>
 ////          {equipments.map((equipment, index) => (
-////            <tr key={equipment.id}>
+////            <tr key={equipment.templateId}>
 ////              <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
 ////              <td>{equipment.name}</td>
 ////              <td>
@@ -387,7 +387,7 @@
 ////              </Label>
 ////              <Input
 ////                type="text"
-////                id="newEquipmentName"
+////                templateId="newEquipmentName"
 ////                value={newEquipmentName}
 ////                onChange={(e) => setNewEquipmentName(e.target.value)}
 ////              />
@@ -399,7 +399,7 @@
 ////              </Label>
 ////              <Input
 ////                type="file"
-////                id="newEquipmentImageUrl"
+////                templateId="newEquipmentImageUrl"
 ////                accept="image/*"
 ////                onChange={handleImageUpload}
 ////              />
@@ -424,7 +424,7 @@
 ////              </Label>
 ////              <Input
 ////                type="text"
-////                id="selectedEquipmentName"
+////                templateId="selectedEquipmentName"
 ////                value={selectedEquipment ? selectedEquipment.name : ''}
 ////                onChange={(e) => setSelectedEquipment({ ...selectedEquipment, name: e.target.value })}
 ////              />
@@ -436,7 +436,7 @@
 ////              </Label>
 ////              <Input
 ////                type="file"
-////                id="updateEquipmentImageUrl"
+////                templateId="updateEquipmentImageUrl"
 ////                accept="image/*"
 ////                onChange={handleUpdateImageUpload}
 ////              />
@@ -545,7 +545,7 @@
 //          }
 //        });
 //        const data = response.data.items.map(item => ({
-//          id: item.equipmentId,
+//          templateId: item.equipmentId,
 //          name: item.equipmentName,
 //          imageUrl: item.imageUrl || '',
 //        }));
@@ -632,7 +632,7 @@
 //      if (name.trim() === '' || !nameRegex.test(name)) {
 //        setNameErrorMessage('Equipment Name cannot be empty!');
 //        isValid = false;
-//      } else if (allEquipments.some(equipment => equipment.name.toLowerCase() === name.toLowerCase() && equipment.id !== selectedEquipment.id)) {
+//      } else if (allEquipments.some(equipment => equipment.name.toLowerCase() === name.toLowerCase() && equipment.templateId !== selectedEquipment.templateId)) {
 //        setNameErrorMessage(`${name} already exists!`);
 //        isValid = false;
 //      } else {
@@ -703,12 +703,12 @@
 
 //      try {
 //        const updateData = {
-//          equipmentId: selectedEquipment.id,
+//          equipmentId: selectedEquipment.templateId,
 //          equipmentName: selectedEquipment.name,
 //          imageUrl: selectedEquipment.imageUrl,
 //        };
 
-//        await axiosInstance.put(`/Equipments/${selectedEquipment.id}`, updateData, {
+//        await axiosInstance.put(`/Equipments/${selectedEquipment.templateId}`, updateData, {
 //          headers: {
 //            'Content-Type': 'application/json',
 //          },
@@ -725,7 +725,7 @@
 
 //    const handleDelete = async () => {
 //      try {
-//        const response = await axiosInstance.delete(`/Equipments/${selectedEquipment.id}`);
+//        const response = await axiosInstance.delete(`/Equipments/${selectedEquipment.templateId}`);
 //        if (response.data.success === false) {
 //          alert(response.data.errors[0]);
 //        }
@@ -752,7 +752,7 @@
 //    const handleDeleteConfirmation = async (equipment) => {
 //      setSelectedEquipment(equipment);
 //      try {
-//        const response = await axiosInstance.get(`/Equipments/check-referenced/${equipment.id}`);
+//        const response = await axiosInstance.get(`/Equipments/check-referenced/${equipment.templateId}`);
 //        setIsReferenced(response.data.isReferenced);
 //      } catch (error) {
 //        console.error('Error checking if equipment is referenced:', error);
@@ -832,7 +832,7 @@
 //          </thead>
 //          <tbody>
 //            {equipments.map((equipment, index) => (
-//              <tr key={equipment.id}>
+//              <tr key={equipment.templateId}>
 //                <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
 //                <td>{equipment.name}</td>
 //                <td>
@@ -886,7 +886,7 @@
 //                </Label>
 //                <Input
 //                  type="text"
-//                  id="newEquipmentName"
+//                  templateId="newEquipmentName"
 //                  value={newEquipmentName}
 //                  onChange={(e) => setNewEquipmentName(e.target.value)}
 //                />
@@ -898,7 +898,7 @@
 //                </Label>
 //                <Input
 //                  type="file"
-//                  id="newEquipmentImageUrl"
+//                  templateId="newEquipmentImageUrl"
 //                  accept="image/*"
 //                  onChange={handleImageUpload}
 //                />
@@ -923,7 +923,7 @@
 //                </Label>
 //                <Input
 //                  type="text"
-//                  id="selectedEquipmentName"
+//                  templateId="selectedEquipmentName"
 //                  value={selectedEquipment ? selectedEquipment.name : ''}
 //                  onChange={(e) => setSelectedEquipment({ ...selectedEquipment, name: e.target.value })}
 //                />
@@ -935,7 +935,7 @@
 //                </Label>
 //                <Input
 //                  type="file"
-//                  id="updateEquipmentImageUrl"
+//                  templateId="updateEquipmentImageUrl"
 //                  accept="image/*"
 //                  onChange={handleUpdateImageUpload}
 //                />

@@ -1,6 +1,14 @@
 ﻿using FitLog.Application.Common.Interfaces;
 using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using FluentValidation;
+using System;
 
 namespace FitLog.Application.WorkoutTemplates.Commands.UpdateWorkoutTemplate;
 
@@ -24,6 +32,7 @@ public record WorkoutTemplateExerciseDto
     public int? RpeRecommendation { get; init; }
     public string? WeightsUsed { get; init; }
     public string? NumbersOfReps { get; init; }
+    public bool IsDeleted { get; init; }
 }
 
 public class UpdateWorkoutTemplateCommandValidator : AbstractValidator<UpdateWorkoutTemplateCommand>
@@ -42,6 +51,7 @@ public class UpdateWorkoutTemplateCommandValidator : AbstractValidator<UpdateWor
 
         RuleForEach(v => v.WorkoutTemplateExercises).SetValidator(new WorkoutTemplateExerciseValidator());
     }
+
     private class WorkoutTemplateExerciseValidator : AbstractValidator<WorkoutTemplateExerciseDto>
     {
         public WorkoutTemplateExerciseValidator()
@@ -50,9 +60,7 @@ public class UpdateWorkoutTemplateCommandValidator : AbstractValidator<UpdateWor
                 .NotNull().WithMessage("Exercise ID is required.");
         }
     }
-
 }
-
 
 public class UpdateWorkoutTemplateCommandHandler : IRequestHandler<UpdateWorkoutTemplateCommand, Result>
 {
@@ -71,33 +79,56 @@ public class UpdateWorkoutTemplateCommandHandler : IRequestHandler<UpdateWorkout
 
         if (entity == null)
         {
-            return Result.Failure(["Workout Template not found"]);
+            return Result.Failure(new[] { "Workout Template not found" });
         }
 
         entity.TemplateName = request.TemplateName;
         entity.Duration = request.Duration;
         entity.IsPublic = request.IsPublic;
         entity.LastModified = DateTimeOffset.UtcNow;
-        // Assume LastModifiedBy is set from the current user context
 
-        // Update the exercises
-        entity.WorkoutTemplateExercises.Clear();
         foreach (var exerciseDto in request.WorkoutTemplateExercises)
         {
-            var workoutTemplateExercise = new WorkoutTemplateExercise
-            {
-                ExerciseId = exerciseDto.ExerciseId,
-                OrderInSession = exerciseDto.OrderInSession,
-                OrderInSuperset = exerciseDto.OrderInSuperset,
-                Note = exerciseDto.Note,
-                SetsRecommendation = exerciseDto.SetsRecommendation,
-                IntensityPercentage = exerciseDto.IntensityPercentage,
-                RpeRecommendation = exerciseDto.RpeRecommendation,
-                WeightsUsed = exerciseDto.WeightsUsed,
-                NumbersOfReps = exerciseDto.NumbersOfReps,
-            };
+            var existingExercise = entity.WorkoutTemplateExercises
+                .FirstOrDefault(e => e.ExerciseId == exerciseDto.ExerciseId && e.OrderInSession == exerciseDto.OrderInSession);
 
-            entity.WorkoutTemplateExercises.Add(workoutTemplateExercise);
+            if (existingExercise != null)
+            {
+                if (exerciseDto.IsDeleted)
+                {
+                    _context.WorkoutTemplateExercises.Remove(existingExercise);
+                }
+                else
+                {
+                    existingExercise.OrderInSession = exerciseDto.OrderInSession;
+                    existingExercise.OrderInSuperset = exerciseDto.OrderInSuperset;
+                    existingExercise.Note = exerciseDto.Note;
+                    existingExercise.SetsRecommendation = exerciseDto.SetsRecommendation;
+                    existingExercise.IntensityPercentage = exerciseDto.IntensityPercentage;
+                    existingExercise.RpeRecommendation = exerciseDto.RpeRecommendation;
+                    existingExercise.WeightsUsed = exerciseDto.WeightsUsed;
+                    existingExercise.NumbersOfReps = exerciseDto.NumbersOfReps;
+
+                }
+            }
+            else if (!exerciseDto.IsDeleted)
+            {
+                var newExercise = new WorkoutTemplateExercise
+                {
+                    ExerciseId = exerciseDto.ExerciseId,
+                    OrderInSession = exerciseDto.OrderInSession,
+                    OrderInSuperset = exerciseDto.OrderInSuperset,
+                    Note = exerciseDto.Note,
+                    SetsRecommendation = exerciseDto.SetsRecommendation,
+                    IntensityPercentage = exerciseDto.IntensityPercentage,
+                    RpeRecommendation = exerciseDto.RpeRecommendation,
+                    WeightsUsed = exerciseDto.WeightsUsed,
+                    NumbersOfReps = exerciseDto.NumbersOfReps,
+                    WorkoutTemplateId = entity.Id,
+                };
+
+                _context.WorkoutTemplateExercises.Add(newExercise);
+            }
         }
 
         await _context.SaveChangesAsync(cancellationToken);

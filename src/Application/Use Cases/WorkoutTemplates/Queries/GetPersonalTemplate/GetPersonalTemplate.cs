@@ -3,12 +3,13 @@ using FitLog.Application.Common.Models;
 using FitLog.Application.Users.Queries.GetUsers;
 using FitLog.Domain.Entities;
 using FitLog.Application.Common.Mappings;
+using FitLog.Application.Use_Cases.WorkoutTemplates.Queries;
 
 namespace FitLog.Application.WorkoutTemplates.Queries.GetPersonalTemplate;
 
-public record GetPersonalTemplatesQuery : IRequest<PaginatedList<WorkoutTemplate>>
+public record GetPersonalTemplatesQuery : IRequest<PaginatedList<WorkoutTemplateListDto>>
 {
-    public string UserToken { get; init; } = ""; 
+    public string UserId { get; init; } = ""; 
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
 }
@@ -26,21 +27,22 @@ public class GetPersonalTemplatesQueryValidator : AbstractValidator<GetPersonalT
     }
 }
 
-public class GetPersonalTemplatesQueryHandler : IRequestHandler<GetPersonalTemplatesQuery, PaginatedList<WorkoutTemplate>>
+public class GetPersonalTemplatesQueryHandler : IRequestHandler<GetPersonalTemplatesQuery, PaginatedList<WorkoutTemplateListDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IUserTokenService _currentUserService;
+    private readonly IMapper _mapper;
 
-    public GetPersonalTemplatesQueryHandler(IApplicationDbContext context, IUserTokenService currentUserService)
+    public GetPersonalTemplatesQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
-        _currentUserService = currentUserService;
+        _mapper = mapper;
     }
-    public async Task<PaginatedList<WorkoutTemplate>> Handle(GetPersonalTemplatesQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<WorkoutTemplateListDto>> Handle(GetPersonalTemplatesQuery request, CancellationToken cancellationToken)
     {
         return await _context.WorkoutTemplates
-            .Where(wt => wt.CreatedBy == _currentUserService.GetUserIdFromGivenToken(request.UserToken) && wt.IsPublic == false)
+            .Where(wt => wt.CreatedBy == request.UserId)
             .OrderBy(wt => wt.TemplateName)
+            .ProjectTo<WorkoutTemplateListDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

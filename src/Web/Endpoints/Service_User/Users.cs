@@ -237,7 +237,7 @@ public class Users : EndpointGroupBase
         return sender.Send(request);
     }
 
-    public Task<Result> UpdateUserProfile(ISender sender, [AsParameters] UpdateUserCommand command)
+    public Task<Result> UpdateUserProfile(ISender sender, [FromBody] UpdateUserCommand command)
     {
 
         return sender.Send(command);

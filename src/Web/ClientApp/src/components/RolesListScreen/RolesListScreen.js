@@ -22,7 +22,7 @@
 //  const [roles, setRoles] = useState([]);
 //  const [showPopup, setShowPopup] = useState(false);
 //  const [editingRole, setEditingRole] = useState(null);
-//  const [newRole, setNewRole] = useState({ id: '', name: '', des: '' });
+//  const [newRole, setNewRole] = useState({ templateId: '', name: '', des: '' });
 //  const [error, setError] = useState('');
 //  const [hoveredRole, setHoveredRole] = useState(null);
 
@@ -57,14 +57,14 @@
 
 //    try {
 //      if (editingRole) {
-//        await axiosInstance.put(`/Roles/${newRole.id}`, newRole);
-//        setRoles(roles.map(role => (role.id === editingRole.id ? newRole : role)));
+//        await axiosInstance.put(`/Roles/${newRole.templateId}`, newRole);
+//        setRoles(roles.map(role => (role.templateId === editingRole.templateId ? newRole : role)));
 //      } else {
 //        const response = await axiosInstance.post('/Roles', newRole);
 //        setRoles([...roles, response.data]);
 //      }
 //      setShowPopup(false);
-//      setNewRole({ id: '', name: '', des: '' });
+//      setNewRole({ templateId: '', name: '', des: '' });
 //      setEditingRole(null);
 //      setError('');
 //    } catch (error) {
@@ -81,7 +81,7 @@
 
 //  const handleClosePopup = () => {
 //    setShowPopup(false);
-//    setNewRole({ id: '', name: '', des: '' });
+//    setNewRole({ templateId: '', name: '', des: '' });
 //    setEditingRole(null);
 //    setError('');
 //  };
@@ -110,7 +110,7 @@
 //        </thead>
 //        <tbody>
 //          {roles.map(role => (
-//            <tr key={role.id}>
+//            <tr key={role.templateId}>
 //              <td>{role.name}</td>
 //              <td>
 //                {role.des}
@@ -142,14 +142,14 @@
 //            {editingRole && (
 //              <FormGroup>
 //                <Label for="roleId">ID</Label>
-//                <Input type="text" id="roleId" value={newRole.id} readOnly />
+//                <Input type="text" templateId="roleId" value={newRole.templateId} readOnly />
 //              </FormGroup>
 //            )}
 //            <FormGroup>
 //              <Label for="roleName"> Role Name <span style={{ color: 'red' }}>*</span></Label>
 //              <Input
 //                type="text"
-//                id="roleName"
+//                templateId="roleName"
 //                placeholder="Name"
 //                value={newRole.name}
 //                onChange={(e) => setNewRole({ ...newRole, name: e.target.value })}
@@ -159,7 +159,7 @@
 //              <Label for="roleDes">Des <span style={{ color: 'red' }}>*</span></Label>
 //              <Input
 //                type="text"
-//                id="roleDes"
+//                templateId="roleDes"
 //                placeholder="Des"
 //                value={newRole.des}
 //                onChange={(e) => setNewRole({ ...newRole, des: e.target.value })}

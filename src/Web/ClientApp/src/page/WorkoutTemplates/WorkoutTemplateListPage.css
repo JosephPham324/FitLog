@@ -1,0 +1,29 @@
+﻿.container {
+    margin-top: 20px;
+}
+
+.table {
+    margin-bottom: 20px;
+}
+
+.d-flex {
+    align-items: center;
+    justify-content: center;
+}
+
+.btn {
+    min-width: 50px;
+}
+.btn-action {
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    display: inline-block;
+    height: auto; /* Ensure height is auto to match other buttons */
+}
+
+span {
+    font-size: 16px;
+    font-weight: 500;
+}

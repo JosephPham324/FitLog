@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import './WorkoutProgramsDetail.css';
 
 export const WorkoutProgramsDetail = () => {
-  const { id } = useParams(); // Using useParams to get the id from the URL
+  const { id } = useParams(); // Using useParams to get the templateId from the URL
   const [programDetail, setProgramDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
