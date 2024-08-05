@@ -105,7 +105,21 @@ export default function WorkoutHistory() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const nextPage = () => setCurrentPage(prevPage => Math.min(prevPage + 1, Math.ceil(filteredWorkoutHistory.length / workoutsPerPage)));
   const prevPage = () => setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+  const getBestSet = (weightsUsedStr, numberOfRepsStr) => {
+    const weightsUsed = JSON.parse(weightsUsedStr);
+    const numberOfReps = JSON.parse(numberOfRepsStr);
 
+    let bestSetIndex = 0;
+    for (let i = 1; i < weightsUsed.length; i++) {
+      if (
+        weightsUsed[i] > weightsUsed[bestSetIndex] ||
+        (weightsUsed[i] === weightsUsed[bestSetIndex] && numberOfReps[i] > numberOfReps[bestSetIndex])
+      ) {
+        bestSetIndex = i;
+      }
+    }
+    return { weight: weightsUsed[bestSetIndex], reps: numberOfReps[bestSetIndex] };
+  };
   return (
     <div className="container mt-5 workout-history-container">
       <div className="row">
@@ -153,13 +167,22 @@ export default function WorkoutHistory() {
                         </tr>
                       </thead>
                       <tbody>
-                        {workout.exerciseLogs.map((log) => (
-                          <tr key={log.exerciseLogId}>
-                            <td>{log.exerciseName}</td>
-                            <td>{log.numberOfSets}</td>
-                            <td>{`${log.weightsUsed} kg x ${log.numberOfReps}`}</td>
+                        {workout.exerciseLogs.length > 0 ? (
+                          workout.exerciseLogs.map((log) => {
+                            const bestSet = getBestSet(log.weightsUsed, log.numberOfReps);
+                            return (
+                              <tr key={log.exerciseLogId}>
+                                <td>{log.exerciseName}</td>
+                                <td>{log.numberOfSets}</td>
+                                <td>{`${bestSet.weight} kg x ${bestSet.reps}`}</td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td colSpan="3">No exercises logged</td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
