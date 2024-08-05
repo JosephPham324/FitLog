@@ -14,11 +14,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const jwtHeaderPayload = getCookie('jwtHeaderPayload');
     const jwtSignature = getCookie('jwtSignature');
-    console.log('Cookies:', jwtHeaderPayload, jwtSignature);
 
     if (jwtHeaderPayload && jwtSignature) {
       console.log('Setting isAuthenticated to true');
       setUserRoles(getUserRole())
+      console.log(userRoles);
       setIsAuthenticated(true);
     } else {
       console.log('No valid cookies found, setting isAuthenticated to false');

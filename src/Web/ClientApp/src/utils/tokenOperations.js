@@ -19,7 +19,13 @@ export function getDecodedToken() {
 
 export function getUserRole() {
   const decodedToken = getDecodedToken();
-  return decodedToken ? decodedToken.role || '' : '';
+  //console.log(decodedToken);
+  if (decodedToken) {
+    // Check for both possible role claim types
+    return decodedToken.role || decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || '';
+  }
+
+  return '';
 }
 
 

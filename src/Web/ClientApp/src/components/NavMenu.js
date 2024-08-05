@@ -11,7 +11,6 @@ import { AuthContext } from '../context/AuthContext';
 import { getCookie } from '../utils/cookiesOperations';
 import { getUserRole } from '../utils/tokenOperations'; // Path to the decoding logic
 
-
 export const NavMenu = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(true);
@@ -87,7 +86,7 @@ export const NavMenu = () => {
                     <b>Training</b>
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem tag={Link} to="/workouthistory">
+                    <DropdownItem tag={Link} to="/workout-history">
                       <b>Workout History</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/workout-log/create">
@@ -123,27 +122,29 @@ export const NavMenu = () => {
                       <b>Admin</b>
                     </DropdownToggle>
                     <DropdownMenu right>
-                      <DropdownItem tag={Link} to="/musclegroup">
+                      <DropdownItem tag={Link} to="/muscle-groups">
                         <b>Muscle Groups</b>
                       </DropdownItem>
                       <DropdownItem tag={Link} to="/admin/management/equipments">
                         <b>Equipments</b>
                       </DropdownItem>
-                      <DropdownItem tag={Link} to="/manageaccount">
+                      <DropdownItem tag={Link} to="/manage-account">
                         <b>Users</b>
                       </DropdownItem>
                     </DropdownMenu>
                   </UncontrolledDropdown>
                 )}
-                <NavItem>
-                  <NavLink tag={Link} className="text-white" to="/profile"><b>Profile</b></NavLink>
-                </NavItem>
+                {(userRole === 'Administrator' || userRole === 'Member' || userRole === 'Coach') && (
+                  <NavItem>
+                    <NavLink tag={Link} className="text-white" to="/profile"><b>Profile</b></NavLink>
+                  </NavItem>
+                )}
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret className="text-white">
                     <b>Service</b>
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem tag={Link} to="/coachservicebooking">
+                    <DropdownItem tag={Link} to="/coach-service-booking">
                       <b>Coach Service Booking</b>
                     </DropdownItem>
                   </DropdownMenu>

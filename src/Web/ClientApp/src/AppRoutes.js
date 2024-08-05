@@ -45,6 +45,11 @@ import WorkoutTemplateDetailsPage from "./page/WorkoutLog/WorkoutTemplateDetails
 import WorkoutTemplateListPage from "./page/WorkoutTemplates/WorkoutTemplatesList";
 import PrivateWorkoutTemplateListPage from "./page/WorkoutTemplates/PrivateWorkoutTemplatesList";
 
+const Roles = {
+  A: "Administrator",
+  M: "Member",
+  C: "Coach"
+}
 
 const AppRoutes = [
   {
@@ -53,11 +58,11 @@ const AppRoutes = [
   },
   {
     path: '/counter',
-    element: React.createElement(withAuthProtection(Counter, []))
+    element: React.createElement(withAuthProtection(Counter, [Roles['A']]))
   },
   {
     path: '/coachprofile/:id',
-    element: <CoachProfile /> // Adding CoachProfile to the routes
+    element: React.createElement(withAuthProtection(CoachProfile, [])) // Adding CoachProfile to the routes
   },
   {
     path: '/fetch-data',
@@ -65,27 +70,27 @@ const AppRoutes = [
   },
   {
     path: '/muscle-groups',
-    element: React.createElement(withAuthProtection(MuscleGroup, []))
+    element: React.createElement(withAuthProtection(MuscleGroup, [Roles['A']]))
   },
   {
     path: '/workout-history',
-    element: React.createElement(withAuthProtection(WorkoutHistory, []))
+    element: React.createElement(withAuthProtection(WorkoutHistory, [Roles['M']]))
   },
   {
     path: '/coach-service-booking',
-    element: <CoachServiceBooking />
+    element: React.createElement(withAuthProtection(CoachServiceBooking, [Roles['M'], Roles['C']]))
   },
   {
     path: '/manage-account',
-    element: <ManageAccount />
+    element: React.createElement(withAuthProtection(ManageAccount, [Roles['A']]))
   },
   {
     path: '/workout-programs',
-    element: <WorkoutProgramsPage />
+    element: React.createElement(withAuthProtection(WorkoutProgramsPage, []))
   },
   {
     path: '/program-details/:id',
-    element: <WorkoutProgramsDetail />
+    element: React.createElement(withAuthProtection(WorkoutProgramsDetail, []))
   },
   {
     path: '/login',
@@ -100,20 +105,12 @@ const AppRoutes = [
     element: <Register />
   },
   {
-    path: '/trainingsurvey',
-    element: <TrainingSurvey />
-  },
-  {
-    path: '/equipmentslist',
-    element: <EquipmentsList />
-  },
-  {
     path: '/survey',
-    element: React.createElement(withAuthProtection(TrainingSurvey, []))
+    element: React.createElement(withAuthProtection(TrainingSurvey, [Roles['M']]))
   },
   {
     path: '/admin/management/equipments',
-    element: React.createElement(withAuthProtection(EquipmentsList, []))
+    element: React.createElement(withAuthProtection(EquipmentsList, [Roles['A']]))
   },
   {
     path: '/chat',
@@ -121,19 +118,19 @@ const AppRoutes = [
   },
   {
     path: '/users-list',
-    element: React.createElement(withAuthProtection(UserListPage, []))
+    element: React.createElement(withAuthProtection(UserListPage, [Roles['A']]))
   },
   {
     path: '/log-out',
-    element: <Logout />
+    element: React.createElement(withAuthProtection(Logout, []))
   },
   {
     path: '/coach-application-notification',
-    element: <CoachApplicationNotification />
+    element: React.createElement(withAuthProtection(CoachApplicationNotification, []))
   },
   {
     path: '/workout-templates-admin',
-    element: React.createElement(withAuthProtection(WorkoutTemplatesListAdmin, []))
+    element: React.createElement(withAuthProtection(WorkoutTemplatesListAdmin, [Roles['A']]))
   },
   {
     path: '/workout-log-export',
@@ -141,15 +138,15 @@ const AppRoutes = [
   },
   {
     path: '/workout-log-graphs',
-    element: React.createElement(withAuthProtection(WorkoutLogGraphs, []))
+    element: React.createElement(withAuthProtection(WorkoutLogGraphs, [Roles['M']]))
   },
   {
     path: '/exercise-log-graphs',
-    element: React.createElement(withAuthProtection(ExerciseLogGraphs, []))
+    element: React.createElement(withAuthProtection(ExerciseLogGraphs, [Roles['M']]))
   },
   {
     path: '/roles-list-screen',
-    element: React.createElement(withAuthProtection(RolesListScreen, []))
+    element: React.createElement(withAuthProtection(RolesListScreen, [Roles['A']]))
   },
   {
     path: '/exercise-list-screen',
@@ -157,18 +154,18 @@ const AppRoutes = [
   },
   {
     path: '/create-workout-log',
-    element: React.createElement(withAuthProtection(CreateWorkoutLog, []))
+    element: React.createElement(withAuthProtection(CreateWorkoutLog, [Roles['M']]))
   },
   {
     path: '/workout-log/create/:templateId',
-    element: React.createElement(withAuthProtection(CreateWorkoutLogFromTemplate, []))
+    element: React.createElement(withAuthProtection(CreateWorkoutLogFromTemplate, [Roles['M']]))
   },
   {
     path: '/profile/',
-    element: React.createElement(withAuthProtection(Profile, []))
+    element: React.createElement(withAuthProtection(Profile, [Roles['M'], Roles['C']]))
   },
   {
-    path: '/changepassword',
+    path: '/change-password',
     element: React.createElement(withAuthProtection(ChangePassword, []))
   },
   {
@@ -193,35 +190,35 @@ const AppRoutes = [
   },
   {
     path: '/workout-log/create',
-    element: <WorkoutLogPage />
+    element: React.createElement(withAuthProtection(WorkoutLogPage, [Roles['M']]))
   },
   {
     path: '/workout-log/:workoutLogId/update',
-    element: <UpdateWorkoutLogPage />
+    element: React.createElement(withAuthProtection(UpdateWorkoutLogPage, [Roles['M']]))
   },
   {
     path: '/workout-log/:workoutLogId/details',
-    element: <WorkoutLogDetailsPage />
+    element: React.createElement(withAuthProtection(WorkoutLogDetailsPage, [Roles['M']]))
   },
   {
     path: '/workout-templates/create',
-    element: React.createElement(withAuthProtection(CreateWorkoutTemplatePage, []))
+    element: React.createElement(withAuthProtection(CreateWorkoutTemplatePage, [Roles['M'], Roles['C']]))
   },
   {
     path: '/workout-templates/:templateId/update',
-    element: React.createElement(withAuthProtection(UpdateWorkoutTemplatePage, []))
+    element: React.createElement(withAuthProtection(UpdateWorkoutTemplatePage, [Roles['M'], Roles['C']]))
   },
   {
     path: '/workout-templates/:templateId/details',
-    element: React.createElement(withAuthProtection(WorkoutTemplateDetailsPage, []))
+    element: React.createElement(withAuthProtection(WorkoutTemplateDetailsPage, [Roles['M'], Roles['C']]))
   },
   {
     path: '/workout-templates/',
-    element: <WorkoutTemplateListPage />
+    element: React.createElement(withAuthProtection(WorkoutTemplateListPage, []))
   },
   {
     path: '/workout-templates/private',
-    element: <PrivateWorkoutTemplateListPage />
+    element: React.createElement(withAuthProtection(PrivateWorkoutTemplateListPage, [Roles['M'], Roles['C']]))
   },
   // Wildcard route to catch all unmatched routes and redirect to home page
   {
