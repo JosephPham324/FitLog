@@ -35,9 +35,10 @@
     height: 60px;
     width: auto;
 }
-:root .my-4{
-    font-size:50px;
-    text-align:center;
+
+:root .my-4 {
+    font-size: 50px;
+    text-align: center;
 }
 
 .table {
@@ -52,7 +53,7 @@
     }
 
 :root .table th {
-    background-color: #f2f2f2;
+    background-color: #CC99CC;
 }
 
 :root .action-buttone {

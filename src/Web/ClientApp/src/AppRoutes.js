@@ -10,7 +10,7 @@ import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
-import { WorkoutHistory } from './components/WorkoutHistory';
+import WorkoutHistory from './components/WorkoutHistory';
 import { ManageAccount } from './components/ManageAccount';
 import { CoachServiceBooking } from './components/CoachServiceBooking';
 import ChatPage from "./page/ChatPage";
