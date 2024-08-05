@@ -2,11 +2,12 @@
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-const withAuthProtection = (WrappedComponent) => {
+const withAuthProtection = (WrappedComponent, allowedRoles = []) => {
   const ProtectedComponent = (props) => {
-    const { isAuthenticated, loading } = useContext(AuthContext);
+    const { isAuthenticated, loading, userRoles } = useContext(AuthContext);
     console.log('isAuthenticated in ProtectedComponent:', isAuthenticated);
     console.log('loading in ProtectedComponent:', loading);
+    console.log('userRoles in ProtectedComponent:', userRoles);
 
     if (loading) {
       return <div>Loading...</div>; // Show a loading indicator while checking authentication
@@ -14,6 +15,10 @@ const withAuthProtection = (WrappedComponent) => {
 
     if (!isAuthenticated) {
       return <Navigate to="/login" />;
+    }
+
+    if (allowedRoles.length > 0 && !allowedRoles.some(role => userRoles.includes(role))) {
+      return <Navigate to="/unauthorized" />; // Navigate to unauthorized page if user lacks required roles
     }
 
     return <WrappedComponent {...props} />;
