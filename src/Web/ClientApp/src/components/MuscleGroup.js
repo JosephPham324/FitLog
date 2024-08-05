@@ -267,7 +267,7 @@ export function MuscleGroup() {
         <td style={{ display: 'flex', justifyContent: 'center' }}>{group.imageUrl && <img src={group.imageUrl} alt={group.name} className="table-image" />}</td>
         <td>
           <div className="button-group">
-            <Button color="success" className="mr-2 update-btn" onClick={() => handleEdit(group)}>Update</Button>
+            <Button color="success" className="update-btnn" onClick={() => handleEdit(group)}>Update</Button>
             <Button color="danger" className="mr-2 delete-btn" onClick={() => { toggleDeleteModal(); setDeleteId(group.id); }}>Delete</Button>
           </div>
         </td>
@@ -381,8 +381,6 @@ export function MuscleGroup() {
 
           <Button color="danger" class="btn-cannle" onClick={toggleCreateModal}>Cancel</Button>
 
-          <Button color="danger" onClick={toggleCreateModal}>Cancel</Button>
-
         </ModalFooter>
       </Modal>
 
@@ -468,10 +466,10 @@ export function MuscleGroup() {
       <Table striped hover responsive>
         <thead>
           <tr>
-            <th>Number</th>
-            <th>Muscle Group Name</th>
-            <th>Image</th>
-            <th>Actions</th>
+            <th className="col-md-2">Number</th>
+            <th className="col-md-2">Muscle Group Name</th>
+            <th className="col-md-6">Image</th>
+            <th className="col-md-2">Actions</th>
           </tr>
         </thead>
         <tbody>

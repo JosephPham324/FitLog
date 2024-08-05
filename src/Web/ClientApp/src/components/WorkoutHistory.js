@@ -1,177 +1,207 @@
 ﻿import React, { useEffect, useState } from 'react';
+import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import './WorkoutHistory.css';
-import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import './WorkoutHistory.css'; // Import custom CSS for additional styling
+import { Link } from 'react-router-dom';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Alert
+} from 'reactstrap';
 
-export function WorkoutHistory() {
-  const itemsPerPage = 7; // Số lượng mục trên mỗi trang
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [workoutData, setWorkoutData] = useState({});
-  const [loading, setLoading] = useState(true);
+export default function WorkoutHistory() {
+  const [workoutHistory, setWorkoutHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [dates, setDates] = useState(getCurrentWeek()); // Default to current week
+  const [currentPage, setCurrentPage] = useState(1);
+  const workoutsPerPage = 7;
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
+  function getCurrentWeek() {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // Day of the week (0 - Sunday, 6 - Saturday)
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - ((dayOfWeek + 6) % 7)); // Set to Monday of the current week
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6); // Set to Sunday of the current week
+    return [monday, sunday];
+  }
+
+  const fetchWorkoutHistory = async (startDate, endDate) => {
+    setLoading(true);
+    try {
+      console.log("Fetching workout history for dates:", startDate.toISOString().split('T')[0], "to", endDate.toISOString().split('T')[0]);
+      const response = await axiosInstance.get(`${process.env.REACT_APP_BACKEND_URL}/WorkoutLog/history`, {
+        params: {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+        },
+        headers: {
+          accept: 'application/json',
+        },
+      });
+      setWorkoutHistory(response.data);
+    } catch (error) {
+      setError('Error fetching workout history');
+      console.error('Error fetching workout history:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleDeleteModal = (workoutLogId) => {
+    setDeleteId(workoutLogId);
+    setDeleteModal(!deleteModal);
+  };
+
+  const deleteWorkout = async () => {
+    setLoading(true);
+    try {
+      await axiosInstance.delete(`${process.env.REACT_APP_BACKEND_URL}/WorkoutLog/${deleteId}`, {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        data: {
+          workoutLogId: deleteId,
+        },
+      });
+      setWorkoutHistory(workoutHistory.filter(workout => workout.id !== deleteId));
+      setDeleteModal(false);
+    } catch (error) {
+      setError('Error deleting workout history');
+      console.error('Error deleting workout history:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchWorkoutData = async () => {
-      try {
-        const response = await axiosInstance.get(`/workoutLog/get-all`, {
-          params: {
-            PageNumber: currentPage,
-            PageSize: itemsPerPage,
-          },
-          headers: {
-            accept: 'application/json',
-          },
-        });
+    const startDate = dates[0];
+    const endDate = new Date(dates[1]);
+    endDate.setDate(endDate.getDate() + 1); // Add one day to endDate to include data till the end of the selected day
+    fetchWorkoutHistory(startDate, endDate);
+  }, [dates]);
 
-        console.log("API Response:", response.data);
+  const filteredWorkoutHistory = workoutHistory.filter(workout => {
+    const workoutDate = new Date(workout.created);
+    const endOfDay = new Date(dates[1]);
+    endOfDay.setHours(23, 59, 59, 999); // Set to end of the selected day
+    return workoutDate >= dates[0] && workoutDate <= endOfDay;
+  }).sort((a, b) => new Date(b.created) - new Date(a.created)); // Sort from newest to oldest
 
-        const data = response.data.items.reduce((acc, item) => {
-          const dateString = item.created; // Use the `created` field from the workout log
-          if (!dateString) {
-            console.error("Invalid date format: undefined", item);
-            return acc; // Skip this item
-          }
+  // Pagination logic
+  const indexOfLastWorkout = currentPage * workoutsPerPage;
+  const indexOfFirstWorkout = indexOfLastWorkout - workoutsPerPage;
+  const currentWorkouts = filteredWorkoutHistory.slice(indexOfFirstWorkout, indexOfLastWorkout);
 
-          const date = new Date(dateString);
-          if (isNaN(date)) {
-            console.error("Invalid date format:", dateString, item);
-            return acc; // Skip this item
-          }
-
-          const formattedDate = date.toISOString().split('T')[0];
-          if (!acc[formattedDate]) {
-            acc[formattedDate] = [];
-          }
-
-          item.exerciseLogs.forEach(exerciseLog => {
-            // Ensure weightsUsed and numberOfReps are valid strings before parsing
-            const weightsString = exerciseLog.weightsUsed || '';
-            const repsString = exerciseLog.numberOfReps || '';
-
-            // Split and parse weights and reps into arrays of numbers
-            const weights = weightsString.split(',').map(weight => parseFloat(weight.trim())).filter(weight => !isNaN(weight));
-            const reps = repsString.split(',').map(rep => parseInt(rep.trim())).filter(rep => !isNaN(rep));
-
-            // Get the max values
-            const maxWeight = weights.length > 0 ? Math.max(...weights) : 0;
-            const maxReps = reps.length > 0 ? Math.max(...reps) : 0;
-
-            acc[formattedDate].push({
-              exercise: exerciseLog.exerciseName,
-              sets: exerciseLog.numberOfSets,
-              bestSet: `${maxWeight} kg x ${maxReps}`,
-            });
-          });
-
-          return acc;
-        }, {});
-
-        setWorkoutData(data);
-        setTotalPages(response.data.totalPages); // Ensure this is coming from the server response
-      } catch (error) {
-        setError('Error fetching workout data');
-        console.error('Error fetching workout data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWorkoutData();
-  }, [currentPage]);
-
-  // Tính toán các mục Workout History được hiển thị trên trang hiện tại
-  const displayedWorkouts = Object.keys(workoutData);
-
-  // Xử lý khi chuyển đến trang trước
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  // Xử lý khi chuyển đến trang tiếp theo
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const goToPage = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () => setCurrentPage(prevPage => Math.min(prevPage + 1, Math.ceil(filteredWorkoutHistory.length / workoutsPerPage)));
+  const prevPage = () => setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
 
   return (
-    <div className="workout-history container-fluid">
-      <div className="calendar-container">
-        <h2>History</h2>
-        <Calendar
-          tileClassName={({ date }) => {
-            const dateString = date.toISOString().split('T')[0];
-            if (workoutData[dateString]) {
-              return 'has-workout';
-            }
-            return null;
-          }}
-        />
-      </div>
-      <div className="workout-container">
-        <h2>Workout History ({Object.keys(workoutData).length})</h2>
-        <div className="workout-list">
-          {displayedWorkouts.map((dateString) => (
-            <div key={dateString} className="workout-details">
-              <h3>{new Date(dateString).toDateString()}</h3>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Exercise</th>
-                    <th>Sets</th>
-                    <th>Best Set</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {workoutData[dateString].map((workout, index) => (
-                    <tr key={index}>
-                      <td>{workout.exercise}</td>
-                      <td>{workout.sets}</td>
-                      <td>{workout.bestSet}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+    <div className="container mt-5 workout-history-container">
+      <div className="row">
+        <div className="col-md-4">
+          <div className="calendar-container p-3 shadow-sm rounded bg-light">
+            <h1 className="mt-3 mb-3"><strong>History</strong></h1>
+            <Calendar
+              selectRange
+              onChange={(dateRange) => {
+                setDates(dateRange);
+                const startDate = dateRange[0];
+                const endDate = new Date(dateRange[1]);
+                endDate.setDate(endDate.getDate() + 1);
+                fetchWorkoutHistory(startDate, endDate);
+              }}
+              value={dates}
+            />
+            <div className="mt-3">
+              <strong>From:</strong> {dates[0].toDateString()} <br />
+              <strong>To:</strong> {new Date(dates[1]).toDateString()}
             </div>
-          ))}
+          </div>
         </div>
-        {/* Pagination Control */}
-        <div className="pagination">
-          <button onClick={goToPreviousPage} disabled={currentPage === 1}>
-            &laquo;
-          </button>
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => goToPage(index + 1)}
-              className={index + 1 === currentPage ? 'active' : ''}
-            >
-              {index + 1}
-            </button>
-          ))}
-          <button onClick={goToNextPage} disabled={currentPage === totalPages}>
-            &raquo;
-          </button>
+        <div className="col-md-8">
+          <div className="workout-history-list p-3 shadow-sm rounded bg-light">
+            <h2>Workout History ({filteredWorkoutHistory.length})</h2>
+
+            {loading && <div className="alert alert-info">Loading...</div>}
+            {error && <div className="alert alert-danger">{error}</div>}
+            {currentWorkouts.length > 0 ? (
+              <div className="scrollable-workout-list">
+                {currentWorkouts.map((workout, index) => (
+                  <div key={index} className="workout-day mb-4">
+                    <h3 className="">{new Date(workout.created).toDateString()}</h3>
+                    <Link to={`/api/WorkoutLog/${workout.id}`}>
+                      <button className="btn btn-success mt-2 mb-2">Detail</button>
+                    </Link>
+                    <button className="btn btn-danger-delete mt-2 mb-2" onClick={() => toggleDeleteModal(workout.id)}>Delete</button>
+                    <table className="table table-striped table-bordered workout-table">
+                      <thead className="thead-dark">
+                        <tr>
+                          <th>Exercise</th>
+                          <th>Sets</th>
+                          <th>Best Set</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {workout.exerciseLogs.map((log) => (
+                          <tr key={log.exerciseLogId}>
+                            <td>{log.exerciseName}</td>
+                            <td>{log.numberOfSets}</td>
+                            <td>{`${log.weightsUsed} kg x ${log.numberOfReps}`}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
+                {filteredWorkoutHistory.length > workoutsPerPage && (
+                  <nav>
+                    <ul className="pagination justify-content-center mt-4">
+                      <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                        <button onClick={prevPage} className="page-link">Previous</button>
+                      </li>
+                      {Array.from({ length: Math.ceil(filteredWorkoutHistory.length / workoutsPerPage) }, (_, index) => (
+                        <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+                          <button onClick={() => paginate(index + 1)} className="page-link">
+                            {index + 1}
+                          </button>
+                        </li>
+                      ))}
+                      <li className={`page-item ${currentPage === Math.ceil(filteredWorkoutHistory.length / workoutsPerPage) ? 'disabled' : ''}`}>
+                        <button onClick={nextPage} className="page-link">Next</button>
+                      </li>
+                    </ul>
+                  </nav>
+                )}
+              </div>
+            ) : (
+              !loading && <p>No workout history found.</p>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal isOpen={deleteModal} toggle={() => toggleDeleteModal(null)}>
+        <ModalHeader toggle={() => toggleDeleteModal(null)}>Delete Workout History</ModalHeader>
+        <ModalBody>
+          Are you sure you want to delete this workout history entry?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" onClick={deleteWorkout}>Yes</Button>
+          <Button color="secondary" onClick={() => toggleDeleteModal(null)}>No</Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 }
