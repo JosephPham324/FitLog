@@ -30,7 +30,7 @@ export const Profile = () => {
                     lastName: lastName || '',
                     userName: userName || '',
                     gender: gender || '',
-                    dateOfBirth: dateOfBirth || '',
+                    dateOfBirth: dateOfBirth ? dateOfBirth.split('T')[0] : '',
                     roles: roles || '',
                     phoneNumber: phoneNumber || '',
                     email: email || ''
@@ -55,7 +55,7 @@ export const Profile = () => {
 
     const updateProfile = async () => {
         try {
-            const queryParams = new URLSearchParams({
+            const payload = {
                 UserId: profile.id,
                 FirstName: profile.firstName,
                 LastName: profile.lastName,
@@ -64,12 +64,12 @@ export const Profile = () => {
                 Email: profile.email,
                 PhoneNumber: profile.phoneNumber,
                 UserName: profile.userName,
-            }).toString();
+            };
 
-            const url = `/Users/update-profile?${queryParams}`;
-            console.log('Sending profile data to:', url);
+            const url = `/Users/update-profile`;
+            console.log('Sending profile data to:', url, 'with payload:', payload);
 
-            await axiosInstance.put(url, {}, {
+            await axiosInstance.put(url, payload, {
                 headers: {
                     'accept': 'application/json'
                 }
@@ -77,7 +77,7 @@ export const Profile = () => {
             alert('Profile updated successfully!');
         } catch (error) {
             setError('Error updating profile');
-            console.error('Error updating profile:', error.response || error.message);
+            console.error('Error updating profile:', error.response ? error.response.data : error.message);
         }
     };
 

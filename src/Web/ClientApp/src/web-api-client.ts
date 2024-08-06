@@ -10634,6 +10634,7 @@ export class WorkoutProgramListDTO implements IWorkoutProgramListDTO {
     publicProgram?: boolean | undefined;
     userId?: string | undefined;
     userName?: string | undefined;
+    creatorFullName?: string | undefined;
 
     constructor(data?: IWorkoutProgramListDTO) {
         if (data) {
@@ -10659,6 +10660,7 @@ export class WorkoutProgramListDTO implements IWorkoutProgramListDTO {
             this.publicProgram = _data["publicProgram"];
             this.userId = _data["userId"];
             this.userName = _data["userName"];
+            this.creatorFullName = _data["creatorFullName"];
         }
     }
 
@@ -10684,6 +10686,7 @@ export class WorkoutProgramListDTO implements IWorkoutProgramListDTO {
         data["publicProgram"] = this.publicProgram;
         data["userId"] = this.userId;
         data["userName"] = this.userName;
+        data["creatorFullName"] = this.creatorFullName;
         return data;
     }
 }
@@ -10702,6 +10705,7 @@ export interface IWorkoutProgramListDTO {
     publicProgram?: boolean | undefined;
     userId?: string | undefined;
     userName?: string | undefined;
+    creatorFullName?: string | undefined;
 }
 
 export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand {

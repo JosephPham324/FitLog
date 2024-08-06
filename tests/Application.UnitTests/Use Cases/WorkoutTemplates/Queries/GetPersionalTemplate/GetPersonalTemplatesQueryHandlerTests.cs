@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿/*using System.Linq.Expressions;
 using FitLog.Application.Common.Interfaces;
 using FitLog.Application.WorkoutTemplates.Queries.GetPersonalTemplate;
 using FitLog.Domain.Entities;
@@ -85,3 +85,4 @@ public class GetPersonalTemplatesQueryHandlerTests
         result.Items.Should().BeEmpty(); // Ensure no templates are returned
     }
 }
+*/

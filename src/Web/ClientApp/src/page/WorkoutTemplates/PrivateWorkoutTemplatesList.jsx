@@ -75,7 +75,7 @@ const WorkoutTemplateListPage = () => {
 
     const handleDelete = async (templateId) => {
         try {
-            const result = await axiosInstance.delete(`/workout-templates/${templateId}/`);
+            const result = await axiosInstance.delete(`/WorkoutTemplates/delete-workout-template/${templateId}`);
             alert(result.data.success);
             // Refresh the list after deletion
             setPageNumber(1); // Reset to the first page or fetch the current page again

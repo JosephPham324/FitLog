@@ -14,31 +14,31 @@
     margin-bottom: 20px;
 }
 
-.equipments-actions input {
-    padding: 10px;
-    border: 1px solid #000;
-    border-radius: 4px;
-}
+    .equipments-actions input {
+        padding: 10px;
+        border: 1px solid #000;
+        border-radius: 4px;
+    }
 
 :root .table {
     width: 100%;
     border-collapse: collapse;
 }
 
-:root .table td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: center;
-    vertical-align: middle;
-}
+    :root .table td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+        vertical-align: middle;
+    }
 
-:root .table th {
-    text-align: center;
-    background-color: #f4f4f4;
-    height: 55px;
-    padding: 10px;
-    border-bottom: 1px solid black;
-}
+    :root .table th {
+        text-align: center;
+        background-color: #f4f4f4;
+        height: 55px;
+        padding: 10px;
+        border-bottom: 1px solid black;
+    }
 
 :root .create-buttone, .edit-buttone {
     padding: 5px 10px;
@@ -81,10 +81,10 @@
     background-color: #007bff;
 }
 
-:root .page-button.active {
-    background-color: #4CAF50;
-    color: white;
-}
+    :root .page-button.active {
+        background-color: #4CAF50;
+        color: white;
+    }
 
 :root .error-text {
     color: red;
@@ -154,8 +154,9 @@
     height: 60px;
     width: auto;
 }
+
 :root .btn-danger {
-    height: 60px;
+    height: 38px;
     width: auto;
 }
 
@@ -206,7 +207,7 @@
         height: 47px;
     }
 
-        .pagination-container .page-button.active:hover {
-            background-color: darkgreen;
-            border-color: darkgreen;
-        }
+    .pagination-container .page-button.active:hover {
+        background-color: darkgreen;
+        border-color: darkgreen;
+    }
