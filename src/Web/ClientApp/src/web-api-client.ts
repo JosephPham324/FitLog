@@ -2219,12 +2219,8 @@ export class TrainingRecommendationClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getProgramRecommendations(userId: string | null): Promise<{ [key: string]: ProgramOverviewDto[]; }> {
-        let url_ = this.baseUrl + "/api/TrainingRecommendation/programs-recommendation/user?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+    getProgramRecommendations(): Promise<{ [key: string]: ProgramOverviewDto[]; }> {
+        let url_ = this.baseUrl + "/api/TrainingRecommendation/programs-recommendation/user";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2267,17 +2263,13 @@ export class TrainingRecommendationClient {
         return Promise.resolve<{ [key: string]: ProgramOverviewDto[]; }>(null as any);
     }
 
-    getWorkoutRecommendation(query: GetWorkoutRecommendationQuery): Promise<ExerciseDTO[]> {
+    getWorkoutRecommendation(): Promise<ExerciseDTO[]> {
         let url_ = this.baseUrl + "/api/TrainingRecommendation/workout-recommendation/user";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(query);
-
         let options_: RequestInit = {
-            body: content_,
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -7505,50 +7497,6 @@ export interface IProgramOverviewDto {
     experienceLevel?: string | undefined;
     gymType?: string | undefined;
     musclesPriority?: string | undefined;
-}
-
-export class GetWorkoutRecommendationQuery implements IGetWorkoutRecommendationQuery {
-    exerciseIds?: number[];
-
-    constructor(data?: IGetWorkoutRecommendationQuery) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["exerciseIds"])) {
-                this.exerciseIds = [] as any;
-                for (let item of _data["exerciseIds"])
-                    this.exerciseIds!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): GetWorkoutRecommendationQuery {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetWorkoutRecommendationQuery();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.exerciseIds)) {
-            data["exerciseIds"] = [];
-            for (let item of this.exerciseIds)
-                data["exerciseIds"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IGetWorkoutRecommendationQuery {
-    exerciseIds?: number[];
 }
 
 export class CreateSurveyAnswerCommand implements ICreateSurveyAnswerCommand {

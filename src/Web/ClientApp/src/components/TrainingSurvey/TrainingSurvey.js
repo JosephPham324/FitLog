@@ -1,6 +1,4 @@
-﻿
-
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   Container,
   TextField,
@@ -16,6 +14,8 @@ import {
   MenuItem,
   Select,
   Grid,
+  Modal,
+  Box
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import axiosInstance from '../../utils/axiosInstance'; // Import the Axios instance
@@ -60,6 +60,17 @@ const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: 'bold',
   },
+  modalStyle: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    backgroundColor: 'white',
+    border: '2px solid #000',
+    boxShadow: 24,
+    padding: '16px',
+  },
 }));
 
 const experienceLevels = [
@@ -102,6 +113,7 @@ const TrainingSurvey = () => {
     age: false,
     ageMessage: '',
   });
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchMuscleGroups = async () => {
@@ -109,7 +121,7 @@ const TrainingSurvey = () => {
         const response = await axiosInstance.get('https://localhost:44447/api/MuscleGroups/get-list?PageNumber=1&PageSize=10');
         console.log('API response:', response.data);
         if (Array.isArray(response.data.items)) {
-         
+
           setMuscleGroups(response.data.items);
         } else {
           console.error('Unexpected response format:', response.data);
@@ -156,7 +168,7 @@ const TrainingSurvey = () => {
           daysPerWeek: parseInt(daysPerWeek),
           experienceLevel,
           gymType,
-          musclesPriority: musclesPriority.join(', '),
+          musclesPriority: musclesPriority.join(','),
           age: parseInt(age),
         }, {
           headers: {
@@ -164,17 +176,23 @@ const TrainingSurvey = () => {
           }
         });
         console.log(response.data);
+        setModalOpen(true);
       } catch (error) {
         console.error('There was an error submitting the form!', error);
       }
     }
   };
 
+  const handleClose = () => {
+    setModalOpen(false);
+    window.location.href = '/';
+  };
+
   return (
     <Container>
       <Grid container alignItems="left" justify="space-between">
         <Typography variant="h4" className="Training Survey">
-          <span className="gradient-text">Training Survey</span>{' '}
+          <strong> Training Survey </strong>
           <span className={classes.smallText}>
             (You are required to fill out all of the questions).
           </span>
@@ -301,6 +319,25 @@ const TrainingSurvey = () => {
           Submit
         </Button>
       </form>
+
+      <Modal
+        open={modalOpen}
+        onClose={handleClose}
+        aria-labelledby="success-modal-title"
+        aria-describedby="success-modal-description"
+      >
+        <Box className={classes.modalStyle}>
+          <Typography id="success-modal-title" variant="h6" component="h2">
+            Success
+          </Typography>
+          <Typography id="success-modal-description" sx={{ mt: 2 }}>
+            You have successfully filled out the Survey.
+          </Typography>
+          <Button onClick={handleClose} variant="contained" color="primary">
+            OK
+          </Button>
+        </Box>
+      </Modal>
     </Container>
   );
 };

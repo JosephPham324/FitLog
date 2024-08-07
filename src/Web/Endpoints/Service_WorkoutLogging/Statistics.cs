@@ -33,7 +33,8 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
         {
             // Personal statistics
             var personalStats = app.MapGroup(this)
-                .RequireAuthorization("MemberOnly");
+                //.RequireAuthorization("MemberOnly")
+                ;
 
             personalStats
                 .MapGroup("overall")

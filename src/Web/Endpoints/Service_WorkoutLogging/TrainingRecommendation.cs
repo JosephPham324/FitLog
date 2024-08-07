@@ -30,15 +30,23 @@ public class TrainingRecommendation : EndpointGroupBase
            .MapPost(GetWorkoutRecommendation, "/workout-recommendation/user");
     }
 
-    public Task<Dictionary<string, List<ProgramOverviewDto>>> GetProgramRecommendations(ISender sender, [AsParameters] GetProgramRecommendationsQuery query)
+    public Task<Dictionary<string, List<ProgramOverviewDto>>> GetProgramRecommendations(ISender sender)
     {
-
+        var UserId = _identityService.Id ?? "";
+        GetProgramRecommendationsQuery query = new GetProgramRecommendationsQuery()
+        {
+            UserId = UserId
+        };
         return sender.Send(query);
     }
 
-    public Task<List<ExerciseDTO>> GetWorkoutRecommendation(ISender sender, [FromBody] GetWorkoutRecommendationQuery query)
+    public Task<List<ExerciseDTO>> GetWorkoutRecommendation(ISender sender)
     {
-        
+        var UserId = _identityService.Id ?? "";
+        GetWorkoutRecommendationQuery query = new GetWorkoutRecommendationQuery()
+        {
+            UserId = UserId
+        };
         return sender.Send(query);
     }
 }
