@@ -40,7 +40,6 @@ public class Users : EndpointGroupBase
 
         // Standalones
         app.MapGroup(this)
-           .MapPost(Login, "login")
            .MapPost(Register, "register")
            .MapPut(ConfirmEmail, "confirm-email")
            .MapPost(RecoverAccount, "recover-account")

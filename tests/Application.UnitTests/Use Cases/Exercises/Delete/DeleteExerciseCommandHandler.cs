@@ -1,152 +1,123 @@
-﻿using FitLog.Application.Exercises.Commands.CreateExercise;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Exercises.Commands.CreateExercise;
 using FitLog.Application.Exercises.Commands.DeleteExercise;
 using FitLog.Application.Common.Models;
 using FitLog.Domain.Entities;
-using FitLog.Infrastructure.Data;
+using Moq;
+using Xunit;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
+using MockQueryable.Moq;
 
-public class DeleteExerciseCommandHandlerTests
+namespace FitLog.Application.UnitTests.Use_Cases.Exercises.Commands
 {
-    private ApplicationDbContext _context;
-    private DeleteExerciseCommandHandler _handler;
-    private CreateExerciseCommandHandler _handlerCreate;
-
-    private List<MuscleGroup> _addedMuscleGroups;
-    private List<Equipment> _addedEquipments;
-    private List<Exercise> _addedExercises;
-
-    [SetUp]
-    public async Task Setup()
+    public class DeleteExerciseCommandHandlerTests
     {
-        //var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-        //    .UseInMemoryDatabase(databaseName: "TestDatabase")
-        //    .Options;
+        private readonly Mock<IApplicationDbContext> _contextMock;
+        private readonly DeleteExerciseCommandHandler _handler;
+        private readonly CreateExerciseCommandHandler _handlerCreate;
 
-        _context = new ApplicationDbContext();
-
-        _handler = new DeleteExerciseCommandHandler(_context);
-        _handlerCreate = new CreateExerciseCommandHandler(_context);
-
-        _addedMuscleGroups = new List<MuscleGroup>();
-        _addedEquipments = new List<Equipment>();
-        _addedExercises = new List<Exercise>();
-
-        var muscleGroup = new MuscleGroup { MuscleGroupName = "Test Muscle Group", ImageUrl = "http://example.com/image.jpg" };
-        var equipment = new Equipment { EquipmentName = "Test Equipment", ImageUrl = "http://example.com/image.jpg" };
-
-        _context.MuscleGroups.Add(muscleGroup);
-        await _context.SaveChangesAsync();
-
-        _context.Equipment.Add(equipment);
-        await _context.SaveChangesAsync();
-
-        _addedMuscleGroups.Add(muscleGroup);
-        _addedEquipments.Add(equipment);
-
-        var user = _context.AspNetUsers.FirstOrDefault() ?? new AspNetUser
+        public DeleteExerciseCommandHandlerTests()
         {
-            Id = "user_id",
-            UserName = "TestUser",
-            Email = "testuser@example.com"
-        };
-
-        if (_context.AspNetUsers.Find(user.Id) == null)
-        {
-            _context.AspNetUsers.Add(user);
-            await _context.SaveChangesAsync();
-        }
-
-        var command = new CreateExerciseCommand
-        {
-            CreatedBy = user.Id,
-            MuscleGroupIds = new List<int> { muscleGroup.MuscleGroupId },
-            EquipmentId = equipment.EquipmentId,
-            ExerciseName = "Test Exercise",
-            DemoUrl = "http://example.com/demo",
-            Type = "WeightResistance",
-            Description = "Test Description",
-            PublicVisibility = true
-        };
-
-        var result = await _handlerCreate.Handle(command!, CancellationToken.None);
-
-        if (result.Success)
-        {
-            var exercise = await _context.Exercises
-                .Include(e => e.ExerciseMuscleGroups)
-                .FirstOrDefaultAsync(e => e.ExerciseName == command.ExerciseName);
-
-            if (exercise != null)
+            var user = new AspNetUser
             {
-                _addedExercises.Add(exercise);
-                Console.WriteLine("Setup is correct. MuscleGroupIds and EquipmentId are reflected correctly.");
-            }
-            else
+                Id = "user_id",
+                UserName = "TestUser",
+                Email = "testuser@example.com"
+            };
+
+            var muscleGroup = new MuscleGroup { MuscleGroupId = 1, MuscleGroupName = "Test Muscle Group", ImageUrl = "http://example.com/image.jpg" };
+            var equipment = new Equipment { EquipmentId = 1, EquipmentName = "Test Equipment", ImageUrl = "http://example.com/image.jpg" };
+
+            _contextMock = new Mock<IApplicationDbContext>();
+            var exercise = new Exercise
             {
-                Console.WriteLine("Failed to create exercise.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("CreateExerciseCommandHandler returned failure: " + string.Join(", ", result.Errors));
-        }
-    }
+                ExerciseId = 1,
+                CreatedBy = user.Id,
+                ExerciseName = "Test Exercise",
+                EquipmentId = equipment.EquipmentId,
+                DemoUrl = "http://example.com/demo",
+                Type = "WeightResistance",
+                Description = "Test Description",
+                PublicVisibility = true,
+                ExerciseMuscleGroups = new List<ExerciseMuscleGroup> { new ExerciseMuscleGroup { MuscleGroupId = muscleGroup.MuscleGroupId } }
+            };
 
-    [TearDown]
-    public void TearDown()
-    {
-        if (_addedMuscleGroups.Any())
-        {
-            _context.MuscleGroups.RemoveRange(_addedMuscleGroups);
+            var exercisesDbSetMock = new List<Exercise>() { exercise }.AsQueryable().BuildMockDbSet();
+            var muscleGroupsDbSetMock = new List<MuscleGroup>() { muscleGroup }.AsQueryable().BuildMockDbSet();
+            var equipmentDbSetMock = new List<Equipment>() { equipment }.AsQueryable().BuildMockDbSet();
+            var usersDbSetMock = new List<AspNetUser>().AsQueryable().BuildMockDbSet();
+
+            _contextMock.Setup(x => x.Exercises).Returns(exercisesDbSetMock.Object);
+            _contextMock.Setup(x => x.MuscleGroups).Returns(muscleGroupsDbSetMock.Object);
+            _contextMock.Setup(x => x.Equipment).Returns(equipmentDbSetMock.Object);
+            _contextMock.Setup(x => x.AspNetUsers).Returns(usersDbSetMock.Object);
+
+            _handler = new DeleteExerciseCommandHandler(_contextMock.Object);
+            _handlerCreate = new CreateExerciseCommandHandler(_contextMock.Object);
         }
 
-        if (_addedEquipments.Any())
+        [Fact]
+        public async Task Handle_ValidCommand_ReturnsTrue()
         {
-            _context.Equipment.RemoveRange(_addedEquipments);
-        }
-
-        foreach (var exercise in _addedExercises)
-        {
-            var existingExercise = _context.Exercises.Find(exercise.ExerciseId);
-            if (existingExercise != null)
+            
+            var command = new DeleteExerciseCommand
             {
-                _context.Exercises.Remove(existingExercise);
-            }
+                ExerciseId = 1
+            };
+
+            // Act
+            var result = await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Success.Should().BeTrue();
+            _contextMock.Verify(x => x.Exercises.Remove(It.IsAny<Exercise>()), Times.Once);
+            _contextMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        _context.SaveChanges();
-        _context.Dispose();
-    }
-
-    [Test]
-    public async Task Handle_ValidCommand_ReturnsTrue()
-    {
-        var ex = _addedExercises[0];
-        var command = new DeleteExerciseCommand
+        [Fact]
+        public async Task Handle_InvalidExerciseId_ReturnsFalse()
         {
-            ExerciseId = ex.ExerciseId
-        };
+            // Arrange
+            var command = new DeleteExerciseCommand
+            {
+                ExerciseId = 0
+            };
 
-        var result = await _handler.Handle(command, CancellationToken.None);
+            var exercises = new List<Exercise>().AsQueryable().BuildMockDbSet();
+            _contextMock.Setup(x => x.Exercises).Returns(exercises.Object);
 
-        result.Success.Should().BeTrue();
+            // Act
+            var result = await _handler.Handle(command, CancellationToken.None);
 
-        var exercise = await _context.Exercises.FindAsync(ex.ExerciseId);
-        exercise.Should().BeNull();
-    }
+            // Assert
+            result.Success.Should().BeFalse();
+            result.Errors.Should().Contain("Exercise not found");
+        }
 
-    [Test]
-    public async Task Handle_InvalidExerciseId_ReturnsFalse()
-    {
-        var command = new DeleteExerciseCommand
+        [Fact]
+        public async Task Handle_ExerciseNotInDatabase_ReturnsFalse()
         {
-            ExerciseId = 0
-        };
+            // Arrange
+            var command = new DeleteExerciseCommand
+            {
+                ExerciseId = 999
+            };
 
-        var result = await _handler.Handle(command, CancellationToken.None);
+            var exercises = new List<Exercise>().AsQueryable().BuildMockDbSet();
+            _contextMock.Setup(x => x.Exercises).Returns(exercises.Object);
 
-        result.Success.Should().BeFalse();
+            // Act
+            var result = await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Success.Should().BeFalse();
+            result.Errors.Should().Contain("Exercise not found");
+        }
     }
 }

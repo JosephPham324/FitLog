@@ -1,50 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using AutoMapper;
+using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Application.Exercises.Queries.GetExerciseDetails;
 using FitLog.Domain.Entities;
-using FitLog.Infrastructure.Data;
-using FitLog.Infrastructure.Identity;
+using Moq;
+using Xunit;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
+using MockQueryable.Moq;
+using Ardalis.GuardClauses;
 
 namespace FitLog.Application.UnitTests.Use_Cases.Exercises.Queries.Details
 {
     public class GetExerciseByIdQueryHandlerTests
     {
-        private ApplicationDbContext _context;
-        private IMapper _mapper;
-        private GetExerciseByIdQueryHandler _handler;
-        private List<MuscleGroup> _addedMuscleGroups;
-        private List<Equipment> _addedEquipments;
-        private List<Exercise> _addedExercises;
+        private readonly Mock<IApplicationDbContext> _contextMock;
+        private readonly IMapper _mapper;
+        private readonly GetExerciseByIdQueryHandler _handler;
 
-        [SetUp]
-        public void Setup()
+        public GetExerciseByIdQueryHandlerTests()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .Options;
+            _contextMock = new Mock<IApplicationDbContext>();
 
-            _context = new ApplicationDbContext(options);
-            // Thiết lập danh sách để lưu thực thể được thêm vào
-            _addedMuscleGroups = new List<MuscleGroup>();
-            _addedEquipments = new List<Equipment>();
-            _addedExercises = new List<Exercise>();
+            var muscleGroupsDbSetMock = new List<MuscleGroup>().AsQueryable().BuildMockDbSet();
+            var equipmentDbSetMock = new List<Equipment>().AsQueryable().BuildMockDbSet();
+            var exercisesDbSetMock = new List<Exercise>().AsQueryable().BuildMockDbSet();
+            var usersDbSetMock = new List<AspNetUser>().AsQueryable().BuildMockDbSet();
 
-            var muscleGroup = new MuscleGroup { MuscleGroupName = "Test Muscle Group" };
-            var equipment = new Equipment { EquipmentName = "Test Equipment", ImageUrl = "http://example.com/image.jpg" };
-
-            _context.MuscleGroups.Add(muscleGroup);
-            _context.Equipment.Add(equipment);
-
-            _addedEquipments.Add(equipment);
-            _addedMuscleGroups.Add(muscleGroup);
-            _context.SaveChanges();
+            _contextMock.Setup(x => x.MuscleGroups).Returns(muscleGroupsDbSetMock.Object);
+            _contextMock.Setup(x => x.Equipment).Returns(equipmentDbSetMock.Object);
+            _contextMock.Setup(x => x.Exercises).Returns(exercisesDbSetMock.Object);
+            _contextMock.Setup(x => x.AspNetUsers).Returns(usersDbSetMock.Object);
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -52,11 +43,31 @@ namespace FitLog.Application.UnitTests.Use_Cases.Exercises.Queries.Details
             });
             _mapper = config.CreateMapper();
 
-            _handler = new GetExerciseByIdQueryHandler(_context, _mapper);
+            _handler = new GetExerciseByIdQueryHandler(_contextMock.Object, _mapper);
+        }
+
+        [Fact]
+        public async Task Handle_ValidId_ReturnsExerciseDetailsDTO()
+        {
+            // Arrange
+            var user = new AspNetUser
+            {
+                Id = "48fd07f4-2a6a-46ec-a577-db456fac44ce",
+                UserName = "administrator@localhost",
+                Email = "administrator@localhost"
+            };
+
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                EquipmentName = "Test Equipment",
+                ImageUrl = "http://example.com/image.jpg"
+            };
 
             var exercise = new Exercise
             {
-                CreatedBy = "48fd07f4-2a6a-46ec-a577-db456fac44ce",
+                ExerciseId = 1,
+                CreatedBy = user.Id,
                 EquipmentId = equipment.EquipmentId,
                 ExerciseName = "Test Exercise",
                 DemoUrl = "http://example.com/demo",
@@ -65,58 +76,27 @@ namespace FitLog.Application.UnitTests.Use_Cases.Exercises.Queries.Details
                 PublicVisibility = true
             };
 
-            _context.Exercises.Add(exercise);
-            _context.SaveChanges();
+            var exercises = new List<Exercise> { exercise }.AsQueryable().BuildMockDbSet();
+            var users = new List<AspNetUser> { user }.AsQueryable().BuildMockDbSet();
+            var equipmentList = new List<Equipment> { equipment }.AsQueryable().BuildMockDbSet();
 
-            _addedExercises.Add(exercise);
-        }
+            _contextMock.Setup(x => x.Exercises).Returns(exercises.Object);
+            _contextMock.Setup(x => x.AspNetUsers).Returns(users.Object);
+            _contextMock.Setup(x => x.Equipment).Returns(equipmentList.Object);
 
-        [TearDown]
-        public async Task TearDown()
-        {
-            
-            var equipments = _context.Equipment.ToList();
-            if (equipments.Any())
-            {
-                _context.Equipment.RemoveRange(equipments);
-            }
-
-            var exercises = _context.Exercises.ToList();
-            if (exercises.Any())
-            {
-                _context.Exercises.RemoveRange(exercises);
-            }
-
-            //var muscleGroups = _context.MuscleGroups.ToList();
-            //if (muscleGroups.Any())
-            //{
-            //    _context.MuscleGroups.RemoveRange(muscleGroups);
-            //}
-
-            await _context.SaveChangesAsync();
-
-            await _context.DisposeAsync();
-        }
-
-
-
-        [Test]
-        public async Task Handle_ValidId_ReturnsExerciseDetailsDTO()
-        {
-            // Arrange
-            var query = new GetExerciseByIdQuery { Id = _addedExercises[0].ExerciseId };
+            var query = new GetExerciseByIdQuery { Id = exercise.ExerciseId };
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
             result.Should().NotBeNull();
-            result.ExerciseId.Should().Be(_addedExercises[0].ExerciseId);
-            result.CreatedByName.Should().Be("administrator@localhost");
-            result.EquipmentName.Should().Be("Test Equipment");
+            result.ExerciseId.Should().Be(exercise.ExerciseId);
+            result.CreatedByName.Should().Be(user.UserName);
+            result.EquipmentName.Should().Be(equipment.EquipmentName);
         }
 
-        [Test]
+        [Fact]
         public void Handle_InvalidId_ThrowsNotFoundException()
         {
             // Arrange
