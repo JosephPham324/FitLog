@@ -13,7 +13,34 @@
     height: 60px;
     width: auto;
 }
-.update-role-button {
+
+
+:root .btn-primary {
+    height: 60px;
+    width: auto;
+}
+
+:root .my-4 {
+    font-size: 50px;
+    text-align: center;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    :root .table th, .table td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+
+:root .table th {
+    background-color: #CC99CC;
+}
+
+:root .action-buttone {
     background-color: green;
     color: white;
     height: 60px;
@@ -33,4 +60,13 @@
 :root .my-title {
     font-size: 50px;
     text-align: center;
+}
+
+:root .alert-danger {
+    --bs-alert-color: red;
+    --bs-alert-link-color: var(--bs-danger-text-emphasis);
+    font-size: 15px;
+    margin-top: 7px;
+    --bs-alert-bg: var(--bs-danger-bg-subtle);
+    --bs-alert-border-color: var(--bs-danger-border-subtle);
 }

@@ -31,12 +31,13 @@ public class WorkoutTemplates : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization()
+            //.RequireAuthorization()
             .MapPost(CreatePersonalTemplate, "create-personal-template")
             .MapPost(CreateWorkoutTemplate, "create-workout-template")
             .MapPut(UpdateWorkoutTemplate, "update-workout-template/{id}")
             .MapDelete(DeleteWorkoutTemplate, "delete-workout-template/{id}")
-            .MapGet(GetPublicTemplates, "get-public-templates")
+            .MapGet(GetPublicTemplates, "public-templates")
+            .MapGet(GetPersonalTemplates, "personal-templates")
             .MapGet(GetWorkoutTemplateDetails, "get-workout-template-details/{id}")
             .MapGet(FilterWorkoutTemplates, "filter-workout-templates");
     }
@@ -73,14 +74,14 @@ public class WorkoutTemplates : EndpointGroupBase
     public async Task<Result> UpdateWorkoutTemplate(ISender sender, [FromBody] UpdateWorkoutTemplateCommand command, int id)
     {
         Result? result = null;
-        try
-        {
+        //try
+        //{
             result = await sender.Send(command);
-        }
-        catch (Exception e)
-        {
-            return Result.Failure([e.Message]);
-        }
+        //}
+        //catch (Exception e)
+        //{
+            //return Result.Failure([e.Message]);
+        //}
         return result ?? Result.Failure(["Failed to create template"]);
     }
 
@@ -107,6 +108,18 @@ public class WorkoutTemplates : EndpointGroupBase
     {
         return sender.Send(query);
     }
+    public async Task<PaginatedList<WorkoutTemplateListDto>> GetPersonalTemplates(ISender sender, [FromQuery] int PageNumber, [FromQuery] int PageSize)
+    { 
+        var userId = _identityService.Id ?? "";
+        GetPersonalTemplatesQuery query = new GetPersonalTemplatesQuery()
+        {
+            UserId = userId,
+            PageNumber = PageNumber,
+            PageSize = PageSize
+        };
+        return await sender.Send(query);
+    }
+
 
     public async Task<WorkoutTemplateDetailsDto> GetWorkoutTemplateDetails(ISender sender, int id)
     {

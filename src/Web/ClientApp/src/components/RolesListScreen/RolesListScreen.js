@@ -1,6 +1,21 @@
-﻿import React, { useState, useEffect } from 'react';
-import { Table, Button, Container, Row, Col, Form, FormGroup, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap';
-import axiosInstance from '../../utils/axiosInstance';
+import React, { useState, useEffect } from 'react';
+import {
+  Button,
+  Container,
+  Input,
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Label,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Table,
+  Alert,
+} from 'reactstrap';
+import axiosInstance from '../../utils/axiosInstance'; // Import axiosInstance from config
 import './RolesListScreen.css';
 
 const RolesList = () => {

@@ -1,13 +1,13 @@
 
-    .button-group {
-        display: flex;
-        justify-content: space-between;
-    }
+.button-group {
+    display: flex;
+    justify-content: space-between;
+}
 
 
-    .update-btn {
-        border-color: #007bff !important;
-    }
+.update-btn {
+    border-color: #007bff !important;
+}
 
 .update-btn {
     border-color: #007bff !important;
@@ -18,49 +18,49 @@
 }
 
 
-    .delete-btn {
-        background-color: #dc3545 !important;
-        border-color: #dc3545 !important;
-    }
+.delete-btn {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
 
 
-    .btn-create {
-        width: 100%;
-        height: 40px;
-    }
+.btn-create {
+    width: 100%;
+    height: 40px;
+}
 
-    .table-image {
-        width: 400px; /* Adjusted width to fit better */
-        height: auto; /* Maintain aspect ratio */
-    }
+.table-image {
+    width: 350px; /* Adjusted width to fit better */
+    height: auto; /* Maintain aspect ratio */
+}
 
-    .small-button {
-        padding: 5px 10px;
-        font-size: 12px;
-    }
+.small-button {
+    padding: 5px 10px;
+    font-size: 12px;
+}
 
-    .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 30px;
-        margin-bottom: 50px;
-    }
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
 
-    :root .pre, :root .next {
-        width: 15%;
-        height: 50px;
-    }
+:root .pre, :root .next {
+    width: 15%;
+    height: 50px;
+}
 
-    .btn-search {
-        width: 80%;
-        height: 40px;
-        text-align: center;
-    }
+.btn-search {
+    width: 80%;
+    height: 40px;
+    text-align: center;
+}
 
-    .btn-cannle {
-        background-color: red !important;
-    }
+.btn-cannle {
+    background-color: red !important;
+}
 
 .btn-create {
     width: 100%;
@@ -167,3 +167,14 @@
         .pagination button:hover:not(.active):not(:disabled) {
             background-color: #e9e9e9;
         }
+
+:root .update-btnn {
+    margin-right: -50px;
+}
+
+.btn-danger-delete {
+    height: 38px;
+    background-color: red;
+    color: white;
+    margin-left: 10px;
+}

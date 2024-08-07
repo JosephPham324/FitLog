@@ -1,19 +1,43 @@
-﻿import React, { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+﻿import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { getUserRole } from '../utils/tokenOperations';
 
-const withAuthProtection = (WrappedComponent) => {
+const withAuthProtection = (WrappedComponent, allowedRoles = []) => {
   const ProtectedComponent = (props) => {
     const { isAuthenticated, loading } = useContext(AuthContext);
+    const userRoles = getUserRole(); // Add userRoles state
+    const navigate = useNavigate();
+    const [unauthorized, setUnauthorized] = useState(false);
+
     console.log('isAuthenticated in ProtectedComponent:', isAuthenticated);
     console.log('loading in ProtectedComponent:', loading);
+    console.log('userRoles in ProtectedComponent:', userRoles);
+
+    useEffect(() => {
+      if (!loading) {
+        
+        if (!isAuthenticated) {
+          navigate("/login");
+        }
+        if (allowedRoles != null && allowedRoles === []){
+          return <WrappedComponent {...props} />;
+        }
+        if (allowedRoles.length > 0 && !allowedRoles.some(role => userRoles.includes(role))) {
+          setUnauthorized(true);
+          setTimeout(() => {
+            navigate("/");
+          }, 2000); // Redirect after 2 seconds
+        }
+      }
+    }, [isAuthenticated, loading, userRoles, navigate]);
 
     if (loading) {
       return <div>Loading...</div>; // Show a loading indicator while checking authentication
     }
 
-    if (!isAuthenticated) {
-      return <Navigate to="/login" />;
+    if (unauthorized) {
+      return <div>Unauthorized. Redirecting...</div>; // Show unauthorized message
     }
 
     return <WrappedComponent {...props} />;
@@ -23,6 +47,8 @@ const withAuthProtection = (WrappedComponent) => {
 };
 
 export default withAuthProtection;
+
+
 
 
 

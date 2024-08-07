@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
+import './ManageAccount.css'; // Import the CSS file
 
 const apiUrl = process.env.REACT_APP_BACKEND_URL + '/Users';
 
@@ -138,17 +139,69 @@ export function ManageAccount() {
             >
               Update
             </Button>
-            {/*            <Button
+            <Button
               color="danger"
               className="mr-2 delete-btn"
-              onClick={() => deleteUser(user.id)}
+              onClick={() => deleteUser(user.templateId)}
             >
               Delete
-            </Button>*/}
+            </Button>
           </div>
         </td>
       </tr>
     ));
+  };
+
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxPagesToShow = 3; // Maximum number of page links to display
+
+    // First page
+    items.push(
+      <PaginationItem key={1} active={currentPage === 1}>
+        <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
+      </PaginationItem>
+    );
+
+    // Pages before truncation
+    if (currentPage > maxPagesToShow) {
+      items.push(
+        <PaginationItem key="dots1" disabled>
+          <PaginationLink>...</PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    // Current page, previous and next pages
+    const startPage = Math.max(2, currentPage);
+    const endPage = Math.min(totalPages - 1, currentPage + 1);
+    for (let i = startPage; i <= endPage; i++) {
+      items.push(
+        <PaginationItem key={i} active={currentPage === i}>
+          <PaginationLink onClick={() => setCurrentPage(i)}>{i}</PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    // Pages after truncation
+    if (currentPage < totalPages - maxPagesToShow + 1) {
+      items.push(
+        <PaginationItem key="dots2" disabled>
+          <PaginationLink>...</PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    // Last page
+    if (totalPages > 1) {
+      items.push(
+        <PaginationItem key={totalPages} active={currentPage === totalPages}>
+          <PaginationLink onClick={() => setCurrentPage(totalPages)}>{totalPages}</PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return items;
   };
 
   return (
@@ -281,29 +334,21 @@ export function ManageAccount() {
         <tbody>{renderTableRows()}</tbody>
       </Table>
 
-      <div className="pagination">
-        <Button
-          className="pre"
-          color="primary"
-          size="sm"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-        >
-          Previous
-        </Button>
-        <span className="mx-2">
-          Page {currentPage} of {totalPages}
-        </span>
-        <Button
-          className="next"
-          color="primary"
-          size="sm"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      <Pagination className="justify-content-center mt-3">
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink first onClick={() => setCurrentPage(1)} />
+        </PaginationItem>
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink previous onClick={() => setCurrentPage(currentPage - 1)} />
+        </PaginationItem>
+        {renderPaginationItems()}
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink next onClick={() => setCurrentPage(currentPage + 1)} />
+        </PaginationItem>
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink last onClick={() => setCurrentPage(totalPages)} />
+        </PaginationItem>
+      </Pagination>
     </Container>
   );
 }
