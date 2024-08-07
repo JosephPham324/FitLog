@@ -21,10 +21,10 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Snackbar,
-  Alert, Chip
+  Alert,
+  Chip
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -133,7 +133,6 @@ const WorkoutOutLog = () => {
   const [exerciseLibrary, setExerciseLibrary] = useState([]);
   const [selectedExercises, setSelectedExercises] = useState([]);
 
-
   const fetchExercises = async () => {
     try {
       const response = await axiosInstance.get('/Exercises/paginated-all', {
@@ -151,8 +150,6 @@ const WorkoutOutLog = () => {
 
   useEffect(() => {
     fetchExercises();
-    //console.log(exerciseLibrary)
-
     const startTime = Date.now();
 
     const interval = setInterval(() => {
@@ -183,7 +180,6 @@ const WorkoutOutLog = () => {
     console.log(selectedExercises)
   };
 
-
   const handleAddExercise = () => {
     setNewExercise({
       name: '',
@@ -204,7 +200,7 @@ const WorkoutOutLog = () => {
         }
       ]
     });
-    setEditingIndex(editingIndex+1);
+    setEditingIndex(editingIndex + 1);
     setEditExercise({ sets: [] });
     setShowNewExerciseFields(true);
     setExercises(...exercises, 0);
@@ -290,8 +286,6 @@ const WorkoutOutLog = () => {
     ];
     setExercises(updatedExercises);
   };
-
-  //const exerciseNames = Array.from();
 
   const handleNoteDialogClose = () => {
     setNoteDialogOpen(false);
@@ -836,9 +830,9 @@ const WorkoutOutLog = () => {
       >
         <DialogTitle className="delete-dialog-title">Delete</DialogTitle>
         <DialogContent>
-          <DialogContentText className="delete-dialog-content">
+          <Typography className="delete-dialog-content">
             Are you sure you want to delete the exercise?
-          </DialogContentText>
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)} className="cancel-button">
@@ -852,31 +846,50 @@ const WorkoutOutLog = () => {
       <Dialog
         open={noteDialogOpen}
         onClose={handleNoteDialogClose}
+        maxWidth="xs"
+        fullWidth
       >
-        <DialogTitle>Note</DialogTitle>
+        <DialogTitle>Workout Note</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
+            textAlign="center"
             margin="dense"
             id="note"
-            label="Please enter"
+            label="Please enter your note"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
+            multiline
+            rows={4}
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            inputProps={{ maxLength: 100 }}
-            helperText={`${note.length}/100`}
+            inputProps={{ maxLength: 200 }}
+            helperText={`${note.length}/200`}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleNoteDialogClose}>Cancel</Button>
-          <Button onClick={handleNoteDialogClose}>OK</Button>
+          <Button onClick={handleNoteDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setNoteDialogOpen(false);
+              setShowAddNote(false);
+            }}
+            sx={{ height: '30px' }}
+            color="primary"
+          >
+            Save
+          </Button>
+
         </DialogActions>
       </Dialog>
       <Dialog
         open={editTitleDialogOpen}
         onClose={handleEditTitleDialogClose}
+        maxWidth="xs"
+        fullWidth
       >
         <DialogTitle>Edit Title</DialogTitle>
         <DialogContent>
@@ -887,7 +900,7 @@ const WorkoutOutLog = () => {
             label="Please enter"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             inputProps={{ maxLength: 100 }}
@@ -895,8 +908,17 @@ const WorkoutOutLog = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleEditTitleDialogClose}>Cancel</Button>
-          <Button onClick={handleEditTitleDialogClose}>OK</Button>
+          <Button onClick={handleEditTitleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setEditTitleDialogOpen(false);
+            }}
+            color="primary"
+          >
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
       <Snackbar
@@ -915,4 +937,3 @@ const WorkoutOutLog = () => {
 };
 
 export default WorkoutOutLog;
-

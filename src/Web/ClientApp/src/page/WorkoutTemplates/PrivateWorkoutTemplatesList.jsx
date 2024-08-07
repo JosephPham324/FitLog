@@ -2,6 +2,7 @@
 import axiosInstance from '../../utils/axiosInstance';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import './WorkoutTemplateListPage.css';
 
 const WorkoutTemplateListPage = () => {
@@ -12,6 +13,9 @@ const WorkoutTemplateListPage = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [hasPreviousPage, setHasPreviousPage] = useState(false);
     const [hasNextPage, setHasNextPage] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [templateToDelete, setTemplateToDelete] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -73,10 +77,16 @@ const WorkoutTemplateListPage = () => {
         navigate(`/workout-templates/${templateId}/details`);
     };
 
-    const handleDelete = async (templateId) => {
+    const handleDelete = (templateId) => {
+        setTemplateToDelete(templateId);
+        setShowConfirmModal(true);
+    };
+
+    const confirmDelete = async () => {
         try {
-            const result = await axiosInstance.delete(`/WorkoutTemplates/delete-workout-template/${templateId}`);
-            alert(result.data.success);
+            const result = await axiosInstance.delete(`/WorkoutTemplates/delete-workout-template/${templateToDelete}`);
+            setShowConfirmModal(false);
+            setShowSuccessModal(true);
             // Refresh the list after deletion
             setPageNumber(1); // Reset to the first page or fetch the current page again
         } catch (error) {
@@ -130,7 +140,7 @@ const WorkoutTemplateListPage = () => {
                                 &nbsp;
                                 <button
                                     className="btn btn-danger btn-action"
-                                    onClick={async () => await handleDelete(template.id)}
+                                    onClick={() => handleDelete(template.id)}
                                 >
                                     Delete
                                 </button>
@@ -161,6 +171,35 @@ const WorkoutTemplateListPage = () => {
                     Page {pageNumber} of {totalPages} ({totalCount} total items)
                 </span>
             </div>
+
+            {/* Confirm Delete Modal */}
+            <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure you want to delete this template?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={confirmDelete}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Success Modal */}
+            <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Success</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Template deleted successfully!</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={() => setShowSuccessModal(false)}>
+                        OK
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
