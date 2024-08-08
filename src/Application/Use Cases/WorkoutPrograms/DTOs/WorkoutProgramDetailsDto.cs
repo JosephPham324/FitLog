@@ -21,6 +21,7 @@ public class WorkoutProgramDetailsDto
     public bool? PublicProgram { get; set; }
     public string? UserId { get; set; }
     public string? UserName { get; set; } // Map from User.UserName
+    public string? CreatorFullName { get; set; } // Map from User.UserName
     public List<ProgramWorkoutDto> ProgramWorkouts { get; set; } = new List<ProgramWorkoutDto>();
 
     private class MappingProfile : AutoMapper.Profile
@@ -28,7 +29,8 @@ public class WorkoutProgramDetailsDto
         public MappingProfile()
         {
             CreateMap<Program, WorkoutProgramDetailsDto>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User!= null ? src.User.UserName : "Unknown user"))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User != null ? src.User.UserName : "Unknown user"))
+                .ForMember(dest => dest.CreatorFullName, opt => opt.MapFrom(src => src.User != null ? $"{src.User.FirstName} {src.User.LastName}" : "Unknown user"))
                 .ForMember(dest => dest.ProgramWorkouts, opt => opt.MapFrom(src => src.ProgramWorkouts));
         }
     }

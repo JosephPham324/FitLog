@@ -200,7 +200,7 @@ const WorkoutTemplatesListAdmin = () => {
                 <td>{template.creatorName}</td>
                 <td>
                   <button className="update-btn">Update</button>
-                  <button className="delete-btn">Delete</button>
+                  <button className="delete-btn" >Delete</button>
                 </td>
               </tr>
             ))}

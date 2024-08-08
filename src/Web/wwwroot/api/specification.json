@@ -7393,6 +7393,10 @@
           "userName": {
             "type": "string",
             "nullable": true
+          },
+          "creatorFullName": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

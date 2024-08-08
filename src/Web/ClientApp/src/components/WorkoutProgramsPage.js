@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
-import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import axiosInstance from '../utils/axiosInstance';
+import { Link } from 'react-router-dom';
 import './WorkoutProgramsPage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -140,8 +140,9 @@ export const WorkoutProgramsPage = () => {
                 <p className="program-type"><strong>Gym Type:</strong> {program.gymType}</p>
                 <p className="program-priority"><strong>Muscles Priority:</strong> {program.musclesPriority}</p>
                 <p className="program-group"><strong>Age Group:</strong> {program.ageGroup}</p>
-                <p className="program-public"><strong>Public Program:</strong> {program.publicProgram ? 'Yes' : 'No'}</p>
-                <p className="program-creator"><strong>Created by:</strong> {program.userName}</p>
+                {/*       <p className="program-public"><strong>Public Program:</strong> {program.publicProgram ? 'Yes' : 'No'}</p>
+                <p className="program-creator"><strong>Created by:</strong> {program.userName}</p>*/}
+                <p className="program-creatorfullname"><strong>Coach name:</strong> {program.creatorFullName}</p>
               </div>
             </Link>
           </div>

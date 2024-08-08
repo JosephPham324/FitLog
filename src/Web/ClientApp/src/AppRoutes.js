@@ -226,7 +226,7 @@ const AppRoutes = [
   },
   {
     path: '/workout-log/:workoutLogId/update',
-    element: React.createElement(withAuthProtection(UpdateWorkoutLogPage, [Roles['M']]))
+    element: React.createElement(withAuthProtection(UpdateWorkoutLogPage, [Roles['M'], Roles['A']]))
   },
   {
     path: '/workout-log/:workoutLogId/details',
