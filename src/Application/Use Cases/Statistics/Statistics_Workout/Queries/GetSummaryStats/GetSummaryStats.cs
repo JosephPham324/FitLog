@@ -63,7 +63,7 @@ public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery,
             switch (request.TimeFrame.ToUpperInvariant())
             {
                 case string weekly when weekly == TimeFrames.Weekly.ToUpperInvariant():
-                    periodStart = log.Created.UtcDateTime.StartOfWeek(DayOfWeek.Monday);
+                    periodStart = log.Created.LocalDateTime.StartOfWeek(DayOfWeek.Monday);
                     break;
                 case string monthly when monthly == TimeFrames.Monthly.ToUpperInvariant():
                     periodStart = new DateTime(log.Created.Year, log.Created.Month, 1);

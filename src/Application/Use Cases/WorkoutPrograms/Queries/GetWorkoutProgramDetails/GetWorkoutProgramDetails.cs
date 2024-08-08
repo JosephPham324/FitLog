@@ -14,6 +14,7 @@ public class GetWorkoutProgramDetailsQueryValidator : AbstractValidator<GetWorko
 {
     public GetWorkoutProgramDetailsQueryValidator()
     {
+        RuleFor(x => x.Id).GreaterThan(0);
     }
 }
 
@@ -36,7 +37,10 @@ public class GetWorkoutProgramDetailsQueryHandler : IRequestHandler<GetWorkoutPr
             .ThenInclude(pw => pw.WorkoutTemplate)
             .ThenInclude(wt => wt != null ? wt.WorkoutTemplateExercises : null)
         .FirstOrDefaultAsync(wp => wp.ProgramId == request.Id, cancellationToken);
+
         var workouts = entity?.ProgramWorkouts;
+
+
         if (workouts != null)
         {
             foreach (var workout in workouts)

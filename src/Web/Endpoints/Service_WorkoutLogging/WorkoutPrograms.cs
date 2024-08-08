@@ -50,9 +50,6 @@ public class WorkoutPrograms : EndpointGroupBase
            //.RequireAuthorization()
            ;
 
-        //specificProgram
-        //    .MapPut(UpdateWorkoutProgram, "{id}")
-        //    .MapDelete(DeleteWorkoutProgram, "{id}");
 
         //Enrollment
         specificProgram
