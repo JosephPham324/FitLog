@@ -73,6 +73,7 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
         }
 
         // Personal statistics methods
+        #region Overal stats
         public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetWorkoutLogSummary(ISender sender, [FromQuery] string TimeFrame)
         {
             var UserId = _identityService.Id ?? "";
@@ -128,7 +129,9 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             return await sender.Send(query);
         }
 
-        public async Task<IEnumerable<ExerciseLogDTO>> GetExerciseLogHistory(ISender sender, [FromRoute] int ExerciseId)
+        #endregion
+        #region Exercise stats
+        public async Task<IEnumerable<ExerciseLogDTO>> GetExerciseLogHistory(ISender sender, [AsParameters] GetExerciseLogHistoryQuery query)
         {
 
             var UserId = _identityService.Id ?? "";
@@ -192,7 +195,8 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             };
             return await sender.Send(query);
         }
-
+        #endregion
+        #region Users
         // User statistics methods
         public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetUserWorkoutLogSummary(ISender sender, [FromRoute] string id, [FromQuery] string TimeFrame)
         {
@@ -376,5 +380,6 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
 
             return await sender.Send(query);
         }
+        #endregion
     }
 }

@@ -16,6 +16,7 @@ export const CoachProfile = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { id } = useParams(); // Get the dynamic templateId from the route
 
   useEffect(() => {
     const fetchProfile = async () => {

@@ -3332,7 +3332,7 @@ export class WorkoutTemplatesClient {
     }
 
     getPublicTemplates(pageNumber: number, pageSize: number): Promise<PaginatedListOfWorkoutTemplateListDto> {
-        let url_ = this.baseUrl + "/api/WorkoutTemplates/get-public-templates?";
+        let url_ = this.baseUrl + "/api/WorkoutTemplates/public-templates?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
         else
@@ -3356,6 +3356,49 @@ export class WorkoutTemplatesClient {
     }
 
     protected processGetPublicTemplates(response: Response): Promise<PaginatedListOfWorkoutTemplateListDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfWorkoutTemplateListDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfWorkoutTemplateListDto>(null as any);
+    }
+
+    getPersonalTemplates(pageNumber: number, pageSize: number): Promise<PaginatedListOfWorkoutTemplateListDto> {
+        let url_ = this.baseUrl + "/api/WorkoutTemplates/personal-templates?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetPersonalTemplates(_response);
+        });
+    }
+
+    protected processGetPersonalTemplates(response: Response): Promise<PaginatedListOfWorkoutTemplateListDto> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -11330,6 +11373,7 @@ export class WorkoutTemplateExerciseDto2 implements IWorkoutTemplateExerciseDto2
     rpeRecommendation?: number | undefined;
     weightsUsed?: string | undefined;
     numbersOfReps?: string | undefined;
+    isDeleted?: boolean;
 
     constructor(data?: IWorkoutTemplateExerciseDto2) {
         if (data) {
@@ -11351,6 +11395,7 @@ export class WorkoutTemplateExerciseDto2 implements IWorkoutTemplateExerciseDto2
             this.rpeRecommendation = _data["rpeRecommendation"];
             this.weightsUsed = _data["weightsUsed"];
             this.numbersOfReps = _data["numbersOfReps"];
+            this.isDeleted = _data["isDeleted"];
         }
     }
 
@@ -11372,6 +11417,7 @@ export class WorkoutTemplateExerciseDto2 implements IWorkoutTemplateExerciseDto2
         data["rpeRecommendation"] = this.rpeRecommendation;
         data["weightsUsed"] = this.weightsUsed;
         data["numbersOfReps"] = this.numbersOfReps;
+        data["isDeleted"] = this.isDeleted;
         return data;
     }
 }
@@ -11386,6 +11432,7 @@ export interface IWorkoutTemplateExerciseDto2 {
     rpeRecommendation?: number | undefined;
     weightsUsed?: string | undefined;
     numbersOfReps?: string | undefined;
+    isDeleted?: boolean;
 }
 
 export class PaginatedListOfWorkoutTemplateListDto implements IPaginatedListOfWorkoutTemplateListDto {
@@ -11505,6 +11552,7 @@ export class WorkoutTemplateDetailsDto implements IWorkoutTemplateDetailsDto {
     templateName?: string | undefined;
     duration?: string | undefined;
     creatorName?: string;
+    createdBy?: string;
     workoutTemplateExercises?: WorkoutTemplateExerciseDTO[];
 
     constructor(data?: IWorkoutTemplateDetailsDto) {
@@ -11522,6 +11570,7 @@ export class WorkoutTemplateDetailsDto implements IWorkoutTemplateDetailsDto {
             this.templateName = _data["templateName"];
             this.duration = _data["duration"];
             this.creatorName = _data["creatorName"];
+            this.createdBy = _data["createdBy"];
             if (Array.isArray(_data["workoutTemplateExercises"])) {
                 this.workoutTemplateExercises = [] as any;
                 for (let item of _data["workoutTemplateExercises"])
@@ -11543,6 +11592,7 @@ export class WorkoutTemplateDetailsDto implements IWorkoutTemplateDetailsDto {
         data["templateName"] = this.templateName;
         data["duration"] = this.duration;
         data["creatorName"] = this.creatorName;
+        data["createdBy"] = this.createdBy;
         if (Array.isArray(this.workoutTemplateExercises)) {
             data["workoutTemplateExercises"] = [];
             for (let item of this.workoutTemplateExercises)
@@ -11557,6 +11607,7 @@ export interface IWorkoutTemplateDetailsDto {
     templateName?: string | undefined;
     duration?: string | undefined;
     creatorName?: string;
+    createdBy?: string;
     workoutTemplateExercises?: WorkoutTemplateExerciseDTO[];
 }
 
