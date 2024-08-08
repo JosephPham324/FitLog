@@ -2,6 +2,26 @@
 import { Icon } from "@iconify/react";
 import axiosInstance from '../utils/axiosInstance';
 
+const Modal = ({ show, onClose, message }) => {
+    if (!show) return null;
+
+    return (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white rounded-lg overflow-hidden shadow-xl max-w-md w-full p-4">
+                <div className="text-center">
+                    <div className="text-lg font-semibold">{message}</div>
+                    <button
+                        onClick={onClose}
+                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-400"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export const Profile = () => {
     const [profile, setProfile] = useState({
         id: '',
@@ -16,6 +36,7 @@ export const Profile = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -74,7 +95,7 @@ export const Profile = () => {
                     'accept': 'application/json'
                 }
             });
-            alert('Profile updated successfully!');
+            setModalVisible(true);
         } catch (error) {
             setError('Error updating profile');
             console.error('Error updating profile:', error.response ? error.response.data : error.message);
@@ -86,12 +107,13 @@ export const Profile = () => {
 
     return (
         <div className="bg-gray-100 pt-10 pb-10 px-5">
+            <Modal show={modalVisible} onClose={() => setModalVisible(false)} message="Profile updated successfully!" />
             <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="flex flex-col md:flex-row">
                     <div className="w-full md:w-1/3 p-5 text-center bg-gray-200">
                         <Icon className="text-3xl mb-4 cursor-pointer" icon="ic:baseline-arrow-back" />
                         <img alt="avatar" src="https://static.vecteezy.com/system/resources/thumbnails/036/280/651/small/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg" className="rounded-full mb-4 w-24 h-24 mx-auto border" />
-                        <div className="font-semibold mb-2 text-lg">{profile.firstName} {profile.lastName}</div>
+                        <div className="font-semibold mb-2 text-lg">{profile.firstName}{''} {profile.lastName}</div>
                         <div className="font-medium text-sm text-gray-600 mb-2">{profile.email}</div>
                         <div className="font-medium">
                             <a href="https://localhost:44447/changepassword" className="text-blue-500 hover:underline">Change password</a>

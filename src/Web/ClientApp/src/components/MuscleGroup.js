@@ -30,6 +30,7 @@ export function MuscleGroup() {
   const [currentPage, setCurrentPage] = useState(1);
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupImage, setNewGroupImage] = useState(null);
+  const [newGroupImageUrl, setNewGroupImageUrl] = useState(null);
   const [createModal, setCreateModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -78,6 +79,7 @@ export function MuscleGroup() {
     if (!createModal) {
       setNewGroupName('');
       setNewGroupImage(null);
+      setNewGroupImageUrl(null);
       setNameErrorMessage('');
       setImageErrorMessage('');
     }
@@ -214,7 +216,6 @@ export function MuscleGroup() {
     if (!deleteId) {
       return;
     }
-    console.log("deleting")
 
     try {
       var response = await axiosInstance.delete(`${apiUrl}/${deleteId}`);
@@ -256,6 +257,7 @@ export function MuscleGroup() {
     const file = e.target.files[0];
     if (file) {
       setNewGroupImage(file);
+      setNewGroupImageUrl(URL.createObjectURL(file));
     }
   };
 
@@ -378,9 +380,7 @@ export function MuscleGroup() {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={createMuscleGroup}>Create</Button>
-
-          <Button color="danger" class="btn-cannle" onClick={toggleCreateModal}>Cancel</Button>
-
+          <Button color="danger" onClick={toggleCreateModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
@@ -407,6 +407,12 @@ export function MuscleGroup() {
                 accept="image/*"
                 onChange={handleImageChange}
               />
+              {newGroupImageUrl && (
+                <img src={newGroupImageUrl} alt="Preview" className="img-fluid mt-3" />
+              )}
+              {existingImage && !newGroupImageUrl && (
+                <img src={existingImage} alt="Existing" className="img-fluid mt-3" />
+              )}
               {imageErrorMessage && <Alert color="danger">{imageErrorMessage}</Alert>}
             </FormGroup>
           </Form>
