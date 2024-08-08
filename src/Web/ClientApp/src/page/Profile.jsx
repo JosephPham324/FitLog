@@ -37,6 +37,7 @@ export const Profile = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -74,7 +75,27 @@ export const Profile = () => {
         });
     };
 
+    const validateProfile = () => {
+        let errors = {};
+        if (!profile.firstName) errors.firstName = 'First name is required';
+        if (!profile.lastName) errors.lastName = 'Last name is required';
+        if (!profile.phoneNumber) {
+            errors.phoneNumber = 'Phone number is required';
+        } else if (!/^\d{10}$/.test(profile.phoneNumber)) {
+            errors.phoneNumber = 'Phone number must be exactly 10 digits';
+        }
+        if (!profile.dateOfBirth) errors.dateOfBirth = 'Date of birth is required';
+        if (new Date(profile.dateOfBirth) > new Date()) errors.dateOfBirth = 'Date of birth cannot be in the future';
+        return errors;
+    };
+
     const updateProfile = async () => {
+        const errors = validateProfile();
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+
         try {
             const payload = {
                 UserId: profile.id,
@@ -96,6 +117,7 @@ export const Profile = () => {
                 }
             });
             setModalVisible(true);
+            setValidationErrors({});
         } catch (error) {
             setError('Error updating profile');
             console.error('Error updating profile:', error.response ? error.response.data : error.message);
@@ -142,6 +164,9 @@ export const Profile = () => {
                                         </select>
                                     ) : (
                                         <input name={name} value={value} onChange={handleChange} type={type} readOnly={readOnly} className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                                    )}
+                                    {validationErrors[name] && (
+                                        <p className="text-red-500 text-xs mt-1">{validationErrors[name]}</p>
                                     )}
                                 </div>
                             ))}
