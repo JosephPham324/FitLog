@@ -47,7 +47,8 @@ const EquipmentsList = () => {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [openError, setOpenError] = useState(false);
-  const [popupErrorMessage, setPopupErrorMessage] = useState(''); // Add this state for popup error message
+  const [popupErrorMessage, setPopupErrorMessage] = useState('');
+  const [searchErrorMessage, setSearchErrorMessage] = useState(''); // Add this state for search error message
 
   useEffect(() => {
     fetchAllEquipments();
@@ -95,6 +96,11 @@ const EquipmentsList = () => {
         data.sort((a, b) => a.name.localeCompare(b.name));
         setTotalPages(Math.ceil(response.data.totalCount / itemsPerPage));
         setEquipments(data);
+        if (data.length === 0) {
+          setSearchErrorMessage('Equipment name has not exist');
+        } else {
+          setSearchErrorMessage('');
+        }
       } catch (error) {
         console.error('Error searching equipments:', error);
       }
@@ -102,6 +108,7 @@ const EquipmentsList = () => {
       const filteredData = allEquipments.slice((page - 1) * itemsPerPage, page * itemsPerPage);
       setTotalPages(Math.ceil(allEquipments.length / itemsPerPage));
       setEquipments(filteredData);
+      setSearchErrorMessage('');
     }
   };
 
@@ -418,6 +425,7 @@ const EquipmentsList = () => {
             onChange={handleSearch}
             className="btn-search"
           />
+          {searchErrorMessage && <Alert color="danger">{searchErrorMessage}</Alert>}
         </Col>
         <Col xs="12" md="2" className="text-md-right">
           <Button color="primary" className="create-button" onClick={handleOpenCreate}>Create Equipment</Button>

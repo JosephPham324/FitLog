@@ -61,6 +61,9 @@ const RolesList = () => {
     if (!newRole.roleName) {
       errors.roleName = 'Role Name cannot be empty!';
       isValid = false;
+    } else if (roles.some(role => role.name.toLowerCase() === newRole.roleName.toLowerCase())) {
+      errors.roleName = 'Role Name already exists!';
+      isValid = false;
     }
     if (!newRole.roleDesc) {
       errors.roleDesc = 'Role Description cannot be empty!';
@@ -133,7 +136,7 @@ const RolesList = () => {
     <Container className="roles-list-container">
       <h2 className="my-title"><strong>Roles List</strong></h2>
       <Row className="roles-list-header">
-          <Col className="text-right">
+        <Col className="text-right">
           <Button color="primary" className="create-role-button" onClick={toggleCreateModal}>Create Role</Button>
         </Col>
       </Row>
@@ -256,4 +259,3 @@ const RolesList = () => {
 };
 
 export default RolesList;
-

@@ -33,12 +33,13 @@ import RecoverInitiate from './components/AccountRecovery/RecoverInitiate'
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail'
 import WorkoutProgramsPage from './components/WorkoutProgramsPage';
 import WorkoutProgramsDetail from './components/WorkoutProgramsDetail';// Correct the import statement
-import CoachProfile from './components/CoachProfile';
+import { CoachProfile } from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
 import ProgramsDisplay from './page/RecommendPrograms/RecommendPrograms'
 import LoggedExercises from "./components/LoggedExercises/LoggedExercises";
+import ProgramsManagementPage from "./components/ProgramsManagementPage";
 
 
 const AppRoutes = [
@@ -86,11 +87,11 @@ const AppRoutes = [
     path: '/logged-exercises',
     element: <LoggedExercises />
   },
-
-  {
+    {
     path: '/coachservicebooking',
     element: <CoachServiceBooking />
   },
+
   {
     path: '/manageaccount',
     element: <ManageAccount />
