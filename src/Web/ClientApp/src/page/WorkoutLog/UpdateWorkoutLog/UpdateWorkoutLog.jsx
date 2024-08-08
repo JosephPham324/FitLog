@@ -95,7 +95,7 @@ const UpdateWorkoutLogPage = () => {
 
         try {
             const response = await axiosInstance.put(`/WorkoutLog/${workoutLogId}`, logData);
-            alert(response.data.success); // Log the data to be saved)
+            alert("Update successfully"); // Log the data to be saved)
             // Handle response if necessary
         } catch (error) {
             console.error('Error saving log:', error);

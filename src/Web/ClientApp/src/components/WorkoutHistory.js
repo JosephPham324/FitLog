@@ -164,7 +164,7 @@ export default function WorkoutHistory() {
                     <Link to={`https://localhost:44447/workout-log/${workout.id}/update/`}>
                       <button className="btn btn-success mt-2 mb-2">Update</button>
                     </Link>
-                    <button className="btn btn-danger-delete mt-2 mb-2" onClick={() => toggleDeleteModal(workout.id)}>Delete</button>
+                    <button className="btn btn-danger-delete mt-2 mb-2" style={{ height: '38px' }} onClick={() => toggleDeleteModal(workout.id)}>Delete</button>
                     <table className="table table-striped table-bordered workout-table">
                       <thead className="thead-dark">
                         <tr>
@@ -231,7 +231,7 @@ export default function WorkoutHistory() {
           <Button color="danger" onClick={deleteWorkout}>Yes</Button>
           <Button
             color="secondary"
-            style={{ height: '60px', backgroundColor: '#1b6ec', marginRight: '10px' }}
+            style={{ height: '38px', backgroundColor: '#1b6ec', marginRight: '10px' }}
             onClick={() => toggleDeleteModal(null)}
           >
             No
