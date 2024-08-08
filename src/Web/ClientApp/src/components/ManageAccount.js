@@ -202,6 +202,14 @@ export function ManageAccount() {
   };
 
   const renderTableRows = () => {
+    if (users.length === 0) {
+      return (
+        <tr>
+          <td colSpan="7" className="text-center">Account does not exist in the system</td>
+        </tr>
+      );
+    }
+
     return users.map((user, index) => (
       <tr key={user.id}>
         <td>{index + 1}</td> {/* Sequential number starting from 1 */}
