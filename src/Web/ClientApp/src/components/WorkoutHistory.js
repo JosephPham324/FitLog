@@ -158,11 +158,8 @@ export default function WorkoutHistory() {
                 {currentWorkouts.map((workout, index) => (
                   <div key={index} className="workout-day mb-4">
                     <h3 className="">{new Date(workout.created).toDateString()}</h3>
-                    <Link to={`https://localhost:44447/workout-log/${workout.id}/details/`}>
-                      <button className="btn btn-primary mt-2 mb-2" style={{ height: '38px', backgroundColor: '#1b6ec', marginRight: '10px' }}>Detail</button>
-                    </Link>
-                    <Link to={`https://localhost:44447/workout-log/${workout.id}/update/`}>
-                      <button className="btn btn-success mt-2 mb-2">Update</button>
+                    <Link to={`/workout-log/${workout.id}/details`}>
+                      <button className="btn btn-success mt-2 mb-2">Details</button>
                     </Link>
                     <button className="btn btn-danger-delete mt-2 mb-2" onClick={() => toggleDeleteModal(workout.id)}>Delete</button>
                     <table className="table table-striped table-bordered workout-table">

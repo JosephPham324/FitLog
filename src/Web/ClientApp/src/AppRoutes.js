@@ -10,7 +10,9 @@ import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
+
 import WorkoutHistory from './components/WorkoutHistory';
+
 import { ManageAccount } from './components/ManageAccount';
 import { CoachServiceBooking } from './components/CoachServiceBooking';
 import ChatPage from "./page/ChatPage";
@@ -32,11 +34,13 @@ import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmatio
 import RecoverInitiate from './components/AccountRecovery/RecoverInitiate';
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail';
 import WorkoutProgramsPage from './components/WorkoutProgramsPage';
-import WorkoutProgramsDetail from './components/WorkoutProgramsDetail';
+import WorkoutProgramsDetail from './components/WorkoutProgramsDetail';// Correct the import statement
 import CoachProfile from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
+import ProgramsDisplay from './page/RecommendPrograms/RecommendPrograms'
+import LoggedExercises from "./components/LoggedExercises/LoggedExercises";
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
 import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
 import { Navigate } from 'react-router-dom';
@@ -61,6 +65,10 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(Counter, [Roles['A']]))
   },
   {
+    path: '/recommended-programs',
+    element: React.createElement(withAuthProtection(ProgramsDisplay))
+  },
+  {
     path: '/coachprofile/:id',
     element: React.createElement(withAuthProtection(CoachProfile, [])) // Adding CoachProfile to the routes
   },
@@ -75,6 +83,18 @@ const AppRoutes = [
   {
     path: '/workout-history',
     element: React.createElement(withAuthProtection(WorkoutHistory, [Roles['M']]))
+  },
+  /*{*/
+  //  path: '/workouthistory',
+  //  element: <WorkoutHistory />
+  //},
+  //{
+  //  path: '/workouthistory',
+  //  element: React.createElement(withAuthProtection(WorkoutHistory))
+  //},
+  {
+    path: '/logged-exercises',
+    element: <LoggedExercises />
   },
   {
     path: '/coach-service-booking',
@@ -125,6 +145,18 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(Logout, []))
   },
   {
+    path: '/workout-log-export',
+    element: <WorkoutLogExport />
+  },
+  {
+    path: '/workout-log-graphs',
+    element: <WorkoutLogGraphs />
+  },
+  {
+    path: '/exercise-log-graphs',
+    element: <ExerciseLogGraphs />
+  },
+  {
     path: '/coach-application-notification',
     element: React.createElement(withAuthProtection(CoachApplicationNotification, []))
   },
@@ -149,7 +181,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(RolesListScreen, [Roles['A']]))
   },
   {
-    path: '/exercise-list-screen',
+    path: '/exerciselistscreen',
     element: <ExerciseListScreen />
   },
   {
@@ -227,4 +259,7 @@ const AppRoutes = [
   }
 ];
 
+
 export default AppRoutes;
+
+

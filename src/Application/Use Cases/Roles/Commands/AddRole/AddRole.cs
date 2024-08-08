@@ -42,7 +42,11 @@ public class AddRoleCommandHandler : IRequestHandler<AddRoleCommand, Result>
             return Result.Failure(new List<string> { "Role name cannot be empty." });
         }
 
-        var entity = new AspNetRole(request.RoleName);
+        var entity = new AspNetRole(request.RoleName)
+        {
+            Id  = Guid.NewGuid().ToString(),
+            RoleDesc = request.RoleDesc
+        };
 
         _context.AspNetRoles.Add(entity);
 

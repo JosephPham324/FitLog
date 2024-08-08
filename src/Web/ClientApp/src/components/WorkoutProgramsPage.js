@@ -5,7 +5,7 @@ import './WorkoutProgramsPage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-const WorkoutProgramsPage = () => {
+export const WorkoutProgramsPage = () => {
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +25,6 @@ const WorkoutProgramsPage = () => {
             accept: 'application/json',
           },
         });
-        console.log('API Response:', response.data);
         setPrograms(response.data);
       } catch (error) {
         setError('Error fetching workout programs');
@@ -38,36 +37,15 @@ const WorkoutProgramsPage = () => {
     fetchPrograms();
   }, []);
 
-  useEffect(() => {
-    const surveyData = JSON.parse(localStorage.getItem('trainingSurvey'));
-    console.log('Survey Data from localStorage:', surveyData);
-
-    if (surveyData) {
-      setFilters({
-        goal: surveyData.fitnessGoal,
-        experienceLevel: surveyData.experience,
-        gymType: surveyData.gymType,
-        musclesPriority: surveyData.muscleGroups.join(', ')
-      });
-    }
-  }, []);
-
   const filteredPrograms = programs.filter(program => {
     return (
       (program.programName.toLowerCase().includes(search.toLowerCase())) &&
       (filters.goal === '' || program.goal === filters.goal) &&
       (filters.experienceLevel === '' || program.experienceLevel === filters.experienceLevel) &&
       (filters.gymType === '' || program.gymType === filters.gymType) &&
-      (filters.musclesPriority === '' || program.musclesPriority.split(', ').some(muscle => filters.musclesPriority.includes(muscle)))
+      (filters.musclesPriority === '' || program.musclesPriority === filters.musclesPriority)
     );
-  }).sort((a, b) => {
-    const priorityOrder = ['experienceLevel', 'gymType', 'fitnessGoal', 'musclesPriority', 'daysPerWeek'];
-    const aPriority = priorityOrder.findIndex(item => a[item] === filters[item]);
-    const bPriority = priorityOrder.findIndex(item => b[item] === filters[item]);
-    return aPriority - bPriority;
   });
-
-  console.log('Filtered Programs:', filteredPrograms);
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
@@ -175,4 +153,3 @@ const WorkoutProgramsPage = () => {
 };
 
 export default WorkoutProgramsPage;
-

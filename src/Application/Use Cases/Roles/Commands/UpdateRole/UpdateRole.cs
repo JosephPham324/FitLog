@@ -6,7 +6,6 @@ namespace FitLog.Application.Roles.Commands.UpdateRole;
 public record UpdateRoleCommand : IRequest<Result>
 {
     public string RoleId { get; set; } = string.Empty;
-    //public string RoleName { get; set; } = string.Empty;
     public string RoleDescription { get; set; } = string.Empty;
 }
 

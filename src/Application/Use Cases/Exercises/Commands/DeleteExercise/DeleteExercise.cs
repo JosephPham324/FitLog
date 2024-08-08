@@ -28,7 +28,9 @@ public class DeleteExerciseCommandHandler : IRequestHandler<DeleteExerciseComman
 
     public async Task<Result> Handle(DeleteExerciseCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.Exercises.FindAsync(new object[] { request.ExerciseId }, cancellationToken);
+        var entity = await _context.Exercises
+            .Where(e => e.ExerciseId == request.ExerciseId)
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (entity == null)
         {
