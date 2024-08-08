@@ -86,11 +86,15 @@ const AppRoutes = [
   },
   {
     path: '/workout-programs',
-    element: React.createElement(withAuthProtection(WorkoutProgramsPage, []))
+    element: <WorkoutProgramsPage />
   },
   {
     path: '/program-details/:id',
     element: React.createElement(withAuthProtection(WorkoutProgramsDetail, []))
+  },
+  {
+    path: '/workout-programs/:id',
+    element: <WorkoutProgramsDetail />
   },
   {
     path: '/login',

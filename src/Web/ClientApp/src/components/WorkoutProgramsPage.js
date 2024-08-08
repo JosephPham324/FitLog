@@ -153,7 +153,7 @@ const WorkoutProgramsPage = () => {
       <div className="row">
         {filteredPrograms.map((program) => (
           <div className="col-md-4 mb-4" key={program.programId}>
-            <Link to={`/program-details/${program.programId}`} className="program-card">
+            <Link to={`/workout-programs/${program.programId}`} className="program-card">
               <img src={program.programThumbnail} alt={program.programName} className="program-image img-fluid" />
               <div className="program-details">
                 <h2 className="program-name">{program.programName}</h2>

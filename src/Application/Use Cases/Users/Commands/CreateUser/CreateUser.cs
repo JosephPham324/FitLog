@@ -18,14 +18,34 @@ public record CreateUserCommand : IRequest<Result>
 
 public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
-    public CreateUserCommandValidator()
+    private readonly UserManager<AspNetUser> _userManager;
+    public CreateUserCommandValidator(UserManager<AspNetUser> userManager)
     {
-        RuleFor(x => x.Email).NotEmpty().EmailAddress();
-        RuleFor(x => x.Password).NotEmpty().MinimumLength(6); // Assuming a minimum password length
-        RuleFor(x => x.UserName).NotEmpty();
-        RuleFor(x => x.Role).NotEmpty().Must(Common.ValidationRules.ValidationRules.BeAValidRole).WithMessage("Invalid role specified.");
+        _userManager = userManager;
+        RuleFor(x => x.UserName)
+               .NotEmpty().WithMessage("Username is required.")
+               .MustAsync(BeUniqueUsername).WithMessage("The specified username already exists.");
+
+        RuleFor(x => x.Email)
+            .NotEmpty().WithMessage("Email is required.")
+            .EmailAddress().WithMessage("Invalid email format.")
+            .MustAsync(BeUniqueEmail).WithMessage("The specified email is already in use.");
+
+        RuleFor(x => x.Password)
+            .NotEmpty().WithMessage("Password is required.")
+            .MinimumLength(6).WithMessage("Password must be at least 6 characters long.");
+    }
+    private async Task<bool> BeUniqueUsername(string username, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        return user == null;
     }
 
+    private async Task<bool> BeUniqueEmail(string email, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        return user == null;
+    }
 
 }
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result>
