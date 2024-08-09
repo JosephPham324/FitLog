@@ -67,5 +67,19 @@ cd .\src\Web\
 dotnet test
 ```
 
+## Database
+
+The solution uses EntityFramework to generate a database code-first
+
+To run the solution on your computer, first get the connection string to your SQL Server server and extract the connection string. Then replace the connection string in the Infrastructure project
+Navigate to Infrastructure>Data>ApplicationDbContext
+Uncomment the OnConfiguring method and replace the connection string with your own.
+After that, use command line to generate the database and initial data
+```bash
+cd .\src\Infrastructure
+dotnet ef database update
+```
+
+
 ## Help
 To learn more about the template go to the [project website](https://github.com/jasontaylordev/CleanArchitecture). Here you can find additional guidance, request new features, report a bug, and discuss the template with other users.
