@@ -140,7 +140,7 @@ const Register = () => {
       newErrors.phoneNumber = 'This is a mandatory question.';
       valid = false;
     } else if (!validatePhoneNumber(formData.phoneNumber)) {
-      newErrors.phoneNumber = 'Phone number must be exactly 10 digits.';
+      newErrors.phoneNumber = 'Phone number only allows entering numbers without spaces or letters or special characters. Phone number must be exactly 10 digits  ';
       valid = false;
     }
     if (!formData.termsAccepted) {

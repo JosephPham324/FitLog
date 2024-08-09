@@ -35,12 +35,13 @@ import RecoverInitiate from './components/AccountRecovery/RecoverInitiate';
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail';
 import WorkoutProgramsPage from './components/WorkoutProgramsPage';
 import WorkoutProgramsDetail from './components/WorkoutProgramsDetail';// Correct the import statement
-import CoachProfile from './components/CoachProfile';
+import { CoachProfile } from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
 import ProgramsDisplay from './page/RecommendPrograms/RecommendPrograms'
 import LoggedExercises from "./components/LoggedExercises/LoggedExercises";
+import ProgramsManagementPage from "./components/ProgramsManagementPage";
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
 import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
 import { Navigate } from 'react-router-dom';
@@ -96,10 +97,12 @@ const AppRoutes = [
     path: '/logged-exercises',
     element: <LoggedExercises />
   },
+
   {
     path: '/coach-service-booking',
     element: React.createElement(withAuthProtection(CoachServiceBooking, [Roles['M'], Roles['C']]))
   },
+
   {
     path: '/manage-account',
     element: React.createElement(withAuthProtection(ManageAccount, [Roles['A']]))
