@@ -41,7 +41,7 @@ import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/C
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
 import ProgramsDisplay from './page/RecommendPrograms/RecommendPrograms'
 import LoggedExercises from "./components/LoggedExercises/LoggedExercises";
-import ProgramsManagementPage from "./components/ProgramsManagementPage";
+//import ProgramsManagementPage from "./components/ProgramsManagementPage";
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
 import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
 import { Navigate } from 'react-router-dom';

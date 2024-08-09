@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { Icon } from "@iconify/react";
 import axiosInstance from '../utils/axiosInstance';
+import { useParams } from "react-router-dom";
 
 export const CoachProfile = () => {
   const [profile, setProfile] = useState({
