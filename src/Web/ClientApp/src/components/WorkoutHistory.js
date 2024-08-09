@@ -23,6 +23,7 @@ export default function WorkoutHistory() {
   const workoutsPerPage = 7;
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   function getCurrentWeek() {
     const now = new Date();
@@ -75,6 +76,8 @@ export default function WorkoutHistory() {
       });
       setWorkoutHistory(workoutHistory.filter(workout => workout.id !== deleteId));
       setDeleteModal(false);
+      setSuccessMessage('Workout history deleted successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000); // Clear the success message after 3 seconds
     } catch (error) {
       setError('Error deleting workout history');
       console.error('Error deleting workout history:', error);
@@ -149,6 +152,7 @@ export default function WorkoutHistory() {
 
             {loading && <div className="alert alert-info">Loading...</div>}
             {error && <div className="alert alert-danger">{error}</div>}
+            {successMessage && <Alert color="success">{successMessage}</Alert>}
             {currentWorkouts.length > 0 ? (
               <div className="scrollable-workout-list">
                 {currentWorkouts.map((workout, index) => (
@@ -222,9 +226,15 @@ export default function WorkoutHistory() {
         </ModalBody>
         <ModalFooter>
           <Button color="danger" onClick={deleteWorkout}>Yes</Button>
-          <Button color="secondary" onClick={() => toggleDeleteModal(null)}>No</Button>
+          <Button
+            color="secondary"
+            style={{ height: '60px', backgroundColor: '#1b6ec', marginRight: '10px' }}
+            onClick={() => toggleDeleteModal(null)}
+          >
+            No
+          </Button>
         </ModalFooter>
       </Modal>
-    </div>
+    </div >
   );
 }

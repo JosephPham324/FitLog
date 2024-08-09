@@ -64,7 +64,8 @@ public class WorkoutTemplates : EndpointGroupBase
         try
         {
             result = await sender.Send(command);
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             return Result.Failure([e.Message]);
         }
@@ -76,11 +77,11 @@ public class WorkoutTemplates : EndpointGroupBase
         Result? result = null;
         //try
         //{
-            result = await sender.Send(command);
+        result = await sender.Send(command);
         //}
         //catch (Exception e)
         //{
-            //return Result.Failure([e.Message]);
+        //return Result.Failure([e.Message]);
         //}
         return result ?? Result.Failure(["Failed to create template"]);
     }
@@ -88,9 +89,8 @@ public class WorkoutTemplates : EndpointGroupBase
     public async Task<Result> DeleteWorkoutTemplate(ISender sender, int id)
     {
         Result? result = null;
-        var command = new DeleteMuscleGroupCommand()
+        var command = new DeleteWorkoutTemplateCommand(id)
         {
-            Id = id
         };
         try
         {
@@ -101,7 +101,7 @@ public class WorkoutTemplates : EndpointGroupBase
             return Result.Failure([e.Message]);
         }
         return result ?? Result.Failure(["Failed to create template"]);
-        
+
     }
 
     public Task<PaginatedList<WorkoutTemplateListDto>> GetPublicTemplates(ISender sender, [AsParameters] GetPublicTemplatesQuery query)
@@ -109,7 +109,7 @@ public class WorkoutTemplates : EndpointGroupBase
         return sender.Send(query);
     }
     public async Task<PaginatedList<WorkoutTemplateListDto>> GetPersonalTemplates(ISender sender, [FromQuery] int PageNumber, [FromQuery] int PageSize)
-    { 
+    {
         var userId = _identityService.Id ?? "";
         GetPersonalTemplatesQuery query = new GetPersonalTemplatesQuery()
         {

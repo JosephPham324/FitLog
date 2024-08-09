@@ -28,7 +28,10 @@ public class GetExerciseEstimated1RMsQueryValidator : AbstractValidator<GetExerc
         RuleFor(v => v.UserId)
             .NotEmpty();
         RuleFor(v => v.ExerciseId)
-            .NotEmpty();
+                .NotEmpty()
+                .WithMessage("ExerciseId is required.")
+                .GreaterThan(0)
+                .WithMessage("ExerciseId must be more than 0");
     }
 }
 

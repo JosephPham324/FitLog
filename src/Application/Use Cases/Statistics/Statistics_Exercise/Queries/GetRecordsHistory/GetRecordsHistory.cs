@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FitLog.Application.Statistics_Exercise.Queries.GetRecordsHistory
 {
@@ -38,7 +39,10 @@ namespace FitLog.Application.Statistics_Exercise.Queries.GetRecordsHistory
             RuleFor(v => v.UserId)
                 .NotEmpty();
             RuleFor(v => v.ExerciseId)
-                .NotEmpty();
+                 .NotEmpty()
+                .WithMessage("ExerciseId is required.")
+                .GreaterThan(0)
+                .WithMessage("ExerciseId must be more than 0");
         }
     }
 
@@ -58,7 +62,7 @@ namespace FitLog.Application.Statistics_Exercise.Queries.GetRecordsHistory
                 .Where(el => el.WorkoutLog != null && el.WorkoutLog.CreatedBy == request.UserId && el.ExerciseId == request.ExerciseId)
                 .ToListAsync(cancellationToken);
 
-            if (exerciseLogs == null)
+            if (exerciseLogs.IsNullOrEmpty())
             {
                 throw new NotFoundException(nameof(ExerciseLog), request.ExerciseId + "");
             }

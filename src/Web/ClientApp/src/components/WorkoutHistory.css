@@ -1,122 +1,73 @@
-﻿.workout-history-container {
-    padding: 20px;
+﻿/* Tooltip */
+.tooltip {
+    font-size: 1.25em;
 }
 
-.calendar-container {
-    width: 100%;
-    margin-bottom: 20px;
+/* Icon buttons */
+.edit-icon:hover {
+    transform: scale(1.1);
 }
 
-.workout-history-list {
-    width: 100%;
+.delete-icon:hover {
+    transform: scale(1.1);
 }
 
-.workout-day {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: #f8f9fa;
+.duplicate-icon:hover {
+    transform: scale(1.1);
 }
 
-.workout-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .workout-table th, .workout-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
-
-    .workout-table th {
-        background-color: #CC99CC;
-        color: white;
-        text-align: left;
-    }
-
-    .workout-table tr:nth-child(even) {
-        background-color: #f8f9fa;
-    }
-
-    .workout-table tr:hover {
-        background-color: #e9ecef;
-    }
-
-button {
-    background-color: #007bff;
-    border: none;
-    color: white;
-    padding: 10px 20px;
+/* Delete dialog */
+:root .delete-dialog-title {
+    font-size: 30px;
+    font-family: Helixa;
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
+    font-weight: bold;
 }
 
-.scrollable-workout-list {
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-.page-item .page-link {
-    cursor: pointer;
-}
-
-:root .custom-calendar {
-    width: 430px !important;
-}
-
-.calendar-container h1 {
-    font-size: 35px;
+:root .delete-dialog-content {
+    font-size: 28px;
     text-align: center;
 }
 
-@import url('https://fonts.googleapis.com/css?family=Manjari:400,700&display=swap');
-
-body {
-    font-family: Manjari, sans-serif;
-    font-size: 14px;
+:root .cancel-button {
+    border: 1px solid;
+    color: #6200ea;
+    border-radius: 80px;
+    height: 40px;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 900;
+    width: 138px;
+    align-items: center;
+    margin-right: 90px;
 }
 
-.react-calendar {
-    width: 410px;
-    box-shadow: 1px 2px 3px 4px rgba(0, 0, 0, .1);
-    border-radius: 10px;
-    height: 380px;
+:root .delete-button {
+    background-color: #f44336;
+    color: black;
+    border-radius: 80px;
+    height: 40px;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 900;
+    width: 138px;
+    align-items: center;
+    margin-right: 90px;
 }
 
-.react-calendar__tile {
-    border-radius: 100%;
+/* Snackbar */
+:root .snackbar {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
 }
 
-    .react-calendar__tile:enabled:hover,
-    .react-calendar__tile:enabled:focus {
-        border-radius: 50%;
-    }
-
-.react-calendar__tile--range {
-    background: #007bff;
-    border-radius: 50%;
-    color: white;
-}
-
-.react-calendar__tile--rangeStart,
-.react-calendar__tile--rangeEnd {
-    background: #007bff;
-    border-radius: 50%;
-    color: white;
-}
-
-.thead-dark th {
-    background-color: #CC99CC;
-}
-
-.btn-danger-delete {
-    background-color: red;
-    height: 38px;
-    margin-left: 10px;
+:root .snackbar-alert {
+    font-size: 1.25em;
+    text-align: center;
+    padding-top: 10px;
+    margin-top: 20px;
+    background: white;
+    color: black;
 }

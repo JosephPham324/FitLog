@@ -3863,49 +3863,6 @@ export class UsersClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    login(username: string | null, password: string | null): Promise<LoginResultDTO> {
-        let url_ = this.baseUrl + "/api/Users/login?";
-        if (username === undefined)
-            throw new Error("The parameter 'username' must be defined.");
-        else if(username !== null)
-            url_ += "Username=" + encodeURIComponent("" + username) + "&";
-        if (password === undefined)
-            throw new Error("The parameter 'password' must be defined.");
-        else if(password !== null)
-            url_ += "Password=" + encodeURIComponent("" + password) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processLogin(_response);
-        });
-    }
-
-    protected processLogin(response: Response): Promise<LoginResultDTO> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoginResultDTO.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoginResultDTO>(null as any);
-    }
-
     register(command: RegisterCommand): Promise<Result> {
         let url_ = this.baseUrl + "/api/Users/register";
         url_ = url_.replace(/[?&]$/, "");
@@ -10541,6 +10498,7 @@ export class WorkoutProgramListDTO implements IWorkoutProgramListDTO {
     publicProgram?: boolean | undefined;
     userId?: string | undefined;
     userName?: string | undefined;
+    creatorFullName?: string | undefined;
 
     constructor(data?: IWorkoutProgramListDTO) {
         if (data) {
@@ -10566,6 +10524,7 @@ export class WorkoutProgramListDTO implements IWorkoutProgramListDTO {
             this.publicProgram = _data["publicProgram"];
             this.userId = _data["userId"];
             this.userName = _data["userName"];
+            this.creatorFullName = _data["creatorFullName"];
         }
     }
 
@@ -10591,6 +10550,7 @@ export class WorkoutProgramListDTO implements IWorkoutProgramListDTO {
         data["publicProgram"] = this.publicProgram;
         data["userId"] = this.userId;
         data["userName"] = this.userName;
+        data["creatorFullName"] = this.creatorFullName;
         return data;
     }
 }
@@ -10609,6 +10569,7 @@ export interface IWorkoutProgramListDTO {
     publicProgram?: boolean | undefined;
     userId?: string | undefined;
     userName?: string | undefined;
+    creatorFullName?: string | undefined;
 }
 
 export class CreateWorkoutProgramCommand implements ICreateWorkoutProgramCommand {

@@ -21,6 +21,13 @@ public class FilterWorkoutTemplatesQueryValidator : AbstractValidator<FilterWork
 {
     public FilterWorkoutTemplatesQueryValidator()
     {
+        RuleFor(v => v.PageNumber)
+           .GreaterThan(0).WithMessage("Page number must be greater than 0.");
+
+        RuleFor(v => v.PageSize)
+            .GreaterThan(0).WithMessage("Page size must be greater than 0.")
+            .LessThanOrEqualTo(100).WithMessage("Page size must not exceed 100.");
+
     }
 }
 

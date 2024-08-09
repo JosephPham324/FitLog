@@ -32,10 +32,13 @@ namespace FitLog.Application.Statistics_Exercise.Queries.GetTotalTrainingTonnage
             RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
             RuleFor(x => x.TimeFrame).NotEmpty().WithMessage("TimeFrame is required.")
                                       .Must(ValidationRules.ValidTimeFrame).WithMessage("Invalid TimeFrame.");
-            RuleFor(x => x.ExerciseId).NotEmpty().WithMessage("ExerciseId is required.");
+
+            RuleFor(x => x.ExerciseId).NotEmpty()
+                .WithMessage("ExerciseId is required.")
+                .GreaterThan(0)
+                .WithMessage("ExerciseId must be more than 0");
         }
     }
-
     public class GetTotalTrainingTonnageForExerciseQueryHandler : IRequestHandler<GetTotalTrainingTonnageForExerciseQuery, Dictionary<DateTime, double>>
     {
         private readonly IApplicationDbContext _context;

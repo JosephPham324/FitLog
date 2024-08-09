@@ -46,10 +46,21 @@ const CreateWorkoutTemplatePage = () => {
 
         const templateData = {
             templateName: workoutName,
-            duration: `${duration} minutes`,
+            duration: `${minutesToTime(duration)}`,
             workoutTemplateExercises
         };
+        function minutesToTime(minutes) {
+            let hours = Math.floor(minutes / 60);
+            let mins = minutes % 60;
+            let secs = 0; // Since we are converting from minutes, seconds will always be 0
 
+            // Adding leading zeros if needed
+            hours = String(hours).padStart(2, '0');
+            mins = String(mins).padStart(2, '0');
+            secs = String(secs).padStart(2, '0');
+
+            return `${hours}:${mins}:${secs}`;
+        }
         try {
             const response = await axiosInstance.post('/WorkoutTemplates/create-personal-template', templateData);
             if (response.data.success) {

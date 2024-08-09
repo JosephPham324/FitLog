@@ -87,6 +87,10 @@ namespace FitLog.Application.Users.Commands.Register
             {
                 // Add the user to the default role
                 var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+                if (roleResult == null)
+                {
+                   return Result.Failure(["Couldn't add role"]);
+                }
                 if (!roleResult.Succeeded)
                 {
                     return Result.Failure(roleResult.Errors.Select(e => e.Description));

@@ -9,6 +9,9 @@ import image7 from '../assets/image7.png';
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
 
   const handleGoogleLoginSuccess = (credentialResponse) => {
     console.log('Google login successful:', credentialResponse);
@@ -26,6 +29,24 @@ const Login = () => {
     setPasswordVisible(!passwordVisible);
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!username) newErrors.username = 'Please fill out this field.';
+    if (!password) newErrors.password = 'Please fill out this field.';
+    return newErrors;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length === 0) {
+      // Proceed with form submission
+      console.log('Form submitted:', { username, password });
+    } else {
+      setErrors(formErrors);
+    }
+  };
+
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
       <div className="container-login">
@@ -36,10 +57,17 @@ const Login = () => {
           <div className="login-container">
             <img src={logo} alt="Logo" className="logo-login" />
 
-            <form className="login-form">
+            <form className="login-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <FaUser className="icon" />
-                <input type="text" placeholder="Username" required />
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+                {errors.username && <div className="error">{errors.username}</div>}
               </div>
 
               <div className="form-group">
@@ -49,6 +77,8 @@ const Login = () => {
                     className="form-control"
                     type={passwordVisible ? 'text' : 'password'}
                     placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                   <div className="input-group-addon">
@@ -57,9 +87,8 @@ const Login = () => {
                     </a>
                   </div>
                 </div>
+                {errors.password && <div className="error">{errors.password}</div>}
               </div>
-
-              <div className="error">Invalid username or password</div>
 
               <div className="form-options">
                 <label className="checkbox-label">
