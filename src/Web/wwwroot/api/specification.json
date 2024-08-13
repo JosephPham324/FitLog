@@ -1459,6 +1459,42 @@
         }
       }
     },
+    "/api/Statistics/exercise/{ExerciseId}/actual-1rms": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseActual1RMs",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Statistics/user/{id}/overall/summary": {
       "get": {
         "tags": [

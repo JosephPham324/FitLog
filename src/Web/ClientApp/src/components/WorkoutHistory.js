@@ -35,10 +35,29 @@ export default function WorkoutHistory() {
     return [monday, sunday];
   }
 
+  function formatDate(date) {
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      // If date is not a valid Date object, return a fallback value or handle the error
+      console.error('Invalid date provided:', date);
+      return 'Invalid Date';
+    }
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
+
   const fetchWorkoutHistory = async (startDate, endDate) => {
     setLoading(true);
     try {
-      console.log("Fetching workout history for dates:", startDate.toISOString().split('T')[0], "to", endDate.toISOString().split('T')[0]);
+      // Validate dates before proceeding
+      if (!(startDate instanceof Date) || isNaN(startDate.getTime()) ||
+        !(endDate instanceof Date) || isNaN(endDate.getTime())) {
+        throw new Error('Invalid start date or end date');
+      }
+
+      console.log("Fetching workout history for dates:", formatDate(startDate), "to", formatDate(endDate));
       const response = await axiosInstance.get(`${process.env.REACT_APP_BACKEND_URL}/WorkoutLog/history`, {
         params: {
           startDate: startDate.toISOString().split('T')[0],
@@ -56,6 +75,7 @@ export default function WorkoutHistory() {
       setLoading(false);
     }
   };
+
 
   const toggleDeleteModal = (workoutLogId) => {
     setDeleteId(workoutLogId);
@@ -123,6 +143,7 @@ export default function WorkoutHistory() {
     }
     return { weight: weightsUsed[bestSetIndex], reps: numberOfReps[bestSetIndex] };
   };
+
   return (
     <div className="container mt-5 workout-history-container">
       <div className="row">
@@ -141,8 +162,8 @@ export default function WorkoutHistory() {
               value={dates}
             />
             <div className="mt-3">
-              <strong>From:</strong> {dates[0].toDateString()} <br />
-              <strong>To:</strong> {new Date(dates[1]).toDateString()}
+              <strong>From:</strong> {formatDate(dates[0])} <br />
+              <strong>To:</strong> {formatDate(new Date(dates[1]))}
             </div>
           </div>
         </div>
@@ -157,7 +178,7 @@ export default function WorkoutHistory() {
               <div className="scrollable-workout-list">
                 {currentWorkouts.map((workout, index) => (
                   <div key={index} className="workout-day mb-4">
-                    <h3 className="">{new Date(workout.created).toDateString()}</h3>
+                    <h3 className="">{formatDate(new Date(workout.created))}</h3>
                     <Link to={`/workout-log/${workout.id}/details`}>
                       <button className="btn btn-success mt-2 mb-2">Details</button>
                     </Link>

@@ -156,7 +156,7 @@ const AppRoutes = [
     element: <WorkoutLogGraphs />
   },
   {
-    path: '/exercise-log-graphs',
+    path: '/statistics/exercises/:id',
     element: <ExerciseLogGraphs />
   },
   {

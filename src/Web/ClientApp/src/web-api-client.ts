@@ -1808,6 +1808,53 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: number; }>(null as any);
     }
 
+    getExerciseActual1RMs(exerciseId: number): Promise<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise/{ExerciseId}/actual-1rms";
+        if (exerciseId === undefined || exerciseId === null)
+            throw new Error("The parameter 'exerciseId' must be defined.");
+        url_ = url_.replace("{ExerciseId}", encodeURIComponent("" + exerciseId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExerciseActual1RMs(_response);
+        });
+    }
+
+    protected processGetExerciseActual1RMs(response: Response): Promise<{ [key: string]: number; }> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: number; }>(null as any);
+    }
+
     getUserWorkoutLogSummary(id: string, timeFrame: string): Promise<{ [key: string]: SummaryWorkoutLogStatsDTO; }> {
         let url_ = this.baseUrl + "/api/Statistics/user/{id}/overall/summary?";
         if (id === undefined || id === null)
