@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
-import axiosInstance from '../utils/axiosInstance';
-import { useParams } from 'react-router-dom';
+import axiosInstance from '../../utils/axiosInstance'; // Adjust the import path according to your project structure
+import { useParams, useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
 import './WorkoutProgramsDetail.css';
 
 export const WorkoutProgramsDetail = () => {
@@ -8,6 +8,7 @@ export const WorkoutProgramsDetail = () => {
   const [programDetail, setProgramDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // useNavigate for navigation
 
   useEffect(() => {
     const fetchProgramDetail = async () => {
@@ -28,6 +29,10 @@ export const WorkoutProgramsDetail = () => {
 
     fetchProgramDetail();
   }, [id]);
+
+  const handleUseTemplateClick = (templateId) => {
+    navigate(`/workout-log/create/${templateId}`);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -66,6 +71,14 @@ export const WorkoutProgramsDetail = () => {
                   <p><strong>Duration:</strong> {workout.workoutTemplate.duration}</p>
                   <div className="exercise-list">
                     <h4>Exercises</h4>
+                    <div className="font-bold mt-3 mb-3">
+                      <button
+                        onClick={() => handleUseTemplateClick(workout.workoutTemplate.id)}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      >
+                        Use template
+                      </button>
+                    </div>
                     <table className="table">
                       <thead>
                         <tr>

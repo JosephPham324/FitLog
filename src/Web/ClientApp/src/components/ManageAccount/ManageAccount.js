@@ -2,7 +2,7 @@
 import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
+import axiosInstance from '../../utils/axiosInstance'; // Import the configured Axios instance
 import './ManageAccount.css'; // Import the CSS file
 
 const apiUrl = process.env.REACT_APP_BACKEND_URL + '/Users';

@@ -2,26 +2,6 @@
 import { Icon } from "@iconify/react";
 import axiosInstance from '../utils/axiosInstance';
 
-const Modal = ({ show, onClose, message }) => {
-    if (!show) return null;
-
-    return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white rounded-lg overflow-hidden shadow-xl max-w-md w-full p-4">
-                <div className="text-center">
-                    <div className="text-lg font-semibold">{message}</div>
-                    <button
-                        onClick={onClose}
-                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-400"
-                    >
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
-
 export const Profile = () => {
     const [profile, setProfile] = useState({
         id: '',
@@ -36,8 +16,6 @@ export const Profile = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [validationErrors, setValidationErrors] = useState({});
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -75,27 +53,7 @@ export const Profile = () => {
         });
     };
 
-    const validateProfile = () => {
-        let errors = {};
-        if (!profile.firstName) errors.firstName = 'First name is required';
-        if (!profile.lastName) errors.lastName = 'Last name is required';
-        if (!profile.phoneNumber) {
-            errors.phoneNumber = 'Phone number is required';
-        } else if (!/^\d{10}$/.test(profile.phoneNumber)) {
-            errors.phoneNumber = 'Phone number must be exactly 10 digits';
-        }
-        if (!profile.dateOfBirth) errors.dateOfBirth = 'Date of birth is required';
-        if (new Date(profile.dateOfBirth) > new Date()) errors.dateOfBirth = 'Date of birth cannot be in the future';
-        return errors;
-    };
-
     const updateProfile = async () => {
-        const errors = validateProfile();
-        if (Object.keys(errors).length > 0) {
-            setValidationErrors(errors);
-            return;
-        }
-
         try {
             const payload = {
                 UserId: profile.id,
@@ -116,8 +74,7 @@ export const Profile = () => {
                     'accept': 'application/json'
                 }
             });
-            setModalVisible(true);
-            setValidationErrors({});
+            alert('Profile updated successfully!');
         } catch (error) {
             setError('Error updating profile');
             console.error('Error updating profile:', error.response ? error.response.data : error.message);
@@ -129,13 +86,12 @@ export const Profile = () => {
 
     return (
         <div className="bg-gray-100 pt-10 pb-10 px-5">
-            <Modal show={modalVisible} onClose={() => setModalVisible(false)} message="Profile updated successfully!" />
             <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="flex flex-col md:flex-row">
                     <div className="w-full md:w-1/3 p-5 text-center bg-gray-200">
                         <Icon className="text-3xl mb-4 cursor-pointer" icon="ic:baseline-arrow-back" />
                         <img alt="avatar" src="https://static.vecteezy.com/system/resources/thumbnails/036/280/651/small/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg" className="rounded-full mb-4 w-24 h-24 mx-auto border" />
-                        <div className="font-semibold mb-2 text-lg">{profile.firstName}{''} {profile.lastName}</div>
+                        <div className="font-semibold mb-2 text-lg">{profile.firstName} {profile.lastName}</div>
                         <div className="font-medium text-sm text-gray-600 mb-2">{profile.email}</div>
                         <div className="font-medium">
                             <a href="https://localhost:44447/changepassword" className="text-blue-500 hover:underline">Change password</a>
@@ -147,13 +103,13 @@ export const Profile = () => {
                             {[
                                 { label: 'First name', name: 'firstName', value: profile.firstName },
                                 { label: 'Last name', name: 'lastName', value: profile.lastName },
-                                { label: 'Username', name: 'userName', value: profile.userName, readOnly: true },
+                                { label: 'Username', name: 'userName', value: profile.userName, readOnly: true, grayBackground: true },
                                 { label: 'Gender', name: 'gender', value: profile.gender, isSelect: true },
                                 { label: 'Date of birth', name: 'dateOfBirth', value: profile.dateOfBirth, type: 'date' },
-                                { label: 'Role', name: 'roles', value: profile.roles, readOnly: true },
+                                { label: 'Role', name: 'roles', value: profile.roles, readOnly: true, grayBackground: true },
                                 { label: 'Phone Number', name: 'phoneNumber', value: profile.phoneNumber },
-                                { label: 'Email', name: 'email', value: profile.email, readOnly: true }
-                            ].map(({ label, name, value, type = 'text', readOnly = false, isSelect = false }) => (
+                                { label: 'Email', name: 'email', value: profile.email, readOnly: true, grayBackground: true }
+                            ].map(({ label, name, value, type = 'text', readOnly = false, isSelect = false, grayBackground = false }) => (
                                 <div key={name} className="mb-4">
                                     <label className="block text-gray-600 text-sm mb-2">{label}</label>
                                     {isSelect ? (
@@ -163,10 +119,14 @@ export const Profile = () => {
                                             <option value="Female">Female</option>
                                         </select>
                                     ) : (
-                                        <input name={name} value={value} onChange={handleChange} type={type} readOnly={readOnly} className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                                    )}
-                                    {validationErrors[name] && (
-                                        <p className="text-red-500 text-xs mt-1">{validationErrors[name]}</p>
+                                        <input
+                                            name={name}
+                                            value={value}
+                                            onChange={handleChange}
+                                            type={type}
+                                            readOnly={readOnly}
+                                            className={`w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${grayBackground ? 'bg-gray-200' : ''}`}
+                                        />
                                     )}
                                 </div>
                             ))}

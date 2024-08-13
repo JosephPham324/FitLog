@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import ProgramsList from './WorkoutProgram/ProgramsList';
 import num1Image from '../Images/photo1.jpg';
 import num2Image from '../Images/photo2.jpg';
 import num3Image from '../Images/photo3.jpg';
@@ -10,43 +11,13 @@ import num6Image from '../Images/photo6.jpg';
 import num7Image from '../Images/photo7.jpg';
 import num8Image from '../Images/photo8.jpg';
 import num9Image from '../Images/photo9.jpg';
-
-import program1 from '../Images/program1.jpg'; // Add program images
-import program2 from '../Images/program2.jpg';
-import program3 from '../Images/program3.jpg';
-import program4 from '../Images/program4.jpg';
-import program5 from '../Images/program5.jpg';
-
-import trainer1 from '../Images/hlv1.jpg'; // Add trainer images
+import trainer1 from '../Images/hlv1.jpg';
 import trainer2 from '../Images/hlv2.jpg';
 import trainer3 from '../Images/hlv3.jpg';
 import trainer4 from '../Images/hlv4.jpg';
 
 export class Home extends Component {
   static displayName = Home.name;
-
-  state = {
-    showFooter: true,
-  };
-
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-  }
-
-  handleScroll = () => {
-    const { innerHeight } = window;
-    const { scrollTop, offsetHeight } = document.documentElement;
-
-    if (innerHeight + scrollTop >= offsetHeight - 5) {
-      this.setState({ showFooter: true });
-    } else {
-      this.setState({ showFooter: true });
-    }
-  };
 
   render() {
     const containerStyle = {
@@ -71,30 +42,13 @@ export class Home extends Component {
       backgroundColor: '#fff',
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
       border: 'none',
-      marginBottom: '30px', // Increased margin to prevent overlap
+      marginBottom: '30px',
     };
 
     const imageStyle = {
       height: '350px',
       objectFit: 'cover',
       width: '100%',
-    };
-
-    const programCardStyle = {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#fff',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      border: 'none',
-      marginBottom: '20px',
-    };
-
-    const programImageStyle = {
-      width: '100%',
-      height: '200px', // Fixed height to ensure uniformity
-      objectFit: 'cover',
     };
 
     const aboutImageStyle = {
@@ -112,7 +66,7 @@ export class Home extends Component {
     };
 
     const trainerCardStyle = {
-      height: '450px', // Similar height to weight training cards
+      height: '450px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -124,8 +78,8 @@ export class Home extends Component {
     };
 
     const trainerImageStyle = {
-      height: '100%', // Similar height to weight training images
-      width: '100%',  // Full width
+      height: '100%',
+      width: '100%',
       objectFit: 'cover',
     };
 
@@ -219,63 +173,14 @@ export class Home extends Component {
 
         <div className="container-fluid mt-5" style={sectionStyle}>
           <div className="d-flex justify-content-center align-items-center flex-column">
-            <div className="mb-4">
+            <div className="mb-5">
               <h1 style={headingStyle}><b>PROGRAMS</b></h1>
             </div>
             <div className="row justify-content-center w-100">
-              <div className="col-md-4 mb-4">
-                <div className="card" style={programCardStyle}>
-                  <img className="card-img-top" src={program1} alt="Program 1" style={programImageStyle} />
-                  <div className="card-body" style={cardTextStyle}>
-                    <p className="card-text text-center">
-                      <b>Program 1</b>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4 mb-4">
-                <div className="card" style={programCardStyle}>
-                  <img className="card-img-top" src={program2} alt="Program 2" style={programImageStyle} />
-                  <div className="card-body" style={cardTextStyle}>
-                    <p className="card-text text-center">
-                      <b>Program 2</b>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4 mb-4">
-                <div className="card" style={programCardStyle}>
-                  <img className="card-img-top" src={program3} alt="Program 3" style={programImageStyle} />
-                  <div className="card-body" style={cardTextStyle}>
-                    <p className="card-text text-center">
-                      <b>Program 3</b>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4 mb-4">
-                <div className="card" style={programCardStyle}>
-                  <img className="card-img-top" src={program4} alt="Program 4" style={programImageStyle} />
-                  <div className="card-body" style={cardTextStyle}>
-                    <p className="card-text text-center">
-                      <b>Program 4</b>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4 mb-4">
-                <div className="card" style={programCardStyle}>
-                  <img className="card-img-top" src={program5} alt="Program 5" style={programImageStyle} />
-                  <div className="card-body" style={cardTextStyle}>
-                    <p className="card-text text-center">
-                      <b>Program 5</b>
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <ProgramsList showPagination={false} />
             </div>
             <div className="font-bold mb-5">
-              <a href="https://localhost:44447/WorkoutProgramsPage" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <a href="https://localhost:44447/workout-programs" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 See all program
               </a>
             </div>
@@ -386,19 +291,19 @@ export class Home extends Component {
           </div>
         </div>
 
-        {this.state.showFooter && (
-          <footer style={footerStyle}>
-            <p>&copy; 2024 FitLog. All rights reserved.</p>
-            <p>Contact us: <a href="mailto:info@fitlog.com" style={{ color: 'white' }}>info@fitlog.com</a></p>
-            <p>
-              Follow us on:
-              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginLeft: '10px' }}>Facebook</a> |
-              <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginLeft: '10px' }}>Twitter</a> |
-              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginLeft: '10px' }}>Instagram</a>
-            </p>
-          </footer>
-        )}
+        <footer style={footerStyle}>
+          <p>&copy; 2024 FitLog. All rights reserved.</p>
+          <p>Contact us: <a href="mailto:info@fitlog.com" style={{ color: 'white' }}>info@fitlog.com</a></p>
+          <p>
+            Follow us on:
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginLeft: '10px' }}>Facebook</a> |
+            <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginLeft: '10px' }}>Twitter</a> |
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginLeft: '10px' }}>Instagram</a>
+          </p>
+        </footer>
       </div>
     );
   }
 }
+
+export default Home;

@@ -35,10 +35,18 @@ export default function WorkoutHistory() {
     return [monday, sunday];
   }
 
+  function formatDate(date) {
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
+
   const fetchWorkoutHistory = async (startDate, endDate) => {
     setLoading(true);
     try {
-      console.log("Fetching workout history for dates:", startDate.toISOString().split('T')[0], "to", endDate.toISOString().split('T')[0]);
+      console.log("Fetching workout history for dates:", formatDate(startDate), "to", formatDate(endDate));
       const response = await axiosInstance.get(`${process.env.REACT_APP_BACKEND_URL}/WorkoutLog/history`, {
         params: {
           startDate: startDate.toISOString().split('T')[0],
@@ -123,6 +131,7 @@ export default function WorkoutHistory() {
     }
     return { weight: weightsUsed[bestSetIndex], reps: numberOfReps[bestSetIndex] };
   };
+
   return (
     <div className="container mt-5 workout-history-container">
       <div className="row">
@@ -141,8 +150,8 @@ export default function WorkoutHistory() {
               value={dates}
             />
             <div className="mt-3">
-              <strong>From:</strong> {dates[0].toDateString()} <br />
-              <strong>To:</strong> {new Date(dates[1]).toDateString()}
+              <strong>From:</strong> {formatDate(dates[0])} <br />
+              <strong>To:</strong> {formatDate(new Date(dates[1]))}
             </div>
           </div>
         </div>
@@ -157,14 +166,11 @@ export default function WorkoutHistory() {
               <div className="scrollable-workout-list">
                 {currentWorkouts.map((workout, index) => (
                   <div key={index} className="workout-day mb-4">
-                    <h3 className="">{new Date(workout.created).toDateString()}</h3>
-                    <Link to={`https://localhost:44447/workout-log/${workout.id}/details/`}>
-                      <button className="btn btn-primary mt-2 mb-2" style={{ height: '38px', backgroundColor: '#1b6ec', marginRight: '10px' }}>Detail</button>
+                    <h3 className="">{formatDate(new Date(workout.created))}</h3>
+                    <Link to={`/workout-log/${workout.id}/details`}>
+                      <button className="btn btn-success mt-2 mb-2">Details</button>
                     </Link>
-                    <Link to={`https://localhost:44447/workout-log/${workout.id}/update/`}>
-                      <button className="btn btn-success mt-2 mb-2">Update</button>
-                    </Link>
-                    <button className="btn btn-danger-delete mt-2 mb-2" style={{ height: '38px' }} onClick={() => toggleDeleteModal(workout.id)}>Delete</button>
+                    <button className="btn btn-danger-delete mt-2 mb-2" onClick={() => toggleDeleteModal(workout.id)}>Delete</button>
                     <table className="table table-striped table-bordered workout-table">
                       <thead className="thead-dark">
                         <tr>
@@ -231,7 +237,7 @@ export default function WorkoutHistory() {
           <Button color="danger" onClick={deleteWorkout}>Yes</Button>
           <Button
             color="secondary"
-            style={{ height: '38px', backgroundColor: '#1b6ec', marginRight: '10px' }}
+            style={{ height: '60px', backgroundColor: '#1b6ec', marginRight: '10px' }}
             onClick={() => toggleDeleteModal(null)}
           >
             No
