@@ -2,7 +2,7 @@
 import { Table, Button, Container, Input, Row, Col, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
+import axiosInstance from '../../utils/axiosInstance'; // Import the configured Axios instance
 import './ManageAccount.css'; // Import the CSS file
 
 const apiUrl = process.env.REACT_APP_BACKEND_URL + '/Users';
@@ -230,6 +230,14 @@ export function ManageAccount() {
   };
 
   const renderTableRows = () => {
+    if (users.length === 0) {
+      return (
+        <tr>
+          <td colSpan="7" className="text-center">Account does not exist in the system</td>
+        </tr>
+      );
+    }
+
     return users.map((user, index) => (
       <tr key={user.id}>
         <td>{index + 1}</td> {/* Sequential number starting from 1 */}
@@ -251,11 +259,7 @@ export function ManageAccount() {
             <Button
               color="danger"
               className="mr-2 delete-btn"
-
-            
-
-              onClick={() => deleteUser(user.templateId)}
-
+              onClick={() => handleDeleteClick(user.id)}
             >
               Delete
             </Button>
@@ -453,6 +457,49 @@ export function ManageAccount() {
               {updateErrors.newDateOfBirth && <small className="text-danger">{updateErrors.newDateOfBirth}</small>}
             </FormGroup>
             
+            <FormGroup>
+              <Label for="editGender">Gender</Label>
+              <Input
+                type="select"
+                id="editGender"
+                value={newGender}
+                onChange={(e) => setNewGender(e.target.value)}
+              >
+                <option value="">Select Gender</option>
+                <option value="Other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </Input>
+            </FormGroup>
+            <FormGroup>
+              <Label for="editPhoneNumber">Phone Number</Label>
+              <Input
+                type="text"
+                id="editPhoneNumber"
+                value={newPhoneNumber}
+                onChange={(e) => setNewPhoneNumber(e.target.value)}
+              />
+              {updateErrors.newPhoneNumber && <small className="text-danger">{updateErrors.newPhoneNumber}</small>}
+            </FormGroup>
+            <FormGroup>
+              <Label for="editLastName">Last Name</Label>
+              <Input
+                type="text"
+                id="editLastName"
+                value={newLastName}
+                onChange={(e) => setNewLastName(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="editDateOfBirth">Date of Birth</Label>
+              <Input
+                type="date"
+                id="editDateOfBirth"
+                value={newDateOfBirth}
+                onChange={(e) => setNewDateOfBirth(e.target.value)}
+              />
+              {updateErrors.newDateOfBirth && <small className="text-danger">{updateErrors.newDateOfBirth}</small>}
+            </FormGroup>
             <FormGroup>
               <Label for="editGender">Gender</Label>
               <Input

@@ -168,6 +168,9 @@ export const NavMenu = () => {
             {!isAuthenticated && (
               <>
                 <NavItem>
+                  <NavLink tag={Link} className="text-white" to="/workout-programs"><b>Programs</b></NavLink>
+                </NavItem>
+                <NavItem>
                   <NavLink tag={Link} className="text-white" to="/login"><b>Login</b></NavLink>
                 </NavItem>
                 <NavItem>

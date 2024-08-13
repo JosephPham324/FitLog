@@ -30,6 +30,7 @@ export function MuscleGroup() {
   const [currentPage, setCurrentPage] = useState(1);
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupImage, setNewGroupImage] = useState(null);
+  const [newGroupImageUrl, setNewGroupImageUrl] = useState(null);
   const [createModal, setCreateModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -78,6 +79,7 @@ export function MuscleGroup() {
     if (!createModal) {
       setNewGroupName('');
       setNewGroupImage(null);
+      setNewGroupImageUrl(null);
       setNameErrorMessage('');
       setImageErrorMessage('');
     }
@@ -170,7 +172,7 @@ export function MuscleGroup() {
       toggleSuccessModal();
     } catch (error) {
       console.error('Error creating muscle group:', error.message);
-      alert('Failed to create muscle group. Please check your input and try again.');
+      alert('Muscle Name Group is exist');
     }
   };
 
@@ -214,7 +216,6 @@ export function MuscleGroup() {
     if (!deleteId) {
       return;
     }
-    console.log("deleting")
 
     try {
       var response = await axiosInstance.delete(`${apiUrl}/${deleteId}`);
@@ -223,8 +224,8 @@ export function MuscleGroup() {
         toggleSuccessModal();
       }
       else {
-        console.log('Error saving template: ' + response.data.errors.join(', '));
-        setErrorMessage('' + response.data.errors.join(', '));
+        console.log('Error deleting muscle group: ' + response.data.errors.join(', '));
+        setErrorMessage(response.data.errors.join(', '));
         toggleErrorModal();
       }
       fetchMuscleGroups(currentPage, searchTerm);
@@ -256,10 +257,19 @@ export function MuscleGroup() {
     const file = e.target.files[0];
     if (file) {
       setNewGroupImage(file);
+      setNewGroupImageUrl(URL.createObjectURL(file));
     }
   };
 
   const renderTableRows = () => {
+    if (muscleGroups.length === 0) {
+      return (
+        <tr>
+          <td colSpan="4" className="text-center">Muscle group name does not exist in system</td>
+        </tr>
+      );
+    }
+
     return muscleGroups.map((group, index) => (
       <tr key={group.id}>
         <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
@@ -362,7 +372,7 @@ export function MuscleGroup() {
                 value={newGroupName}
                 onChange={(e) => setNewGroupName(e.target.value)}
               />
-              {nameErrorMessage && <Alert color="danger">{nameErrorMessage}</Alert>}
+              {nameErrorMessage && <div className="text-danger">{nameErrorMessage}</div>}
             </FormGroup>
             <FormGroup>
               <Label for="newGroupImage">Muscle Image <span style={{ color: 'red' }}>*</span></Label>
@@ -372,15 +382,13 @@ export function MuscleGroup() {
                 accept="image/*"
                 onChange={handleImageChange}
               />
-              {imageErrorMessage && <Alert color="danger">{imageErrorMessage}</Alert>}
+              {imageErrorMessage && <div className="text-danger">{imageErrorMessage}</div>}
             </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={createMuscleGroup}>Create</Button>
-
-          <Button color="danger" class="btn-cannle" onClick={toggleCreateModal}>Cancel</Button>
-
+          <Button color="danger" onClick={toggleCreateModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
@@ -397,7 +405,7 @@ export function MuscleGroup() {
                 value={newGroupName}
                 onChange={(e) => setNewGroupName(e.target.value)}
               />
-              {nameErrorMessage && <Alert color="danger">{nameErrorMessage}</Alert>}
+              {nameErrorMessage && <div className="text-danger">{nameErrorMessage}</div>}
             </FormGroup>
             <FormGroup>
               <Label for="newGroupImage">Muscle Image</Label>
@@ -407,7 +415,13 @@ export function MuscleGroup() {
                 accept="image/*"
                 onChange={handleImageChange}
               />
-              {imageErrorMessage && <Alert color="danger">{imageErrorMessage}</Alert>}
+              {newGroupImageUrl && (
+                <img src={newGroupImageUrl} alt="Preview" className="img-fluid mt-3" />
+              )}
+              {existingImage && !newGroupImageUrl && (
+                <img src={existingImage} alt="Existing" className="img-fluid mt-3" />
+              )}
+              {imageErrorMessage && <div className="text-danger">{imageErrorMessage}</div>}
             </FormGroup>
           </Form>
         </ModalBody>

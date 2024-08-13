@@ -103,13 +103,13 @@ export const Profile = () => {
                             {[
                                 { label: 'First name', name: 'firstName', value: profile.firstName },
                                 { label: 'Last name', name: 'lastName', value: profile.lastName },
-                                { label: 'Username', name: 'userName', value: profile.userName, readOnly: true },
+                                { label: 'Username', name: 'userName', value: profile.userName, readOnly: true, grayBackground: true },
                                 { label: 'Gender', name: 'gender', value: profile.gender, isSelect: true },
                                 { label: 'Date of birth', name: 'dateOfBirth', value: profile.dateOfBirth, type: 'date' },
-                                { label: 'Role', name: 'roles', value: profile.roles, readOnly: true },
+                                { label: 'Role', name: 'roles', value: profile.roles, readOnly: true, grayBackground: true },
                                 { label: 'Phone Number', name: 'phoneNumber', value: profile.phoneNumber },
-                                { label: 'Email', name: 'email', value: profile.email, readOnly: true }
-                            ].map(({ label, name, value, type = 'text', readOnly = false, isSelect = false }) => (
+                                { label: 'Email', name: 'email', value: profile.email, readOnly: true, grayBackground: true }
+                            ].map(({ label, name, value, type = 'text', readOnly = false, isSelect = false, grayBackground = false }) => (
                                 <div key={name} className="mb-4">
                                     <label className="block text-gray-600 text-sm mb-2">{label}</label>
                                     {isSelect ? (
@@ -119,7 +119,14 @@ export const Profile = () => {
                                             <option value="Female">Female</option>
                                         </select>
                                     ) : (
-                                        <input name={name} value={value} onChange={handleChange} type={type} readOnly={readOnly} className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                                        <input
+                                            name={name}
+                                            value={value}
+                                            onChange={handleChange}
+                                            type={type}
+                                            readOnly={readOnly}
+                                            className={`w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${grayBackground ? 'bg-gray-200' : ''}`}
+                                        />
                                     )}
                                 </div>
                             ))}

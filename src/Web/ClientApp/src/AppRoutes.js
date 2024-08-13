@@ -12,8 +12,7 @@ import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
 
 import WorkoutHistory from './components/WorkoutHistory';
-
-import { ManageAccount } from './components/ManageAccount';
+import { ManageAccount } from './components/ManageAccount/ManageAccount';
 import { CoachServiceBooking } from './components/CoachServiceBooking';
 import ChatPage from "./page/ChatPage";
 import UserListPage from "./page/TestAxios";
@@ -33,9 +32,9 @@ import RecoverAccount from './components/AccountRecovery/RecoverAccount';
 import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmation';
 import RecoverInitiate from './components/AccountRecovery/RecoverInitiate';
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail';
-import WorkoutProgramsPage from './components/WorkoutProgramsPage';
-import WorkoutProgramsDetail from './components/WorkoutProgramsDetail';// Correct the import statement
-import { CoachProfile } from './components/CoachProfile';
+import WorkoutProgramsPage from './components/WorkoutProgram/WorkoutProgramsPage';
+import WorkoutProgramsDetail from './components/WorkoutProgram/WorkoutProgramsDetail';
+import CoachProfile from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
@@ -109,11 +108,15 @@ const AppRoutes = [
   },
   {
     path: '/workout-programs',
-    element: React.createElement(withAuthProtection(WorkoutProgramsPage, []))
+    element: <WorkoutProgramsPage />
   },
   {
     path: '/program-details/:id',
     element: React.createElement(withAuthProtection(WorkoutProgramsDetail, []))
+  },
+  {
+    path: '/workout-programs/:id',
+    element: <WorkoutProgramsDetail />
   },
   {
     path: '/login',
