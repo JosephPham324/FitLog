@@ -66,9 +66,7 @@ const LoggedExercises = () => {
     <div className="logged-exercises-screen">
       <header className="header">
         <h1>Logged Exercises</h1>
-        <button className="create-new-button">Create New</button>
       </header>
-      <h2>Exercise Logs</h2>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -109,10 +107,6 @@ const LoggedExercises = () => {
         ))}
         <Pagination.Next onClick={handleNextPage} disabled={currentPage === totalPages} />
       </Pagination>
-      <div className="action-buttons">
-        <button className="add-superset-button">Add as Superset</button>
-        <button className="add-exercises-button">Add Exercises</button>
-      </div>
       <InfoModal show={isModalOpen} onClose={closeModal} />
     </div>
   );

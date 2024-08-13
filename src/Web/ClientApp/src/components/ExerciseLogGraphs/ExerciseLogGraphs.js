@@ -15,6 +15,7 @@ const ExerciseLogGraphs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  const [exerciseName, setExerciseName] = useState('');
   const [estimated1RMData, setEstimated1RMData] = useState([]);
   const [actual1RMData, setActual1RMData] = useState([]);
   const [totalRepsData, setTotalRepsData] = useState([]);
@@ -29,6 +30,11 @@ const ExerciseLogGraphs = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const fetchExerciseName = async () => {
+    const response = await axiosInstance.get(`https://localhost:44447/api/Exercises/${id}`);
+    setExerciseName(response.data.exerciseName);
+  };
 
   const fetchExerciseLogHistory = async () => {
     try {
@@ -167,7 +173,7 @@ const ExerciseLogGraphs = () => {
   return (
     <div className="exercise-log-graphs">
       <div className="he">
-        <h1>Exercise Log</h1> {/* Added title */}
+        <h1>{exerciseName} Statistics</h1> {/* Added title */}
       </div>
 
       <div className="tabss">
