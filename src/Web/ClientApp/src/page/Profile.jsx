@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { Icon } from "@iconify/react";
 import axiosInstance from '../utils/axiosInstance';
+import { Link } from 'react-router-dom';
 
 export const Profile = () => {
     const [profile, setProfile] = useState({
@@ -21,8 +21,6 @@ export const Profile = () => {
         const fetchProfile = async () => {
             try {
                 const response = await axiosInstance.get('/Users/user-profile');
-                console.log('Response data:', response.data);
-
                 const { id, firstName, lastName, userName, gender, dateOfBirth, roles, phoneNumber, email } = response.data;
                 setProfile({
                     id: id || '',
@@ -66,14 +64,7 @@ export const Profile = () => {
                 UserName: profile.userName,
             };
 
-            const url = `/Users/update-profile`;
-            console.log('Sending profile data to:', url, 'with payload:', payload);
-
-            await axiosInstance.put(url, payload, {
-                headers: {
-                    'accept': 'application/json'
-                }
-            });
+            await axiosInstance.put('/Users/update-profile', payload);
             alert('Profile updated successfully!');
         } catch (error) {
             setError('Error updating profile');
@@ -84,17 +75,19 @@ export const Profile = () => {
     if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
     if (error) return <div className="flex justify-center items-center h-screen">{error}</div>;
 
+    // Assuming token is stored in local storage
+    const token = localStorage.getItem('authToken'); // Adjust according to your storage mechanism
+
     return (
         <div className="bg-gray-100 pt-10 pb-10 px-5">
             <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="flex flex-col md:flex-row">
                     <div className="w-full md:w-1/3 p-5 text-center bg-gray-200">
-                        <Icon className="text-3xl mb-4 cursor-pointer" icon="ic:baseline-arrow-back" />
                         <img alt="avatar" src="https://static.vecteezy.com/system/resources/thumbnails/036/280/651/small/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg" className="rounded-full mb-4 w-24 h-24 mx-auto border" />
                         <div className="font-semibold mb-2 text-lg">{profile.firstName} {profile.lastName}</div>
                         <div className="font-medium text-sm text-gray-600 mb-2">{profile.email}</div>
                         <div className="font-medium">
-                            <a href="https://localhost:44447/changepassword" className="text-blue-500 hover:underline">Change password</a>
+                            <Link to={`/changepassword?token=${token}&email=${profile.email}`} className="text-blue-500 hover:underline">Change password</Link>
                         </div>
                     </div>
                     <div className="w-full md:w-2/3 p-5">
