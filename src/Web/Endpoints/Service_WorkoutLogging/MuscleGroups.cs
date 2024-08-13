@@ -47,17 +47,7 @@ public class MuscleGroups : EndpointGroupBase
             .MapDelete(DeleteMuscleGroup, "{id}");
     }
 
-    public Task<Result> CreateMuscleGroup(ISender sender, [FromBody] CreateMuscleGroupCommand command)
-    {
-        return sender.Send(command);
-    }
-
-    public Task<PaginatedList<Application.MuscleGroups.Queries.GetMuscleGroupsListWithPagination.MuscleGroupDTO>> GetMuscleGroupsList(ISender sender, [AsParameters] GetMuscleGroupsListWithPaginationQuery query)
-    {
-        return sender.Send(query);
-    }
-
-
+    #region Queries
     public Task<PaginatedList<Application.MuscleGroups.Queries.GetMuscleGroupDetails.MuscleGroupDTO>> SearchMuscleGroup(ISender sender, [AsParameters] PaginatedSearchMuscleGroupQuery query)
     {
         return sender.Send(query);
@@ -67,6 +57,20 @@ public class MuscleGroups : EndpointGroupBase
     {
         return sender.Send(query);
     }
+
+    public Task<PaginatedList<Application.MuscleGroups.Queries.GetMuscleGroupsListWithPagination.MuscleGroupDTO>> GetMuscleGroupsList(ISender sender, [AsParameters] GetMuscleGroupsListWithPaginationQuery query)
+    {
+        return sender.Send(query);
+    }
+
+
+    #endregion
+    public Task<Result> CreateMuscleGroup(ISender sender, [FromBody] CreateMuscleGroupCommand command)
+    {
+        return sender.Send(command);
+    }
+
+    
 
     public Task<Result> UpdateMuscleGroup(ISender sender, int id, [FromBody] UpdateMuscleGroupCommand command)
     {

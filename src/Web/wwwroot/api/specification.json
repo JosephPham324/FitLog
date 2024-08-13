@@ -405,7 +405,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfEquipmentDTO"
+                  "$ref": "#/components/schemas/PaginatedListOfEquipmentDetailsDTO"
                 }
               }
             }
@@ -1234,7 +1234,7 @@
         }
       }
     },
-    "/api/Statistics/exercise/exercise-log-history": {
+    "/api/Statistics/exercise/exercise-log-history/{ExerciseId}": {
       "get": {
         "tags": [
           "Statistics"
@@ -1242,24 +1242,14 @@
         "operationId": "GetExerciseLogHistory",
         "parameters": [
           {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
             "name": "ExerciseId",
-            "in": "query",
+            "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 1
           }
         ],
         "responses": {
@@ -1312,7 +1302,12 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/OneRepMaxRecord"
+                  }
+                }
               }
             }
           }
@@ -1444,6 +1439,42 @@
               "type": "string"
             },
             "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Statistics/exercise/{ExerciseId}/actual-1rms": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "GetExerciseActual1RMs",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
           }
         ],
         "responses": {
@@ -1828,18 +1859,6 @@
           "TrainingRecommendation"
         ],
         "operationId": "GetProgramRecommendations",
-        "parameters": [
-          {
-            "name": "UserId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
         "responses": {
           "200": {
             "description": "",
@@ -1866,18 +1885,6 @@
           "TrainingRecommendation"
         ],
         "operationId": "GetWorkoutRecommendation",
-        "requestBody": {
-          "x-name": "query",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetWorkoutRecommendationQuery"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
         "responses": {
           "200": {
             "description": "",
@@ -3245,48 +3252,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/login": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "Login",
-        "parameters": [
-          {
-            "name": "Username",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "Password",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResultDTO"
                 }
               }
             }
@@ -4986,50 +4951,6 @@
           }
         }
       },
-      "PaginatedListOfEquipmentDTO": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EquipmentDTO"
-            }
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "hasPreviousPage": {
-            "type": "boolean"
-          },
-          "hasNextPage": {
-            "type": "boolean"
-          }
-        }
-      },
-      "EquipmentDTO": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "equipmentId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "equipmentName": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
       "Result": {
         "type": "object",
         "additionalProperties": false,
@@ -5499,6 +5420,40 @@
           }
         }
       },
+      "OneRepMaxRecord": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "epley": {
+            "type": "number",
+            "format": "double"
+          },
+          "brzycki": {
+            "type": "number",
+            "format": "double"
+          },
+          "lander": {
+            "type": "number",
+            "format": "double"
+          },
+          "lombardi": {
+            "type": "number",
+            "format": "double"
+          },
+          "mayhew": {
+            "type": "number",
+            "format": "double"
+          },
+          "oConner": {
+            "type": "number",
+            "format": "double"
+          },
+          "wathan": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "ExerciseHistoryEntry": {
         "type": "object",
         "additionalProperties": false,
@@ -5608,19 +5563,6 @@
           "musclesPriority": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "GetWorkoutRecommendationQuery": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "exerciseIds": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "format": "int32"
-            }
           }
         }
       },
@@ -8092,6 +8034,10 @@
           },
           "name": {
             "type": "string"
+          },
+          "roleDesc": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

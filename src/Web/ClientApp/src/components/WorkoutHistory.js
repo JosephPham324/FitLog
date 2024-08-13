@@ -36,6 +36,11 @@ export default function WorkoutHistory() {
   }
 
   function formatDate(date) {
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      // If date is not a valid Date object, return a fallback value or handle the error
+      console.error('Invalid date provided:', date);
+      return 'Invalid Date';
+    }
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -46,6 +51,12 @@ export default function WorkoutHistory() {
   const fetchWorkoutHistory = async (startDate, endDate) => {
     setLoading(true);
     try {
+      // Validate dates before proceeding
+      if (!(startDate instanceof Date) || isNaN(startDate.getTime()) ||
+        !(endDate instanceof Date) || isNaN(endDate.getTime())) {
+        throw new Error('Invalid start date or end date');
+      }
+
       console.log("Fetching workout history for dates:", formatDate(startDate), "to", formatDate(endDate));
       const response = await axiosInstance.get(`${process.env.REACT_APP_BACKEND_URL}/WorkoutLog/history`, {
         params: {
@@ -64,6 +75,7 @@ export default function WorkoutHistory() {
       setLoading(false);
     }
   };
+
 
   const toggleDeleteModal = (workoutLogId) => {
     setDeleteId(workoutLogId);

@@ -10,6 +10,7 @@ import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
+
 import WorkoutHistory from './components/WorkoutHistory';
 import { ManageAccount } from './components/ManageAccount/ManageAccount';
 import { CoachServiceBooking } from './components/CoachServiceBooking';
@@ -37,6 +38,9 @@ import CoachProfile from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
+import ProgramsDisplay from './page/RecommendPrograms/RecommendPrograms'
+import LoggedExercises from "./components/LoggedExercises/LoggedExercises";
+//import ProgramsManagementPage from "./components/ProgramsManagementPage";
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
 import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
 import { Navigate } from 'react-router-dom';
@@ -61,6 +65,10 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(Counter, [Roles['A']]))
   },
   {
+    path: '/recommended-programs',
+    element: React.createElement(withAuthProtection(ProgramsDisplay))
+  },
+  {
     path: '/coachprofile/:id',
     element: React.createElement(withAuthProtection(CoachProfile, [])) // Adding CoachProfile to the routes
   },
@@ -76,10 +84,24 @@ const AppRoutes = [
     path: '/workout-history',
     element: React.createElement(withAuthProtection(WorkoutHistory, [Roles['M']]))
   },
+  /*{*/
+  //  path: '/workouthistory',
+  //  element: <WorkoutHistory />
+  //},
+  //{
+  //  path: '/workouthistory',
+  //  element: React.createElement(withAuthProtection(WorkoutHistory))
+  //},
+  {
+    path: '/logged-exercises',
+    element: <LoggedExercises />
+  },
+
   {
     path: '/coach-service-booking',
     element: React.createElement(withAuthProtection(CoachServiceBooking, [Roles['M'], Roles['C']]))
   },
+
   {
     path: '/manage-account',
     element: React.createElement(withAuthProtection(ManageAccount, [Roles['A']]))
@@ -129,6 +151,18 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(Logout, []))
   },
   {
+    path: '/workout-log-export',
+    element: <WorkoutLogExport />
+  },
+  {
+    path: '/workout-log-graphs',
+    element: <WorkoutLogGraphs />
+  },
+  {
+    path: '/statistics/exercises/:id',
+    element: <ExerciseLogGraphs />
+  },
+  {
     path: '/coach-application-notification',
     element: React.createElement(withAuthProtection(CoachApplicationNotification, []))
   },
@@ -153,7 +187,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(RolesListScreen, [Roles['A']]))
   },
   {
-    path: '/exercise-list-screen',
+    path: '/exerciselistscreen',
     element: <ExerciseListScreen />
   },
   {
@@ -231,4 +265,7 @@ const AppRoutes = [
   }
 ];
 
+
 export default AppRoutes;
+
+

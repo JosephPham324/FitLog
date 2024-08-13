@@ -97,15 +97,43 @@ export function ManageAccount() {
     if (!newRole) {
       errors.newRole = 'Role is required';
     } else if (!['Administrator', 'Member', 'Coach'].includes(newRole)) {
-      errors.newRole = 'Role must be Administrator, Member, or Coach';
+    errors.newRole = 'Role must be Administrator, Member, or Coach';
+  }
+
+  if (!newUsername) {
+    errors.newUsername = 'Username is required';
+  } else if (newUsername.length < 3 || newUsername.length > 20) {
+    errors.newUsername = 'Username must be between 3 and 20 characters long';
+  } else {
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(newUsername)) {
+      errors.newUsername = 'Username can only contain letters, numbers, and underscores';
     }
+  }
 
-    setCreateErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
+  setCreateErrors(errors);
+  return Object.keys(errors).length === 0;
+};
   const validateUpdateInputs = () => {
     const errors = {};
+
+    if (!newFirstName) {
+      errors.newFirstName = 'First Name is required';
+    } else {
+      const nameRegex = /^[a-zA-Z]+$/;
+      if (!nameRegex.test(newFirstName)) {
+        errors.newFirstName = 'Invalid First Name format';
+      }
+    }
+
+    if (!newLastName) {
+      errors.newLastName = 'Last Name is required';
+    } else {
+      const nameRegex = /^[a-zA-Z]+$/;
+      if (!nameRegex.test(newLastName)) {
+        errors.newLastName = 'Invalid Last Name format';
+      }
+    }
 
     if (!newPhoneNumber) {
       errors.newPhoneNumber = 'Phone number is required';
@@ -347,6 +375,7 @@ export function ManageAccount() {
                 value={newUsername}
                 onChange={(e) => setNewUsername(e.target.value)}
               />
+              {createErrors.newUsername && <small className="text-danger">{createErrors.newUsername}</small>}
             </FormGroup>
             <FormGroup>
               <Label for="newRole">Role</Label>
@@ -403,6 +432,54 @@ export function ManageAccount() {
                 value={newFirstName}
                 onChange={(e) => setNewFirstName(e.target.value)}
               />
+              {updateErrors.newFirstName && <small className="text-danger">{updateErrors.newFirstName}</small>}
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="editLastName">Last Name</Label>
+              <Input
+                type="text"
+                id="editLastName"
+                value={newLastName}
+                onChange={(e) => setNewLastName(e.target.value)}
+              />
+              {updateErrors.newLastName && <small className="text-danger">{updateErrors.newLastName}</small>}
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="editDateOfBirth">Date of Birth</Label>
+              <Input
+                type="date"
+                id="editDateOfBirth"
+                value={newDateOfBirth}
+                onChange={(e) => setNewDateOfBirth(e.target.value)}
+              />
+              {updateErrors.newDateOfBirth && <small className="text-danger">{updateErrors.newDateOfBirth}</small>}
+            </FormGroup>
+            
+            <FormGroup>
+              <Label for="editGender">Gender</Label>
+              <Input
+                type="select"
+                id="editGender"
+                value={newGender}
+                onChange={(e) => setNewGender(e.target.value)}
+              >
+                <option value="">Select Gender</option>
+                <option value="Other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </Input>
+            </FormGroup>
+            <FormGroup>
+              <Label for="editPhoneNumber">Phone Number</Label>
+              <Input
+                type="text"
+                id="editPhoneNumber"
+                value={newPhoneNumber}
+                onChange={(e) => setNewPhoneNumber(e.target.value)}
+              />
+              {updateErrors.newPhoneNumber && <small className="text-danger">{updateErrors.newPhoneNumber}</small>}
             </FormGroup>
             <FormGroup>
               <Label for="editLastName">Last Name</Label>

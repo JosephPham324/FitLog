@@ -67,6 +67,8 @@ namespace FitLog.Application.UnitTests.Users.Commands.Register
                 .ReturnsAsync(IdentityResult.Success);
             _userManagerMock.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<AspNetUser>()))
                 .ReturnsAsync("test_token");
+            _userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<AspNetUser>(), "Member"))
+                .ReturnsAsync(IdentityResult.Success);
             _emailServiceMock.Setup(x => x.SendAsync(command.Email, It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
@@ -96,7 +98,6 @@ namespace FitLog.Application.UnitTests.Users.Commands.Register
             };
             _userManagerMock.Setup(x => x.CreateAsync(It.IsAny<AspNetUser>(), command.Password))
                 .ReturnsAsync(IdentityResult.Failed(identityErrors));
-
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
 
@@ -119,6 +120,8 @@ namespace FitLog.Application.UnitTests.Users.Commands.Register
 
             _userManagerMock.Setup(x => x.CreateAsync(It.IsAny<AspNetUser>(), command.Password))
                 .ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<AspNetUser>(), "Member"))
+             .ReturnsAsync(IdentityResult.Success);
             _userManagerMock.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<AspNetUser>()))
                 .ReturnsAsync("test_token");
 

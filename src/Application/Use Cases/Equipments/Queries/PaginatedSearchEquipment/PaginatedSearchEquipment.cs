@@ -5,7 +5,7 @@ using FitLog.Application.Equipments.Queries.GetEquipmentsList;
 
 namespace FitLog.Application.Equipments.Queries.PaginatedSearchEquipment;
 
-public record PaginatedSearchEquipmentQuery : IRequest<PaginatedList<EquipmentDTO>>
+public record PaginatedSearchEquipmentQuery : IRequest<PaginatedList<EquipmentDetailsDTO>>
 {
     public string? EquipmentName { get; init; }
     public int PageNumber { get; init; } = 1;
@@ -26,7 +26,7 @@ public class PaginatedSearchEquipmentQueryValidator : AbstractValidator<Paginate
     }
 }
 
-public class PaginatedSearchEquipmentQueryHandler : IRequestHandler<PaginatedSearchEquipmentQuery, PaginatedList<EquipmentDTO>>
+public class PaginatedSearchEquipmentQueryHandler : IRequestHandler<PaginatedSearchEquipmentQuery, PaginatedList<EquipmentDetailsDTO>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -37,7 +37,7 @@ public class PaginatedSearchEquipmentQueryHandler : IRequestHandler<PaginatedSea
         _mapper = mapper;
     }
 
-    public async Task<PaginatedList<EquipmentDTO>> Handle(PaginatedSearchEquipmentQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<EquipmentDetailsDTO>> Handle(PaginatedSearchEquipmentQuery request, CancellationToken cancellationToken)
     {
         var query = _context.Equipment.AsQueryable();
 
@@ -47,7 +47,7 @@ public class PaginatedSearchEquipmentQueryHandler : IRequestHandler<PaginatedSea
         }
 
         return await query.OrderBy(e => e.EquipmentName)
-                          .ProjectTo<EquipmentDTO>(_mapper.ConfigurationProvider)
+                          .ProjectTo<EquipmentDetailsDTO>(_mapper.ConfigurationProvider)
                           .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

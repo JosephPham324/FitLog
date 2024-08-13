@@ -72,13 +72,12 @@
 
 :root .page-button {
     padding: 5px 10px;
-    margin: 2px;
-    border: 1px solid #ddd;
+    
     border-radius: 4px;
     cursor: pointer;
-    width: 15%;
-    height: 50px;
-    background-color: #007bff;
+    width: 42.6px;
+    height: 36.2px;
+    margin: 0px 10px 0px 0px;
 }
 
     :root .page-button.active {
@@ -100,7 +99,11 @@
     --bs-alert-bg: var(--bs-danger-bg-subtle);
     --bs-alert-border-color: var(--bs-danger-border-subtle);
 }
+:root .my-4{
+    font-size:50px;
+    text-align:center;
 
+}
 :root .img {
     width: 200%; /* Chiều rộng 100% của khung cha */
     max-width: 200px; /* Chiều rộng tối đa */
@@ -137,6 +140,7 @@
     height: 40px;
     text-align: center;
     border: 1px solid black;
+    font-size:30px;
 }
 
 :root .modal-content {
@@ -162,7 +166,7 @@
     width: auto;
 }
 
-.pagination-container {
+/*.pagination-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -174,8 +178,8 @@
     .pagination-container .next-page-button,
     .pagination-container .last-page-button {
         margin: 0 5px;
-        background-color: #007bff; /* Primary color */
-        border-color: #007bff;
+        background-color: #007bff;*/ /* Primary color */
+        /*border-color: #007bff;
         color: white;
         width: 47px;
         height: 47px;
@@ -183,8 +187,8 @@
 
     .pagination-container .page-button {
         margin: 0 5px;
-        background-color: #6c757d; /* Secondary color */
-        border-color: #6c757d;
+        background-color: #6c757d;*/ /* Secondary color */
+        /*border-color: #6c757d;
         color: white;
         width: 47px;
         height: 47px;
@@ -209,7 +213,20 @@
         height: 47px;
     }
 
-    .pagination-container .page-button.active:hover {
-        background-color: darkgreen;
-        border-color: darkgreen;
+
+        .pagination-container .page-button.active:hover {
+            background-color: darkgreen;
+            border-color: darkgreen;
+        }*/
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+
+    .page-buttonq.active {
+        background-color: #007bff;
+        color: #fff;
     }

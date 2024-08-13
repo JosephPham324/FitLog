@@ -1,4 +1,5 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Statistics_Exercise.Queries.GetExerciseActual1RMs;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseEstimated1RMs;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
 using FitLog.Application.Statistics_Exercise.Queries.GetExercisesWithHistory;
@@ -12,6 +13,7 @@ using FitLog.Application.Statistics_Workout.Queries.GetTotalTrainingTonnage;
 using FitLog.Application.Statistics_Workout.Queries.GetTrainingFrequency;
 using FitLog.Application.Users.Queries.UserWithCoachServiceQuery;
 using FitLog.Application.WorkoutLogs.Queries.GetWorkoutLogsWithPagination;
+using FitLog.Domain.Entities;
 using FitLog.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +34,8 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
         {
             // Personal statistics
             var personalStats = app.MapGroup(this)
-                .RequireAuthorization("MemberOnly");
+                //.RequireAuthorization("MemberOnly")
+                ;
 
             personalStats
                 .MapGroup("overall")
@@ -44,12 +47,13 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
 
             personalStats
                 .MapGroup("exercise")
-                .MapGet(GetExerciseLogHistory, "exercise-log-history")
+                .MapGet(GetExerciseLogHistory, "exercise-log-history/{ExerciseId}")
                 .MapGet(GetEstimated1RM, "estimated1RM")
                 .MapGet(GetExercisesWithHistory, "logged-exercises")
                 .MapGet(GetExerciseRecords, "{ExerciseId}/records")
                 .MapGet(GetExerciseTotalReps, "{ExerciseId}/total-reps")
-                .MapGet(GetExerciseTotalTonnage, "{ExerciseId}/total-tonnage");
+                .MapGet(GetExerciseTotalTonnage, "{ExerciseId}/total-tonnage")
+                .MapGet(GetExerciseActual1RMs, "{ExerciseId}/actual-1rms");
 
             // User statistics
             var userStats = app.MapGroup(this)
@@ -71,6 +75,7 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
         }
 
         // Personal statistics methods
+        #region Overal stats
         public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetWorkoutLogSummary(ISender sender, [FromQuery] string TimeFrame)
         {
             var UserId = _identityService.Id ?? "";
@@ -126,16 +131,36 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             return await sender.Send(query);
         }
 
-        public async Task<IEnumerable<ExerciseLogDTO>> GetExerciseLogHistory(ISender sender, [AsParameters] GetExerciseLogHistoryQuery query)
+        #endregion
+        #region Exercise stats
+        public async Task<IEnumerable<ExerciseLogDTO>> GetExerciseLogHistory(ISender sender, [FromRoute] int ExerciseId)
+        {
+
+            var UserId = _identityService.Id ?? "";
+
+            GetExerciseLogHistoryQuery query = new GetExerciseLogHistoryQuery()
+            {
+                UserId = UserId,
+                ExerciseId = ExerciseId
+            };
+
+            return await sender.Send(query);
+        }
+
+        public async Task<Dictionary<DateTime, OneRepMaxRecord>> GetEstimated1RM(ISender sender, [AsParameters] GetExerciseEstimated1RMsQuery query)
         {
             query.UserId = _identityService.Id ?? "";
 
             return await sender.Send(query);
         }
-
-        public async Task<object> GetEstimated1RM(ISender sender, [AsParameters] GetExerciseEstimated1RMsQuery query)
+        public async Task<Dictionary<DateTime, double>> GetExerciseActual1RMs(ISender sender, [FromRoute] int ExerciseId)
         {
-            query.UserId = _identityService.Id ?? "";
+            var UserId = _identityService.Id ?? "";
+            GetExerciseActual1RMsQuery query = new GetExerciseActual1RMsQuery
+            {
+                UserId = UserId,
+                ExerciseId = ExerciseId
+            };
 
             return await sender.Send(query);
         }
@@ -183,7 +208,8 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
             };
             return await sender.Send(query);
         }
-
+        #endregion
+        #region Users
         // User statistics methods
         public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> GetUserWorkoutLogSummary(ISender sender, [FromRoute] string id, [FromQuery] string TimeFrame)
         {
@@ -367,5 +393,6 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
 
             return await sender.Send(query);
         }
+        #endregion
     }
 }

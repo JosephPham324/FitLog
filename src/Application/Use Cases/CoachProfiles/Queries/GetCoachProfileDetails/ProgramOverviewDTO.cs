@@ -17,6 +17,7 @@ public class ProgramOverviewDto
     public string? ExperienceLevel { get; set; }
     public string? GymType { get; set; }
     public string? MusclesPriority { get; set; }
+    
 
     public class Mapping : AutoMapper.Profile
     {
