@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import axiosInstance from '../utils/axiosInstance';
 import { useParams } from "react-router-dom";
 
-export const CoachProfile = () => {
+const CoachProfile = () => {
   const [profile, setProfile] = useState({
     id: '',
     firstName: '',
@@ -134,3 +134,4 @@ export const CoachProfile = () => {
   );
 };
 
+export default CoachProfile;
