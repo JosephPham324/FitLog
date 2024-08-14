@@ -3040,7 +3040,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/LoginResultDTO"
                 }
               }
             }
@@ -3072,7 +3072,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/LoginResultDTO"
                 }
               }
             }
@@ -7965,8 +7965,13 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "success": {
-            "type": "boolean"
+          "result": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Result"
+              }
+            ]
           },
           "token": {
             "type": "string"

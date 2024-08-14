@@ -11,10 +11,11 @@ using Google.Apis.Auth;
 using FitLog.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Net.Http.Json;
+using FitLog.Application.Users.Queries.Login;
 
 namespace FitLog.Application.Users.Queries.ExternalLogin;
 
-public record ExternalLoginQuery : IRequest<string>
+public record ExternalLoginQuery : IRequest<LoginResultDTO>
 {
     public string Provider { get; set; } = "";
     public string ReturnUrl { get; set; } = "";
@@ -43,7 +44,7 @@ public class ExternalLoginQueryValidator : AbstractValidator<ExternalLoginQuery>
     }
 }
 
-public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, string>
+public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, LoginResultDTO>
 {
     private readonly IConfiguration _configuration;
     private readonly UserManager<AspNetUser> _userManager;
@@ -56,7 +57,7 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
         _userManager = userManager;
     }
 
-    public async Task<string> Handle(ExternalLoginQuery request, CancellationToken cancellationToken)
+    public async Task<LoginResultDTO> Handle(ExternalLoginQuery request, CancellationToken cancellationToken)
     {
         switch (request.Provider)
         {
@@ -79,13 +80,16 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
         }
 
         // If the provider is not supported, return an empty string or handle accordingly
-        return "";
+        return LoginResultDTO.Failure(["Login error"]);
     }
 
-    private async Task<string> HandleUserLoginAsync(string userId, string userEmail, string provider)
+    private async Task<LoginResultDTO> HandleUserLoginAsync(string userId, string userEmail, string provider)
     {
         // Retrieve the user from the database
         var user = await _userManager.FindByEmailAsync(userEmail);
+        if (user?.IsDeleted != null && user.IsDeleted == true)
+            return LoginResultDTO.Failure(["User account is disabled"]);
+
         if (user == null)
         {
             // Handle user not found, create a new user
@@ -111,7 +115,7 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
             if (!result.Succeeded)
             {
                 // Handle user creation failure (e.g., return an error message)
-                return "";
+                return LoginResultDTO.Failure(["Couldn't create new user from this account"]);
             }
 
             // Optionally, assign a default role to the new user
@@ -120,7 +124,7 @@ public class ExternalLoginQueryHandler : IRequestHandler<ExternalLoginQuery, str
 
         // Generate your own JWT token
         var jwtToken = await GenerateJwtTokenWithExternalProvider(user, userId);
-        return jwtToken;
+        return LoginResultDTO.Successful(jwtToken);
     }
 
     private async Task<string> GenerateJwtTokenWithExternalProvider(AspNetUser user, string providerUserId)

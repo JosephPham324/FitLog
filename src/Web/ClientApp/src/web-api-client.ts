@@ -3601,7 +3601,7 @@ export class AuthenticationClient {
         return Promise.resolve<LoginResultDTO>(null as any);
     }
 
-    signInWithGoogle(request: GoogleLoginRequest): Promise<string> {
+    signInWithGoogle(request: GoogleLoginRequest): Promise<LoginResultDTO> {
         let url_ = this.baseUrl + "/api/Authentication/google-login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3621,7 +3621,7 @@ export class AuthenticationClient {
         });
     }
 
-    protected processSignInWithGoogle(response: Response): Promise<string> {
+    protected processSignInWithGoogle(response: Response): Promise<LoginResultDTO> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3629,8 +3629,7 @@ export class AuthenticationClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = LoginResultDTO.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3638,10 +3637,10 @@ export class AuthenticationClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<LoginResultDTO>(null as any);
     }
 
-    signInWithFacebook(request: FacebookLoginRequest): Promise<string> {
+    signInWithFacebook(request: FacebookLoginRequest): Promise<LoginResultDTO> {
         let url_ = this.baseUrl + "/api/Authentication/facebook-login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3661,7 +3660,7 @@ export class AuthenticationClient {
         });
     }
 
-    protected processSignInWithFacebook(response: Response): Promise<string> {
+    protected processSignInWithFacebook(response: Response): Promise<LoginResultDTO> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -3669,8 +3668,7 @@ export class AuthenticationClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = LoginResultDTO.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3678,7 +3676,7 @@ export class AuthenticationClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<LoginResultDTO>(null as any);
     }
 }
 
@@ -11684,7 +11682,7 @@ export interface IWorkoutTemplateExerciseDTO {
 }
 
 export class LoginResultDTO implements ILoginResultDTO {
-    success?: boolean;
+    result?: Result | undefined;
     token?: string;
 
     constructor(data?: ILoginResultDTO) {
@@ -11698,7 +11696,7 @@ export class LoginResultDTO implements ILoginResultDTO {
 
     init(_data?: any) {
         if (_data) {
-            this.success = _data["success"];
+            this.result = _data["result"] ? Result.fromJS(_data["result"]) : <any>undefined;
             this.token = _data["token"];
         }
     }
@@ -11712,14 +11710,14 @@ export class LoginResultDTO implements ILoginResultDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["success"] = this.success;
+        data["result"] = this.result ? this.result.toJSON() : <any>undefined;
         data["token"] = this.token;
         return data;
     }
 }
 
 export interface ILoginResultDTO {
-    success?: boolean;
+    result?: Result | undefined;
     token?: string;
 }
 
