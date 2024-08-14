@@ -8,7 +8,7 @@ namespace FitLog.Application.Exercises.Commands.UpdateExercise;
 public record UpdateExerciseCommand : IRequest<Result>
 {
     public int ExerciseId { get; init; }
-    public string? CreatedBy { get; init; }
+    //public string? CreatedBy { get; init; }
     public List<int> MuscleGroupIds { get; init; } = new List<int>();
     public int? EquipmentId { get; init; }
     public string? ExerciseName { get; init; }
@@ -26,9 +26,9 @@ public class UpdateExerciseCommandValidator : AbstractValidator<UpdateExerciseCo
     {
         _context = context;
 
-        RuleFor(e => e.CreatedBy)
-           .NotEmpty()
-           .MustAsync(UserExists).WithMessage("User does not exist.");
+        //RuleFor(e => e.CreatedBy)
+        //   .NotEmpty()
+        //   .MustAsync(UserExists).WithMessage("User does not exist.");
 
         RuleFor(e => e.Type)
             .NotEmpty()
@@ -64,7 +64,8 @@ public class UpdateExerciseCommandValidator : AbstractValidator<UpdateExerciseCo
                type == ExerciseTypes.Calisthenics ||
                type == ExerciseTypes.Plyometrics ||
                type == ExerciseTypes.LissCardio ||
-               type == ExerciseTypes.HitCardio;
+               type == ExerciseTypes.HitCardio ||
+               type == ExerciseTypes.HiitCardio;
     }
 
     private async Task<bool> UserExists(string? userId, CancellationToken cancellationToken)
@@ -104,7 +105,7 @@ public class UpdateExerciseCommandHandler : IRequestHandler<UpdateExerciseComman
             return Result.Failure(["Exercise not found"]); // Entity not found
         }
 
-        entity.CreatedBy = request.CreatedBy;
+        //entity.CreatedBy = request.CreatedBy;
         entity.EquipmentId = request.EquipmentId;
         entity.ExerciseName = request.ExerciseName;
         entity.DemoUrl = request.DemoUrl;

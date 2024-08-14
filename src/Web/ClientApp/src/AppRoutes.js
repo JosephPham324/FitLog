@@ -46,7 +46,7 @@ import WorkoutTemplateDetailsPage from "./page/WorkoutLog/WorkoutTemplateDetails
 import WorkoutTemplateListPage from "./page/WorkoutTemplates/WorkoutTemplatesList";
 import PrivateWorkoutTemplateListPage from "./page/WorkoutTemplates/PrivateWorkoutTemplatesList";
 import LoggedExercises from "./components/LoggedExercises/LoggedExercises"
-
+import ExerciseListPage from "./page/ExercisesManagement/ExercisesList";
 const Roles = {
   A: "Administrator",
   M: "Member",
@@ -75,7 +75,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(FetchData, []))
   },
   {
-    path: '/muscle-groups',
+    path: '/admin/manage/muscle-groups',
     element: React.createElement(withAuthProtection(MuscleGroup, [Roles['A']]))
   },
   {
@@ -83,12 +83,12 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(WorkoutHistory, [Roles['M']]))
   },
   {
-    path: '/coach-service-booking',
-    element: React.createElement(withAuthProtection(CoachServiceBooking, [Roles['M'], Roles['C']]))
+    path: '/logged-exercises',
+    element: <LoggedExercises />
   },
   {
-    path: '/manage-account',
-    element: React.createElement(withAuthProtection(ManageAccount, [Roles['A']]))
+    path: '/coach-service-booking',
+    element: React.createElement(withAuthProtection(CoachServiceBooking, [Roles['M'], Roles['C']]))
   },
   {
     path: '/workout-programs',
@@ -119,17 +119,26 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(TrainingSurvey, [Roles['M']]))
   },
   {
-    path: '/admin/management/equipments',
+    path: '/admin/manage/equipments',
     element: React.createElement(withAuthProtection(EquipmentsList, [Roles['A']]))
+  },
+  {
+    path: '/admin/manage/exercises',
+    element: React.createElement(withAuthProtection(ExerciseListPage, [Roles['A']]))
+  },
+  {
+    path: '/admin/users-list',
+    element: React.createElement(withAuthProtection(UserListPage, [Roles['A']]))
+  },
+  {
+    path: '/admin/manage/accounts',
+    element: React.createElement(withAuthProtection(ManageAccount, [Roles['A']]))
   },
   {
     path: '/chat',
     element: React.createElement(withAuthProtection(ChatPage, []))
   },
-  {
-    path: '/users-list',
-    element: React.createElement(withAuthProtection(UserListPage, [Roles['A']]))
-  },
+
   {
     path: '/log-out',
     element: React.createElement(withAuthProtection(Logout, []))
@@ -160,6 +169,7 @@ const AppRoutes = [
     path: '/workout-templates-admin',
     element: React.createElement(withAuthProtection(WorkoutTemplatesListAdmin, [Roles['A']]))
   },
+
   {
     path: '/workout-log-export',
     element: React.createElement(withAuthProtection(WorkoutLogExport, []))

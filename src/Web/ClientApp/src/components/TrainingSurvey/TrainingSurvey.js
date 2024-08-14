@@ -229,6 +229,14 @@ const TrainingSurvey = () => {
     );
   };
 
+  const handleMusclePriorityChange = (e) => {
+    const { value, checked } = e.target;
+    setMusclesPriority((prev) =>
+      checked ? [...prev, value] : prev.filter((item) => item !== value)
+    );
+    
+  };
+
   return (
     <Container>
       <Grid container alignItems="left" justify="space-between">

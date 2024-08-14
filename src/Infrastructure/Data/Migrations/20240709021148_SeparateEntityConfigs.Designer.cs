@@ -279,7 +279,7 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("Result")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
@@ -319,7 +319,7 @@ namespace FitLog.Infrastructure.Data.Migrations
                     b.Property<DateTime?>("PaymentDate")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("Result")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -717,7 +717,7 @@ namespace FitLog.Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ProgramID");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("Result")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");

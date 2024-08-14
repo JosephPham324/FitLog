@@ -14,6 +14,7 @@ public class ExerciseDetailsDTO
     public string Type { get; set; } = null!;
     public string? CreatedByName { get; set; }
     public string? EquipmentName { get; set; }
+    public string? Description { get; set; }
 
     public class Mapping : AutoMapper.Profile
     {

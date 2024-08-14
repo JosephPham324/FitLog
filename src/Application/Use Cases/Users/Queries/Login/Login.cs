@@ -87,15 +87,15 @@ public class LoginHandler : IRequestHandler<LoginQuery, LoginResultDTO>
 
         if (user?.IsDeleted == true)
         {
-            throw new UnauthorizedAccessException("User account is disabled");
+            return LoginResultDTO.Failure(["User account is restricted"]);
         }
 
         if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
         {
             var token = await GenerateJwtToken(request.Username, user, _configuration);
-            return new LoginResultDTO { Success = true, Token = token };
+            return LoginResultDTO.Successful(token);
         }
 
-        return new LoginResultDTO { Success = false };
+        return LoginResultDTO.Failure(["Wrong User name or password"]);
     }
 }

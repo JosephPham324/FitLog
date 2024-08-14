@@ -50,10 +50,15 @@ const Login = () => {
 
       console.log(response);
 
-      const jwtToken = response.data;
-      SignIn(jwtToken);
-      //setAuthCookies(jwtToken);
-      console.log('JWT Token:', jwtToken);
+      const responseData = response.data;
+      if (responseData.result.success === true) {
+        const token = responseData.token;
+        SignIn(token);
+      } else {
+        setError(responseData.result.errors.join(' '))
+      }
+      //setAuthCookies(responseData);
+      console.log('JWT Token:', responseData.token);
     } catch (error) {
       console.error('Error sending token to backend:', error);
     }
@@ -68,10 +73,15 @@ const Login = () => {
     const { name, email, id } = response;
 
     try {
-      const result = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/Authentication/facebook-login`, { name, email, UserId: id });
-      const jwtToken = result.data;
-      SignIn(jwtToken);
-      console.log('JWT Token:', jwtToken);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/Authentication/facebook-login`, { name, email, UserId: id });
+      const responseData = response.data;
+      if (responseData.result.success === true) {
+        const token = responseData.token;
+        SignIn(token);
+      } else {
+        setError(responseData.result.errors.join(' '))
+      }
+      console.log('JWT Token:', responseData.token);
     } catch (error) {
       console.error('Error sending token to backend:', error);
     }
@@ -87,14 +97,22 @@ const Login = () => {
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/Authentication/password-login`, { username, password });
-      const loginResult = response.data;
-
-      if (loginResult.success) {
-        SignIn(loginResult.token);
-        console.log('JWT Token:', loginResult.token);
+      //const loginResult = response.data;
+      const responseData = response.data;
+      if (responseData.result.success === true) {
+        console.log(responseData);
+        const token = responseData.token;
+        console.log(token);
+        SignIn(token);
       } else {
-        setError('Invalid username or password');
+        setError(responseData.result.errors.join(' '))
       }
+      //if (loginResult.success) {
+      //  SignIn(loginResult.token);
+      //  console.log('JWT Token:', loginResult.token);
+      //} else {
+      //  setError('Invalid username or password');
+      //}
     } catch (error) {
       console.error('Error during login:', error);
       setError('An error occurred during login');

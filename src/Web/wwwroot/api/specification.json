@@ -3040,7 +3040,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/LoginResultDTO"
                 }
               }
             }
@@ -3072,7 +3072,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/LoginResultDTO"
                 }
               }
             }
@@ -5134,10 +5134,6 @@
           "exerciseId": {
             "type": "integer",
             "format": "int32"
-          },
-          "createdBy": {
-            "type": "string",
-            "nullable": true
           },
           "muscleGroupIds": {
             "type": "array",
@@ -7969,8 +7965,13 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "success": {
-            "type": "boolean"
+          "result": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Result"
+              }
+            ]
           },
           "token": {
             "type": "string"

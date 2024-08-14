@@ -43,18 +43,18 @@ public class Authentication : EndpointGroupBase
     //    return result;
     //}
 
-    public async Task<string> SignInWithGoogle(ISender sender, [FromBody] GoogleLoginRequest request)
+    public async Task<LoginResultDTO> SignInWithGoogle(ISender sender, [FromBody] GoogleLoginRequest request)
     {
         var extRequest = new ExternalLoginQuery { Provider = "Google", ReturnUrl = "/", GoogleLoginRequest = request};
         
-        var jwtToken = await sender.Send(extRequest);
-        return jwtToken;
+        var result = await sender.Send(extRequest);
+        return result;
     }
 
-    public async Task<string> SignInWithFacebook(ISender sender, [FromBody] FacebookLoginRequest request)
+    public async Task<LoginResultDTO> SignInWithFacebook(ISender sender, [FromBody] FacebookLoginRequest request)
     {
         var command = new ExternalLoginQuery { Provider = "Facebook", ReturnUrl = "/", FacebookLoginRequest = request };
-        var jwtToken = await sender.Send(command);
-        return jwtToken;
+        var result = await sender.Send(command);
+        return result;
     }
 }
