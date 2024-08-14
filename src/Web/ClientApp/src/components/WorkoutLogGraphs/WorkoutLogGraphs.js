@@ -49,31 +49,32 @@ const WorkoutLogGraphs = () => {
 
   const fetchData = async () => {
     try {
+      // Fetch and handle the summary data (as before)
       const summaryResponse = await axiosInstance.get('/Statistics/overall/summary', {
         params: { TimeFrame: activeTab },
       });
-
       console.log("API Summary Response:", summaryResponse.data);
 
       const summaryData = summaryResponse.data;
       for (let key in summaryData) {
         if (summaryData.hasOwnProperty(key)) {
-          setSummaryData(summaryData[key])
-          console.log(summaryData[key])
+          setSummaryData(summaryData[key]);
         }
       }
-      if (summaryData === null)
+
+      if (summaryData === null) {
         setSummaryData({
           numberOfWorkouts: 0,
           hoursAtGym: 0,
           totalWeightLifted: 0,
           weekStreak: 0,
         });
+      }
 
+      // Fetch and handle the muscle engagement data (as before)
       const muscleEngagementResponse = await axiosInstance.get('/Statistics/overall/muscles-engagement', {
         params: { TimeFrame: activeTab },
       });
-
       console.log("API Muscle Engagement Response:", muscleEngagementResponse.data);
 
       const muscleData = [];
@@ -84,52 +85,53 @@ const WorkoutLogGraphs = () => {
       }
       setMuscleEngagementData(muscleData);
 
+      // Fetch and handle total reps data
       const totalRepsResponse = await axiosInstance.get('/Statistics/overall/total-training-reps', {
         params: { TimeFrame: activeTab },
       });
-
       console.log("API Total Training Reps Response:", totalRepsResponse.data);
+
 
       const repsData = [];
       for (let key in totalRepsResponse.data) {
         if (totalRepsResponse.data.hasOwnProperty(key)) {
           repsData.push({
-            date: key,
-            reps: totalRepsResponse.data[key]
+            date: format(new Date(key), 'yyyy-MM-dd'), // Format the date
+            reps: totalRepsResponse.data[key],
           });
         }
       }
       setTotalRepsData(repsData);
 
+      // Fetch and handle total tonnage data
       const totalTonnageResponse = await axiosInstance.get('/Statistics/overall/total-training-tonnage', {
         params: { TimeFrame: activeTab },
       });
-
       console.log("API Total Training Tonnage Response:", totalTonnageResponse.data);
 
       const tonnageData = [];
       for (let key in totalTonnageResponse.data) {
         if (totalTonnageResponse.data.hasOwnProperty(key)) {
           tonnageData.push({
-            date: key,
-            tonnage: totalTonnageResponse.data[key]
+            date: format(new Date(key), 'yyyy-MM-dd'), // Format the date
+            tonnage: totalTonnageResponse.data[key],
           });
         }
       }
       setChartData(tonnageData);
 
+      // Fetch and handle frequency data
       const frequencyResponse = await axiosInstance.get('/Statistics/overall/training-frequency', {
         params: { TimeFrame: activeTab },
       });
-
       console.log("API Training Frequency Response:", frequencyResponse.data);
 
       const frequencyData = [];
       for (let key in frequencyResponse.data) {
         if (frequencyResponse.data.hasOwnProperty(key)) {
           frequencyData.push({
-            date: key,
-            workouts: frequencyResponse.data[key]
+            date: format(new Date(key), 'yyyy-MM-dd'), // Format the date
+            workouts: frequencyResponse.data[key],
           });
         }
       }
@@ -210,7 +212,7 @@ const WorkoutLogGraphs = () => {
             <span className="label">Number of Workouts</span>
           </div>
           <div className="summary-item">
-            <span className="number">{summaryData.hoursAtTheGym}</span>
+            <span className="number">{summaryData.hoursAtTheGym.toFixed(1)}</span> {/* Rounded to 1 decimal place */}
             <br />
             <span className="label">Hours at the Gym</span>
           </div>
@@ -225,6 +227,7 @@ const WorkoutLogGraphs = () => {
             <span className="label">Week Streak</span>
           </div>
         </div>
+
       </div>
 
       <div className="muscle-tracker">
@@ -272,14 +275,14 @@ const WorkoutLogGraphs = () => {
 
       <div className="frequency">
         <div className="graph-title">Frequency</div>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={frequencyData} margin={{ left: 50 }}>
+        <ResponsiveContainer width="20%" height={300}>
+          <BarChart data={frequencyData} margin={{ left: 50 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="workouts" stroke="#ff7300" />
-          </LineChart>
+            <Bar dataKey="workouts" fill="#ff7300" />
+          </BarChart>
         </ResponsiveContainer>
       </div>
 

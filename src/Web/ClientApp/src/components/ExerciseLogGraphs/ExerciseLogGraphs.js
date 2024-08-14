@@ -85,12 +85,12 @@ const ExerciseLogGraphs = () => {
   }, []);
 
   const chartDataEstimated1RM = {
-    labels: estimated1RMData.map(item => item.date),
+    labels: (estimated1RMData || []).map(item => new Date(item.date).toLocaleDateString()),
     datasets: [
       {
         label: 'Estimated 1RM using Brzycki',
         data: estimated1RMData.map(item => item.brzycki),
-        borderColor: 'orange',
+        borderColor: 'red',
         backgroundColor: 'rgba(255, 165, 0, 0.2)',
       }
     ],
@@ -109,24 +109,24 @@ const ExerciseLogGraphs = () => {
   };
 
   const chartDataVolume = {
-    labels: (totalVolumeData || []).map(item => item.date),
+    labels: (totalVolumeData || []).map(item => new Date(item.date).toLocaleDateString()),
     datasets: [
       {
         label: 'Total Training Volume',
         data: (totalVolumeData || []).map(item => item.volume),
-        borderColor: 'orange',
+        borderColor: 'blue',
         backgroundColor: 'rgba(255, 165, 0, 0.2)',
       }
     ],
   };
 
   const chartDataReps = {
-    labels: (totalRepsData || []).map(item => item.date),
+    labels: (totalRepsData || []).map(item => new Date(item.date).toLocaleDateString()),
     datasets: [
       {
         label: 'Total Reps',
         data: (totalRepsData || []).map(item => item.reps),
-        borderColor: 'yellow',
+        borderColor: 'green',
         backgroundColor: 'rgba(255, 255, 0, 0.2)',
       }
     ],
