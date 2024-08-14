@@ -32,3 +32,32 @@
     .logged-exercises tr:hover {
         background-color: #ddd;
     }
+
+
+.exercise-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+    .exercise-item:hover {
+        background-color: #f1f1f1; /* Light gray background on hover */
+    }
+
+.exercise-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #007bff; /* Bootstrap blue for the button */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+    .info-button:hover {
+        color: #0056b3; /* Darker blue on hover */
+    }

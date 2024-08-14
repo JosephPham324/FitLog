@@ -1,5 +1,8 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Common.Models;
 using FitLog.Application.Users.Queries.GetUsers;
+using FitLog.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace FitLog.Application.Users.Queries.GetAccountByUsername;
 
@@ -22,11 +25,13 @@ public class GetAccountByUsernameQueryHandler : IRequestHandler<GetAccountByUser
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly UserManager<AspNetUser> _userManager;
 
-    public GetAccountByUsernameQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetAccountByUsernameQueryHandler(IApplicationDbContext context, IMapper mapper, UserManager<AspNetUser> manager)
     {
         _context = context;
         _mapper = mapper;
+        _userManager = manager;
     }
 
     public async Task<IEnumerable<UserListDTO>?> Handle(GetAccountByUsernameQuery request, CancellationToken cancellationToken)
@@ -39,7 +44,18 @@ public class GetAccountByUsernameQueryHandler : IRequestHandler<GetAccountByUser
         {
             return new List<UserListDTO>(); // Return an empty list if no users found
         }
+        var dtos = _mapper.Map<List<UserListDTO>>(users);
 
-        return _mapper.Map<List<UserListDTO>>(users);
+        foreach (var userDto in dtos)
+        {
+            var user = await _userManager.FindByIdAsync(userDto.Id ?? "");
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userDto.Roles = roles.ToList();
+            }
+        }
+
+        return dtos;
     }
 }

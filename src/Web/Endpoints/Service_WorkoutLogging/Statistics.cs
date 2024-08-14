@@ -1,4 +1,5 @@
 ﻿using FitLog.Application.Common.Interfaces;
+using FitLog.Application.Statistics_Exercise.Queries.GetExerciseActual1RMs;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseEstimated1RMs;
 using FitLog.Application.Statistics_Exercise.Queries.GetExerciseLogHistory;
 using FitLog.Application.Statistics_Exercise.Queries.GetExercisesWithHistory;
@@ -51,7 +52,8 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
                 .MapGet(GetExercisesWithHistory, "logged-exercises")
                 .MapGet(GetExerciseRecords, "{ExerciseId}/records")
                 .MapGet(GetExerciseTotalReps, "{ExerciseId}/total-reps")
-                .MapGet(GetExerciseTotalTonnage, "{ExerciseId}/total-tonnage");
+                .MapGet(GetExerciseTotalTonnage, "{ExerciseId}/total-tonnage")
+                .MapGet(GetExerciseActual1RMs, "{ExerciseId}/actual-1rms");
 
             // User statistics
             var userStats = app.MapGroup(this)
@@ -148,6 +150,17 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
         public async Task<Dictionary<DateTime, OneRepMaxRecord>> GetEstimated1RM(ISender sender, [AsParameters] GetExerciseEstimated1RMsQuery query)
         {
             query.UserId = _identityService.Id ?? "";
+
+            return await sender.Send(query);
+        }
+        public async Task<Dictionary<DateTime, double>> GetExerciseActual1RMs(ISender sender, [FromRoute] int ExerciseId)
+        {
+            var UserId = _identityService.Id ?? "";
+            GetExerciseActual1RMsQuery query = new GetExerciseActual1RMsQuery
+            {
+                UserId = UserId,
+                ExerciseId = ExerciseId
+            };
 
             return await sender.Send(query);
         }

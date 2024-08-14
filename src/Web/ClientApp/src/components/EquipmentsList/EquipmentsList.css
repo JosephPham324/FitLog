@@ -58,7 +58,7 @@
 :root .edit-buttone {
     background-color: green;
     color: white;
-    height: 60px;
+    height: 38px;
     width: auto;
 }
 
@@ -146,9 +146,10 @@
 :root .modal-content {
     background-color: #fefefe;
     /* margin: 15% auto;*/
+    width: 500px;
     padding: 5px;
     border: 1px solid #888;
-    width: 100%;
+    /* width: 100%;*/
     max-width: 500px;
     max-height: 880px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);

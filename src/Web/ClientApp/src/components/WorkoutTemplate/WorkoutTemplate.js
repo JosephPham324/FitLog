@@ -192,7 +192,7 @@ const CreateWorkoutTemplateTable = ({ rows, setRows }) => {
         />
       )}
       {isNotePopupOpen && (
-        <div className="modal show d-block" role="dialog">
+        <div className="modal show d-block" style={{ width: '500px' }} role="dialog">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">

@@ -11,7 +11,7 @@ import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
 import WorkoutHistory from './components/WorkoutHistory';
-import { ManageAccount } from './components/ManageAccount';
+import { ManageAccount } from './components/ManageAccount/ManageAccount';
 import { CoachServiceBooking } from './components/CoachServiceBooking';
 import ChatPage from "./page/ChatPage";
 import UserListPage from "./page/TestAxios";
@@ -31,12 +31,18 @@ import RecoverAccount from './components/AccountRecovery/RecoverAccount';
 import RecoverConfirmation from './components/AccountRecovery/RecoverConfirmation';
 import RecoverInitiate from './components/AccountRecovery/RecoverInitiate';
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail';
-import WorkoutProgramsPage from './components/WorkoutProgramsPage';
-import WorkoutProgramsDetail from './components/WorkoutProgramsDetail';
+import WorkoutProgramsPage from './components/WorkoutProgram/WorkoutProgramsPage';
+import WorkoutProgramsDetail from './components/WorkoutProgram/WorkoutProgramsDetail';
+
 import CoachProfile from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
+
+import ProgramsDisplay from './page/RecommendPrograms/RecommendPrograms'
+import LoggedExercises from "./components/LoggedExercises/LoggedExercises";
+//import ProgramsManagementPage from "./components/ProgramsManagementPage";
+
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
 import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
 import { Navigate } from 'react-router-dom';
@@ -134,6 +140,20 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(Logout, []))
   },
   {
+
+    path: '/workout-log-export',
+    element: <WorkoutLogExport />
+  },
+  {
+    path: '/workout-log-graphs',
+    element: <WorkoutLogGraphs />
+  },
+  {
+    path: '/statistics/exercises/:id',
+    element: <ExerciseLogGraphs />
+  },
+  {
+
     path: '/coach-application-notification',
     element: React.createElement(withAuthProtection(CoachApplicationNotification, []))
   },

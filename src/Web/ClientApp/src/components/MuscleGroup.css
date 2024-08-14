@@ -178,3 +178,8 @@
     color: white;
     margin-left: 10px;
 }
+
+.img-fluid {
+    height: 200px;
+    width: 300px;
+}

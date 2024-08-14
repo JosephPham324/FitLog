@@ -1,9 +1,21 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // Import useParams to get route parameters
-import axiosInstance from '../utils/axiosInstance'; // Import the configured Axios instance
+import { Icon } from "@iconify/react";
+import axiosInstance from '../utils/axiosInstance';
+import { useParams } from "react-router-dom";
 
 const CoachProfile = () => {
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState({
+    id: '',
+    firstName: '',
+    lastName: '',
+    userName: '',
+    gender: '',
+    dateOfBirth: '',
+    roles: '',
+    phoneNumber: '',
+    email: ''
+  });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams(); // Get the dynamic templateId from the route
@@ -79,6 +91,7 @@ const CoachProfile = () => {
     </div>
   );
 };
+
 
 const styles = {
   container: {
@@ -162,4 +175,6 @@ const styles = {
   },
 };
 
+
 export default CoachProfile;
+

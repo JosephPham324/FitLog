@@ -9,7 +9,7 @@ import './NavMenu.css';
 import logoImage from '../assets/Logo.png';
 import { AuthContext } from '../context/AuthContext';
 import { getCookie } from '../utils/cookiesOperations';
-import { getUserRole } from '../utils/tokenOperations'; // Path to the decoding logic
+import { getUserRole } from '../utils/tokenOperations';
 
 export const NavMenu = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
@@ -79,8 +79,16 @@ export const NavMenu = () => {
             <NavItem>
               <NavLink tag={Link} className="text-white" to="/"><b>Home</b></NavLink>
             </NavItem>
+
             {isAuthenticated && (
               <>
+                <NavItem>
+                  <NavLink tag={Link} className="text-white" to="/workout-programs"><b>Programs</b></NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} className="text-white" to="/survey"><b>Training Survey</b></NavLink>
+                </NavItem>
+
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret className="text-white">
                     <b>Training</b>
@@ -105,17 +113,26 @@ export const NavMenu = () => {
                         </DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown>
-                    <DropdownItem tag={Link} to="/trainingsurvey">
-                      <b>Training Survey</b>
-                    </DropdownItem>
-                    <DropdownItem tag={Link} to="/workoutprogramspage">
-                      <b>Programs</b>
-                    </DropdownItem>
                     <DropdownItem tag={Link} to="/training-board">
                       <b>Training Board</b>
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
+
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret className="text-white">
+                    <b>Statistics</b>
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem tag={Link} to="/logged-exercises">
+                      <b>Logged Exercises</b>
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/workout-log-graphs">
+                      <b>Workout Log Graphs</b>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+
                 {userRole === 'Administrator' && (
                   <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret className="text-white">
@@ -134,11 +151,13 @@ export const NavMenu = () => {
                     </DropdownMenu>
                   </UncontrolledDropdown>
                 )}
+
                 {(userRole === 'Administrator' || userRole === 'Member' || userRole === 'Coach') && (
                   <NavItem>
                     <NavLink tag={Link} className="text-white" to="/profile"><b>Profile</b></NavLink>
                   </NavItem>
                 )}
+
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret className="text-white">
                     <b>Service</b>
@@ -149,11 +168,13 @@ export const NavMenu = () => {
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
+
                 <NavItem>
                   <NavLink className="text-white-noti" href="#">
                     <b>Notifications</b> <Badge color="secondary">{notifications.length}</Badge>
                   </NavLink>
                 </NavItem>
+
                 <NavItem>
                   <button
                     className="btn btn-link nav-link text-white"
@@ -165,8 +186,12 @@ export const NavMenu = () => {
                 </NavItem>
               </>
             )}
+
             {!isAuthenticated && (
               <>
+                <NavItem>
+                  <NavLink tag={Link} className="text-white" to="/workout-programs"><b>Programs</b></NavLink>
+                </NavItem>
                 <NavItem>
                   <NavLink tag={Link} className="text-white" to="/login"><b>Login</b></NavLink>
                 </NavItem>
