@@ -22,6 +22,7 @@ const ExerciseModal = ({
   handleSubmit,
   modalTitle,
   submitButtonText,
+  validationErrors = {}  // Default to an empty object
 }) => {
   const [exercise, setExercise] = useState({
     exerciseName: '',
@@ -35,23 +36,29 @@ const ExerciseModal = ({
 
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [equipments, setEquipments] = useState([]);
+  const [exerciseTypes, setExerciseTypes] = useState([]);  // State to store exercise types
   const [error, setError] = useState(null);
 
-  // Fetch muscle groups and equipment list on mount
+  // Fetch muscle groups, equipment list, and exercise types on mount
   useEffect(() => {
-    const fetchMuscleGroupsAndEquipments = async () => {
+    const fetchData = async () => {
       try {
-        const muscleGroupsResponse = await axiosInstance.get('/MuscleGroups/get-list?PageNumber=1&PageSize=100');
-        setMuscleGroups(muscleGroupsResponse.data.items);
+        const [muscleGroupsResponse, equipmentsResponse, exerciseTypesResponse] = await Promise.all([
+          axiosInstance.get('/MuscleGroups/get-list?PageNumber=1&PageSize=100'),
+          axiosInstance.get('/Equipments/get-all?PageNumber=1&PageSize=100'),
+          axiosInstance.get('/Exercises/exercise-types')
+        ]);
 
-        const equipmentsResponse = await axiosInstance.get('/Equipments/get-all?PageNumber=1&PageSize=100');
+        setMuscleGroups(muscleGroupsResponse.data.items);
         setEquipments(equipmentsResponse.data.items);
+        setExerciseTypes(exerciseTypesResponse.data);  // Set the fetched exercise types
+
       } catch (err) {
         setError('Failed to fetch data. Please try again later.');
       }
     };
 
-    fetchMuscleGroupsAndEquipments();
+    fetchData();
   }, []);
 
   // Fetch exercise details when the modal opens for an update
@@ -136,17 +143,26 @@ const ExerciseModal = ({
               onChange={(e) => handleInputChange('exerciseName', e.target.value)}
             />
             {nameErrorMessage && <Alert color="danger">{nameErrorMessage}</Alert>}
+            {validationErrors.exerciseName && <Alert color="danger">{validationErrors.general}</Alert>}
           </FormGroup>
           <FormGroup>
             <Label for="exerciseType">
               Exercise Type <span style={{ color: 'red' }}>*</span>
             </Label>
             <Input
-              type="text"
+              type="select"
               id="exerciseType"
               value={exercise.type}
               onChange={(e) => handleInputChange('type', e.target.value)}
-            />
+            >
+              <option value="">Select Exercise Type</option>
+              {exerciseTypes.map((type, index) => (
+                <option key={index} value={type}>
+                  {type}
+                </option>
+              ))}
+            </Input>
+            {validationErrors.type && <Alert color="danger">{validationErrors.type}</Alert>}
           </FormGroup>
           <FormGroup>
             <Label for="exerciseDescription">Description</Label>
@@ -165,9 +181,10 @@ const ExerciseModal = ({
               value={exercise.demoUrl || ''}
               onChange={(e) => handleInputChange('demoUrl', e.target.value)}
             />
+            {validationErrors.demoUrl && <Alert color="danger">{validationErrors.demoUrl}</Alert>}
           </FormGroup>
           <FormGroup>
-            <Label for="equipment">Equipment</Label>
+            <Label for="equipment">Equipment <span style={{ color: 'red' }}>*</span></Label>
             <Input
               type="select"
               id="equipment"
@@ -181,10 +198,10 @@ const ExerciseModal = ({
                 </option>
               ))}
             </Input>
-            {error && <Alert color="danger">{error}</Alert>}
+            {validationErrors.equipmentId && <Alert color="danger">{validationErrors.equipmentId}</Alert>}
           </FormGroup>
           <FormGroup>
-            <Label>Muscle Groups</Label>
+            <Label>Muscle Groups <span style={{ color: 'red' }}>*</span></Label>
             <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid #ced4da', padding: '10px', borderRadius: '4px' }}>
               {muscleGroups.map((muscleGroup) => (
                 <FormGroup check key={muscleGroup.muscleGroupId}>
@@ -200,6 +217,7 @@ const ExerciseModal = ({
                 </FormGroup>
               ))}
             </div>
+            {validationErrors.muscleGroupIds && <Alert color="danger">{validationErrors.muscleGroupIds}</Alert>}
           </FormGroup>
           <FormGroup check>
             <Label check>
@@ -212,6 +230,7 @@ const ExerciseModal = ({
             </Label>
           </FormGroup>
         </Form>
+
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={handleSubmit}>{submitButtonText}</Button>

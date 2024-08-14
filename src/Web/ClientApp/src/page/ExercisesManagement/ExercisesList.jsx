@@ -35,7 +35,8 @@ const ExerciseList = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [openError, setOpenError] = useState(false);
     const [popupErrorMessage, setPopupErrorMessage] = useState('');
-    
+    const [validationErrors, setValidationErrors] = useState({});
+
 
     useEffect(() => {
         fetchExercises(currentPage, searchQuery);
@@ -136,14 +137,13 @@ const ExerciseList = () => {
                 handleCloseCreate();
                 setSuccessMessage('Exercise created successfully');
                 setOpenSuccess(true);
+                setValidationErrors({})
             } else {
                 setError(response.data.errors.join(', '));
                 setOpenError(true);
             }
         } catch (error) {
-            console.error('Error creating exercise:', error);
-            setError('Error creating exercise');
-            setOpenError(true);
+            processErrors(error);
         }
     };
 
@@ -164,14 +164,15 @@ const ExerciseList = () => {
                 handleCloseUpdate();
                 setSuccessMessage('Exercise updated successfully');
                 setOpenSuccess(true);
+                setValidationErrors({})
+
             } else {
                 setError(response.data.errors.join(', '));
                 setOpenError(true);
             }
         } catch (error) {
-            console.error('Error updating exercise:', error);
-            setError('Error updating exercise');
-            setOpenError(true);
+            processErrors(error);
+
         }
     };
 
@@ -196,9 +197,7 @@ const ExerciseList = () => {
             }
             handleCloseDeleteConfirm();
         } catch (error) {
-            console.error('Error deleting exercise:', error);
-            setPopupErrorMessage('Failed to delete exercise. Please try again.');
-            setOpenError(true);
+            processErrors(error);
         }
     };
 
@@ -225,6 +224,40 @@ const ExerciseList = () => {
     };
     const handleNewExerciseUpdate = (updatedExercise) => {
         setNewExercise(updatedExercise);
+    };
+
+    const processErrors = (error) => {
+        if (error.response && error.response.data && error.response.data.errors) {
+            handleValidationErrors(error.response.data.errors);
+        } else {
+            setPopupErrorMessage('An unexpected error occurred. Please try again.');
+            setOpenError(true);
+        }
+    };
+
+    const handleValidationErrors = (errors) => {
+        let errorMessages = {};
+
+        if (errors.Type) {
+            errorMessages.type = errors.Type.join(', ');
+        }
+        if (errors.MuscleGroupIds) {
+            errorMessages.muscleGroupIds = errors.MuscleGroupIds.join(', ');
+        }
+        if (errors.EquipmentId) {
+            errorMessages.equipmentId = errors.EquipmentId.join(', ');
+        }
+        if (errors.ExerciseName) {
+            errorMessages.exerciseName = errors.ExerciseName.join(', ');
+        }
+        if (errors.Description) {
+            errorMessages.description = errors.Description.join(', ');
+        }
+        if (errors.DemoUrl) {
+            errorMessages.demoUrl = errors.DemoUrl.join(', ');
+        }
+
+        setValidationErrors(errorMessages);
     };
 
 
@@ -290,6 +323,7 @@ const ExerciseList = () => {
                 handleSubmit={handleCreate}
                 modalTitle="Create Exercise"
                 submitButtonText="Create"
+                validationErrors = {validationErrors}
             />
 
             <ExerciseModal
@@ -303,6 +337,7 @@ const ExerciseList = () => {
                 handleSubmit={handleUpdate}
                 modalTitle="Update Exercise"
                 submitButtonText="Update"
+                validationErrors = {validationErrors}
             />
 
             {/* Delete Confirm Modal */}

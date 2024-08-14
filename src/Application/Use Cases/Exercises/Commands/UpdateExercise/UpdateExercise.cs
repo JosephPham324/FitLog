@@ -64,7 +64,8 @@ public class UpdateExerciseCommandValidator : AbstractValidator<UpdateExerciseCo
                type == ExerciseTypes.Calisthenics ||
                type == ExerciseTypes.Plyometrics ||
                type == ExerciseTypes.LissCardio ||
-               type == ExerciseTypes.HitCardio;
+               type == ExerciseTypes.HitCardio ||
+               type == ExerciseTypes.HiitCardio;
     }
 
     private async Task<bool> UserExists(string? userId, CancellationToken cancellationToken)
