@@ -97,23 +97,23 @@ export function ManageAccount() {
     if (!newRole) {
       errors.newRole = 'Role is required';
     } else if (!['Administrator', 'Member', 'Coach'].includes(newRole)) {
-    errors.newRole = 'Role must be Administrator, Member, or Coach';
-  }
-
-  if (!newUsername) {
-    errors.newUsername = 'Username is required';
-  } else if (newUsername.length < 3 || newUsername.length > 20) {
-    errors.newUsername = 'Username must be between 3 and 20 characters long';
-  } else {
-    const usernameRegex = /^[a-zA-Z0-9_]+$/;
-    if (!usernameRegex.test(newUsername)) {
-      errors.newUsername = 'Username can only contain letters, numbers, and underscores';
+      errors.newRole = 'Role must be Administrator, Member, or Coach';
     }
-  }
 
-  setCreateErrors(errors);
-  return Object.keys(errors).length === 0;
-};
+    if (!newUsername) {
+      errors.newUsername = 'Username is required';
+    } else if (newUsername.length < 3 || newUsername.length > 20) {
+      errors.newUsername = 'Username must be between 3 and 20 characters long';
+    } else {
+      const usernameRegex = /^[a-zA-Z0-9_]+$/;
+      if (!usernameRegex.test(newUsername)) {
+        errors.newUsername = 'Username can only contain letters, numbers, and underscores';
+      }
+    }
+
+    setCreateErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
   const validateUpdateInputs = () => {
     const errors = {};
 
@@ -456,50 +456,7 @@ export function ManageAccount() {
               />
               {updateErrors.newDateOfBirth && <small className="text-danger">{updateErrors.newDateOfBirth}</small>}
             </FormGroup>
-            
-            <FormGroup>
-              <Label for="editGender">Gender</Label>
-              <Input
-                type="select"
-                id="editGender"
-                value={newGender}
-                onChange={(e) => setNewGender(e.target.value)}
-              >
-                <option value="">Select Gender</option>
-                <option value="Other">Other</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </Input>
-            </FormGroup>
-            <FormGroup>
-              <Label for="editPhoneNumber">Phone Number</Label>
-              <Input
-                type="text"
-                id="editPhoneNumber"
-                value={newPhoneNumber}
-                onChange={(e) => setNewPhoneNumber(e.target.value)}
-              />
-              {updateErrors.newPhoneNumber && <small className="text-danger">{updateErrors.newPhoneNumber}</small>}
-            </FormGroup>
-            <FormGroup>
-              <Label for="editLastName">Last Name</Label>
-              <Input
-                type="text"
-                id="editLastName"
-                value={newLastName}
-                onChange={(e) => setNewLastName(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="editDateOfBirth">Date of Birth</Label>
-              <Input
-                type="date"
-                id="editDateOfBirth"
-                value={newDateOfBirth}
-                onChange={(e) => setNewDateOfBirth(e.target.value)}
-              />
-              {updateErrors.newDateOfBirth && <small className="text-danger">{updateErrors.newDateOfBirth}</small>}
-            </FormGroup>
+
             <FormGroup>
               <Label for="editGender">Gender</Label>
               <Input

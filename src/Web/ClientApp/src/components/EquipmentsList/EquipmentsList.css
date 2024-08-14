@@ -72,7 +72,6 @@
 
 :root .page-button {
     padding: 5px 10px;
-    
     border-radius: 4px;
     cursor: pointer;
     width: 42.6px;
@@ -99,11 +98,12 @@
     --bs-alert-bg: var(--bs-danger-bg-subtle);
     --bs-alert-border-color: var(--bs-danger-border-subtle);
 }
-:root .my-4{
-    font-size:50px;
-    text-align:center;
 
+:root .my-4 {
+    font-size: 50px;
+    text-align: center;
 }
+
 :root .img {
     width: 200%; /* Chiều rộng 100% của khung cha */
     max-width: 200px; /* Chiều rộng tối đa */
@@ -140,7 +140,7 @@
     height: 40px;
     text-align: center;
     border: 1px solid black;
-    font-size:30px;
+    font-size: 30px;
 }
 
 :root .modal-content {
@@ -151,7 +151,7 @@
     border: 1px solid #888;
     /* width: 100%;*/
     max-width: 500px;
-    max-height: 880px;
+    max-height: 925px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
 }
@@ -179,7 +179,7 @@
     .pagination-container .last-page-button {
         margin: 0 5px;
         background-color: #007bff;*/ /* Primary color */
-        /*border-color: #007bff;
+/*border-color: #007bff;
         color: white;
         width: 47px;
         height: 47px;
@@ -188,7 +188,7 @@
     .pagination-container .page-button {
         margin: 0 5px;
         background-color: #6c757d;*/ /* Secondary color */
-        /*border-color: #6c757d;
+/*border-color: #6c757d;
         color: white;
         width: 47px;
         height: 47px;
@@ -226,7 +226,7 @@
 }
 
 
-    .page-buttonq.active {
-        background-color: #007bff;
-        color: #fff;
-    }
+.page-buttonq.active {
+    background-color: #007bff;
+    color: #fff;
+}
