@@ -119,20 +119,10 @@ export function ManageAccount() {
 
     if (!newFirstName) {
       errors.newFirstName = 'First Name is required';
-    } else {
-      const nameRegex = /^[a-zA-Z]+$/;
-      if (!nameRegex.test(newFirstName)) {
-        errors.newFirstName = 'Invalid First Name format';
-      }
     }
 
     if (!newLastName) {
       errors.newLastName = 'Last Name is required';
-    } else {
-      const nameRegex = /^[a-zA-Z]+$/;
-      if (!nameRegex.test(newLastName)) {
-        errors.newLastName = 'Invalid Last Name format';
-      }
     }
 
     if (!newPhoneNumber) {
