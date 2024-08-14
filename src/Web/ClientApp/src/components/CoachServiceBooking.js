@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import axiosInstance from '../utils/axiosInstance';
-import { Container, Grid, TextField, Button, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Typography, MenuItem, Pagination, Alert, Paper } from '@mui/material';
+import { Container, Grid, TextField, Button, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Typography, MenuItem, Pagination, Alert, Paper } from '@mui/material'; // Ensure MenuItem is imported
 
 export class CoachServiceBooking extends Component {
   constructor(props) {
@@ -17,8 +17,10 @@ export class CoachServiceBooking extends Component {
       selectedServiceDetails: null,
       showModal: false,
       filters: {
-        duration: '',
-        price: '',
+        durationMin: '',
+        durationMax: '',
+        priceMin: '',
+        priceMax: '',
         availability: ''
       },
       currentPage: 1,
@@ -56,13 +58,26 @@ export class CoachServiceBooking extends Component {
   }
 
   handleFilterChange(event) {
+
     const { name, value } = event.target;
-    this.setState(prevState => ({
-      filters: {
-        ...prevState.filters,
-        [name]: value
-      }
-    }));
+    console.log(event.target)
+    // Ensure only positive numbers are entered
+    if (value === '' || parseInt(value) >= 0) {
+      this.setState(prevState => ({
+        filters: {
+          ...prevState.filters,
+          [name]: value
+        }
+      }));
+    }
+    if (name === 'availability') {
+      this.setState(prevState => ({
+        filters: {
+          ...prevState.filters,
+          [name]: value
+        }
+      }));
+    }
   }
 
   handleInputChange(event) {
@@ -83,6 +98,10 @@ export class CoachServiceBooking extends Component {
       });
     } catch (error) {
       console.error('Detail fetch error:', error.response?.data || error.message);
+      this.setState({
+        selectedServiceDetails: null,
+        showModal: true,
+      });
     }
   }
 
@@ -113,19 +132,14 @@ export class CoachServiceBooking extends Component {
     const filteredServices = services.filter(service => {
       const query = searchQuery.toLowerCase();
       const { serviceName, duration, price, serviceAvailability } = service;
+      const availabilityMatch = filters.availability === '' ||
+        (filters.availability === 'Available' && serviceAvailability === true) ||
+        (filters.availability === 'Not Available' && serviceAvailability === false);
       return (
         serviceName.toLowerCase().includes(query) &&
-        (filters.duration === '' ||
-          (filters.duration === '1-3' && duration >= 1 && duration <= 3) ||
-          (filters.duration === '4-6' && duration >= 4 && duration <= 6) ||
-          (filters.duration === '7-10' && duration >= 7 && duration <= 10) ||
-          (filters.duration === '>10' && duration > 10)) &&
-        (filters.price === '' ||
-          (filters.price === '<100' && price < 100) ||
-          (filters.price === '100-500' && price >= 100 && price <= 500) ||
-          (filters.price === '501-1000' && price >= 501 && price <= 1000) ||
-          (filters.price === '>1000' && price > 1000)) &&
-        (filters.availability === '' || (filters.availability === 'Available' ? serviceAvailability : !serviceAvailability))
+        (filters.durationMin === '' || filters.durationMax === '' || (duration >= filters.durationMin && duration <= filters.durationMax)) &&
+        (filters.priceMin === '' || filters.priceMax === '' || (price >= filters.priceMin && price <= filters.priceMax)) &&
+        availabilityMatch
       );
     });
 
@@ -148,38 +162,60 @@ export class CoachServiceBooking extends Component {
         </Grid>
         <Grid container spacing={3} style={{ marginBottom: '20px' }}>
           <Grid item xs={12} sm={4}>
-            <TextField
-              select
-              fullWidth
-              label="Duration (weeks)"
-              name="duration"
-              value={filters.duration}
-              onChange={this.handleFilterChange}
-              variant="outlined"
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="1-3">1-3 weeks</MenuItem>
-              <MenuItem value="4-6">4-6 weeks</MenuItem>
-              <MenuItem value="7-10">7-10 weeks</MenuItem>
-              <MenuItem value=">10">More than 10 weeks</MenuItem>
-            </TextField>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Duration Min (weeks)"
+                  name="durationMin"
+                  value={filters.durationMin}
+                  onChange={this.handleFilterChange}
+                  variant="outlined"
+                  type="number"
+                  inputProps={{ min: 0 }} // Ensure only positive numbers
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Duration Max (weeks)"
+                  name="durationMax"
+                  value={filters.durationMax}
+                  onChange={this.handleFilterChange}
+                  variant="outlined"
+                  type="number"
+                  inputProps={{ min: 0 }} // Ensure only positive numbers
+                />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              select
-              fullWidth
-              label="Price"
-              name="price"
-              value={filters.price}
-              onChange={this.handleFilterChange}
-              variant="outlined"
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="<100">Less than $100</MenuItem>
-              <MenuItem value="100-500">$100 - $500</MenuItem>
-              <MenuItem value="501-1000">$501 - $1000</MenuItem>
-              <MenuItem value=">1000">More than $1000</MenuItem>
-            </TextField>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Price Min"
+                  name="priceMin"
+                  value={filters.priceMin}
+                  onChange={this.handleFilterChange}
+                  variant="outlined"
+                  type="number"
+                  inputProps={{ min: 0 }} // Ensure only positive numbers
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Price Max"
+                  name="priceMax"
+                  value={filters.priceMax}
+                  onChange={this.handleFilterChange}
+                  variant="outlined"
+                  type="number"
+                  inputProps={{ min: 0 }} // Ensure only positive numbers
+                />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -199,17 +235,23 @@ export class CoachServiceBooking extends Component {
         </Grid>
         <Paper elevation={3}>
           <List>
-            {filteredServices.map(service => (
-              <ListItem key={service.id} divider style={{ padding: '20px' }}>
-                <ListItemText
-                  primary={<Typography variant="h6" style={{ color: '#3f51b5' }}>{service.serviceName}</Typography>}
-                  secondary={`Duration: ${service.duration} Weeks, Price: $${service.price}`}
-                />
-                <Button variant="contained" color="primary" onClick={() => this.handleDetailClick(service.id)}>
-                  Booking
-                </Button>
-              </ListItem>
-            ))}
+            {filteredServices.length > 0 ? (
+              filteredServices.map(service => (
+                <ListItem key={service.id} divider style={{ padding: '20px' }}>
+                  <ListItemText
+                    primary={<Typography variant="h6" style={{ color: '#3f51b5' }}>{service.serviceName}</Typography>}
+                    secondary={`Duration: ${service.duration} Weeks, Price: $${service.price}`}
+                  />
+                  <Button variant="contained" color="primary" onClick={() => this.handleDetailClick(service.id)}>
+                    Booking
+                  </Button>
+                </ListItem>
+              ))
+            ) : (
+              <Typography variant="h6" align="center" style={{ margin: '20px', color: 'red' }}>
+                No services found.
+              </Typography>
+            )}
           </List>
         </Paper>
         <Grid container justifyContent="center" style={{ marginTop: '20px' }}>
@@ -237,16 +279,18 @@ export class CoachServiceBooking extends Component {
                 {successMessage && <Alert severity="success">{successMessage}</Alert>}
               </>
             ) : (
-              <Typography>Loading...</Typography>
+              <Typography>Service not found.</Typography>
             )}
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleCloseModal} color="secondary" variant="contained">
               Close
             </Button>
-            <Button onClick={this.handleBooking} color="primary" variant="contained">
-              Book
-            </Button>
+            {selectedServiceDetails && (
+              <Button onClick={this.handleBooking} color="primary" variant="contained">
+                Book
+              </Button>
+            )}
           </DialogActions>
         </Dialog>
       </Container>
