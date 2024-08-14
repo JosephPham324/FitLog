@@ -2444,12 +2444,8 @@ export class TrainingSurveyClient {
         return Promise.resolve<Result>(null as any);
     }
 
-    getUserTrainingSurveyAnswer(userId: string | null): Promise<SurveyAnswer> {
-        let url_ = this.baseUrl + "/api/TrainingSurvey/user?";
-        if (userId === undefined)
-            throw new Error("The parameter 'userId' must be defined.");
-        else if(userId !== null)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
+    getUserTrainingSurveyAnswer(): Promise<SurveyAnswer> {
+        let url_ = this.baseUrl + "/api/TrainingSurvey/user";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -6656,7 +6652,6 @@ export interface IExerciseImport {
 
 export class UpdateExerciseCommand implements IUpdateExerciseCommand {
     exerciseId?: number;
-    createdBy?: string | undefined;
     muscleGroupIds?: number[];
     equipmentId?: number | undefined;
     exerciseName?: string | undefined;
@@ -6677,7 +6672,6 @@ export class UpdateExerciseCommand implements IUpdateExerciseCommand {
     init(_data?: any) {
         if (_data) {
             this.exerciseId = _data["exerciseId"];
-            this.createdBy = _data["createdBy"];
             if (Array.isArray(_data["muscleGroupIds"])) {
                 this.muscleGroupIds = [] as any;
                 for (let item of _data["muscleGroupIds"])
@@ -6702,7 +6696,6 @@ export class UpdateExerciseCommand implements IUpdateExerciseCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["exerciseId"] = this.exerciseId;
-        data["createdBy"] = this.createdBy;
         if (Array.isArray(this.muscleGroupIds)) {
             data["muscleGroupIds"] = [];
             for (let item of this.muscleGroupIds)
@@ -6720,7 +6713,6 @@ export class UpdateExerciseCommand implements IUpdateExerciseCommand {
 
 export interface IUpdateExerciseCommand {
     exerciseId?: number;
-    createdBy?: string | undefined;
     muscleGroupIds?: number[];
     equipmentId?: number | undefined;
     exerciseName?: string | undefined;

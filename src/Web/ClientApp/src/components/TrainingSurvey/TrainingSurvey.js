@@ -104,6 +104,8 @@ const TrainingSurvey = () => {
   const [musclesPriority, setMusclesPriority] = useState([]);
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [age, setAge] = useState('');
+  const [surveyId, setSurveyId] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [errors, setErrors] = useState({
     experienceLevel: false,
     gymType: false,
@@ -113,15 +115,13 @@ const TrainingSurvey = () => {
     age: false,
     ageMessage: '',
   });
-  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
+    // Fetch muscle groups
     const fetchMuscleGroups = async () => {
       try {
-        const response = await axiosInstance.get('https://localhost:44447/api/MuscleGroups/get-list?PageNumber=1&PageSize=10');
-        console.log('API response:', response.data);
+        const response = await axiosInstance.get('/MuscleGroups/get-list?PageNumber=1&PageSize=15');
         if (Array.isArray(response.data.items)) {
-
           setMuscleGroups(response.data.items);
         } else {
           console.error('Unexpected response format:', response.data);
@@ -131,7 +131,27 @@ const TrainingSurvey = () => {
       }
     };
 
+    // Fetch existing survey data
+    const fetchSurveyData = async () => {
+      try {
+        const response = await axiosInstance.get('/TrainingSurvey/user');
+        if (response.data) {
+          const data = response.data;
+          setSurveyId(data.surveyAnswerId);
+          setExperienceLevel(data.experienceLevel);
+          setGymType(data.gymType);
+          setGoal(data.goal);
+          setDaysPerWeek(data.daysPerWeek.toString());
+          setMusclesPriority(data.musclesPriority.split(','));
+          setAge(data.age.toString());
+        }
+      } catch (error) {
+        console.error('Error fetching survey data:', error);
+      }
+    };
+
     fetchMuscleGroups();
+    fetchSurveyData();
   }, []);
 
   const getCurrentDate = () => {
@@ -162,19 +182,33 @@ const TrainingSurvey = () => {
     setErrors(newErrors);
 
     if (!Object.values(newErrors).includes(true)) {
+      const surveyData = {
+        "surveyAnswerId": surveyId || 0,
+        goal,
+        daysPerWeek: parseInt(daysPerWeek),
+        experienceLevel,
+        gymType,
+        musclesPriority: musclesPriority.join(','),
+        age: parseInt(age),
+      };
+
       try {
-        const response = await axiosInstance.post('/TrainingSurvey/create', {
-          goal,
-          daysPerWeek: parseInt(daysPerWeek),
-          experienceLevel,
-          gymType,
-          musclesPriority: musclesPriority.join(','),
-          age: parseInt(age),
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+        let response;
+        if (surveyId) {
+          // Update existing survey
+          response = await axiosInstance.put(`/TrainingSurvey/update/${surveyId}`, surveyData, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        } else {
+          // Create new survey
+          response = await axiosInstance.post('/TrainingSurvey/create', surveyData, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        }
         console.log(response.data);
         setModalOpen(true);
       } catch (error) {
@@ -186,6 +220,14 @@ const TrainingSurvey = () => {
   const handleClose = () => {
     setModalOpen(false);
     window.location.href = '/';
+  };
+
+  const handleMusclePriorityChange = (e) => {
+    const { value, checked } = e.target;
+    setMusclesPriority((prev) =>
+      checked ? [...prev, value] : prev.filter((item) => item !== value)
+    );
+    
   };
 
   return (
@@ -254,16 +296,11 @@ const TrainingSurvey = () => {
           <FormGroup className={classes.checkboxGroup}>
             {Array.isArray(muscleGroups) && muscleGroups.map(group => (
               <FormControlLabel
-                key={group.id} // Add a unique key for each item
+                key={group.muscleGroupId} // Use muscleGroupId as the key
                 control={
                   <Checkbox
                     checked={musclesPriority.includes(group.muscleGroupName)}
-                    onChange={(e) => {
-                      const { value, checked } = e.target;
-                      setMusclesPriority((prev) =>
-                        checked ? [...prev, value] : prev.filter((item) => item !== value)
-                      );
-                    }}
+                    onChange={handleMusclePriorityChange}
                     value={group.muscleGroupName}
                   />
                 }
@@ -316,7 +353,7 @@ const TrainingSurvey = () => {
         </FormControl>
 
         <Button type="submit" variant="contained" color="primary" fullWidth className={classes.submitButton}>
-          Submit
+          {surveyId ? 'Update' : 'Submit'}
         </Button>
       </form>
 

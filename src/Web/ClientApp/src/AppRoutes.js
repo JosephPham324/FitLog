@@ -48,7 +48,7 @@ import UpdateWorkoutTemplatePage from "./page/WorkoutLog/UpdateWorkoutTemplate/U
 import WorkoutTemplateDetailsPage from "./page/WorkoutLog/WorkoutTemplateDetails/WorkoutTemplateDetails";
 import WorkoutTemplateListPage from "./page/WorkoutTemplates/WorkoutTemplatesList";
 import PrivateWorkoutTemplateListPage from "./page/WorkoutTemplates/PrivateWorkoutTemplatesList";
-
+import ExerciseListPage from "./page/ExercisesManagement/ExercisesList";
 const Roles = {
   A: "Administrator",
   M: "Member",
@@ -169,6 +169,10 @@ const AppRoutes = [
   {
     path: '/workout-templates-admin',
     element: React.createElement(withAuthProtection(WorkoutTemplatesListAdmin, [Roles['A']]))
+  },
+  {
+    path: '/exercises',
+    element: React.createElement(withAuthProtection(ExerciseListPage, [Roles['A']]))
   },
   {
     path: '/workout-log-export',

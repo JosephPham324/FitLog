@@ -29,12 +29,23 @@ public class DeleteExerciseCommandHandler : IRequestHandler<DeleteExerciseComman
     public async Task<Result> Handle(DeleteExerciseCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Exercises
+            .Include(ex=>ex.ExerciseLogs)
+            .Include(ex=>ex.WorkoutTemplateExercises)
             .Where(e => e.ExerciseId == request.ExerciseId)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (entity == null)
         {
             return Result.Failure(["Exercise not found"]); // Entity not found
+        }
+        if (entity.WorkoutTemplateExercises.Any())
+        {
+            return Result.Failure(["Exercise is used in a workout template"]); // Exercise is used in a workout template
+        }
+
+        if (entity.ExerciseLogs.Any())
+        {
+            return Result.Failure(["Exercise is used in an exercise log"]); // Exercise is used in an exercise log
         }
 
         _context.Exercises.Remove(entity);

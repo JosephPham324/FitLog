@@ -48,8 +48,13 @@ public class TrainingSurvey : EndpointGroupBase
         return sender.Send(command);
     }
 
-    public Task<SurveyAnswer> GetUserTrainingSurveyAnswer(ISender sender, [AsParameters] GetUserTrainingSurveyQuery query)
+    public Task<SurveyAnswer> GetUserTrainingSurveyAnswer(ISender sender)
     {
+        var UserId = _identityService.Id ?? "";
+        var query = new GetUserTrainingSurveyQuery()
+        {
+            UserId = UserId
+        };
         return sender.Send(query);
     }
 }

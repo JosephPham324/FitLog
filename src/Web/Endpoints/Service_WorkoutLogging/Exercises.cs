@@ -57,6 +57,8 @@ public class Exercises : EndpointGroupBase
 
     public Task<Result> CreateExercise(ISender sender, [FromBody]CreateExerciseCommand command)
     {
+        var UserId = _identityService.Id ?? "";
+        command.CreatedBy = UserId;
         return sender.Send(command);
     }
 
