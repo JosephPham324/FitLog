@@ -114,9 +114,6 @@ export function MuscleGroup() {
     if (!newGroupName.trim()) {
       setNameErrorMessage('Muscle group name is required');
       valid = false;
-    } else if (isUpdate && newGroupName === existingGroupName) {
-      setNameErrorMessage('New muscle group name must be different from the existing name');
-      valid = false;
     } else {
       setNameErrorMessage('');
     }
