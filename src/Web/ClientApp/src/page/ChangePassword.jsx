@@ -44,6 +44,13 @@ export const ChangePassword = () => {
     };
 
     const handleSubmit = async () => {
+        const passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordValidation.test(passwords.newPassword)) {
+            setError('Password must be at least 8 characters long and include uppercase, lowercase, numbers, and special characters.');
+            return;
+        }
+
         if (passwords.newPassword !== passwords.confirmPassword) {
             setError('New password and confirm password do not match.');
             return;
@@ -59,7 +66,6 @@ export const ChangePassword = () => {
             const response = await axiosInstance.put('/Users/authenticated-reset-password', payload);
 
             if (response.data.success === false) {
-                // Check for the specific error message about the incorrect current password
                 if (response.data.errors && response.data.errors.includes('Old password is incorrect.')) {
                     alert('Incorrect current password. Please try again.');
                 } else {
