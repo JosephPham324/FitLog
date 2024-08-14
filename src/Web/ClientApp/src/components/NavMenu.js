@@ -62,7 +62,7 @@ export const NavMenu = () => {
     setCollapsed(!collapsed);
   };
 
-  const userRole = getUserRole();
+  let userRole = getUserRole();
   console.log(userRole);
 
   return (
@@ -82,11 +82,13 @@ export const NavMenu = () => {
 
             {isAuthenticated && (
               <>
+                {(userRole.includes('Member') || userRole.includes('Coach')) && (
+                  <>
                 <NavItem>
                   <NavLink tag={Link} className="text-white" to="/workout-programs"><b>Programs</b></NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-white" to="/survey"><b>Training Survey</b></NavLink>
+                  <NavLink tag={Link} className="text-white" to="/survey"><b>Survey</b></NavLink>
                 </NavItem>
 
                 <UncontrolledDropdown nav inNavbar>
@@ -131,50 +133,51 @@ export const NavMenu = () => {
                       <b>Workout Log Graphs</b>
                     </DropdownItem>
                   </DropdownMenu>
-                </UncontrolledDropdown>
-
-                {userRole === 'Administrator' && (
+                    </UncontrolledDropdown>
+                </>
+                )}
+                {userRole.includes('Administrator') && (
                   <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret className="text-white">
-                      <b>Admin</b>
+                      <b>Manage</b>
                     </DropdownToggle>
                     <DropdownMenu right>
-                      <DropdownItem tag={Link} to="/muscle-groups">
+                      <DropdownItem tag={Link} to="admin/manage/muscle-groups">
                         <b>Muscle Groups</b>
                       </DropdownItem>
-                      <DropdownItem tag={Link} to="/admin/management/equipments">
+                      <DropdownItem tag={Link} to="/admin/manage/equipments">
                         <b>Equipments</b>
                       </DropdownItem>
-                      <DropdownItem tag={Link} to="/manage-account">
+                      <DropdownItem tag={Link} to="/admin/manage/exercises">
+                        <b>Exercises</b>
+                      </DropdownItem>
+                      <DropdownItem tag={Link} to="/admin/manage/accounts">
                         <b>Users</b>
                       </DropdownItem>
                     </DropdownMenu>
                   </UncontrolledDropdown>
                 )}
-
-                {(userRole === 'Administrator' || userRole === 'Member' || userRole === 'Coach') && (
-                  <NavItem>
+               
+                <NavItem>
                     <NavLink tag={Link} className="text-white" to="/profile"><b>Profile</b></NavLink>
-                  </NavItem>
-                )}
-
-                <UncontrolledDropdown nav inNavbar>
-                  <DropdownToggle nav caret className="text-white">
-                    <b>Service</b>
-                  </DropdownToggle>
-                  <DropdownMenu right>
-                    <DropdownItem tag={Link} to="/coach-service-booking">
-                      <b>Coach Service Booking</b>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-
+                </NavItem>
                 <NavItem>
                   <NavLink className="text-white-noti" href="#">
                     <b>Notifications</b> <Badge color="secondary">{notifications.length}</Badge>
                   </NavLink>
                 </NavItem>
-
+                {(userRole.includes('Member') || userRole.includes('Coach')) && (
+                  <UncontrolledDropdown nav inNavbar>
+                    <DropdownToggle nav caret className="text-white">
+                      <b>Service</b>
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem tag={Link} to="/coach-service-booking">
+                        <b>Coach Service Booking</b>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                )}
                 <NavItem>
                   <button
                     className="btn btn-link nav-link text-white"
@@ -186,7 +189,7 @@ export const NavMenu = () => {
                 </NavItem>
               </>
             )}
-
+           
             {!isAuthenticated && (
               <>
                 <NavItem>

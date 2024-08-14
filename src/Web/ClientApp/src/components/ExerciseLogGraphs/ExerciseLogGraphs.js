@@ -5,6 +5,8 @@ import axiosInstance from '../../utils/axiosInstance'; // Adjust the import path
 import './ExerciseLogGraphs.css';
 import { Bar } from 'recharts';
 import { useParams } from 'react-router-dom'; // Import useParams from React Router
+import generateContinuousData  from '../../utils/dataUtils';
+
 
 Chart.register(...registerables);
 
@@ -25,6 +27,7 @@ const ExerciseLogGraphs = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
 
   const currentHistoryData = historyData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -75,6 +78,9 @@ const ExerciseLogGraphs = () => {
   const fetchTotalRepsData = async () => {
     try {
       const response = await axiosInstance.get(`https://localhost:44447/api/Statistics/exercise/${id}/total-reps?TimeFrame=weekly`);
+      console.log(response.data)
+      const continuousData = generateContinuousData(response.data, 'weekly');
+      console.log(continuousData);
       const data = Object.keys(response.data).map(key => ({
         date: key,
         reps: response.data[key]
