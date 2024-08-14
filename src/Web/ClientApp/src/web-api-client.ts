@@ -1529,8 +1529,11 @@ export class StatisticsClient {
         return Promise.resolve<{ [key: string]: number; }>(null as any);
     }
 
-    getExerciseLogHistory(): Promise<ExerciseLogDTO[]> {
-        let url_ = this.baseUrl + "/api/Statistics/exercise/exercise-log-history";
+    getExerciseLogHistory(exerciseId: number): Promise<ExerciseLogDTO[]> {
+        let url_ = this.baseUrl + "/api/Statistics/exercise/exercise-log-history/{ExerciseId}";
+        if (exerciseId === undefined || exerciseId === null)
+            throw new Error("The parameter 'exerciseId' must be defined.");
+        url_ = url_.replace("{ExerciseId}", encodeURIComponent("" + exerciseId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {

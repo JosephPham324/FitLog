@@ -33,16 +33,11 @@ import RecoverInitiate from './components/AccountRecovery/RecoverInitiate';
 import ConfirmEmail from './components/EmailConfirmation/ConfirmEmail';
 import WorkoutProgramsPage from './components/WorkoutProgram/WorkoutProgramsPage';
 import WorkoutProgramsDetail from './components/WorkoutProgram/WorkoutProgramsDetail';
-
 import CoachProfile from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
-
-import ProgramsDisplay from './page/RecommendPrograms/RecommendPrograms'
-import LoggedExercises from "./components/LoggedExercises/LoggedExercises";
 //import ProgramsManagementPage from "./components/ProgramsManagementPage";
-
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
 import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
 import { Navigate } from 'react-router-dom';
@@ -50,7 +45,7 @@ import UpdateWorkoutTemplatePage from "./page/WorkoutLog/UpdateWorkoutTemplate/U
 import WorkoutTemplateDetailsPage from "./page/WorkoutLog/WorkoutTemplateDetails/WorkoutTemplateDetails";
 import WorkoutTemplateListPage from "./page/WorkoutTemplates/WorkoutTemplatesList";
 import PrivateWorkoutTemplateListPage from "./page/WorkoutTemplates/PrivateWorkoutTemplatesList";
-
+import LoggedExercises from "./components/LoggedExercises/LoggedExercises"
 
 const Roles = {
   A: "Administrator",
@@ -151,6 +146,10 @@ const AppRoutes = [
   {
     path: '/statistics/exercises/:id',
     element: <ExerciseLogGraphs />
+  },
+  {
+    path: '/statistics/exercises/',
+    element: <LoggedExercises/>
   },
   {
 

@@ -86,7 +86,7 @@ export const NavMenu = () => {
                   <NavLink tag={Link} className="text-white" to="/workout-programs"><b>Programs</b></NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-white" to="/survey"><b>Training Survey</b></NavLink>
+                  <NavLink tag={Link} className="text-white" to="/trainingsurvey"><b>Training Survey</b></NavLink>
                 </NavItem>
 
                 <UncontrolledDropdown nav inNavbar>
@@ -124,7 +124,7 @@ export const NavMenu = () => {
                     <b>Statistics</b>
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem tag={Link} to="/logged-exercises">
+                    <DropdownItem tag={Link} to="/statistics/exercises">
                       <b>Logged Exercises</b>
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/workout-log-graphs">

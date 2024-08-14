@@ -1234,12 +1234,24 @@
         }
       }
     },
-    "/api/Statistics/exercise/exercise-log-history": {
+    "/api/Statistics/exercise/exercise-log-history/{ExerciseId}": {
       "get": {
         "tags": [
           "Statistics"
         ],
         "operationId": "GetExerciseLogHistory",
+        "parameters": [
+          {
+            "name": "ExerciseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
