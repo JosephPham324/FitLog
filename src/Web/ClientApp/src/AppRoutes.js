@@ -3,14 +3,13 @@ import React from 'react';
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import { MuscleGroup } from "./components/MuscleGroup";
-import WorkoutLog from "./components/WorkoutOutLog/WorkoutOutLog";
+import RecommendPrograms from "./page/RecommendPrograms/RecommendPrograms";
 import CreateWorkoutLog from "./components/WorkoutOutLog/CreateWorkoutLog";
 import Login from './components/GoogleLogin';
 import Register from './components/Register';
 import TrainingSurvey from "./components/TrainingSurvey/TrainingSurvey";
 import EquipmentsList from './components/EquipmentsList/EquipmentsList';
 import GoogleOAuthProvider from './components/GoogleLogin';
-
 import WorkoutHistory from './components/WorkoutHistory';
 import { ManageAccount } from './components/ManageAccount/ManageAccount';
 import { CoachServiceBooking } from './components/CoachServiceBooking';
@@ -38,8 +37,6 @@ import CoachProfile from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
-import ProgramsDisplay from './page/RecommendPrograms/RecommendPrograms'
-import LoggedExercises from "./components/LoggedExercises/LoggedExercises";
 //import ProgramsManagementPage from "./components/ProgramsManagementPage";
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
 import WorkoutLogDetailsPage from './page/WorkoutLog/WorkoutLogDetails/WorkoutLogDetails';
@@ -48,6 +45,7 @@ import UpdateWorkoutTemplatePage from "./page/WorkoutLog/UpdateWorkoutTemplate/U
 import WorkoutTemplateDetailsPage from "./page/WorkoutLog/WorkoutTemplateDetails/WorkoutTemplateDetails";
 import WorkoutTemplateListPage from "./page/WorkoutTemplates/WorkoutTemplatesList";
 import PrivateWorkoutTemplateListPage from "./page/WorkoutTemplates/PrivateWorkoutTemplatesList";
+import LoggedExercises from "./components/LoggedExercises/LoggedExercises"
 import ExerciseListPage from "./page/ExercisesManagement/ExercisesList";
 const Roles = {
   A: "Administrator",
@@ -61,12 +59,12 @@ const AppRoutes = [
     element: <Home />
   },
   {
-    path: '/counter',
-    element: React.createElement(withAuthProtection(Counter, [Roles['A']]))
+    path: '/recommend-programs',
+    element: <RecommendPrograms />
   },
   {
-    path: '/recommended-programs',
-    element: React.createElement(withAuthProtection(ProgramsDisplay))
+    path: '/counter',
+    element: React.createElement(withAuthProtection(Counter, [Roles['A']]))
   },
   {
     path: '/coachprofile/:id',
@@ -88,12 +86,10 @@ const AppRoutes = [
     path: '/logged-exercises',
     element: <LoggedExercises />
   },
-
   {
     path: '/coach-service-booking',
     element: React.createElement(withAuthProtection(CoachServiceBooking, [Roles['M'], Roles['C']]))
   },
-
   {
     path: '/workout-programs',
     element: <WorkoutProgramsPage />
@@ -119,7 +115,7 @@ const AppRoutes = [
     element: <Register />
   },
   {
-    path: '/survey',
+    path: '/trainingsurvey',
     element: React.createElement(withAuthProtection(TrainingSurvey, [Roles['M']]))
   },
   {
@@ -148,6 +144,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(Logout, []))
   },
   {
+
     path: '/workout-log-export',
     element: <WorkoutLogExport />
   },
@@ -160,6 +157,11 @@ const AppRoutes = [
     element: <ExerciseLogGraphs />
   },
   {
+    path: '/statistics/exercises/',
+    element: <LoggedExercises/>
+  },
+  {
+
     path: '/coach-application-notification',
     element: React.createElement(withAuthProtection(CoachApplicationNotification, []))
   },
@@ -185,7 +187,7 @@ const AppRoutes = [
     element: React.createElement(withAuthProtection(RolesListScreen, [Roles['A']]))
   },
   {
-    path: '/exerciselistscreen',
+    path: '/exercise-list-screen',
     element: <ExerciseListScreen />
   },
   {
@@ -263,7 +265,4 @@ const AppRoutes = [
   }
 ];
 
-
 export default AppRoutes;
-
-

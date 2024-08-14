@@ -129,12 +129,14 @@ const ExerciseLogGraphs = () => {
   }, [id]); // Depend on the ID from the URL
 
   const chartDataEstimated1RM = {
+
     labels: estimated1RMData.map(item => new Date(item.date).toLocaleDateString('en-GB')),
+
     datasets: [
       {
         label: 'Estimated 1RM using Brzycki',
         data: estimated1RMData.map(item => item.brzycki),
-        borderColor: 'orange',
+        borderColor: 'red',
         backgroundColor: 'rgba(255, 165, 0, 0.2)',
       }
     ],
@@ -154,11 +156,12 @@ const ExerciseLogGraphs = () => {
 
   const chartDataTonnage = {
     labels: (totalVolumeData || []).map(item => new Date(item.date).toLocaleDateString('en-GB')),
+
     datasets: [
       {
         label: 'Weekly Training Tonnage',
         data: (totalVolumeData || []).map(item => item.volume),
-        borderColor: 'orange',
+        borderColor: 'blue',
         backgroundColor: 'rgba(255, 165, 0, 0.2)',
       }
     ],
@@ -170,7 +173,7 @@ const ExerciseLogGraphs = () => {
       {
         label: 'Weekly Reps',
         data: (totalRepsData || []).map(item => item.reps),
-        borderColor: 'yellow',
+        borderColor: 'green',
         backgroundColor: 'rgba(255, 255, 0, 0.2)',
       }
     ],

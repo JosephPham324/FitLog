@@ -15,6 +15,7 @@ const CoachProfile = () => {
     phoneNumber: '',
     email: ''
   });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams(); // Get the dynamic templateId from the route
@@ -22,116 +23,158 @@ const CoachProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axiosInstance.get('https://localhost:44447/api/CoachProfile/1');
-        console.log('Response data:', response.data);
-
-        const { id, firstName, lastName, userName, gender, dateOfBirth, roles, phoneNumber, email } = response.data;
-        setProfile({
-          id: id || '',
-          firstName: firstName || '',
-          lastName: lastName || '',
-          userName: userName || '',
-          gender: gender || '',
-          dateOfBirth: dateOfBirth || '',
-          roles: roles || '',
-          phoneNumber: phoneNumber || '',
-          email: email || ''
+        const response = await axiosInstance.get(`${process.env.REACT_APP_BACKEND_URL}/CoachProfile/${id}`, {
+          headers: {
+            accept: 'application/json',
+          },
         });
+        setProfile(response.data);
       } catch (error) {
-        setError('Error fetching coach profile');
-        console.error('Error fetching coach profile:', error);
+        setError('Error fetching profile');
+        console.error('Error fetching profile:', error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [id]);
 
-  const handleChange = (e) => {
-    setProfile({
-      ...profile,
-      [e.target.name]: e.target.value
-    });
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  const updateProfile = async () => {
-    try {
-      const queryParams = new URLSearchParams({
-        UserId: profile.id,
-        FirstName: profile.firstName,
-        LastName: profile.lastName,
-        DateOfBirth: profile.dateOfBirth,
-        Gender: profile.gender,
-        Email: profile.email,
-        PhoneNumber: profile.phoneNumber,
-        UserName: profile.userName,
-      }).toString();
+  if (error) {
+    return <div>{error}</div>;
+  }
 
-      const url = `/api/CoachProfile/update-profile?${queryParams}`;
-      console.log('Sending profile data to:', url);
-
-      await axiosInstance.put(url, {}, {
-        headers: {
-          'accept': 'application/json'
-        }
-      });
-      alert('Profile updated successfully!');
-    } catch (error) {
-      setError('Error updating profile');
-      console.error('Error updating profile:', error.response || error.message);
-    }
-  };
-
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  if (error) return <div className="flex justify-center items-center h-screen">{error}</div>;
+  if (!profile) {
+    return <div>No profile found.</div>;
+  }
 
   return (
-    <div className="bg-gray-100 pt-10 pb-10 px-5">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="flex flex-col md:flex-row">
-          <div className="w-full md:w-1/3 p-5 text-center bg-gray-200">
-            <Icon className="text-3xl mb-4 cursor-pointer" icon="ic:baseline-arrow-back" />
-            <img alt="avatar" src="https://static.vecteezy.com/system/resources/thumbnails/036/280/651/small/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg" className="rounded-full mb-4 w-24 h-24 mx-auto border" />
-            <div className="font-semibold mb-2 text-lg">{profile.firstName} {profile.lastName}</div>
-            <div className="font-medium text-sm text-gray-600 mb-2">{profile.email}</div>
-            <div className="font-medium">
-              <a href="https://localhost:44447/changepassword" className="text-blue-500 hover:underline">Change password</a>
-            </div>
+    <div style={styles.container}>
+      <h1 style={styles.header}>Coach Profile</h1>
+      <div style={styles.profileContainer}>
+        <div style={styles.profileHeader}>
+          <img src={profile.profilePicture} alt="Profile" style={styles.profilePicture} />
+          <div style={styles.profileInfo}>
+            <h2 style={styles.profileName}>{profile.name}</h2>
+            <p style={styles.profileBio}>{profile.bio}</p>
           </div>
-          <div className="w-full md:w-2/3 p-5">
-            <div className="mb-5 text-2xl font-black">MY PROFILE</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                { label: 'First name', name: 'firstName', value: profile.firstName },
-                { label: 'Last name', name: 'lastName', value: profile.lastName },
-                { label: 'Username', name: 'userName', value: profile.userName, readOnly: true },
-                { label: 'Gender', name: 'gender', value: profile.gender, isSelect: true },
-                { label: 'Date of birth', name: 'dateOfBirth', value: profile.dateOfBirth, type: 'date' },
-                { label: 'Role', name: 'roles', value: profile.roles, readOnly: true },
-                { label: 'Phone Number', name: 'phoneNumber', value: profile.phoneNumber },
-                { label: 'Email', name: 'email', value: profile.email, readOnly: true }
-              ].map(({ label, name, value, type = 'text', readOnly = false, isSelect = false }) => (
-                <div key={name} className="mb-4">
-                  <label className="block text-gray-600 text-sm mb-2">{label}</label>
-                  {isSelect ? (
-                    <select name={name} value={value} onChange={handleChange} className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                      <option value="Other">Other</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                    </select>
-                  ) : (
-                    <input name={name} value={value} onChange={handleChange} type={type} readOnly={readOnly} className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                  )}
-                </div>
+        </div>
+        <div style={styles.section}>
+          <h2 style={styles.sectionHeader}>Major Achievements</h2>
+          <p style={styles.sectionContent}>{profile.majorAchievements.join(', ')}</p>
+        </div>
+        <div style={styles.section}>
+          <h2 style={styles.sectionHeader}>Gallery</h2>
+          <div style={styles.gallery}>
+            {profile.galleryImageLinks.map((link, index) => (
+              <img key={index} src={link} alt={`Gallery ${index + 1}`} style={styles.galleryImage} />
+            ))}
+          </div>
+        </div>
+        <div style={styles.section}>
+          <h2 style={styles.sectionHeader}>Programs Overview</h2>
+          {profile.programsOverview.length > 0 ? (
+            <ul style={styles.programsList}>
+              {profile.programsOverview.map((program, index) => (
+                <li key={index} style={styles.programItem}>{program}</li>
               ))}
-            </div>
-            <button onClick={updateProfile} className="mt-5 px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-400">Save Profile</button>
-          </div>
+            </ul>
+          ) : (
+            <p style={styles.noPrograms}>No programs available.</p>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
+
+const styles = {
+  container: {
+    fontFamily: 'Arial, sans-serif',
+    color: '#333',
+    padding: '20px',
+    maxWidth: '900px',
+    margin: '0 auto',
+  },
+  header: {
+    textAlign: 'center',
+    marginBottom: '20px',
+    fontSize: '36px',
+    color: '#4CAF50',
+  },
+  profileContainer: {
+    background: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+    padding: '20px',
+  },
+  profileHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '20px',
+  },
+  profilePicture: {
+    width: '150px',
+    height: '150px',
+    borderRadius: '50%',
+    marginRight: '20px',
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: '24px',
+    marginBottom: '10px',
+    color: '#4CAF50',
+  },
+  profileBio: {
+    fontSize: '16px',
+    lineHeight: '1.5',
+  },
+  section: {
+    marginBottom: '20px',
+  },
+  sectionHeader: {
+    fontSize: '20px',
+    marginBottom: '10px',
+    color: '#4CAF50',
+  },
+  sectionContent: {
+    fontSize: '16px',
+    lineHeight: '1.5',
+  },
+  gallery: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '10px',
+  },
+  galleryImage: {
+    width: '100px',
+    height: '100px',
+    borderRadius: '8px',
+    objectFit: 'cover',
+  },
+  programsList: {
+    listStyleType: 'none',
+    padding: '0',
+  },
+  programItem: {
+    background: '#f5f5f5',
+    padding: '10px',
+    borderRadius: '4px',
+    marginBottom: '10px',
+  },
+  noPrograms: {
+    fontSize: '16px',
+    lineHeight: '1.5',
+  },
+};
+
+
 export default CoachProfile;
+

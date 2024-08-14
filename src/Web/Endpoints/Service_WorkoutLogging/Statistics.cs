@@ -133,7 +133,7 @@ namespace FitLog.Web.Endpoints.Service_WorkoutLogging
 
         #endregion
         #region Exercise stats
-        public async Task<IEnumerable<ExerciseLogDTO>> GetExerciseLogHistory(ISender sender, [FromRoute] int ExerciseId)
+        public async Task<IEnumerable<ExerciseLogDTO>> GetExerciseLogHistory(ISender sender, [FromRoute]int ExerciseId)
         {
 
             var UserId = _identityService.Id ?? "";

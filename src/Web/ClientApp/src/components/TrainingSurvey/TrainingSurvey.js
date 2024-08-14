@@ -219,7 +219,14 @@ const TrainingSurvey = () => {
 
   const handleClose = () => {
     setModalOpen(false);
-    window.location.href = '/';
+    window.location.href = '/recommend-programs';
+  };
+
+  const handleMusclePriorityChange = (e) => {
+    const { value, checked } = e.target;
+    setMusclesPriority((prev) =>
+      checked ? [...prev, value] : prev.filter((item) => item !== value)
+    );
   };
 
   const handleMusclePriorityChange = (e) => {
