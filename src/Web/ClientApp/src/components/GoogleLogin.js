@@ -100,7 +100,9 @@ const Login = () => {
       //const loginResult = response.data;
       const responseData = response.data;
       if (responseData.result.success === true) {
+        console.log(responseData);
         const token = responseData.token;
+        console.log(token);
         SignIn(token);
       } else {
         setError(responseData.result.errors.join(' '))

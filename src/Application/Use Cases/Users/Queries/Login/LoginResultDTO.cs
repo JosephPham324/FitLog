@@ -29,7 +29,7 @@ public class LoginResultDTO
         {
             Success = true,
             Result = Result.Successful(),
-            Token = string.Empty
+            Token = token
         };
     }
 }
