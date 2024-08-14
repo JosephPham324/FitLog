@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import './WorkoutTemplateListPage.css';
 
-const WorkoutTemplateListPage = () => {
+const AdminWorkoutTemplatesListPage = () => {
     const [workoutTemplates, setWorkoutTemplates] = useState([]);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize] = useState(10); // Assuming a fixed page size of 10
+    const [pageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [hasPreviousPage, setHasPreviousPage] = useState(false);
@@ -17,23 +17,22 @@ const WorkoutTemplateListPage = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [templateToDelete, setTemplateToDelete] = useState(null);
     const navigate = useNavigate();
+    const fetchWorkoutTemplates = async () => {
+        try {
+            const response = await axiosInstance.get(`/WorkoutTemplates/public-templates?PageNumber=${pageNumber}&PageSize=${pageSize}`);
+            const data = response.data;
+            setWorkoutTemplates(data.items);
+            setPageNumber(data.pageNumber);
+            setTotalPages(data.totalPages);
+            setTotalCount(data.totalCount);
+            setHasPreviousPage(data.hasPreviousPage);
+            setHasNextPage(data.hasNextPage);
+        } catch (error) {
+            console.error('Error fetching workout templates:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchWorkoutTemplates = async () => {
-            try {
-                const response = await axiosInstance.get(`/WorkoutTemplates/personal-templates?PageNumber=${pageNumber}&PageSize=${pageSize}`);
-                const data = response.data;
-                setWorkoutTemplates(data.items);
-                setPageNumber(data.pageNumber);
-                setTotalPages(data.totalPages);
-                setTotalCount(data.totalCount);
-                setHasPreviousPage(data.hasPreviousPage);
-                setHasNextPage(data.hasNextPage);
-            } catch (error) {
-                console.error('Error fetching workout templates:', error);
-            }
-        };
-
         fetchWorkoutTemplates();
     }, [pageNumber, pageSize]);
 
@@ -69,11 +68,6 @@ const WorkoutTemplateListPage = () => {
         return pageNumbers;
     };
 
-    const handleUseTemplate = (templateId) => {
-        navigate(`/workout-log/create/${templateId}`);
-
-    };
-
     const handleViewDetails = (templateId) => {
         navigate(`/workout-templates/${templateId}/details`);
     };
@@ -85,23 +79,22 @@ const WorkoutTemplateListPage = () => {
 
     const confirmDelete = async () => {
         try {
-            const result = await axiosInstance.delete(`/WorkoutTemplates/delete-workout-template/${templateToDelete}`);
+            await axiosInstance.delete(`/WorkoutTemplates/delete-workout-template/${templateToDelete}`);
             setShowConfirmModal(false);
             setShowSuccessModal(true);
-            // Refresh the list after deletion
-            setPageNumber(1); // Reset to the first page or fetch the current page again
+            fetchWorkoutTemplates();
         } catch (error) {
             console.error('Error deleting template:', error);
         }
     };
 
     const handleCreateTemplate = () => {
-        navigate('/workout-templates/create');
+        navigate('/workout-templates-admin/create');
     };
 
     return (
         <div className="container mt-5">
-            <h1 className="text-center mb-4">Workout Templates</h1>
+            <h1 className="text-center mb-4">Admin Workout Templates</h1>
             <div className="d-flex justify-content-between mb-3">
                 <button className="btn btn-primary" onClick={handleCreateTemplate}>
                     Create New Template
@@ -126,21 +119,14 @@ const WorkoutTemplateListPage = () => {
                             <td>{template.creatorName}</td>
                             <td>
                                 <button
-                                    className="btn btn-success btn-action"
-                                    onClick={() => handleUseTemplate(template.id)}
-                                >
-                                    Use Template
-                                </button>
-                                &nbsp;
-                                <button
-                                    className="btn btn-info btn-action"
+                                    className="btn btn-info"
                                     onClick={() => handleViewDetails(template.id)}
                                 >
                                     Details
                                 </button>
                                 &nbsp;
                                 <button
-                                    className="btn btn-danger btn-action"
+                                    className="btn btn-danger"
                                     onClick={() => handleDelete(template.id)}
                                 >
                                     Delete
@@ -205,4 +191,4 @@ const WorkoutTemplateListPage = () => {
     );
 };
 
-export default WorkoutTemplateListPage;
+export default AdminWorkoutTemplatesListPage;

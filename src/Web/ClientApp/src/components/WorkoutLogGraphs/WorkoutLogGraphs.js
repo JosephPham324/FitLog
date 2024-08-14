@@ -216,7 +216,7 @@ const WorkoutLogGraphs = () => {
     labels: totalRepsData.map(item => item.date),
     datasets: [
       {
-        label: 'Weekly Reps',
+        label: `${activeTab} reps`,
         data: totalRepsData.map(item => item.reps),
         borderColor: 'green',
         backgroundColor: 'rgba(255, 255, 0, 0.2)',
@@ -228,7 +228,7 @@ const WorkoutLogGraphs = () => {
     labels: chartData.map(item => item.date),
     datasets: [
       {
-        label: 'Weekly Training Tonnage',
+        label: `${activeTab} training tonnage`,
         data: chartData.map(item => item.tonnage),
         borderColor: 'blue',
         backgroundColor: 'rgba(255, 165, 0, 0.2)',

@@ -17,7 +17,6 @@ import ChatPage from "./page/ChatPage";
 import UserListPage from "./page/TestAxios";
 import Logout from "./components/Logout";
 import CoachApplicationNotification from "./components/CoachApplicationNotification/CoachApplicationNotification";
-import WorkoutTemplatesListAdmin from "./components/Workout Templates List Admin/WorkoutTemplatesListAdmin";
 import WorkoutLogExport from "./components/WorkoutLogExport/WorkoutLogExport";
 import WorkoutLogGraphs from "./components/WorkoutLogGraphs/WorkoutLogGraphs";
 import ExerciseLogGraphs from "./components/ExerciseLogGraphs/ExerciseLogGraphs";
@@ -36,6 +35,7 @@ import WorkoutProgramsDetail from './components/WorkoutProgram/WorkoutProgramsDe
 import CoachProfile from './components/CoachProfile';
 import WorkoutLogPage from './page/WorkoutLog/CreateWorkoutLog/WorkoutLog';
 import CreateWorkoutTemplatePage from './page/WorkoutLog/CreateWorkoutTemplate/CreateWorkoutTemplate';
+import CreateWorkoutTemplateAdminPage from './page/WorkoutLog/CreateWorkoutTemplateAdmin/CreateWorkoutTemplate';
 import CreateWorkoutLogFromTemplate from './page/WorkoutLog/CreateWorkoutLogFromTemplate/CreateWorkoutLogFromTemplate';
 //import ProgramsManagementPage from "./components/ProgramsManagementPage";
 import UpdateWorkoutLogPage from './page/WorkoutLog/UpdateWorkoutLog/UpdateWorkoutLog';
@@ -45,6 +45,7 @@ import UpdateWorkoutTemplatePage from "./page/WorkoutLog/UpdateWorkoutTemplate/U
 import WorkoutTemplateDetailsPage from "./page/WorkoutLog/WorkoutTemplateDetails/WorkoutTemplateDetails";
 import WorkoutTemplateListPage from "./page/WorkoutTemplates/WorkoutTemplatesList";
 import PrivateWorkoutTemplateListPage from "./page/WorkoutTemplates/PrivateWorkoutTemplatesList";
+import AdminTemplatesListPage from "./page/WorkoutTemplates/AdminWorkoutTemplatesList";
 import LoggedExercises from "./components/LoggedExercises/LoggedExercises"
 import ExerciseListPage from "./page/ExercisesManagement/ExercisesList";
 const Roles = {
@@ -167,9 +168,12 @@ const AppRoutes = [
   },
   {
     path: '/workout-templates-admin',
-    element: React.createElement(withAuthProtection(WorkoutTemplatesListAdmin, [Roles['A']]))
+    element: React.createElement(withAuthProtection(AdminTemplatesListPage, [Roles['A']]))
   },
-
+  {
+    path: '/workout-templates-admin/create',
+    element: React.createElement(withAuthProtection(CreateWorkoutTemplateAdminPage, [Roles['A']]))
+  },
   {
     path: '/workout-log-export',
     element: React.createElement(withAuthProtection(WorkoutLogExport, []))
@@ -248,7 +252,7 @@ const AppRoutes = [
   },
   {
     path: '/workout-templates/:templateId/details',
-    element: React.createElement(withAuthProtection(WorkoutTemplateDetailsPage, [Roles['M'], Roles['C']]))
+    element: React.createElement(withAuthProtection(WorkoutTemplateDetailsPage, [Roles['M'], Roles['C'], Roles['A']]))
   },
   {
     path: '/workout-templates/',

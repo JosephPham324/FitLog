@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../utils/axiosInstance';
 import 'bootstrap/dist/css/bootstrap.min.css';
 //import './WorkoutTemplateDetailsPage.css';
-import { getUserId } from '../../../utils/tokenOperations';
+import { getUserId, getUserRole } from '../../../utils/tokenOperations';
 
 const WorkoutTemplateDetailsPage = () => {
   const { templateId } = useParams(); // Get the workout template ID from URL parameters
@@ -11,7 +11,8 @@ const WorkoutTemplateDetailsPage = () => {
   const [duration, setDuration] = useState(''); // Duration in minutes
   const [rows, setRows] = useState([]); // Centralized data for rows
   const [ownerId, setOwnerId] = useState(''); // Owner ID of the template
-  const navigate = useNavigate(); // Initialize useNavigate for redirection
+    const navigate = useNavigate(); // Initialize useNavigate for redirection
+  const userRole = getUserRole();
 
   useEffect(() => {
     const fetchWorkoutTemplate = async () => {
@@ -112,7 +113,7 @@ const WorkoutTemplateDetailsPage = () => {
           </tbody>
         </table>
       </div>
-      {userId === ownerId && (
+          {(userId === ownerId || userRole?.includes("Administrator")) && (
         <button className="btn btn-primary mt-3" onClick={handleUpdateButtonClick}>
           Update Template
         </button>

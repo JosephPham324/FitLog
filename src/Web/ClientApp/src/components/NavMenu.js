@@ -137,6 +137,24 @@ export const NavMenu = () => {
                 </>
                 )}
                 {userRole.includes('Administrator') && (
+                  <>
+                    <UncontrolledDropdown nav inNavbar>
+                      <DropdownToggle nav caret className="text-white">
+                        <b>Training</b>
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                        <UncontrolledDropdown nav inNavbar className="nested-dropdown">
+                          <DropdownToggle nav caret className="text-dark">
+                            <b>Templates</b>
+                          </DropdownToggle>
+                          <DropdownMenu right className="centered-dropdown-menu">
+                            <DropdownItem tag={Link} to="/workout-templates-admin">
+                              <b>Public</b>
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
                   <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret className="text-white">
                       <b>Manage</b>
@@ -155,7 +173,8 @@ export const NavMenu = () => {
                         <b>Users</b>
                       </DropdownItem>
                     </DropdownMenu>
-                  </UncontrolledDropdown>
+                    </UncontrolledDropdown>
+                  </>
                 )}
                
                 <NavItem>
