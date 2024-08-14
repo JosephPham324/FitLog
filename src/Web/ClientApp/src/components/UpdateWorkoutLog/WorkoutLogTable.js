@@ -132,7 +132,7 @@ const WorkoutTable = ({ rows, setRows, onDeleteRow }) => {
               </td>
               <td>
                 <button className="btn btn-warning" onClick={() => { setExerciseChangeRow(rowIndex); openPopup(); }} disabled={row.isDeleted}>Change</button>
-                <button className="btn btn-danger ml-2" onClick={() => deleteRow(rowIndex)}>Delete</button>
+                <button className="btn btn-danger ml-2" style={{ height: '40px' }} onClick={() => deleteRow(rowIndex)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -166,7 +166,7 @@ const WorkoutTable = ({ rows, setRows, onDeleteRow }) => {
               </div>
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={closeNotePopup}>Cancel</button>
-                <button className="btn btn-primary" onClick={saveNote}>Save</button>
+                <button className="btn btn-primary" style={{ height: '60px', width: '100px' }} onClick={saveNote}>Save</button>
               </div>
             </div>
           </div>

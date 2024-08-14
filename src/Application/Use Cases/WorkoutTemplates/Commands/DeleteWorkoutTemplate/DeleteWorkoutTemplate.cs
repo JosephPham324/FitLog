@@ -4,7 +4,7 @@ using FitLog.Domain.Entities;
 
 namespace FitLog.Application.WorkoutTemplates.Commands.DeleteWorkoutTemplate;
 
-public record DeleteWorkoutTemplateCommand (int Id) : IRequest<Result>;
+public record DeleteWorkoutTemplateCommand(int Id) : IRequest<Result>;
 
 public class DeleteWorkoutTemplateCommandValidator : AbstractValidator<DeleteWorkoutTemplateCommand>
 {
@@ -26,8 +26,19 @@ public class DeleteWorkoutTemplateCommandHandler : IRequestHandler<DeleteWorkout
 
     public async Task<Result> Handle(DeleteWorkoutTemplateCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.WorkoutTemplates.FindAsync(new object[] { request.Id }, cancellationToken);
+        var entity = await _context.WorkoutTemplates
+            .Include(wt => wt.WorkoutTemplateExercises)
+            .Where(wt => wt.Id == request.Id)
+            .FirstOrDefaultAsync(cancellationToken);
 
+        var exercises = entity?.WorkoutTemplateExercises;
+
+        if (exercises != null)
+        {
+            _context.WorkoutTemplateExercises
+                .RemoveRange(exercises);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
         if (entity == null)
         {
             return Result.Failure(["Workout Template not found"]);

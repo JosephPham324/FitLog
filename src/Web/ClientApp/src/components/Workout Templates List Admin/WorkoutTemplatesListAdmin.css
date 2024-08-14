@@ -70,7 +70,9 @@ table {
 .delete-btn {
     background-color: #dc3545;
     color: white;
+    height: 38px !important;
 }
+
 
     .delete-btn:hover {
         background-color: #c82333;

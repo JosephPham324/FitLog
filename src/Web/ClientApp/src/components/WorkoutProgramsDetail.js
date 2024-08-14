@@ -50,8 +50,10 @@ export const WorkoutProgramsDetail = () => {
               <p><strong>Gym Type:</strong> {programDetail.gymType}</p>
               <p><strong>Muscles Priority:</strong> {programDetail.musclesPriority}</p>
               <p><strong>Age Group:</strong> {programDetail.ageGroup}</p>
+              <p><strong>Number of weeks:</strong> {programDetail.numberOfWeeks}</p>
+              <p><strong>Number of training sessions per week:</strong> {programDetail.daysPerWeek}</p>
               <p><strong>Public Program:</strong> {programDetail.publicProgram ? 'Yes' : 'No'}</p>
-              <p className="mb-3"><strong>Created by:</strong> {programDetail.userName}</p>
+              <p className="mb-3"><strong>Coach name:</strong> {programDetail.creatorFullName}</p>
             </div>
           </div>
           <div className="program-overview">
@@ -62,29 +64,32 @@ export const WorkoutProgramsDetail = () => {
                   <h3>Week {workout.weekNumber}, Day {workout.orderInWeek}</h3>
                   <p><strong>Workout:</strong> {workout.workoutTemplate.templateName}</p>
                   <p><strong>Duration:</strong> {workout.workoutTemplate.duration}</p>
-                  <p><strong>Created by:</strong> {workout.workoutTemplate.creatorName}</p>
                   <div className="exercise-list">
                     <h4>Exercises</h4>
                     <table className="table">
                       <thead>
                         <tr>
-                          <th>Note</th>
+                          <th>Exercise Name</th>
                           <th>Sets Recommendation</th>
                           <th>Intensity Percentage</th>
                           <th>RPE Recommendation</th>
                           <th>Weights Used</th>
                           <th>Numbers of Reps</th>
+                          <th>Types</th>
+                          <th>Note</th>
                         </tr>
                       </thead>
                       <tbody>
                         {workout.workoutTemplate.workoutTemplateExercises.map((exercise) => (
                           <tr key={exercise.exerciseTemlateId}>
-                            <td>{exercise.note}</td>
+                            <td>{exercise.exercise.exerciseName}</td>
                             <td>{exercise.setsRecommendation}</td>
                             <td>{exercise.intensityPercentage}%</td>
                             <td>{exercise.rpeRecommendation}</td>
                             <td>{exercise.weightsUsed}</td>
                             <td>{exercise.numbersOfReps}</td>
+                            <td>{exercise.exercise.type}</td>
+                            <td>{exercise.note}</td>
                           </tr>
                         ))}
                       </tbody>

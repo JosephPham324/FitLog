@@ -14,31 +14,31 @@
     margin-bottom: 20px;
 }
 
-.equipments-actions input {
-    padding: 10px;
-    border: 1px solid #000;
-    border-radius: 4px;
-}
+    .equipments-actions input {
+        padding: 10px;
+        border: 1px solid #000;
+        border-radius: 4px;
+    }
 
 :root .table {
     width: 100%;
     border-collapse: collapse;
 }
 
-:root .table td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: center;
-    vertical-align: middle;
-}
+    :root .table td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+        vertical-align: middle;
+    }
 
-:root .table th {
-    text-align: center;
-    background-color: #f4f4f4;
-    height: 55px;
-    padding: 10px;
-    border-bottom: 1px solid black;
-}
+    :root .table th {
+        text-align: center;
+        background-color: #f4f4f4;
+        height: 55px;
+        padding: 10px;
+        border-bottom: 1px solid black;
+    }
 
 :root .create-buttone, .edit-buttone {
     padding: 5px 10px;
@@ -81,7 +81,7 @@
 }
 
     :root .page-button.active {
-        background-color: #007bff;
+        background-color: #4CAF50;
         color: white;
     }
 
@@ -145,11 +145,12 @@
 
 :root .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
+    /* margin: 15% auto;*/
+    padding: 5px;
     border: 1px solid #888;
     width: 100%;
     max-width: 500px;
+    max-height: 880px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
 }
@@ -158,8 +159,9 @@
     height: 60px;
     width: auto;
 }
+
 :root .btn-danger {
-    height: 60px;
+    height: 38px;
     width: auto;
 }
 
@@ -209,6 +211,7 @@
         width: 47px;
         height: 47px;
     }
+
 
         .pagination-container .page-button.active:hover {
             background-color: darkgreen;
