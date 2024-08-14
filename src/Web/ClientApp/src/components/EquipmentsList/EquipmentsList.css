@@ -151,7 +151,7 @@
     border: 1px solid #888;
     /* width: 100%;*/
     max-width: 500px;
-    max-height: 925px;
+    max-height: MAX-CONTENT;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
 }
