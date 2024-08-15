@@ -47,7 +47,7 @@
     color: black;
 }
 
-:root .table {
+table {
     width: 100%;
     border-collapse: collapse;
 }
@@ -216,7 +216,7 @@ tbody tr:nth-child(odd) {
     transition: background-color 0.3s ease;
 }
 
-   /* .view-record-history:hover {
+/* .view-record-history:hover {
         background-color: #0056b3;
     }*/
 

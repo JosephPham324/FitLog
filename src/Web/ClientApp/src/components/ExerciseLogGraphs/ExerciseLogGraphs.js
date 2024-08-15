@@ -5,7 +5,7 @@ import axiosInstance from '../../utils/axiosInstance'; // Adjust the import path
 import './ExerciseLogGraphs.css';
 import { Bar } from 'recharts';
 import { useParams } from 'react-router-dom'; // Import useParams from React Router
-import generateContinuousData  from '../../utils/dataUtils';
+import generateContinuousData from '../../utils/dataUtils';
 
 
 Chart.register(...registerables);
@@ -222,27 +222,29 @@ const ExerciseLogGraphs = () => {
               <div key={index} className="workout-session">
                 <h2>{session.exerciseName}</h2>
                 <p>{new Date(session.dateCreated).toDateString()}</p>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Set</th>
-                      <th>Completed</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.from({ length: numberOfSets }).map((_, idx) => (
-                      <tr key={idx}>
-                        <td>{idx + 1}</td>
-                        <td>{weights[idx] ? weights[idx] : 'N/A'} x {reps[idx] ? reps[idx] : 'N/A'}</td>
-                      </tr>
-                    ))}
-                    {numberOfSets < session.numberOfSets && (
+                <div className="tablee">
+                  <table>
+                    <thead>
                       <tr>
-                        <td colSpan="2">Incomplete data for some sets</td>
+                        <th>Set</th>
+                        <th>Completed</th>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {Array.from({ length: numberOfSets }).map((_, idx) => (
+                        <tr key={idx}>
+                          <td>{idx + 1}</td>
+                          <td>{weights[idx] ? weights[idx] : 'N/A'} x {reps[idx] ? reps[idx] : 'N/A'}</td>
+                        </tr>
+                      ))}
+                      {numberOfSets < session.numberOfSets && (
+                        <tr>
+                          <td colSpan="2">Incomplete data for some sets</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             );
           })}

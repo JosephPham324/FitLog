@@ -47,7 +47,7 @@ public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery,
         _mediator = mediator;
     }
 
-    public async Task<Dictionary<DateTime,SummaryWorkoutLogStatsDTO>> Handle(GetSummaryStatsQuery request, CancellationToken cancellationToken)
+    public async Task<Dictionary<DateTime, SummaryWorkoutLogStatsDTO>> Handle(GetSummaryStatsQuery request, CancellationToken cancellationToken)
     {
         DateTimeOffset endDate = DateTimeOffset.Now;
         DateTimeOffset startDate = new DateTimeOffset(new DateTime(1900, 1, 1)); // Fetch all history from January 1, 1900
@@ -104,10 +104,10 @@ public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery,
         if (duration == null) return 0;
 
         double totalTime = 0.0;
-        
+
         totalTime += (double)duration.Value.Hour;
         totalTime += (double)duration.Value.Minute / 60;
-        
+
         return totalTime;
     }
 
@@ -122,7 +122,7 @@ public class GetSummaryStatsQueryHandler : IRequestHandler<GetSummaryStatsQuery,
 
             for (int i = 0; i < weightsUsed?.Count; i++)
             {
-                weightLifted += weightsUsed[i] * (reps != null ? reps[i] : 0);
+                weightLifted += weightsUsed[i] * (reps != null ? (reps.Count > i ? reps[i] : 0) : 0);
             }
         }
 
