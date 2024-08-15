@@ -116,7 +116,7 @@ const AppRoutes = [
     element: <Register />
   },
   {
-    path: '/trainingsurvey',
+    path: '/survey',
     element: React.createElement(withAuthProtection(TrainingSurvey, [Roles['M']]))
   },
   {
@@ -160,6 +160,11 @@ const AppRoutes = [
   {
     path: '/statistics/exercises/',
     element: <LoggedExercises/>
+  },
+  {
+
+    path: '/recommended-programs',
+    element: React.createElement(withAuthProtection(RecommendPrograms, []))
   },
   {
 
@@ -248,7 +253,7 @@ const AppRoutes = [
   },
   {
     path: '/workout-templates/:templateId/update',
-    element: React.createElement(withAuthProtection(UpdateWorkoutTemplatePage, [Roles['M'], Roles['C']]))
+    element: React.createElement(withAuthProtection(UpdateWorkoutTemplatePage, [Roles['M'], Roles['C'], Roles['A']]))
   },
   {
     path: '/workout-templates/:templateId/details',

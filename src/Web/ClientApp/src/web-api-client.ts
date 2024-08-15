@@ -11551,6 +11551,7 @@ export class WorkoutTemplateDetailsDto implements IWorkoutTemplateDetailsDto {
     duration?: string | undefined;
     creatorName?: string;
     createdBy?: string;
+    isPublic?: boolean;
     workoutTemplateExercises?: WorkoutTemplateExerciseDTO[];
 
     constructor(data?: IWorkoutTemplateDetailsDto) {
@@ -11569,6 +11570,7 @@ export class WorkoutTemplateDetailsDto implements IWorkoutTemplateDetailsDto {
             this.duration = _data["duration"];
             this.creatorName = _data["creatorName"];
             this.createdBy = _data["createdBy"];
+            this.isPublic = _data["isPublic"];
             if (Array.isArray(_data["workoutTemplateExercises"])) {
                 this.workoutTemplateExercises = [] as any;
                 for (let item of _data["workoutTemplateExercises"])
@@ -11591,6 +11593,7 @@ export class WorkoutTemplateDetailsDto implements IWorkoutTemplateDetailsDto {
         data["duration"] = this.duration;
         data["creatorName"] = this.creatorName;
         data["createdBy"] = this.createdBy;
+        data["isPublic"] = this.isPublic;
         if (Array.isArray(this.workoutTemplateExercises)) {
             data["workoutTemplateExercises"] = [];
             for (let item of this.workoutTemplateExercises)
@@ -11606,6 +11609,7 @@ export interface IWorkoutTemplateDetailsDto {
     duration?: string | undefined;
     creatorName?: string;
     createdBy?: string;
+    isPublic?: boolean;
     workoutTemplateExercises?: WorkoutTemplateExerciseDTO[];
 }
 
