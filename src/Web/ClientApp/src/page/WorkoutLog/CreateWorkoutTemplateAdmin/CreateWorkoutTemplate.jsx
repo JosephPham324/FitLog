@@ -78,7 +78,7 @@ const CreateWorkoutTemplatePage = () => {
                 setIsPopupOpen(true);
                 setTimeout(() => {
                     setIsPopupOpen(false);
-                    //navigate('/workout-templates-admin'); // Redirect to root URL after 2 seconds
+                    navigate('/workout-templates-admin'); // Redirect to root URL after 2 seconds
                 }, 2000);
             } else {
                 setPopupMessage('Error saving template: ' + response.data.errors.join(', '));

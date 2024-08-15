@@ -31,16 +31,38 @@ const CreateWorkoutLogFromTemplate = () => {
                 setWorkoutNote(`Expected duration: ${formatDuration(expectedDuration)}`);
                 setDuration(0); // Start the duration from 0
 
-                const prefilledRows = template.workoutTemplateExercises.map(ex => ({
-                    exercise: ex.exercise,
-                    sets: ex.setsRecommendation,
-                    data: Array.from({ length: ex.setsRecommendation }, (_, index) => ({
-                        reps: JSON.parse(ex.numbersOfReps)[index] || '',
-                        weight: JSON.parse(ex.weightsUsed)[index] || '',
-                        intensity: ex.intensityPercentage,
-                    })),
-                    note: ex.note
-                }));
+                const prefilledRows = template.workoutTemplateExercises.map(ex => {
+                    let weights = [];
+                    let reps = [];
+
+                    try {
+                        weights = ex.weightsUsed.replace(/[\[\]]/g, '').split(',').map(weight => weight.trim() !== '' ? parseFloat(weight.trim()) : 0);
+                    } catch (error) {
+                        console.error('Error processing weightsUsed for exercise:', ex, error);
+                        weights = []; // Default to an empty array if processing fails
+                    }
+
+                    try {
+                        reps = ex.numbersOfReps.replace(/[\[\]]/g, '').split(',').map(rep => rep.trim() !== '' ? parseInt(rep.trim(), 10) : '');
+                    } catch (error) {
+                        console.error('Error processing numbersOfReps for exercise:', ex, error);
+                        reps = []; // Default to an empty array if processing fails
+                    }
+
+                    const data = Array.from({ length: ex.setsRecommendation }, (_, index) => ({
+                        weight: weights[index] !== undefined ? weights[index] : 0, // Default to 0 if weight is missing
+                        reps: reps[index] !== undefined ? reps[index] : '',         // Default to empty string if reps are missing
+                        intensity: ex.intensityPercentage || 0,                    // Default to 0 if intensity is missing
+                    }));
+
+                    return {
+                        exercise: ex.exercise,
+                        sets: ex.setsRecommendation,
+                        data: data,
+                        note: ex.note,
+                    };
+                });
+
                 setRows(prefilledRows);
 
                 const exercises = template.workoutTemplateExercises.filter(ex => ex.intensityPercentage > 0).map(ex => ex.exercise);
