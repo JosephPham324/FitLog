@@ -4,11 +4,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axiosInstance from '../../../utils/axiosInstance';
 import './UpdateWorkoutTemplate.css';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getUserRole } from '../../../utils/tokenOperations'; 
 
 const UpdateWorkoutTemplatePage = () => {
     const { templateId } = useParams(); // Get the workout template ID from URL parameters
     const [workoutName, setWorkoutName] = useState('');
     const [workoutNote, setWorkoutNote] = useState('');
+    const [isPublic, setIsPublic] = useState(false);
     const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
     const [duration, setDuration] = useState(''); // Duration in minutes
     const [rows, setRows] = useState([]); // Centralized data for rows
@@ -16,6 +18,27 @@ const UpdateWorkoutTemplatePage = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const navigate = useNavigate(); // Initialize useNavigate for redirection
+    const userRole = getUserRole();
+    function parseDuration(duration) {
+        const parts = duration.split(':');
+        const hours = parseInt(parts[0], 10);
+        const minutes = parseInt(parts[1], 10);
+        const seconds = parseInt(parts[2], 10);
+
+        return hours * 60 + minutes + seconds / 60;
+    }
+    function minutesToHHMMSS(totalMinutes) {
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = Math.floor(totalMinutes % 60);
+        const seconds = Math.floor((totalMinutes * 60) % 60);
+
+        // Pad the minutes and seconds with leading zeros if necessary
+        const paddedHours = String(hours).padStart(2, '0');
+        const paddedMinutes = String(minutes).padStart(2, '0');
+        const paddedSeconds = String(seconds).padStart(2, '0');
+
+        return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+    }
 
     useEffect(() => {
         const fetchWorkoutTemplate = async () => {
@@ -24,7 +47,15 @@ const UpdateWorkoutTemplatePage = () => {
                 const templateData = response.data;
                 console.log(templateData)
                 setWorkoutName(templateData.templateName);
-                setDuration(parseInt(templateData.duration));
+                setIsPublic(templateData.isPublic);
+                const durationRegex = /^\d{1,2}:\d{2}:\d{2}$/;
+
+                if (durationRegex.test(templateData.duration)) {
+                    setDuration(parseDuration(templateData.duration));
+                } else {
+                    setDuration(parseInt(templateData.duration));
+                }
+
                 setRows(templateData.workoutTemplateExercises.map(exercise => ({
                     exercise: { exerciseId: exercise.exercise.exerciseId, exerciseName: exercise.exercise.exerciseName },
                     sets: exercise.setsRecommendation,
@@ -33,6 +64,7 @@ const UpdateWorkoutTemplatePage = () => {
                         weight,
                         reps: JSON.parse(exercise.numbersOfReps)[index]
                     })),
+                    
                     note: exercise.note,
                     isDeleted: false // Initial state is not deleted
                 })));
@@ -77,8 +109,8 @@ const UpdateWorkoutTemplatePage = () => {
         const templateData = {
             id: templateId,
             templateName: workoutName,
-            duration: `${duration}`,
-            isPublic: true, // Assuming template is public, update if necessary
+            duration: `${minutesToHHMMSS(duration)}`,
+            isPublic: isPublic, // Assuming template is public, update if necessary
             workoutTemplateExercises
         };
 
@@ -89,7 +121,9 @@ const UpdateWorkoutTemplatePage = () => {
                 setIsPopupOpen(true);
                 setTimeout(() => {
                     setIsPopupOpen(false);
-                    navigate('/'); // Redirect to root URL after 2 seconds
+                    
+                    navigate
+                        ('/'); // Redirect to root URL after 2 seconds
                 }, 2000);
             } else {
                 setPopupMessage('Error updating template: ' + response.data.errors.join(', '));
@@ -115,9 +149,15 @@ const UpdateWorkoutTemplatePage = () => {
             return prevRows.filter((_, index) => index !== rowIndex);
         });
     };
+    const handleReturnButtonClick = () => {
+        navigate(-1); // Navigate back to the previous page
+    };
 
     return (
         <div className="container mt-5">
+            <button className="btn btn-secondary mb-4" onClick={handleReturnButtonClick}>
+                &#8592;
+            </button>
             <h1 className="text-center mb-4">Update Workout Template</h1>
             <div className="mb-3 row">
                 <label className="col-sm-2 col-form-label">Workout Template Name</label>

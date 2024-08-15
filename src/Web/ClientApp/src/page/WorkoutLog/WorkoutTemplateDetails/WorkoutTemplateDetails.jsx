@@ -13,14 +13,28 @@ const WorkoutTemplateDetailsPage = () => {
   const [ownerId, setOwnerId] = useState(''); // Owner ID of the template
     const navigate = useNavigate(); // Initialize useNavigate for redirection
   const userRole = getUserRole();
+  function parseDuration(duration) {
+        const parts = duration.split(':');
+        const hours = parseInt(parts[0], 10);
+        const minutes = parseInt(parts[1], 10);
+        const seconds = parseInt(parts[2], 10);
 
+      return hours * 60 + minutes + seconds / 60;
+    }
   useEffect(() => {
     const fetchWorkoutTemplate = async () => {
       try {
         const response = await axiosInstance.get(`/WorkoutTemplates/get-workout-template-details/${templateId}`);
         const templateData = response.data;
         setWorkoutName(templateData.templateName);
-        setDuration(parseInt(templateData.duration));
+
+        const durationRegex = /^\d{1,2}:\d{2}:\d{2}$/;
+
+        if (durationRegex.test(templateData.duration)) {
+              setDuration(parseDuration(templateData.duration));
+        } else {
+              setDuration(parseInt(templateData.duration));
+        }
         setOwnerId(templateData.createdBy); // Assuming ownerId is part of the response data
         setRows(templateData.workoutTemplateExercises.map(exercise => ({
           exercise: { exerciseId: exercise.exercise.exerciseId, exerciseName: exercise.exercise.exerciseName },
@@ -42,15 +56,22 @@ const WorkoutTemplateDetailsPage = () => {
 
   const handleUpdateButtonClick = () => {
     navigate(`/workout-templates/${templateId}/update`);
-  };
+    };
+    const handleReturnButtonClick = () => {
+        navigate(-1); // Navigate back to the previous page
+    };
 
     const userId = getUserId();
     console.log(userId);
     console.log(ownerId)
 
   return (
-    <div className="container mt-5">
+      <div className="container mt-5">
+          <button className="btn btn-secondary mb-4" onClick={handleReturnButtonClick}>
+              &#8592;
+          </button>
       <h1 className="text-center mb-4">Workout Template Details</h1>
+       
       <div className="mb-3 row">
         <label className="col-sm-2 col-form-label">Workout Template Name</label>
         <div className="col-sm-10">
