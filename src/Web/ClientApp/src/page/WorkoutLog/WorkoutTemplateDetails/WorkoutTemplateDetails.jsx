@@ -35,15 +35,14 @@ const WorkoutTemplateDetailsPage = () => {
         } else {
               setDuration(parseInt(templateData.duration));
         }
-        setOwnerId(templateData.createdBy); // Assuming ownerId is part of the response data
+          setOwnerId(templateData.createdBy); // Assuming ownerId is part of the response data
+          templateData.workoutTemplateExercises.forEach(e => console.log(JSON.parse(e.numbersOfReps)))
         setRows(templateData.workoutTemplateExercises.map(exercise => ({
           exercise: { exerciseId: exercise.exercise.exerciseId, exerciseName: exercise.exercise.exerciseName },
           sets: exercise.setsRecommendation,
           intensity: exercise.intensityPercentage, // Assuming intensity is a single value
-          data: JSON.parse(exercise.weightsUsed).map((weight, index) => ({
-            weight,
-            reps: JSON.parse(exercise.numbersOfReps)[index]
-          })),
+          weights: exercise.weightsUsed.replace(/^\[|\]$/g, ''),
+          reps: exercise.numbersOfReps.replace(/^\[|\]$/g, ''),
           note: exercise.note
         })));
       } catch (error) {
@@ -113,19 +112,11 @@ const WorkoutTemplateDetailsPage = () => {
                 <td>{rowIndex + 1}</td>
                 <td>{row.exercise.exerciseName}</td>
                 <td>{row.sets}</td>
-                <td>
-                  {row.data.map((set, setIndex) => (
-                    <div key={`weight-${rowIndex}-${setIndex}`}>
-                      {set.weight}
-                    </div>
-                  ))}
+                <td key={`weight-${rowIndex}`}>
+                        {row.weightS}
                 </td>
-                <td>
-                  {row.data.map((set, setIndex) => (
-                    <div key={`reps-${rowIndex}-${setIndex}`}>
-                      {set.reps}
-                    </div>
-                  ))}
+                <td key={`reps-${rowIndex}`}>
+                        {row.reps}
                 </td>
                 <td>{row.intensity}</td>
                 <td>{row.note}</td>

@@ -37,18 +37,19 @@ const CreateWorkoutTemplatePage = () => {
     };
 
     const saveTemplate = async () => {
+        console.log(rows);
         const workoutTemplateExercises = rows.map((row, rowIndex) => ({
             exerciseId: row.exercise.exerciseId,
             orderInSession: rowIndex + 1,
             orderInSuperset: 0, // Assuming no supersets, update if necessary
             note: row.note,
             setsRecommendation: row.sets,
-            intensityPercentage: 0, // Assuming no intensity recommendation, update if necessary
+            intensityPercentage: row.sets > 0 ? row.intensityPercentage : 0, // Assuming no intensity recommendation, update if necessary
             rpeRecommendation: 0, // Assuming no RPE recommendation, update if necessary
-            weightsUsed: `[${row.data.map(set => set.weight).join(', ')}]`,
-            numbersOfReps: `[${row.data.map(set => set.reps).join(', ')}]`,
+            weightsUsed: `[${row.data.map(set => set.weight !== null ? set.weight : 0).join(', ')}]`,
+            numbersOfReps: `[${row.data.map(set => set.reps !== null? set.reps : 0).join(', ')}]`,
         }));
-
+        console.log(workoutTemplateExercises)
         const templateData = {
             templateName: workoutName,
             duration: `${minutesToTime(duration)}`,
@@ -70,13 +71,14 @@ const CreateWorkoutTemplatePage = () => {
         }
 
         try {
+
             const response = await axiosInstance.post('/WorkoutTemplates/create-workout-template', templateData);
             if (response.data.success) {
                 setPopupMessage('Template saved successfully!');
                 setIsPopupOpen(true);
                 setTimeout(() => {
                     setIsPopupOpen(false);
-                    navigate('/workout-templates-admin'); // Redirect to root URL after 2 seconds
+                    //navigate('/workout-templates-admin'); // Redirect to root URL after 2 seconds
                 }, 2000);
             } else {
                 setPopupMessage('Error saving template: ' + response.data.errors.join(', '));

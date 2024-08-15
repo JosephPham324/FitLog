@@ -37,7 +37,13 @@ const CreateWorkoutTemplateTable = ({ rows, setRows }) => {
   };
 
   const addRow = (exercise) => {
-    setRows([...rows, { exercise, sets: 1, data: [{ reps: '', weight: '', intensity: '' }], note: '' }]);
+    setRows([...rows, {
+      exercise, sets: 1,
+      "intensityPercentage": 0,
+      "weightsUsed": "[]",
+      "numbersOfReps": "[]",
+      data: [{ reps: '', weight: '', intensity: '' }], note: ''
+    }]);
   };
 
   const changeExercise = (exercise) => {
@@ -51,8 +57,30 @@ const CreateWorkoutTemplateTable = ({ rows, setRows }) => {
   const handleInputChange = (rowIndex, setIndex, field, value) => {
     const newRows = [...rows];
     newRows[rowIndex].data[setIndex][field] = value;
+
+    let weightsUsed = [];
+    let numbersOfReps = [];
+
+    newRows[rowIndex].data.forEach((set) => {
+      weightsUsed.push(set.weight);
+
+      if (set.repsMin && set.repsMax) {
+        numbersOfReps.push(`${set.repsMin}-${set.repsMax}`);
+      } else {
+        numbersOfReps.push(set.reps);
+      }
+    });
+
+    let weightsUsedStr = `[${weightsUsed}]`;
+    let numbersOfRepsStr = `[${numbersOfReps}]`;
+
+    //newRows[rowIndex].intensityPercentage = intensityPercentage;
+    newRows[rowIndex].weightsUsed = weightsUsedStr;
+    newRows[rowIndex].numbersOfReps = numbersOfRepsStr;
+
     setRows(newRows);
   };
+
 
   const handleSetsChange = (rowIndex, sets) => {
     const newRows = [...rows];
@@ -66,12 +94,35 @@ const CreateWorkoutTemplateTable = ({ rows, setRows }) => {
     } else {
       newRows[rowIndex].data = newRows[rowIndex].data.slice(0, sets);
     }
+    let weightsUsed = [];
+    let numbersOfReps = [];
 
+    newRows[rowIndex].data.forEach((set) => {
+
+      weightsUsed.push(set.weight);
+      
+      if (set.repsMin && set.repsMax) {
+        numbersOfReps.push(`${set.repsMin}-${set.repsMax}`);
+      }
+      else {
+        numbersOfReps.push(set.reps);
+      }
+    }
+    );
+    let weightsUsedStr = `[${weightsUsed}]`;
+    let numbersOfRepsStr = `[${numbersOfReps}]`;
+    newRows[rowIndex].weightsUsed = weightsUsedStr;
+    newRows[rowIndex].numbersOfReps = numbersOfRepsStr;
     setRows(newRows);
   };
 
   const deleteRow = (rowIndex) => {
     const newRows = rows.filter((_, index) => index !== rowIndex);
+    setRows(newRows);
+  };
+  const handleIntensityChange = (rowIndex, intensity) => {
+    const newRows = [...rows];
+    newRows[rowIndex].intensityPercentage = intensity;
     setRows(newRows);
   };
 
@@ -89,11 +140,12 @@ const CreateWorkoutTemplateTable = ({ rows, setRows }) => {
             <th>Sets</th>
             <th>Weight (kg)</th>
             <th>
-              <select value={repsType} onChange={handleRepsTypeChange} className="form-control">
-                <option value="reps">Reps</option>
-                <option value="repRange">Rep Range</option>
-                <option value="amrap">AMRAP</option>
-              </select>
+              Reps
+              {/*<select readonly value={repsType} onChange={handleRepsTypeChange} className="form-control">*/}
+              {/*  <option value="reps">Reps</option>*/}
+              {/*  <option value="repRange">Rep Range</option>*/}
+              {/*  <option value="amrap">AMRAP</option>*/}
+              {/*</select>*/}
             </th>
             <th>Intensity</th>
             <th>Note</th>
@@ -160,16 +212,16 @@ const CreateWorkoutTemplateTable = ({ rows, setRows }) => {
                 ))}
               </td>
               <td>
-                {row.data.map((set, setIndex) => (
+                {/*{row.data.map((set, setIndex) => (*/}
                   <input
-                    key={`intensity-${rowIndex}-${setIndex}`}
-                    type="text"
-                    value={set.intensity}
-                    onChange={(e) => handleInputChange(rowIndex, setIndex, 'intensity', e.target.value)}
+                    key={`intensity-${rowIndex}`}
+                    type="number"
+                    value={row.intensityPercentage}
+                    onChange={(e) => handleIntensityChange(rowIndex, e.target.value)}
                     className="form-control mb-2"
-                    placeholder={`Set ${setIndex + 1}`}
+                    placeholder={`Intensity`}
                   />
-                ))}
+                {/*))}*/}
               </td>
               <td>
                 <button className="btn btn-secondary" onClick={() => openNotePopup(rowIndex)}>Note</button>

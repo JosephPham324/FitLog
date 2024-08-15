@@ -55,19 +55,52 @@ const UpdateWorkoutTemplatePage = () => {
                 } else {
                     setDuration(parseInt(templateData.duration));
                 }
+                const templateExercises = templateData.workoutTemplateExercises;
+                console.log(templateExercises);
+                const newRows = [];
 
-                setRows(templateData.workoutTemplateExercises.map(exercise => ({
-                    exercise: { exerciseId: exercise.exercise.exerciseId, exerciseName: exercise.exercise.exerciseName },
-                    sets: exercise.setsRecommendation,
-                    intensity: exercise.intensityPercentage, // Assuming intensity is a single value
-                    data: JSON.parse(exercise.weightsUsed).map((weight, index) => ({
-                        weight,
-                        reps: JSON.parse(exercise.numbersOfReps)[index]
-                    })),
-                    
-                    note: exercise.note,
-                    isDeleted: false // Initial state is not deleted
-                })));
+
+                templateExercises.forEach(exercise => {
+                    let weights = [];
+                    let reps = [];
+                    let data = [];
+                    const sets = exercise.setsRecommendation || 0;
+
+                    try {
+                        weights = JSON.parse(exercise.weightsUsed);
+                    } catch (error) {
+                        console.error('Error parsing weightsUsed for exercise:', exercise, error);
+                        weights = [];
+                    }
+
+                    try {
+                        reps = JSON.parse(exercise.numbersOfReps);
+                    } catch (error) {
+                        console.error('Error parsing numbersOfReps for exercise:', exercise, error);
+                        reps = [];
+                    }
+
+                    // Iterate based on the number of sets
+                    for (let i = 0; i < sets; i++) {
+                        data.push({
+                            weight: weights[i] !== undefined ? weights[i] : 0, // Default to 0 if weight is missing
+                            reps: reps[i] !== undefined ? reps[i] : ''         // Default to empty string if reps is missing
+                        });
+                    }
+
+                    newRows.push({
+                        exercise: { exerciseId: exercise.exercise.exerciseId, exerciseName: exercise.exercise.exerciseName },
+                        sets: sets,
+                        intensity: exercise.intensityPercentage,
+                        weights: weights,
+                        data: data,
+                        reps: reps,
+                        note: exercise.note,
+                        isDeleted: false // Initial state is not deleted
+                    });
+                });
+
+                setRows(newRows);
             } catch (error) {
                 console.error('Error fetching workout template:', error);
             }

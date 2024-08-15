@@ -32,17 +32,20 @@ const CreateWorkoutTemplatePage = () => {
     };
 
     const saveTemplate = async () => {
-        const workoutTemplateExercises = rows.map((row, rowIndex) => ({
+        console.log(rows.forEach(row => console.log(row.intensityPercentage)));
+        const workoutTemplateExercises = rows.map((row, rowIndex) => (
+        {
             exerciseId: row.exercise.exerciseId,
             orderInSession: rowIndex + 1,
             orderInSuperset: 0, // Assuming no supersets, update if necessary
             note: row.note,
             setsRecommendation: row.sets,
-            intensityPercentage: 0, // Assuming no intensity recommendation, update if necessary
+            intensityPercentage: parseInt(row.intensityPercentage), // Assuming no intensity recommendation, update if necessary
             rpeRecommendation: 0, // Assuming no RPE recommendation, update if necessary
-            weightsUsed: `[${row.data.map(set => set.weight).join(', ')}]`,
-            numbersOfReps: `[${row.data.map(set => set.reps).join(', ')}]`,
+            weightsUsed: `[${row.data.map(set => set.weight !== null).join(', ')}]`,
+            numbersOfReps: `[${row.data.map(set => set.reps !== null).join(', ')}]`,
         }));
+        console.log(workoutTemplateExercises)
 
         const templateData = {
             templateName: workoutName,
@@ -68,7 +71,7 @@ const CreateWorkoutTemplatePage = () => {
                 setIsPopupOpen(true);
                 setTimeout(() => {
                     setIsPopupOpen(false);
-                    navigate('/'); // Redirect to root URL after 2 seconds
+                    //navigate('/'); // Redirect to root URL after 2 seconds
                 }, 2000);
             } else {
                 setPopupMessage('Error saving template: ' + response.data.errors.join(', '));
